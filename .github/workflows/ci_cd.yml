@@ -67,6 +67,15 @@ jobs:
           name: HTML-Documentation
           path: .tox/doc_out/
           retention-days: 7
+      - name: Deploy
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+        uses: JamesIves/github-pages-deploy-action@4.3.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # repository-name: pyansys/repository-name
+          branch: gh-pages
+          folder: .tox/doc_out
+          clean: true
 
 
   build:
