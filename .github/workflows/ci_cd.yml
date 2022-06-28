@@ -61,6 +61,12 @@ jobs:
           python -m pip install --upgrade pip flit tox
       - name: Test with tox
         run: tox -e doc
+      - name: Upload HTML Documentation
+        uses: actions/upload-artifact@v2
+        with:
+          name: HTML-Documentation
+          path: .tox/doc_out/
+          retention-days: 7
 
 
   build:
