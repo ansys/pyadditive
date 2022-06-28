@@ -8,7 +8,7 @@ name = "ansys-additive-processwindow"
 version = "0.1.dev0"
 description = "A Python wrapper for Ansys Additive Process Window Optimization"
 readme = "README.rst"
-requires-python = ">=3.10"
+requires-python = ">=3.7"
 license = {file = "LICENSE"}
 authors = [
     {name = "ANSYS, Inc.", email = "pyansys.support@ansys.com"},
