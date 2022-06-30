@@ -69,8 +69,8 @@ jobs:
       - name: Build documentation
         run: | 
           tox -e doc
-          touch "{toxworkdir}/doc_out/.nojekyll"
-          bash -c 'echo "dev.additive.docs.pyansys.com" > "{toxworkdir}/doc_out/CNAME"'
+          touch ".tox/doc_out/.nojekyll"
+          bash -c 'echo "dev.additive.docs.pyansys.com" > ".tox/doc_out/CNAME"'
 
       - name: Upload Documentation
         uses: actions/upload-artifact@v3
