@@ -138,7 +138,7 @@ jobs:
 
       - name: Generate wheelhouse
         run: |
-          pip wheel . -w wheelhouse
+          pip wheel -i https://${{ env.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/ -w wheelhouse .
 
       - name: Zip wheelhouse
         uses: vimtor/action-zip@v1
