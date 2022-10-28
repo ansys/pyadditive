@@ -1,4 +1,4 @@
-from ansys.additive.processwindow import __version__
+from ansys.additive import __version__
 
 
 def test_pkg_version():

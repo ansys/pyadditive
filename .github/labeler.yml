@@ -1,8 +1,10 @@
 documentation:
-- doc/source/**/*
+  - doc/source/**/*
 maintenance:
-- .github/**/*
-- .flake8
-- pyproject.toml
+  - .github/**/*
+  - .flake8
+  - pyproject.toml
 dependencies:
-- requirements/*
+  - requirements/*
+testing:
+  - tests/*
