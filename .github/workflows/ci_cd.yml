@@ -12,6 +12,7 @@ env:
   MAIN_PYTHON_VERSION: "3.10"
   PACKAGE_NAME: "ansys-additive"
   PYANSYS_PYPI_PRIVATE_PAT: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
+  PIP_INDEX_URL: "https://${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -78,7 +79,7 @@ jobs:
       - name: Install packages for building
         run: |
           pip install --upgrade build wheel
-          pip install -i https://${{ env.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/ .
+          pip install -i ${{ env.PIP_INDEX_URL }} .
 
       - name: Smoke test
         run: python -c "from ansys.additive import __version__; print(__version__)"
@@ -89,7 +90,7 @@ jobs:
 
       - name: Generate wheelhouse
         run: |
-          pip wheel -i https://${{ env.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/ -w wheelhouse .
+          pip wheel -i ${{ env.PIP_INDEX_URL }} -w wheelhouse .
 
       - name: Zip wheelhouse
         uses: vimtor/action-zip@v1
@@ -127,7 +128,7 @@ jobs:
       - name: Install packages for building
         run: |
           pip install --upgrade build wheel
-          pip install -i https://${{ env.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/ .
+          pip install -i ${{ env.PIP_INDEX_URL }} .
 
       - name: Smoke test
         run: python -c "from ansys.additive import __version__; print(__version__)"
@@ -138,7 +139,7 @@ jobs:
 
       - name: Generate wheelhouse
         run: |
-          pip wheel -i https://${{ env.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/ -w wheelhouse .
+          pip wheel -i ${{ env.PIP_INDEX_URL }} -w wheelhouse .
 
       - name: Zip wheelhouse
         uses: vimtor/action-zip@v1
@@ -175,7 +176,7 @@ jobs:
         run: |
           .\.venv\Scripts\Activate.ps1
           pip install --upgrade build
-          pip install -i https://${{ env.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/ .[test]
+          pip install -i ${{ env.PIP_INDEX_URL }} .[test]
 
       # - name: Login to GitHub Container Registry
       #   uses: docker/login-action@v2
@@ -246,7 +247,7 @@ jobs:
         run: |
           .\.venv\Scripts\Activate.ps1
           pip install --upgrade build
-          pip install -i https://${{ env.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/ .[docs]
+          pip install -i ${{ env.PIP_INDEX_URL }} .[docs]
 
       # - name: Login to GitHub Container Registry
       #   uses: docker/login-action@v2
@@ -303,7 +304,7 @@ jobs:
         run: |
           pip install build
           python -m build
-          pip install -i https://${{ env.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/ dist/*.whl
+          pip install -i ${{ env.PIP_INDEX_URL }} dist/*.whl
 
       - name: Check package
         run: |

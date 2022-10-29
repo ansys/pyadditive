@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 # Check https://python-poetry.org/docs/pyproject/ for all available sections
 name = "ansys-additive"
-version = "0.1.dev1"
+version = "0.1.dev2"
 description = "A python wrapper for the Ansys Additive Service"
 license = "MIT"
 authors = ["ANSYS, Inc. <ansys.support@ansys.com>"]
@@ -27,7 +27,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
-ansys-api-additive = "==0.1.0"
+ansys-api-additive = "==0.1.1"
 google-api-python-client = ">=1.7.11"
 googleapis-common-protos = ">=1.52.0"
 grpcio = ">=1.46.3"
@@ -84,6 +84,12 @@ docs = [
     "sphinx-autodoc-typehints",
     "sphinx_design"
 ]
+
+[[tool.poetry.source]]
+name = "privatepypi"
+url = "https://@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/"
+default = false
+secondary = false
 
 [tool.black]
 line-length = 100

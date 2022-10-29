@@ -93,14 +93,13 @@ class MicrostructureInput:
             cube_size_z=self.cube_size_z,
             sensor_dimension=self.sensor_dimension,
             use_provided_thermal_parameters=self.use_provided_thermal_parameters,
+            cooling_rate=self.cooling_rate,
+            thermal_gradient=self.thermal_gradient,
+            melt_pool_width=self.melt_pool_width,
+            melt_pool_depth=self.melt_pool_depth,
+            use_random_seed=(self.random_seed != None),
+            random_seed=self.random_seed,
         )
-        if self.use_provided_thermal_parameters:
-            request.cooling_rate = self.cooling_rate
-            request.thermal_gradient = self.thermal_gradient
-            request.melt_pool_width = self.melt_pool_width
-            request.melt_pool_depth = self.melt_pool_depth
-        if self.random_seed:
-            request.random_seed = self.random_seed
         return request
 
 

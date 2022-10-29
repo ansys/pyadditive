@@ -176,10 +176,11 @@ def test_MicrostructureInput_to_simulation_request_returns_expected_object():
     assert request.cube_size_z == 0.0015
     assert request.sensor_dimension == 0.0005
     assert request.use_provided_thermal_parameters == False
-    assert request.cooling_rate == 0
-    assert request.thermal_gradient == 0
-    assert request.melt_pool_width == 0
-    assert request.melt_pool_depth == 0
+    assert input.cooling_rate == 1e6
+    assert input.thermal_gradient == 1e7
+    assert input.melt_pool_width == 1.5e-4
+    assert input.melt_pool_depth == 1e-4
+    assert request.use_random_seed == False
     assert request.random_seed == 0
 
 
@@ -227,4 +228,5 @@ def test_MicrostructureInput_to_simulation_request_assigns_values():
     assert request.thermal_gradient == 9
     assert request.melt_pool_width == 10
     assert request.melt_pool_depth == 11
+    assert request.use_random_seed == True
     assert request.random_seed == 12
