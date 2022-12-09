@@ -1,5 +1,9 @@
+from ansys.api.additive.v0.additive_domain_pb2 import BEAD_TYPE_BEAD_ON_POWDER_LAYER
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import pytest
 
+from ansys.additive.machine import AdditiveMachine
+from ansys.additive.material import AdditiveMaterial
 from ansys.additive.single_bead import (
     BeadType,
     MeltPool,
@@ -84,3 +88,29 @@ def test_SingleBeadSummary_init_raises_exception_for_invalid_melt_pool_message(
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid input type") as exc_info:
         SingleBeadSummary(invalid_obj, MeltPoolMessage())
+
+
+def test_SingleBeadInput_to_simulation_request_assigns_values():
+    # arrange
+    machine = AdditiveMachine()
+    machine.laser_power = 99
+    material = AdditiveMaterial(name="vibranium")
+    input = SingleBeadInput(
+        id="myId",
+        machine=machine,
+        material=material,
+        bead_type=BeadType.BEAD_ON_POWDER,
+        bead_length=1,
+    )
+
+    # act
+    request = input.to_simulation_request()
+
+    # assert
+    assert isinstance(request, SimulationRequest)
+    assert request.id == "myId"
+    sb_input = request.single_bead_input
+    assert sb_input.machine.laser_power == 99
+    assert sb_input.material.name == "vibranium"
+    assert sb_input.bead_type == BEAD_TYPE_BEAD_ON_POWDER_LAYER
+    assert sb_input.bead_length == 1

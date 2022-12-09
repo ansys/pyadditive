@@ -72,7 +72,7 @@ Then, you can simply execute:
 
 .. code:: bash
 
-   poetry run python -m pip install ansys-additive
+   python -m pip install ansys-additive
 
 .. caution::
 
@@ -189,6 +189,40 @@ If required, you can always call the style commands (`black`_, `isort`_,
 `flake8`_...) or unit testing ones (`pytest`_) from the command line. However,
 this does not guarantee that your project is being tested in an isolated
 environment, which is the reason why tools like `tox`_ exist.
+
+To run the unit tests use the following command within the root folder of the project.
+
+.. code:: bash
+
+   python -m pytest
+
+
+System testing on local host
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Install `docker-compose <https://docker-docs.netlify.app/compose/install/>`_, if necessary.
+Start the server using the following command from the root folder of the project.
+
+.. code:: bash
+
+   docker-compose up
+
+Open a jupyter notebook in VS Code and execute it or start jupyter lab using the following
+commands.
+
+.. code:: bash
+
+   python -m venv jupyter_venv​
+
+   jupyter_venv\Scripts\activate.bat​
+
+   pip install jupyterlab​
+
+   jupyter lab​
+
+
+Open jupyter lab in your browser using http://localhost:8888/lab​. Note the port number may
+be different.
 
 
 A note on pre-commit

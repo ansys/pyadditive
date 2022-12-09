@@ -1,9 +1,11 @@
 import math
 
-from ansys.api.additive.v0.additive_domain_pb2 import GrainStatistics, MicrostructureResult
-from ansys.api.additive.v0.additive_simulation_pb2 import (
-    SimulateMicrostructureRequest as MicrostructureRequest,
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    MicrostructureInput as MicrostructureInputMessage,
 )
+from ansys.api.additive.v0.additive_domain_pb2 import GrainStatistics
+from ansys.api.additive.v0.additive_domain_pb2 import MicrostructureResult
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import numpy as np
 
 from ansys.additive.machine import AdditiveMachine
@@ -16,6 +18,8 @@ class MicrostructureInput:
     Properties
     ----------
 
+    id: string
+        Simulation identifier
     machine: AdditiveMachine
         Machine related parameters
     material: AdditiveMaterial
@@ -80,11 +84,11 @@ class MicrostructureInput:
                 repr += k + ": " + str(getattr(self, k)) + "\n"
         return repr
 
-    def to_simulation_request(self) -> MicrostructureRequest:
-        request = MicrostructureRequest(
+    def to_simulation_request(self) -> SimulationRequest:
+        """Convert this object into a simulation request message"""
+        input = MicrostructureInputMessage(
             machine=self.machine.to_machine_message(),
             material=self.material.to_material_message(),
-            id=self.id,
             cube_min_x=self.cube_min_x,
             cube_min_y=self.cube_min_y,
             cube_min_z=self.cube_min_z,
@@ -100,7 +104,7 @@ class MicrostructureInput:
             use_random_seed=(self.random_seed != None),
             random_seed=self.random_seed,
         )
-        return request
+        return SimulationRequest(id=self.id, microstructure_input=input)
 
 
 class MicrostructureSummary:

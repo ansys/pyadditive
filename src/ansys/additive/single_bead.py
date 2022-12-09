@@ -1,10 +1,12 @@
 from enum import Enum
 
-from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
-from ansys.api.additive.v0.additive_simulation_pb2 import (
+from ansys.api.additive.v0.additive_domain_pb2 import (
     BEAD_TYPE_BEAD_ON_BASE_PLATE,
     BEAD_TYPE_BEAD_ON_POWDER_LAYER,
 )
+from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
+from ansys.api.additive.v0.additive_domain_pb2 import SingleBeadInput as SingleBeadInputMessage
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 from ansys.additive.machine import AdditiveMachine
 from ansys.additive.material import AdditiveMaterial
@@ -52,6 +54,19 @@ class SingleBeadInput:
             else:
                 repr += k + ": " + str(getattr(self, k)) + "\n"
         return repr
+
+    def to_simulation_request(self) -> SimulationRequest:
+        """Convert this object into a simulation request message"""
+        input = SingleBeadInputMessage(
+            machine=self.machine.to_machine_message(),
+            material=self.material.to_material_message(),
+            bead_length=self.bead_length,
+        )
+        if self.bead_type == BeadType.BEAD_ON_BASE_PLATE:
+            input.bead_type = BEAD_TYPE_BEAD_ON_BASE_PLATE
+        else:
+            input.bead_type = BEAD_TYPE_BEAD_ON_POWDER_LAYER
+        return SimulationRequest(id=self.id, single_bead_input=input)
 
 
 class MeltPool:

@@ -1,0 +1,7 @@
+services:
+  backend:
+    image: azwepsifujiaksacr.azurecr.io/ansys/additive
+    ports:
+      - "50052:50052"
+    environment:
+      ANSYSLMD_LICENSE_FILE: '1055@10.3.9.71'

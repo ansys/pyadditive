@@ -1,4 +1,6 @@
+from ansys.api.additive.v0.additive_domain_pb2 import PorosityInput as PorosityInputMessage
 from ansys.api.additive.v0.additive_domain_pb2 import PorosityResult
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 from ansys.additive.machine import AdditiveMachine
 from ansys.additive.material import AdditiveMaterial
@@ -44,6 +46,17 @@ class PorosityInput:
             else:
                 repr += k + ": " + str(getattr(self, k)) + "\n"
         return repr
+
+    def to_simulation_request(self) -> SimulationRequest:
+        """Convert this object into a simulation request message"""
+        input = PorosityInputMessage(
+            machine=self.machine.to_machine_message(),
+            material=self.material.to_material_message(),
+            size_x=self.size_x,
+            size_y=self.size_y,
+            size_z=self.size_z,
+        )
+        return SimulationRequest(id=self.id, porosity_input=input)
 
 
 class PorositySummary:

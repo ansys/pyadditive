@@ -2,20 +2,16 @@ import logging
 
 import ansys.api.additive.v0.additive_materials_pb2 as additive_materials_pb2
 import ansys.api.additive.v0.additive_materials_pb2_grpc as additive_materials_pb2_grpc
-import ansys.api.additive.v0.additive_simulation_pb2 as additive_simulation_pb2
 import ansys.api.additive.v0.additive_simulation_pb2_grpc as additive_simulation_pb2_grpc
 from google.protobuf.empty_pb2 import Empty
 import grpc
 
 from ansys.additive.material import AdditiveMaterial
 import ansys.additive.microstructure as microstructure
-from ansys.additive.microstructure import MicrostructureInput
 import ansys.additive.misc as misc
 import ansys.additive.porosity as porosity
-from ansys.additive.porosity import PorosityInput
 import ansys.additive.progress_logger as progress_logger
 import ansys.additive.single_bead as single_bead
-from ansys.additive.single_bead import SingleBeadInput
 
 MAX_MESSAGE_LENGTH = int(256 * 1024**2)
 DEFAULT_ADDITIVE_SERVICE_PORT = 5000
@@ -96,14 +92,12 @@ class Additive:
             return self._channel._channel.target().decode()
         return ""
 
-    def simulate_single_bead(
-        self, input: SingleBeadInput, log_progress: bool = True
-    ) -> single_bead.SingleBeadSummary:
+    def simulate(self, input, log_progress: bool = True):
         """Execute a single bead simulation
 
         Parameters
         ----------
-        input: SingleBeadInput
+        input: SingleBeadInput or PorosityInput or MicrostructureInput or ThermalHistoryInput
             Parameters to use during simulation.
 
         log_progress: bool
@@ -112,30 +106,25 @@ class Additive:
 
         Returns
         -------
-        SingleBeadSummary
-            The simulation summary, see :class:`single_bead.SingleBeadSummary`
+        SingleBeadSummary or PorositySummary or MicrostructureSummary or ThermalHistorySummary
+            The simulation summary, see :class:`single_bead.SingleBeadSummary`,
+            :class:`porosity.PorositySummary`, :class:`microstructure.MicrostructureSummary`
 
         """
+        # TODO: Add reference to ThermalHistorySummary above
 
-        logger = progress_logger.ProgressLogger(self.simulate_single_bead.__name__)
+        logger = progress_logger.ProgressLogger("Simulation")
 
-        request = additive_simulation_pb2.SimulateSingleBeadRequest(
-            machine=input.machine.to_machine_message(),
-            material=input.material.to_material_message(),
-            bead_length=input.bead_length,
-        )
-        if input.bead_type is single_bead.BeadType.BEAD_ON_BASE_PLATE:
-            request.bead_type = additive_simulation_pb2.BEAD_TYPE_BEAD_ON_BASE_PLATE
-        elif input.bead_type is single_bead.BeadType.BEAD_ON_POWDER:
-            request.bead_type = additive_simulation_pb2.BEAD_TYPE_BEAD_ON_POWDER_LAYER
-        else:
-            raise ValueError("Invalid bead type: " + input.bead_type)
-
-        for response in self._simulation_stub.SimulateSingleBead(request):
+        for response in self._simulation_stub.Simulate(input.to_simulation_request()):
             if log_progress and response.HasField("progress"):
                 logger.log_progress(response.progress)
             if response.HasField("melt_pool"):
                 return single_bead.SingleBeadSummary(input, response.melt_pool)
+            if response.HasField("porosity_result"):
+                return porosity.PorositySummary(input, response.porosity_result)
+            if response.HasField("microstructure_result"):
+                return microstructure.MicrostructureSummary(input, response.microstructure_result)
+            # TODO: Return thermal history summary
 
     def get_materials_list(self):
         return self._materials_stub.GetMaterialsList(Empty())
@@ -145,74 +134,6 @@ class Additive:
         request.name = name
         result = self._materials_stub.GetMaterial(request)
         return AdditiveMaterial.from_material_message(result)
-
-    def simulate_porosity(
-        self, input: PorosityInput, log_progress: bool = True
-    ) -> porosity.PorosityResult:
-        """Simulate the additive manufacture of a sample cube and calculate its porosity
-
-        Parameters
-        ----------
-        input : PorosityInput
-            Parameters to use during simulation.
-
-        log_progress: bool
-            If True, call log_progress() method of :class:`progress_logger.ProgressLogger` when
-            progress updates are received.
-
-
-        Returns
-        -------
-        PorosityResult
-            The simulation result, see :class:`porosity.PorosityResult`
-
-        """
-
-        logger = progress_logger.ProgressLogger(self.simulate_porosity.__name__)
-
-        request = additive_simulation_pb2.SimulatePorosityRequest(
-            machine=input.machine.to_machine_message(),
-            material=input.material.to_material_message(),
-            size_x=input.size_x,
-            size_y=input.size_y,
-            size_z=input.size_z,
-        )
-
-        for response in self._simulation_stub.SimulatePorosity(request):
-            if log_progress and response.HasField("progress"):
-                logger.log_progress(response.progress)
-            if response.HasField("porosity_result"):
-                return porosity.PorositySummary(input, response.porosity_result)
-
-    def simulate_microstructure(
-        self, input: MicrostructureInput, log_progress: bool = True
-    ) -> microstructure.MicrostructureResult:
-        """Simulate the additive manufacture of a sample cube and determine its microstructure
-
-        Parameters
-        ----------
-        input : MicrostructureInput
-            Parameters to use during simulation.
-
-        log_progress: bool
-            If True, call log_progress() method of :class:`progress_logger.ProgressLogger` when
-            progress updates are received.
-
-
-        Returns
-        -------
-        MicrostructureResult
-            The simulation result, see :class:`microstructure.MicrostructureResult`
-
-        """
-
-        logger = progress_logger.ProgressLogger(self.simulate_microstructure.__name__)
-
-        for response in self._simulation_stub.SimulateMicrostructure(input.to_simulation_request()):
-            if log_progress and response.HasField("progress"):
-                logger.log_progress(response.progress)
-            if response.HasField("microstructure_result"):
-                return microstructure.MicrostructureSummary(input, response.microstructure_result)
 
 
 def launch_additive(ip: str, port: int) -> Additive:

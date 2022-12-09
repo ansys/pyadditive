@@ -1,4 +1,5 @@
 from ansys.api.additive.v0.additive_domain_pb2 import PorosityResult
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import pytest
 
 from ansys.additive.machine import AdditiveMachine
@@ -98,3 +99,26 @@ def test_PorositySummary_init_raises_exception_for_invalid_result_type(invalid_o
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid result type") as exc_info:
         PorositySummary(PorosityInput(), invalid_obj)
+
+
+def test_PorosityInput_to_simulation_request_assigns_values():
+    # arrange
+    machine = AdditiveMachine()
+    machine.laser_power = 99
+    material = AdditiveMaterial(name="vibranium")
+    input = PorosityInput(
+        id="myId", machine=machine, material=material, size_x=1, size_y=2, size_z=3
+    )
+
+    # act
+    request = input.to_simulation_request()
+
+    # assert
+    assert isinstance(request, SimulationRequest)
+    assert request.id == "myId"
+    p_input = request.porosity_input
+    assert p_input.machine.laser_power == 99
+    assert p_input.material.name == "vibranium"
+    assert p_input.size_x == 1
+    assert p_input.size_y == 2
+    assert p_input.size_z == 3

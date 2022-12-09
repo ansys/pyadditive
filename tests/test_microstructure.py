@@ -1,15 +1,12 @@
 import math
 
 from ansys.api.additive.v0.additive_domain_pb2 import GrainStatistics, MicrostructureResult
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import pytest
 
 from ansys.additive.machine import AdditiveMachine
 from ansys.additive.material import AdditiveMaterial
-from ansys.additive.microstructure import (
-    MicrostructureInput,
-    MicrostructureRequest,
-    MicrostructureSummary,
-)
+from ansys.additive.microstructure import MicrostructureInput, MicrostructureSummary
 
 
 def test_MicrostructureSummary_init_returns_expected_value():
@@ -165,23 +162,23 @@ def test_MicrostructureInput_to_simulation_request_returns_expected_object():
     request = input.to_simulation_request()
 
     # assert
+    assert isinstance(request, SimulationRequest)
     assert request.id == ""
-    assert request.machine.laser_power == 195
-    assert request.material.name == ""
-    assert request.cube_min_x == 0
-    assert request.cube_min_y == 0
-    assert request.cube_min_z == 0
-    assert request.cube_size_x == 0.0015
-    assert request.cube_size_y == 0.0015
-    assert request.cube_size_z == 0.0015
-    assert request.sensor_dimension == 0.0005
-    assert request.use_provided_thermal_parameters == False
-    assert input.cooling_rate == 1e6
-    assert input.thermal_gradient == 1e7
-    assert input.melt_pool_width == 1.5e-4
-    assert input.melt_pool_depth == 1e-4
-    assert request.use_random_seed == False
-    assert request.random_seed == 0
+    ms_input = request.microstructure_input
+    assert ms_input.cube_min_x == 0
+    assert ms_input.cube_min_y == 0
+    assert ms_input.cube_min_z == 0
+    assert ms_input.cube_size_x == 0.0015
+    assert ms_input.cube_size_y == 0.0015
+    assert ms_input.cube_size_z == 0.0015
+    assert ms_input.sensor_dimension == 0.0005
+    assert ms_input.use_provided_thermal_parameters == False
+    assert ms_input.cooling_rate == 1e6
+    assert ms_input.thermal_gradient == 1e7
+    assert ms_input.melt_pool_width == 1.5e-4
+    assert ms_input.melt_pool_depth == 1e-4
+    assert ms_input.use_random_seed == False
+    assert ms_input.random_seed == 0
 
 
 def test_MicrostructureInput_to_simulation_request_assigns_values():
@@ -212,21 +209,22 @@ def test_MicrostructureInput_to_simulation_request_assigns_values():
     request = input.to_simulation_request()
 
     # assert
-    assert isinstance(request, MicrostructureRequest)
+    assert isinstance(request, SimulationRequest)
     assert request.id == "myId"
-    assert request.machine.laser_power == 99
-    assert request.material.name == "vibranium"
-    assert request.cube_min_x == 1
-    assert request.cube_min_y == 2
-    assert request.cube_min_z == 3
-    assert request.cube_size_x == 4
-    assert request.cube_size_y == 5
-    assert request.cube_size_z == 6
-    assert request.sensor_dimension == 7
-    assert request.use_provided_thermal_parameters == True
-    assert request.cooling_rate == 8
-    assert request.thermal_gradient == 9
-    assert request.melt_pool_width == 10
-    assert request.melt_pool_depth == 11
-    assert request.use_random_seed == True
-    assert request.random_seed == 12
+    ms_input = request.microstructure_input
+    assert ms_input.machine.laser_power == 99
+    assert ms_input.material.name == "vibranium"
+    assert ms_input.cube_min_x == 1
+    assert ms_input.cube_min_y == 2
+    assert ms_input.cube_min_z == 3
+    assert ms_input.cube_size_x == 4
+    assert ms_input.cube_size_y == 5
+    assert ms_input.cube_size_z == 6
+    assert ms_input.sensor_dimension == 7
+    assert ms_input.use_provided_thermal_parameters == True
+    assert ms_input.cooling_rate == 8
+    assert ms_input.thermal_gradient == 9
+    assert ms_input.melt_pool_width == 10
+    assert ms_input.melt_pool_depth == 11
+    assert ms_input.use_random_seed == True
+    assert ms_input.random_seed == 12
