@@ -10,7 +10,9 @@ on:
 
 env:
   MAIN_PYTHON_VERSION: "3.10"
-  PACKAGE_NAME: "ansys-additive"
+  DOCUMENTATION_CNAME: 'additive.docs.pyansys.com'
+  LIBRARY_NAME: 'ansys-additive'
+  LIBRARY_NAMESPACE: 'ansys.additive'
   PYANSYS_PYPI_PRIVATE_PAT: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
   PIP_INDEX_URL: "https://${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/"
 
@@ -19,392 +21,113 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  style:
-    name: Code style
+
+  code-style:
+    name: "Running code style checks"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: "Run PyAnsys code style checks"
+        uses: pyansys/actions/code-style@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          cache: "pip"
-          cache-dependency-path: "pyproject.toml"
-
-      - name: Install pre-commit
-        run: pip install pre-commit
-
-      - name: Run pre-commit
-        run: pre-commit run --all-files --show-diff-on-failure
-
-  docs-style:
-    name: Documentation Style Check
+  doc-style:
+    name: "Running documentation style checks"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Running Vale
-        uses: errata-ai/vale-action@reviewdog
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: "Running documentation style checks"
+        uses: pyansys/actions/doc-style@v2
         with:
-          files: doc
-          reporter: github-pr-check
-          level: error
-          filter_mode: nofilter
-          fail_on_error: true
-          vale_flags: "--config=doc/.vale.ini"
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   smoke-tests:
-    name: Build and Smoke tests
+    name: "Build wheelhouse for latest Python versions"
     runs-on: ${{ matrix.os }}
-    needs: [style]
+    needs: [code-style]
     strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
-
+       matrix:
+           os: [ubuntu-latest, windows-latest]
+           python-version: ['3.7', '3.8', '3.9', '3.10']
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: "Build a wheelhouse of the Python library"
+        uses: pyansys/actions/build-wheelhouse@v2
         with:
+          library-name: ${{ env.LIBRARY_NAME }}
+          library-namespace: ${{ env.LIBRARY_NAMESPACE }}
+          operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
-          cache-dependency-path: "pyproject.toml"
 
-      - name: Install packages for building
-        run: |
-          pip install --upgrade build wheel
-          pip install -i ${{ env.PIP_INDEX_URL }} .
-
-      - name: Smoke test
-        run: python -c "from ansys.additive import __version__; print(__version__)"
-
-      - name: Store version
-        run: |
-          echo "PYADDITIVE_VERSION=$(python -c "from ansys.additive import __version__; print(__version__)")" >> $GITHUB_ENV
-
-      - name: Generate wheelhouse
-        run: |
-          pip wheel -i ${{ env.PIP_INDEX_URL }} -w wheelhouse .
-
-      - name: Zip wheelhouse
-        uses: vimtor/action-zip@v1
-        with:
-          files: wheelhouse
-          dest: ${{ env.PACKAGE_NAME }}-v${{ env.PYADDITIVE_VERSION }}-wheelhouse-${{ runner.os }}-${{ matrix.python-version }}.zip
-
-      - name: Upload Wheelhouse
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.PACKAGE_NAME }}-v${{ env.PYADDITIVE_VERSION }}-wheelhouse-${{ runner.os }}-${{ matrix.python-version }}
-          path: "*.zip"
-          retention-days: 7
-
-  macos-build:
-    name: Build and Smoke tests (macOS)
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-    runs-on: macos-latest
-    needs: [style]
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: "pip"
-          cache-dependency-path: "pyproject.toml"
-
-      - name: Install packages for building
-        run: |
-          pip install --upgrade build wheel
-          pip install -i ${{ env.PIP_INDEX_URL }} .
-
-      - name: Smoke test
-        run: python -c "from ansys.additive import __version__; print(__version__)"
-
-      - name: Store version
-        run: |
-          echo "PYADDITIVE_VERSION=$(python -c "from ansys.additive import __version__; print(__version__)")" >> $GITHUB_ENV
-
-      - name: Generate wheelhouse
-        run: |
-          pip wheel -i ${{ env.PIP_INDEX_URL }} -w wheelhouse .
-
-      - name: Zip wheelhouse
-        uses: vimtor/action-zip@v1
-        with:
-          files: wheelhouse
-          dest: ${{ env.PACKAGE_NAME }}-v${{ env.PYADDITIVE_VERSION }}-wheelhouse-${{ runner.os }}-${{ matrix.python-version }}.zip
-
-      - name: Upload Wheelhouse
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.PACKAGE_NAME }}-v${{ env.PYADDITIVE_VERSION }}-wheelhouse-${{ runner.os }}-${{ matrix.python-version }}
-          path: "*.zip"
-          retention-days: 7
-
-  testing:
-    name: Testing and coverage
+  tests:
+    name: "Testing library with different operating systems and Python versions"
+    runs-on: ${{ matrix.os }}
     needs: [smoke-tests]
-    runs-on: windows-latest
-
+    strategy:
+       matrix:
+           os: [ubuntu-latest, windows-latest]
+           python-version: ['3.7', '3.8', '3.9', '3.10']
+       fail-fast: false
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: "Run pytest"
+        uses: pyansys/actions/tests-pytest@v2
         with:
-          python-version: "3.9" # use python3.9, self-hosted has an issue with 3.10
+          pytest-extra-args: "--cov=${{ env.LIBRARY_NAMESPACE }} --cov-report=term --cov-report=html:.cov/html"
 
-      - name: Create Python venv
-        run: |
-          python -m venv .venv
-          .\.venv\Scripts\Activate.ps1
-
-      - name: Install packages for testing
-        run: |
-          .\.venv\Scripts\Activate.ps1
-          pip install --upgrade build
-          pip install -i ${{ env.PIP_INDEX_URL }} .[test]
-
-      # - name: Login to GitHub Container Registry
-      #   uses: docker/login-action@v2
-      #   with:
-      #     registry: ghcr.io
-      #     username: ${{ secrets.GH_USERNAME }}
-      #     password: ${{ secrets.PACKAGE_DOWNLOAD_PAT }}
-
-      # - name: Download Geometry service container (if needed)
-      #   run: docker pull $env:ANSRV_GEO_IMAGE
-
-      # - name: Start geometry service and verify start
-      #   run: |
-      #     .\.venv\Scripts\Activate.ps1
-      #     $env:ANSRV_GEO_PORT_MAP = $env:ANSRV_GEO_PORT + ":50051"
-      #     docker run --detach --name $env:GEO_CONT_NAME -p $env:ANSRV_GEO_PORT_MAP $env:ANSRV_GEO_IMAGE
-      #     python -c "from ansys.additive.connection.validate import validate; validate()"
-
-      - name: Testing
-        # TODO : Once the container is available on Linux we should be able to run it as
-        #        a service, allowing to remove this stage
-        run: |
-          .\.venv\Scripts\Activate.ps1
-          pytest -v
-
-      # - name: Upload integration test logs
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: Integration-Test-Logs
-      #     path: tests/integration/logs
-      #     retention-days: 7
-
-      - name: Upload Coverage Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: HTML-Coverage
-          path: .cov/html
-          retention-days: 7
-
-      # - name: Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v3
-
-      # - name: Stop the geometry service
-      #   if: always()
-      #   run: |
-      #     docker stop $env:GEO_CONT_NAME
-      #     docker logs $env:GEO_CONT_NAME
-      #     docker rm $env:GEO_CONT_NAME
-
-  docs:
-    name: Documentation
-    needs: [docs-style]
-    runs-on: windows-latest
+  doc-build:
+    name: "Building library documentation"
+    runs-on: ubuntu-latest
+    needs: [doc-style]
     steps:
-      - uses: actions/checkout@v3
+      - name: "Run Ansys documentation building action"
+        uses: pyansys/actions/doc-build@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+  doc-deploy-dev:
+    name: "Deploy developers documentation"
+    runs-on: ubuntu-latest
+    needs: doc-build
+    if: github.event_name == 'push'
+    steps:
+      - name: "Deploy the latest documentation"
+        uses: pyansys/actions/doc-deploy-dev@v2
         with:
-          python-version: "3.9" # use python3.9, self-hosted has an issue with 3.10
+            cname: ${{ env.DOCUMENTATION_CNAME }}
+            token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Python venv
-        run: |
-          python -m venv .venv
-          .\.venv\Scripts\Activate.ps1
-
-      - name: Install packages for documentation build
-        run: |
-          .\.venv\Scripts\Activate.ps1
-          pip install --upgrade build
-          pip install -i ${{ env.PIP_INDEX_URL }} .[docs]
-
-      # - name: Login to GitHub Container Registry
-      #   uses: docker/login-action@v2
-      #   with:
-      #     registry: ghcr.io
-      #     username: ${{ secrets.GH_USERNAME }}
-      #     password: ${{ secrets.PACKAGE_DOWNLOAD_PAT }}
-
-      # - name: Download Geometry service container (if needed)
-      #   run: docker pull $env:ANSRV_GEO_IMAGE
-
-      # - name: Start geometry service and verify start
-      #   run: |
-      #     .\.venv\Scripts\Activate.ps1
-      #     $env:ANSRV_GEO_PORT_MAP = $env:ANSRV_GEO_PORT + ":50051"
-      #     docker run --detach --name $env:GEO_CONT_NAME -p $env:ANSRV_GEO_PORT_MAP $env:ANSRV_GEO_IMAGE
-      #     python -c "from ansys.additive.connection.validate import validate; validate()"
-
-      - name: Build the documentation
-        run: |
-          .\.venv\Scripts\Activate.ps1
-          cd doc
-          .\make.bat html
-
-      - name: Upload HTML documentation
-        uses: actions/upload-artifact@v3
-        with:
-          name: HTML-Documentation
-          path: doc/_build/html
-          retention-days: 7
-
-      # - name: Stop the geometry service
-      #   if: always()
-      #   run: |
-      #     docker stop $env:GEO_CONT_NAME
-      #     docker logs $env:GEO_CONT_NAME
-      #     docker rm $env:GEO_CONT_NAME
-
-  package:
-    name: Package library
-    needs: [testing, docs]
+  build-library:
+    name: "Build library artifacts"
+    needs: [tests, doc-deploy-dev]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: "Build library source and wheel artifacts"
+        uses: pyansys/actions/build-library@v2
         with:
+          library-name: ${{ env.LIBRARY_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          cache: "pip"
-          cache-dependency-path: "pyproject.toml"
-
-      - name: Install ansys-additive
-        run: |
-          pip install build
-          python -m build
-          pip install -i ${{ env.PIP_INDEX_URL }} dist/*.whl
-
-      - name: Check package
-        run: |
-          pip install twine
-          twine check dist/*
-
-      - name: Upload wheel and binaries
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.PACKAGE_NAME }}-packages
-          path: dist/
-          retention-days: 7
 
   release:
-    name: Release project
+    name: "Release project"
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-    needs: [package, macos-build]
+    needs: [build-library]
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: "Release to the private PyPI repository"
+        uses: pyansys/actions/release-pypi-private@v2
         with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          library-name: ${{ env.LIBRARY_NAME }}
+          twine-username: "__token__"
+          twine-token: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
 
-      - uses: actions/download-artifact@v3
-
-      - name: Display structure of downloaded files
-        run: ls -R
-
-      # - name: Upload to Public PyPi
-      #   run: |
-      #     pip install twine
-      #     twine upload --skip-existing ./**/*.whl
-      #     twine upload --skip-existing ./**/*.tar.gz
-      #   env:
-      #     TWINE_USERNAME: __token__
-      #     TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-
-      - name: Upload to Private PyPi
-        run: |
-          pip install twine
-          python -m twine upload --skip-existing ./**/*.whl
-          python -m twine upload --skip-existing ./**/*.tar.gz
-        env:
-          TWINE_USERNAME: PAT
-          TWINE_PASSWORD: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
-          TWINE_REPOSITORY_URL: https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/upload
-
-      - name: Zip HTML Documentation
-        uses: vimtor/action-zip@v1
+      - name: "Release to GitHub"
+        uses: pyansys/actions/release-github@v2
         with:
-          files: HTML-Documentation
-          dest: pyadditive-Documentation-HTML.zip
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            ./**/*.whl
-            ./**/*.tar.gz
-            ./**/*.zip
+          library-name: ${{ env.LIBRARY_NAME }}
 
   upload_docs_release:
-    name: Upload documentation
-    if: (github.event_name == 'push' && contains(github.ref, 'refs/tags')) || (github.ref == 'refs/heads/main')
+    name: "Upload release documentation"
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
-    needs: [package, macos-build]
+    needs: [release]
     steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/download-artifact@v3
+      - name: "Deploy the stable documentation"
+        uses: pyansys/actions/doc-deploy-stable@v2
         with:
-          name: HTML-Documentation
-          path: HTML-Documentation
-
-      - name: Get Bot Application Token
-        id: get_workflow_token
-        uses: peter-murray/workflow-application-token-action@v2
-        with:
-          application_id: ${{ secrets.BOT_APPLICATION_ID }}
-          application_private_key: ${{ secrets.BOT_APPLICATION_PRIVATE_KEY }}
-
-      # - name: Deploy documentation to pyadditive-dev-docs repository
-      #   if: github.ref == 'refs/heads/main'
-      #   uses: JamesIves/github-pages-deploy-action@v4.4.1
-      #   with:
-      #     repository-name: pyansys/pyadditive-dev-docs
-      #     token: ${{ steps.get_workflow_token.outputs.token }}
-      #     branch: gh-pages
-      #     folder: HTML-Documentation
-      #     clean: true
-      #     single-commit: true
-
-      - name: Deploy documentation to pyadditive-docs repository
-        if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          repository-name: pyansys/pyadditive-docs
-          token: ${{ steps.get_workflow_token.outputs.token }}
-          branch: gh-pages
-          folder: HTML-Documentation
-          clean: true
-          single-commit: true
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}

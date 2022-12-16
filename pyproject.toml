@@ -65,8 +65,8 @@ numpy = {version = "==1.23.2", python = ">3.8"}
 Pint = {version = "==0.19.2", python = ">3.8"}
 
 [tool.poetry.extras]
-test = ["ansys-platform-instancemanagement","pytest","pytest-cov"]
-docs = [
+tests = ["ansys-platform-instancemanagement","pytest","pytest-cov"]
+doc = [
     "ansys-sphinx-theme",
     "jupytext",
     "myst-parser",
