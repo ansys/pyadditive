@@ -157,6 +157,7 @@ jobs:
   testing:
     name: Testing and coverage
     needs: [smoke-tests]
+    runs-on: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v3
@@ -228,6 +229,7 @@ jobs:
   docs:
     name: Documentation
     needs: [docs-style]
+    runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
 
