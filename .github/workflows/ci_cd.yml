@@ -157,7 +157,7 @@ jobs:
   testing:
     name: Testing and coverage
     needs: [smoke-tests]
-    runs-on: [self-hosted, pygeometry]
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -229,7 +229,7 @@ jobs:
   docs:
     name: Documentation
     needs: [docs-style]
-    runs-on: [self-hosted, pygeometry]
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
 
