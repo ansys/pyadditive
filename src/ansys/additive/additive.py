@@ -1,17 +1,25 @@
+# (c) ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
+import hashlib
 import logging
+import os
+from typing import Iterator
 
-import ansys.api.additive.v0.additive_materials_pb2 as additive_materials_pb2
-import ansys.api.additive.v0.additive_materials_pb2_grpc as additive_materials_pb2_grpc
-import ansys.api.additive.v0.additive_simulation_pb2_grpc as additive_simulation_pb2_grpc
+from ansys.api.additive.v0.additive_domain_pb2 import ProgressState
+from ansys.api.additive.v0.additive_materials_pb2 import GetMaterialRequest
+from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
+from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
+from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 from google.protobuf.empty_pb2 import Empty
 import grpc
 
+from ansys.additive.download import download_file
 from ansys.additive.material import AdditiveMaterial
-import ansys.additive.microstructure as microstructure
+from ansys.additive.microstructure import MicrostructureSummary
 import ansys.additive.misc as misc
-import ansys.additive.porosity as porosity
-import ansys.additive.progress_logger as progress_logger
-import ansys.additive.single_bead as single_bead
+from ansys.additive.porosity import PorositySummary
+from ansys.additive.progress_logger import ProgressLogger, ProgressState
+from ansys.additive.single_bead import SingleBeadSummary
+from ansys.additive.thermal_history import ThermalHistoryInput, ThermalHistorySummary
 
 MAX_MESSAGE_LENGTH = int(256 * 1024**2)
 DEFAULT_ADDITIVE_SERVICE_PORT = 5000
@@ -50,8 +58,8 @@ class Additive:
         self._log.info("Connected to %s", self._channel_str)
 
         # assign service stubs
-        self._materials_stub = additive_materials_pb2_grpc.MaterialsServiceStub(self._channel)
-        self._simulation_stub = additive_simulation_pb2_grpc.SimulationServiceStub(self._channel)
+        self._materials_stub = MaterialsServiceStub(self._channel)
+        self._simulation_stub = SimulationServiceStub(self._channel)
 
     def _create_logger(self, log_file, loglevel) -> logging.Logger:
         """Create the logger for this module"""
@@ -101,39 +109,85 @@ class Additive:
             Parameters to use during simulation.
 
         log_progress: bool
-            If ``True``, call log_progress() method of :class:`progress_logger.ProgressLogger` when
-            progress updates are received.
+            If ``True``, call log_progress() method of
+            :class:`ansys.additive.progress_logger.ProgressLogger`
+            when progress updates are received.
 
         Returns
         -------
         SingleBeadSummary or PorositySummary or MicrostructureSummary or ThermalHistorySummary
-            The simulation summary, see :class:`single_bead.SingleBeadSummary`,
-            :class:`porosity.PorositySummary`, :class:`microstructure.MicrostructureSummary`
+            The simulation summary, see
+            :class:`ansys.additive.single_bead.SingleBeadSummary`,
+            :class:`ansys.additive.porosity.PorositySummary`,
+            :class:`ansys.additive.microstructure.MicrostructureSummary`,
+            :class:`ansys.additive.thermal_history.ThermalHistorySummary`
 
         """
-        # TODO: Add reference to ThermalHistorySummary above
+        logger = ProgressLogger("Simulation")
 
-        logger = progress_logger.ProgressLogger("Simulation")
+        remote_geometry_path = ""
+        request = None
+        if isinstance(input, ThermalHistoryInput):
+            if input.geometry == None or input.geometry.path == "":
+                raise ValueError("Geometry path not defined")
+            for response in self._simulation_stub.UploadFile(
+                self.__file_upload_reader(input.geometry.path)
+            ):
+                remote_geometry_path = response.remote_file_name
+                if log_progress:
+                    logger.log_progress(response.progress)
+                if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
+                    # TODO: figure out a better way to notify user of error
+                    print("ERROR: " + response.progress.message)
+                    return None
+            request = input.to_simulation_request(remote_geometry_path=remote_geometry_path)
+        else:
+            request = input.to_simulation_request()
 
-        for response in self._simulation_stub.Simulate(input.to_simulation_request()):
+        for response in self._simulation_stub.Simulate(request):
             if log_progress and response.HasField("progress"):
                 logger.log_progress(response.progress)
             if response.HasField("melt_pool"):
-                return single_bead.SingleBeadSummary(input, response.melt_pool)
+                return SingleBeadSummary(input, response.melt_pool)
             if response.HasField("porosity_result"):
-                return porosity.PorositySummary(input, response.porosity_result)
+                return PorositySummary(input, response.porosity_result)
             if response.HasField("microstructure_result"):
-                return microstructure.MicrostructureSummary(input, response.microstructure_result)
-            # TODO: Return thermal history summary
+                return MicrostructureSummary(input, response.microstructure_result)
+            if response.HasField("thermal_history_result"):
+                return ThermalHistorySummary(input, response.thermal_history_result)
 
     def get_materials_list(self):
         return self._materials_stub.GetMaterialsList(Empty())
 
     def get_material(self, name: str) -> AdditiveMaterial:
-        request = additive_materials_pb2.GetMaterialRequest()
+        request = GetMaterialRequest()
         request.name = name
         result = self._materials_stub.GetMaterial(request)
         return AdditiveMaterial.from_material_message(result)
+
+    def __file_upload_reader(
+        self, file_name: str, chunk_size=2 * 1024 * 1024
+    ) -> Iterator[UploadFileRequest]:
+        """Read a file and return an iterator of UploadFileRequests"""
+        file_size = os.path.getsize(file_name)
+        short_name = os.path.basename(file_name)
+        with open(file_name, mode="rb") as f:
+            while True:
+                chunk = f.read(chunk_size)
+                if not chunk:
+                    break
+                yield UploadFileRequest(
+                    name=short_name,
+                    total_size=file_size,
+                    content=chunk,
+                    content_md5=hashlib.md5(chunk).hexdigest(),
+                )
+
+    def download_results(self, summary, folder: str) -> str:
+        if isinstance(summary, ThermalHistorySummary):
+            path = os.path.join(folder, summary.input.id)
+            return download_file(self._simulation_stub, summary.remote_coax_ave_zip_file, path)
+        raise ValueError("Only thermal history summaries have remote results that require download")
 
 
 def launch_additive(ip: str, port: int) -> Additive:
