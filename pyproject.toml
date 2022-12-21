@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 # Check https://python-poetry.org/docs/pyproject/ for all available sections
 name = "ansys-additive"
-version = "0.3.0"
+version = "0.3.1"
 description = "A python client for the Ansys Additive Service"
 license = "MIT"
 authors = ["ANSYS, Inc. <ansys.support@ansys.com>"]
