@@ -101,7 +101,7 @@ def test_PorositySummary_init_raises_exception_for_invalid_result_type(invalid_o
         PorositySummary(PorosityInput(), invalid_obj)
 
 
-def test_PorosityInput_to_simulation_request_assigns_values():
+def test_PorosityInput__to_simulation_request_assigns_values():
     # arrange
     machine = AdditiveMachine()
     machine.laser_power = 99
@@ -111,7 +111,7 @@ def test_PorosityInput_to_simulation_request_assigns_values():
     )
 
     # act
-    request = input.to_simulation_request()
+    request = input._to_simulation_request()
 
     # assert
     assert isinstance(request, SimulationRequest)

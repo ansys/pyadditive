@@ -9,20 +9,17 @@ from ansys.additive.material import AdditiveMaterial
 class PorosityInput:
     """Input parameters for porosity simulation
 
-    Properties
-    ----------
-
-    id: string
+    ``id: string``
         User provided identifier for this simulation
-    size_x: float
+    ``size_x: float``
         Size of simulated sample in x dimension (m), valid values: 0.001 to 0.01
-    size_y: float
+    ``size_y: float``
         Size of simulated sample in y dimension (m), valid values: 0.001 to 0.01
-    size_z: float
+    ``size_z: float``
         Size of simulated sample in z dimension (m), valid values: 0.001 to 0.01
-    machine: AdditiveMachine
+    ``machine: AdditiveMachine``
         Machine related parameters
-    material: AdditiveMaterial
+    ``material: AdditiveMaterial``
         Material used during simulation
 
     """
@@ -47,11 +44,11 @@ class PorosityInput:
                 repr += k + ": " + str(getattr(self, k)) + "\n"
         return repr
 
-    def to_simulation_request(self) -> SimulationRequest:
+    def _to_simulation_request(self) -> SimulationRequest:
         """Convert this object into a simulation request message"""
         input = PorosityInputMessage(
             machine=self.machine.to_machine_message(),
-            material=self.material.to_material_message(),
+            material=self.material._to_material_message(),
             size_x=self.size_x,
             size_y=self.size_y,
             size_z=self.size_z,
@@ -60,25 +57,9 @@ class PorosityInput:
 
 
 class PorositySummary:
-    """Summary of a porosity simulation
+    """Summary of a porosity simulation.
 
     Units are SI unless otherwise noted.
-
-    Properties
-    ----------
-
-    input: PorosityInput
-        Simulation input parameters
-    void_ratio: float
-        Ratio of void volume to total volume
-    powder_ratio
-        Ratio of powder volume to total volume
-    solid_ratio
-        Ratio of solidified volume to total volume
-    machine: AdditiveMachine
-        Machine parameters
-    material: AdditiveMaterial
-        Material description
 
     """
 
@@ -97,19 +78,23 @@ class PorositySummary:
         self._solid_ratio = result.solid_ratio
 
     @property
-    def input(self):
+    def input(self) -> PorosityInput:
+        """Simulation input."""
         return self._input
 
     @property
-    def void_ratio(self):
+    def void_ratio(self) -> float:
+        """Ratio of void to total volume of simulated sample."""
         return self._void_ratio
 
     @property
-    def powder_ratio(self):
+    def powder_ratio(self) -> float:
+        """Ratio of powder to total volume of simulated sample."""
         return self._powder_ratio
 
     @property
-    def solid_ratio(self):
+    def solid_ratio(self) -> float:
+        """Ratio of solid to total volume of simulated sample."""
         return self._solid_ratio
 
     def __repr__(self):

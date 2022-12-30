@@ -1,0 +1,11 @@
+.. _ref_machine_api:
+
+AdditiveMachine
+---------------
+
+.. currentmodule:: ansys.additive.machine
+
+.. autosummary::
+   :toctree: _autosummary
+
+   AdditiveMachine

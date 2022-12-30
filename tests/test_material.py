@@ -5,15 +5,29 @@ from ansys.additive.material import (
     CharacteristicWidthDataPoint,
     CharacteristicWidthDataPointMessage,
     MaterialMessage,
-    ThermalCharacteristicDataPoint,
-    ThermalCharacteristicDataPointMessage,
+    ThermalPropertiesDataPoint,
+    ThermalPropertiesDataPointMessage,
 )
 
 
-def test_CharacteristicWidthDataPoint_init_raises_exception_for_invalid_key_value():
-    # arrange, act, assert
-    with pytest.raises(AttributeError):
-        CharacteristicWidthDataPoint(bogus=123)
+def test_CharacteristicWidthDataPoint_setters_raise_exception_for_invalid_value():
+    # arrange
+    props = ["characteristic_width", "power", "speed"]
+    point = CharacteristicWidthDataPoint()
+
+    # act, assert
+    for p in props:
+        with pytest.raises(ValueError, match=".* must not be negative"):
+            setattr(point, p, -1)
+
+
+def test_CharacteristicWidthDataPoint_repr_returns_expected_string():
+    # arrange
+    point = CharacteristicWidthDataPoint(characteristic_width=1, power=2, speed=3)
+    expected_str = "CharacteristicWidthDataPoint\ncharacteristic_width: 1\npower: 2\nspeed: 3\n"
+
+    # act, assert
+    assert expected_str == point.__repr__()
 
 
 def test_from_characteristic_width_data_point_message_creates_CharacteristicWidthDataPoint():
@@ -25,7 +39,7 @@ def test_from_characteristic_width_data_point_message_creates_CharacteristicWidt
     )
 
     # act
-    point = CharacteristicWidthDataPoint.from_characteristic_width_data_point_message(msg)
+    point = CharacteristicWidthDataPoint._from_characteristic_width_data_point_message(msg)
 
     # assert
     assert isinstance(point, CharacteristicWidthDataPoint)
@@ -46,8 +60,11 @@ def test_from_characteristic_width_data_point_message_raises_exception_for_inval
     invalid_obj,
 ):
     # arrange, act, assert
-    with pytest.raises(ValueError, match="Invalid object") as exc_info:
-        CharacteristicWidthDataPoint.from_characteristic_width_data_point_message(invalid_obj)
+    with pytest.raises(
+        ValueError,
+        match="Invalid message object passed to from_characteristic_width_data_point_message()",
+    ):
+        CharacteristicWidthDataPoint._from_characteristic_width_data_point_message(invalid_obj)
 
 
 def test_to_characteristic_width_data_point_message_returns_CharacteristicWidthDataPointMessage():
@@ -59,7 +76,7 @@ def test_to_characteristic_width_data_point_message_returns_CharacteristicWidthD
     )
 
     # act
-    msg = point.to_characteristic_width_data_point_message()
+    msg = point._to_characteristic_width_data_point_message()
 
     # assert
     assert isinstance(msg, CharacteristicWidthDataPointMessage)
@@ -68,15 +85,20 @@ def test_to_characteristic_width_data_point_message_returns_CharacteristicWidthD
     assert msg.speed == 3
 
 
-def test_ThermalCharacteristicDataPoint_init_raises_exception_for_invalid_key_value():
-    # arrange, act, assert
-    with pytest.raises(AttributeError):
-        ThermalCharacteristicDataPoint(bogus=123)
-
-
-def test_from_thermal_characteristic_data_point_message_creates_ThermalCharacteristicDataPoint():
+def test_ThermalPropertiesDataPoint_setters_raise_exception_for_invalid_value():
     # arrange
-    msg = ThermalCharacteristicDataPointMessage(
+    props = ["density", "density_ratio", "temperature"]
+    point = ThermalPropertiesDataPoint()
+
+    # act, assert
+    for p in props:
+        with pytest.raises(ValueError, match=".* must not be negative"):
+            setattr(point, p, -1)
+
+
+def test_from_thermal_properties_data_point_message_creates_ThermalPropertiesDataPoint():
+    # arrange
+    msg = ThermalPropertiesDataPointMessage(
         density=1,
         density_ratio=2,
         specific_heat=3,
@@ -87,10 +109,10 @@ def test_from_thermal_characteristic_data_point_message_creates_ThermalCharacter
     )
 
     # act
-    point = ThermalCharacteristicDataPoint.from_thermal_characteristic_data_point_message(msg)
+    point = ThermalPropertiesDataPoint._from_thermal_properties_data_point_message(msg)
 
     # assert
-    assert isinstance(point, ThermalCharacteristicDataPoint)
+    assert isinstance(point, ThermalPropertiesDataPoint)
     assert point.density == 1
     assert point.density_ratio == 2
     assert point.specific_heat == 3
@@ -105,20 +127,23 @@ def test_from_thermal_characteristic_data_point_message_creates_ThermalCharacter
     [
         int(1),
         None,
-        ThermalCharacteristicDataPoint(),
+        ThermalPropertiesDataPoint(),
     ],
 )
-def test_from_thermal_characteristic_data_point_message_raises_exception_for_invalid_type(
+def test_from_thermal_properties_data_point_message_raises_exception_for_invalid_type(
     invalid_obj,
 ):
     # arrange, act, assert
-    with pytest.raises(ValueError, match="Invalid object") as exc_info:
-        ThermalCharacteristicDataPoint.from_thermal_characteristic_data_point_message(invalid_obj)
+    with pytest.raises(
+        ValueError,
+        match="Invalid message object passed to from_thermal_properties_data_point_message()",
+    ):
+        ThermalPropertiesDataPoint._from_thermal_properties_data_point_message(invalid_obj)
 
 
-def test_to_thermal_characteristic_data_point_message_returns_ThermalCharacteristicDataPointMessage():  # noqa: E501
+def test_to_thermal_properties_data_point_message_returns_ThermalPropertiesDataPointMessage():  # noqa: E501
     # arrange
-    point = ThermalCharacteristicDataPoint(
+    point = ThermalPropertiesDataPoint(
         density=1,
         density_ratio=2,
         specific_heat=3,
@@ -129,10 +154,10 @@ def test_to_thermal_characteristic_data_point_message_returns_ThermalCharacteris
     )
 
     # act
-    msg = point.to_thermal_characteristic_data_point_message()
+    msg = point._to_thermal_properties_data_point_message()
 
     # assert
-    assert isinstance(msg, ThermalCharacteristicDataPointMessage)
+    assert isinstance(msg, ThermalPropertiesDataPointMessage)
     assert msg.density == 1
     assert msg.density_ratio == 2
     assert msg.specific_heat == 3
@@ -142,10 +167,20 @@ def test_to_thermal_characteristic_data_point_message_returns_ThermalCharacteris
     assert msg.thermal_conductivity_ratio == 7
 
 
-def test_AdditiveMaterial_init_raises_exception_for_invalid_key_value():
+@pytest.mark.parametrize(
+    "invalid_obj",
+    [
+        int(1),
+        None,
+        AdditiveMaterial(),
+    ],
+)
+def test_from_material_message_raises_exception_for_invalid_type(invalid_obj):
     # arrange, act, assert
-    with pytest.raises(AttributeError):
-        AdditiveMaterial(bogus=123)
+    with pytest.raises(
+        ValueError, match="Invalid message object passed to from_material_message()"
+    ) as exc_info:
+        AdditiveMaterial._from_material_message(invalid_obj)
 
 
 def test_from_material_message_creates_AdditiveMaterial():
@@ -193,7 +228,7 @@ def test_from_material_message_creates_AdditiveMaterial():
         )
     )
     msg.thermal_characteristic_data_set.thermal_characteristic_data_points.append(
-        ThermalCharacteristicDataPointMessage(
+        ThermalPropertiesDataPointMessage(
             density=1,
             density_ratio=2,
             specific_heat=3,
@@ -205,7 +240,7 @@ def test_from_material_message_creates_AdditiveMaterial():
     )
 
     # act
-    am = AdditiveMaterial.from_material_message(msg)
+    am = AdditiveMaterial._from_material_message(msg)
 
     # assert
     assert isinstance(am, AdditiveMaterial)
@@ -247,8 +282,8 @@ def test_from_material_message_creates_AdditiveMaterial():
     assert cw.characteristic_width == 1
     assert cw.power == 2
     assert cw.speed == 3
-    assert len(am.thermal_characteristic_data) == 1
-    tc = am.thermal_characteristic_data[0]
+    assert len(am.thermal_properties_data) == 1
+    tc = am.thermal_properties_data[0]
     assert tc.density == 1
     assert tc.density_ratio == 2
     assert tc.specific_heat == 3
@@ -256,20 +291,6 @@ def test_from_material_message_creates_AdditiveMaterial():
     assert tc.temperature == 5
     assert tc.thermal_conductivity == 6
     assert tc.thermal_conductivity_ratio == 7
-
-
-@pytest.mark.parametrize(
-    "invalid_obj",
-    [
-        int(1),
-        None,
-        AdditiveMaterial(),
-    ],
-)
-def test_from_material_message_raises_exception_for_invalid_type(invalid_obj):
-    # arrange, act, assert
-    with pytest.raises(ValueError, match="Invalid object") as exc_info:
-        AdditiveMaterial.from_material_message(invalid_obj)
 
 
 def test_to_material_message_returns_material_message():
@@ -315,8 +336,8 @@ def test_to_material_message_returns_material_message():
             speed=3,
         )
     )
-    am.thermal_characteristic_data.append(
-        ThermalCharacteristicDataPoint(
+    am.thermal_properties_data.append(
+        ThermalPropertiesDataPoint(
             density=1,
             density_ratio=2,
             specific_heat=3,
@@ -328,7 +349,7 @@ def test_to_material_message_returns_material_message():
     )
 
     # act
-    msg = am.to_material_message()
+    msg = am._to_material_message()
 
     # assert
     assert isinstance(msg, MaterialMessage)

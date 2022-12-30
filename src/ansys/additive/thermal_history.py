@@ -20,8 +20,6 @@ from ansys.additive.material import AdditiveMaterial
 class Range:
     """Defines a parameter that spans a range of values
 
-    Properties
-    ----------
     min: float
         Minimum value
     max: float
@@ -52,15 +50,13 @@ class Range:
                 return False
         return True
 
-    def to_range_message(self) -> RangeMessage:
+    def _to_range_message(self) -> RangeMessage:
+        """Create a range message to send to the server based upon this object."""
         return RangeMessage(min=self.min, max=self.max)
 
 
 class CoaxialAverageSensorInputs:
     """Coaxial average sensor descriptions
-
-    Properties
-    ----------
 
     radius: float (meters)
         Radius for circular field of view of sensor. Validated values
@@ -96,18 +92,16 @@ class CoaxialAverageSensorInputs:
                 return False
         return True
 
-    def to_coaxial_average_sensor_inputs_message(self) -> CoaxialAverageSensorInputsMessage:
+    def _to_coaxial_average_sensor_inputs_message(self) -> CoaxialAverageSensorInputsMessage:
+        """Create a coaxial average sensor input message to send to the server based upon this object."""
         msg = CoaxialAverageSensorInputsMessage(sensor_radius=self.radius)
         for z in self.z_heights:
-            msg.z_heights.append(z.to_range_message())
+            msg.z_heights.append(z._to_range_message())
         return msg
 
 
 class ThermalHistoryInput:
     """Input parameters for microstructure simulation
-
-    Properties
-    ----------
 
     id: string
         Simulation identifier
@@ -156,6 +150,7 @@ class ThermalHistoryInput:
 
     @property
     def geometry(self):
+        """Part geometry, either :class:`StlFile` or :class:`BuildFile`"""
         return self._geometry
 
     @geometry.setter
@@ -164,7 +159,7 @@ class ThermalHistoryInput:
             raise TypeError("ThermalHistoryInput.geometry must be an StlFile of BuildFile")
         self._geometry = value
 
-    def to_simulation_request(self, remote_geometry_path: str) -> SimulationRequest:
+    def _to_simulation_request(self, remote_geometry_path: str) -> SimulationRequest:
         """Convert this object into a simulation request message"""
 
         if not self.geometry:
@@ -176,8 +171,8 @@ class ThermalHistoryInput:
 
         input = ThermalHistoryInputMessage(
             machine=self.machine.to_machine_message(),
-            material=self.material.to_material_message(),
-            coax_ave_sensor_inputs=self.coax_ave_sensor_inputs.to_coaxial_average_sensor_inputs_message(),
+            material=self.material._to_material_message(),
+            coax_ave_sensor_inputs=self.coax_ave_sensor_inputs._to_coaxial_average_sensor_inputs_message(),
         )
 
         if isinstance(self.geometry, StlFile):
@@ -192,9 +187,6 @@ class ThermalHistoryInput:
 
 class ThermalHistorySummary:
     """Summary of a thermal history simulation
-
-    Properties
-    ----------
 
     input: ThermalHistoryInput
         Simulation input parameters
@@ -214,8 +206,10 @@ class ThermalHistorySummary:
 
     @property
     def input(self):
+        """Simulation input, :class:`ThermalHistoryInput`."""
         return self._input
 
     @property
     def remote_coax_ave_zip_file(self):
+        """Name of zip file containing coaxial average sensor results."""
         return self._remote_coax_ave_zip_file

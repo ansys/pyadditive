@@ -7,7 +7,7 @@ from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_bl
 from ansys.additive import __version__
 
 # Project information
-project = "ansys-additive"
+project = "pyadditive"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS, Inc."
 release = version = __version__
@@ -33,20 +33,31 @@ html_theme_options = {
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
+    "sphinx_autodoc_typehints",
     "numpydoc",
     "sphinx.ext.intersphinx",
     "sphinx_copybutton",
+    "myst_parser",
+    "nbsphinx",
+    "sphinx_gallery.load_style",
+    "enum_tools.autoenum",
 ]
+
+# sphinx_gallery_conf = {
+#     "examples_dirs": "../../examples",  # path to your example scripts
+#     "gallery_dirs": "examples",  # path where the gallery generated output will be saved
+# }
 
 # Intersphinx mapping
 intersphinx_mapping = {
     "python": ("https://docs.python.org/dev", None),
     # kept here as an example
     # "scipy": ("https://docs.scipy.org/doc/scipy/reference", None),
-    # "numpy": ("https://numpy.org/devdocs", None),
-    # "matplotlib": ("https://matplotlib.org/stable", None),
+    "numpy": ("https://numpy.org/devdocs", None),
+    "matplotlib": ("https://matplotlib.org/stable", None),
     # "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
     # "pyvista": ("https://docs.pyvista.org/", None),
+    "pypim": ("https://pypim.docs.pyansys.com/", None),
 }
 
 # numpydoc configuration
@@ -83,3 +94,24 @@ source_suffix = ".rst"
 
 # The master toctree document.
 master_doc = "index"
+
+# The suffix(es) of source filenames.
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".mystnb": "jupyter_notebook",
+    ".md": "markdown",
+}
+
+# Examples gallery customization
+nbsphinx_execute = "never"
+nbsphinx_custom_formats = {
+    ".mystnb": ["jupytext.reads", {"fmt": "mystnb"}],
+}
+nbsphinx_thumbnails = {
+    "examples/single_bead": "_static/thumbnails/single_bead.png",
+}
+
+typehints_document_rtype = False
+
+# If true, `todo` and `todoList` produce output, else they produce nothing.
+todo_include_todos = False

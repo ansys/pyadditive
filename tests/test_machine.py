@@ -69,7 +69,7 @@ def test_from_machine_message_returns_AdditiveMachine():
 )
 def test_from_machine_message_raises_exception_for_invalid_type(invalid_obj):
     # arrange, act, assert
-    with pytest.raises(ValueError, match="Invalid type") as exc_info:
+    with pytest.raises(ValueError, match="Invalid message type passed to from_machine_message()"):
         AdditiveMachine.from_machine_message(invalid_obj)
 
 

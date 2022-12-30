@@ -154,12 +154,12 @@ def test_MicrostructureInput_init_raises_exception_for_invalid_input():
         MicrostructureInput(bogus="invalid")
 
 
-def test_MicrostructureInput_to_simulation_request_returns_expected_object():
+def test_MicrostructureInput__to_simulation_request_returns_expected_object():
     # arrange
     input = MicrostructureInput()
 
     # act
-    request = input.to_simulation_request()
+    request = input._to_simulation_request()
 
     # assert
     assert isinstance(request, SimulationRequest)
@@ -181,7 +181,7 @@ def test_MicrostructureInput_to_simulation_request_returns_expected_object():
     assert ms_input.random_seed == 0
 
 
-def test_MicrostructureInput_to_simulation_request_assigns_values():
+def test_MicrostructureInput__to_simulation_request_assigns_values():
     # arrange
     machine = AdditiveMachine()
     machine.laser_power = 99
@@ -206,7 +206,7 @@ def test_MicrostructureInput_to_simulation_request_assigns_values():
     )
 
     # act
-    request = input.to_simulation_request()
+    request = input._to_simulation_request()
 
     # assert
     assert isinstance(request, SimulationRequest)

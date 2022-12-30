@@ -1,3 +1,5 @@
+import os
+
 from ansys.api.additive.v0.additive_domain_pb2 import BuildFileMachineType
 from ansys.api.additive.v0.additive_domain_pb2 import StlFile as StlFileMessage
 from ansys.api.additive.v0.additive_domain_pb2 import ThermalHistoryResult
@@ -74,7 +76,7 @@ def test_Range_to_range_message():
     range = Range(min=10, max=99)
 
     # act
-    msg = range.to_range_message()
+    msg = range._to_range_message()
 
     # assert
     assert isinstance(msg, RangeMessage)
@@ -157,7 +159,7 @@ def test_CoaxialAverageSensorInputs_coaxial_average_sensor_inputs_message():
         radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
     # act
-    msg = inputs.to_coaxial_average_sensor_inputs_message()
+    msg = inputs._to_coaxial_average_sensor_inputs_message()
 
     # assert
     assert isinstance(msg, CoaxialAverageSensorInputsMessage)
@@ -187,7 +189,7 @@ def test_ThermalHistoryInput_init_with_parameters_creates_expected_object():
     coax_inputs = CoaxialAverageSensorInputs(
         radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
-    stl_file = StlFile(path="geometry.stl")
+    stl_file = StlFile(path=os.path.abspath(__file__))
 
     # act
     input = ThermalHistoryInput(
@@ -217,7 +219,8 @@ def test_ThermalHistoryInput_repr_creates_expected_string():
     coax_inputs = CoaxialAverageSensorInputs(
         radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
-    stl_file = StlFile(path="geometry.stl")
+    file_name = os.path.abspath(__file__)
+    stl_file = StlFile(path=file_name)
 
     # act
     input = ThermalHistoryInput(
@@ -234,7 +237,7 @@ def test_ThermalHistoryInput_repr_creates_expected_string():
         == "ThermalHistoryInput\n"
         + "id: myId\n"
         + "geometry: StlFile\n"
-        + "path: geometry.stl\n"
+        + f"path: {file_name}\n"
         + "\n"
         + "coax_ave_sensor_inputs: CoaxialAverageSensorInputs\n"
         + "radius: 1\n"
@@ -293,7 +296,7 @@ def test_ThermalHistoryInput_repr_creates_expected_string():
         + "thermal_expansion_coefficient: 0\n"
         + "vaporization_temperature: 0\n"
         + "characteristic_width_data: CharacteristicWidthDataPoint[]\n"
-        + "thermal_characteristic_data: ThermalCharacteristicDataPoint[]\n"
+        + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
     )
 
 
@@ -305,7 +308,7 @@ def test_ThermalHistoryInput_eq():
     coax_inputs = CoaxialAverageSensorInputs(
         radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
-    stl_file = StlFile(path="geometry.stl")
+    stl_file = StlFile(path=os.path.abspath(__file__))
 
     # act
     input = ThermalHistoryInput(
@@ -328,8 +331,8 @@ def test_ThermalHistoryInput_eq():
     assert input != ThermalHistoryInput()
     assert input != ThermalHistoryInputMessage(
         machine=machine.to_machine_message(),
-        material=material.to_material_message(),
-        coax_ave_sensor_inputs=coax_inputs.to_coaxial_average_sensor_inputs_message(),
+        material=material._to_material_message(),
+        coax_ave_sensor_inputs=coax_inputs._to_coaxial_average_sensor_inputs_message(),
         stl_file=StlFileMessage(name=stl_file.path),
     )
     assert input2 != ThermalHistoryInput()
@@ -345,7 +348,7 @@ def test_ThermalHistoryInput_geometry_setter_raises_exception_for_bad_input():
         input.geometry = "my_geometry.stl"
 
 
-def test_ThermalHistoryInput_to_simulation_request_with_stl_file_returns_expected_object():
+def test_ThermalHistoryInput__to_simulation_request_with_stl_file_returns_expected_object():
     # arrange
     remote_path = "remote.stl"
     machine = AdditiveMachine()
@@ -354,7 +357,7 @@ def test_ThermalHistoryInput_to_simulation_request_with_stl_file_returns_expecte
     coax_inputs = CoaxialAverageSensorInputs(
         radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
-    stl_file = StlFile(path="geometry.stl")
+    stl_file = StlFile(path=os.path.abspath(__file__))
     input = ThermalHistoryInput(
         id="myId",
         machine=machine,
@@ -364,7 +367,7 @@ def test_ThermalHistoryInput_to_simulation_request_with_stl_file_returns_expecte
     )
 
     # act
-    request = input.to_simulation_request(remote_path)
+    request = input._to_simulation_request(remote_path)
 
     # assert
     assert isinstance(request, SimulationRequest)
@@ -372,13 +375,15 @@ def test_ThermalHistoryInput_to_simulation_request_with_stl_file_returns_expecte
     th_input = request.thermal_history_input
     assert th_input.stl_file != None
     assert remote_path == th_input.stl_file.name
-    assert coax_inputs.to_coaxial_average_sensor_inputs_message() == th_input.coax_ave_sensor_inputs
+    assert (
+        coax_inputs._to_coaxial_average_sensor_inputs_message() == th_input.coax_ave_sensor_inputs
+    )
     assert machine.laser_power == th_input.machine.laser_power
     assert material.name == th_input.material.name
 
 
 # TODO: Change this to use build file
-def test_ThermalHistoryInput_to_simulation_request_assigns_values():
+def test_ThermalHistoryInput__to_simulation_request_assigns_values():
     # arrange
     remote_path = "remote-file.zip"
     machine = AdditiveMachine()
@@ -387,7 +392,7 @@ def test_ThermalHistoryInput_to_simulation_request_assigns_values():
     coax_inputs = CoaxialAverageSensorInputs(
         radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
-    build_file = BuildFile(type=MachineType.EOS, path="build.zip")
+    build_file = BuildFile(type=MachineType.EOS, path=os.path.abspath(__file__))
     input = ThermalHistoryInput(
         id="myId",
         machine=machine,
@@ -397,7 +402,7 @@ def test_ThermalHistoryInput_to_simulation_request_assigns_values():
     )
 
     # act
-    request = input.to_simulation_request(remote_path)
+    request = input._to_simulation_request(remote_path)
 
     # assert
     assert isinstance(request, SimulationRequest)
@@ -406,27 +411,29 @@ def test_ThermalHistoryInput_to_simulation_request_assigns_values():
     assert th_input.build_file != None
     assert remote_path == th_input.build_file.name
     assert BuildFileMachineType.BUILD_FILE_MACHINE_TYPE_EOS == th_input.build_file.type
-    assert coax_inputs.to_coaxial_average_sensor_inputs_message() == th_input.coax_ave_sensor_inputs
+    assert (
+        coax_inputs._to_coaxial_average_sensor_inputs_message() == th_input.coax_ave_sensor_inputs
+    )
     assert machine.laser_power == th_input.machine.laser_power
     assert material.name == th_input.material.name
 
 
-def test_ThermalHistoryInput_to_simulation_request_raises_exception_when_geometry_not_defined():
+def test_ThermalHistoryInput__to_simulation_request_raises_exception_when_geometry_not_defined():
     input = ThermalHistoryInput()
     # act, assert
     with pytest.raises(
         ValueError, match="Attempted to create simulation request without defining geometry"
     ) as exc_info:
-        input.to_simulation_request("remote_path")
+        input._to_simulation_request("remote_path")
 
 
-def test_ThermalHistoryInput_to_simulation_request_raises_exception_when_remote_path_not_defined():
-    input = ThermalHistoryInput(geometry=StlFile(path="my.stl"))
+def test_ThermalHistoryInput__to_simulation_request_raises_exception_when_remote_path_not_defined():
+    input = ThermalHistoryInput(geometry=StlFile(path=os.path.abspath(__file__)))
     # act, assert
     with pytest.raises(
         ValueError, match="Attempted to create simulation request with empty remote_geometry_path"
     ) as exc_info:
-        input.to_simulation_request("")
+        input._to_simulation_request("")
 
 
 def test_ThermalHistorySummary_init_returns_expected_value():

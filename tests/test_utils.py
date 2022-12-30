@@ -1,3 +1,5 @@
+import os
+
 from ansys.api.additive.v0.additive_domain_pb2 import (
     CharacteristicWidthDataPoint,
     MeltPoolTimeStep,
@@ -66,7 +68,7 @@ def get_test_material() -> AdditiveMaterial:
                 speed=135,
             )
         ],
-        thermal_characteristic_data=[
+        thermal_properties_data=[
             ThermalCharacteristicDataPoint(
                 density=136,
                 density_ratio=137,
@@ -94,3 +96,9 @@ def get_test_melt_pool_message() -> MeltPoolMessage:
             )
         ]
     )
+
+
+def get_test_file_path(name: str) -> str:
+    """Retrieve the absolute path to a test file in the data folder."""
+    dir_name = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(dir_name, "data", name)

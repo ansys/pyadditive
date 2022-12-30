@@ -15,9 +15,6 @@ from ansys.additive.material import AdditiveMaterial
 class MicrostructureInput:
     """Input parameters for microstructure simulation
 
-    Properties
-    ----------
-
     id: string
         Simulation identifier
     machine: AdditiveMachine
@@ -84,11 +81,11 @@ class MicrostructureInput:
                 repr += k + ": " + str(getattr(self, k)) + "\n"
         return repr
 
-    def to_simulation_request(self) -> SimulationRequest:
+    def _to_simulation_request(self) -> SimulationRequest:
         """Convert this object into a simulation request message"""
         input = MicrostructureInputMessage(
             machine=self.machine.to_machine_message(),
-            material=self.material.to_material_message(),
+            material=self.material._to_material_message(),
             cube_min_x=self.cube_min_x,
             cube_min_y=self.cube_min_y,
             cube_min_z=self.cube_min_z,
@@ -111,9 +108,6 @@ class MicrostructureSummary:
     """Summary of a microstructure simulation
 
     Units are SI unless otherwise noted.
-
-    Properties
-    ----------
 
     input: MicrostructureInput
         Simulation input parameters
@@ -147,46 +141,54 @@ class MicrostructureSummary:
         self._xy_vtk = result.xy_vtk
         self._xz_vtk = result.xz_vtk
         self._yz_vtk = result.yz_vtk
-        self._xy_circle_equivalence = MicrostructureSummary.get_equivalence_dict(
+        self._xy_circle_equivalence = MicrostructureSummary._get_equivalence_dict(
             result.xy_circle_equivalence
         )
-        self._xz_circle_equivalence = MicrostructureSummary.get_equivalence_dict(
+        self._xz_circle_equivalence = MicrostructureSummary._get_equivalence_dict(
             result.xz_circle_equivalence
         )
-        self._yz_circle_equivalence = MicrostructureSummary.get_equivalence_dict(
+        self._yz_circle_equivalence = MicrostructureSummary._get_equivalence_dict(
             result.yz_circle_equivalence
         )
 
     @property
     def input(self):
+        """Simulation input, :class:`MicrostructureInput`."""
         return self._input
 
+    # TODO: Change *_vtk to be local file names. Add output folder name to inputs.
     @property
     def xy_vtk(self):
+        """Crystal structure in XY plane, contents of vtk file."""
         return self._xy_vtk
 
     @property
     def xz_vtk(self):
+        """Crystal structure in XZ plane, contents of vtk file."""
         return self._xz_vtk
 
     @property
     def yz_vtk(self):
+        """Crystal structure in YZ plane, contents of vtk file."""
         return self._yz_vtk
 
     @property
     def xy_circle_equivalence(self):
+        """Circle equivalence data for XY plane."""
         return self._xy_circle_equivalence
 
     @property
     def xz_circle_equivalence(self):
+        """Circle equivalence data for XZ plane."""
         return self._xz_circle_equivalence
 
     @property
     def yz_circle_equivalence(self):
+        """Circle equivalence data for YZ plane."""
         return self._yz_circle_equivalence
 
     @staticmethod
-    def get_equivalence_dict(src: list[GrainStatistics]) -> dict:
+    def _get_equivalence_dict(src: list[GrainStatistics]) -> dict:
         d = {}
         d["grain_number"] = np.asarray([x.grain_number for x in src])
         d["area_fraction"] = np.asarray([x.area_fraction for x in src])

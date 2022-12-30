@@ -20,18 +20,15 @@ class BeadType(Enum):
 class SingleBeadInput:
     """Input parameters for single bead simulation
 
-    Properties
-    ----------
-
-    id: string
+    ``id: string``
         User provided identifier for this simulation
-    machine: AdditiveMachine
+    ``machine: AdditiveMachine``
         Machine related parameters
-    material: AdditiveMaterial
+    ``material: AdditiveMaterial``
         Material used during simulation
-    bead_length: float
+    ``bead_length: float``
         Length of bead to simulate (m)
-    bead_type: BeadType
+    ``bead_type: BeadType``
         Type of bead, either BEAD_ON_POWDER or BEAD_ON_BASE_PLATE
 
     """
@@ -55,11 +52,11 @@ class SingleBeadInput:
                 repr += k + ": " + str(getattr(self, k)) + "\n"
         return repr
 
-    def to_simulation_request(self) -> SimulationRequest:
+    def _to_simulation_request(self) -> SimulationRequest:
         """Convert this object into a simulation request message"""
         input = SingleBeadInputMessage(
             machine=self.machine.to_machine_message(),
-            material=self.material.to_material_message(),
+            material=self.material._to_material_message(),
             bead_length=self.bead_length,
         )
         if self.bead_type == BeadType.BEAD_ON_BASE_PLATE:
@@ -70,31 +67,10 @@ class SingleBeadInput:
 
 
 class MeltPool:
-    """Description of the melt pool evolution during a single bead simulation
+    """Description of the melt pool evolution during a single bead simulation.
 
-    Each index in the property arrays represents a single time step
-
+    Each index in the property arrays represents a single time step.
     Units are SI unless otherwise noted.
-
-    Properties
-    ----------
-
-    laser_x: float[]
-        Laser position x coordinate.
-    laser_y: float[]
-        Laser position y coordinate.
-    length: float[]
-        Melt pool length at surface.
-    width: float[]
-        Current melt pool width at surface.
-    depth: float[]
-        Melt pool depth from surface.
-    reference_width: float[]
-        Melt pool width at the bottom of the powder layer, or width at top
-        of substrate.
-    reference_depth: float[]
-        Depth of the entire melt pool minus the powder layer thickness, or
-        depth of penetration into substrate.
 
     """
 
@@ -117,31 +93,48 @@ class MeltPool:
             self._reference_depth.append(ts.reference_depth)
 
     @property
-    def laser_x(self):
+    def laser_x(self) -> list[float]:
+        """X coordinate of laser positions."""
         return self._laser_x
 
     @property
-    def laser_y(self):
+    def laser_y(self) -> list[float]:
+        """Y coordinate of laser positions."""
         return self._laser_y
 
     @property
-    def length(self):
+    def length(self) -> list[float]:
+        """Z coordinate of laser positions."""
         return self._length
 
     @property
-    def width(self):
+    def width(self) -> list[float]:
+        """Width of melt pool at each laser position."""
         return self._width
 
     @property
-    def depth(self):
+    def depth(self) -> list[float]:
+        """Depth of melt pool at each laser position."""
         return self._depth
 
     @property
-    def reference_width(self):
+    def reference_width(self) -> list[float]:
+        """Reference width of melt pool at each laser position.
+
+        Reference width is the melt pool width at the bottom of the powder
+        layer, or, the width at the top of the substrate.
+
+        """
         return self._reference_width
 
     @property
-    def reference_depth(self):
+    def reference_depth(self) -> list[float]:
+        """Reference depth of melt pool at each laser position.
+
+        Reference depth is the depth of the entire melt pool minus the powder
+        layer thickness, or, the depth of penetration into into the substrate.
+
+        """
         return self._reference_depth
 
     def __eq__(self, __o: object) -> bool:
@@ -160,19 +153,7 @@ class MeltPool:
 
 
 class SingleBeadSummary:
-    """Summary of a single bead simulation
-
-    Units are SI unless otherwise noted.
-
-    Properties
-    ----------
-
-    input: SingleBeadInput
-        Simulation input parameters
-    msg: MeltPoolMessage
-        Melt pool evolution message received from server
-
-    """
+    """Summary of a single bead simulation."""
 
     def __init__(
         self,
@@ -187,11 +168,13 @@ class SingleBeadSummary:
         self._melt_pool = MeltPool(msg)
 
     @property
-    def input(self):
+    def input(self) -> SingleBeadInput:
+        """Simulation inputs."""
         return self._input
 
     @property
-    def melt_pool(self):
+    def melt_pool(self) -> MeltPool:
+        """Resulting simulated melt pool."""
         return self._melt_pool
 
     def __repr__(self):

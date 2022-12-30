@@ -1,4 +1,10 @@
 # (c) ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
+"""
+    additive.py
+    -----------
+
+    This module contains the Additive class which interacts with the Additive service.
+"""
 import hashlib
 import logging
 import os
@@ -26,7 +32,10 @@ DEFAULT_ADDITIVE_SERVICE_PORT = 5000
 
 
 class Additive:
-    """Additive simulation runner"""
+    """
+    Client interface to Additive service. The method :meth:`simulate` is
+    used to execute simulations.
+    """
 
     def __init__(
         self,
@@ -101,26 +110,22 @@ class Additive:
         return ""
 
     def simulate(self, input, log_progress: bool = True):
-        """Execute a single bead simulation
+        """Execute an additive simulation.
 
         Parameters
         ----------
-        input: SingleBeadInput or PorosityInput or MicrostructureInput or ThermalHistoryInput
+        input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput
             Parameters to use during simulation.
 
         log_progress: bool
-            If ``True``, call log_progress() method of
-            :class:`ansys.additive.progress_logger.ProgressLogger`
-            when progress updates are received.
+            If ``True``, send progress updates to user interface.
 
         Returns
         -------
-        SingleBeadSummary or PorositySummary or MicrostructureSummary or ThermalHistorySummary
-            The simulation summary, see
-            :class:`ansys.additive.single_bead.SingleBeadSummary`,
-            :class:`ansys.additive.porosity.PorositySummary`,
-            :class:`ansys.additive.microstructure.MicrostructureSummary`,
-            :class:`ansys.additive.thermal_history.ThermalHistorySummary`
+        :class:`SingleBeadSummary`
+        or :class:`PorositySummary`
+        or :class:`MicrostructureSummary`
+        or :class:`ThermalHistorySummary`
 
         """
         logger = ProgressLogger("Simulation")
@@ -140,9 +145,9 @@ class Additive:
                     # TODO: figure out a better way to notify user of error
                     print("ERROR: " + response.progress.message)
                     return None
-            request = input.to_simulation_request(remote_geometry_path=remote_geometry_path)
+            request = input._to_simulation_request(remote_geometry_path=remote_geometry_path)
         else:
-            request = input.to_simulation_request()
+            request = input._to_simulation_request()
 
         for response in self._simulation_stub.Simulate(request):
             if log_progress and response.HasField("progress"):
@@ -156,14 +161,35 @@ class Additive:
             if response.HasField("thermal_history_result"):
                 return ThermalHistorySummary(input, response.thermal_history_result)
 
-    def get_materials_list(self):
+    def get_materials_list(self) -> list[str]:
+        """Retrieve a list of material names used in additive simulations.
+
+        Returns
+        -------
+        list[str]
+            Names of available additive materials.
+
+        """
         return self._materials_stub.GetMaterialsList(Empty())
 
     def get_material(self, name: str) -> AdditiveMaterial:
+        """Return a specified material for use in an additive simulation.
+
+        Parameters
+        ----------
+
+        name: str
+            Name of material.
+
+        Returns
+        -------
+        AdditiveMaterial
+
+        """
         request = GetMaterialRequest()
         request.name = name
         result = self._materials_stub.GetMaterial(request)
-        return AdditiveMaterial.from_material_message(result)
+        return AdditiveMaterial._from_material_message(result)
 
     def __file_upload_reader(
         self, file_name: str, chunk_size=2 * 1024 * 1024
@@ -184,6 +210,7 @@ class Additive:
                 )
 
     def download_results(self, summary, folder: str) -> str:
+        """Download results for a simulation."""
         if isinstance(summary, ThermalHistorySummary):
             path = os.path.join(folder, summary.input.id)
             return download_file(self._simulation_stub, summary.remote_coax_ave_zip_file, path)
@@ -191,4 +218,5 @@ class Additive:
 
 
 def launch_additive(ip: str, port: int) -> Additive:
+    """Launch the Additive service"""
     return Additive(ip, port)
