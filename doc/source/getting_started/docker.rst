@@ -17,8 +17,6 @@ Start the additive Docker image
 
       docker login ghcr.io
 
-#. On Windows:
-
 #. Launch the PyAdditive service locally using ``docker`` with:
 
    .. code:: bash

@@ -95,8 +95,8 @@ For developers
 
 Installing PyAdditive in developer mode allows you to modify the source code and enhance it.
 
-Before contributing to the project, please refer to :ref:`ref_contributing`. You will
-need to follow these steps:
+Before contributing to the project, please refer to the `Contributing <https://dev.docs.pyansys.com/how-to/contributing.html>`_ topic
+in the *PyAnsys Developer's Guide*. You will need to follow these steps:
 
 #. In order to build the documentation, install `pandoc <https://pandoc.org/installing.html>`_
    for your operating system.
