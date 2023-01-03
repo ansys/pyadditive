@@ -1,6 +1,6 @@
 .. _ref_single_bead_api:
 
-Single Bead
+Single bead
 -----------
 
 .. currentmodule:: ansys.additive.single_bead

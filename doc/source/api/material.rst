@@ -1,7 +1,7 @@
 .. _ref_material_api:
 
-AdditiveMaterial
-----------------
+Additive material
+-----------------
 
 .. currentmodule:: ansys.additive.material
 

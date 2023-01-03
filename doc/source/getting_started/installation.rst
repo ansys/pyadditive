@@ -9,7 +9,7 @@ no longer support as outlined `here <https://python3statement.org/>`_.
 PyAdditive dependencies are automatically checked when packages are installed.
 The following projects are required dependencies for PyAdditive:
 
-* `ansys-api-geometry` - The gRPC code generated from Protobuf files.
+* `ansys-api-additive` - The gRPC code generated from Protobuf files.
 * `NumPy <https://pypi.org/project/numpy/>`_ - NumPy arrays provide a core foundation for data array access for PyAdditive.
 * `PyVista <https://pypi.org/project/pyvista/>`_ - PyVista is used for interactive 3D plotting.
 
@@ -30,17 +30,18 @@ Then, you can simply execute:
 
    .. code:: bash
 
-      poetry run python -m pip install ansys-additive
+      python -m pip install ansys-additive
 
-.. caution::
+.. note::
 
-    PyAdditive is currently hosted in a private PyPI repository. You must provide the index
-    URL to the private PyPI repository:
+    PyAdditive is currently hosted in a private PyPI repository. In order to access
+    the repository, you must provide the index URL:
 
     * Index URL: ``https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/``
 
-    If access to this package registry is needed, email `pyansys.support@ansys.com <mailto:pyansys.support@ansys.com>`_
-    to request access. The PyAnsys team can provide you a read-only token to be inserted in ``${PRIVATE_PYPI_ACCESS_TOKEN}``.
+    Contact `pyansys.support@ansys.com <mailto:pyansys.support@ansys.com>`_
+    to request access. The PyAnsys team can provide you a read-only token to be
+    to be used for the environment variable ``${PRIVATE_PYPI_ACCESS_TOKEN}``.
     Once you have it, run the following command:
 
     .. code:: bash

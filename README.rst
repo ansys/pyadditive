@@ -31,7 +31,7 @@ PyAdditive
    :alt: Black
 
 
-A Python client library for the Ansys Additive Service.
+A Python client library for the Ansys additive service.
 
 Usage
 -----
@@ -61,8 +61,9 @@ We have three modes of installation: user, developer and offline.
 For users
 ^^^^^^^^^
 
-In order to install PyAdditive, make sure you have the latest version of
-`pip`_. To do so, run:
+On Windows systems, download and install `Python <https://www.python.org/downloads>`_, if it is not
+already installed.
+In order to install PyAdditive, make sure you have the latest version of `pip`_, then run:
 
 .. code:: bash
 
@@ -92,19 +93,22 @@ Then, you can simply execute:
 For developers
 ^^^^^^^^^^^^^^
 
-Installing PyAdditive in developer mode allows
-you to modify the source code and enhance it.
+Installing PyAdditive in developer mode allows you to modify the source code and enhance it.
 
-Before contributing to the project, please refer to the `PyAnsys Developer's guide`_. You will
+Before contributing to the project, please refer to :ref:`ref_contributing`. You will
 need to follow these steps:
 
-#. Start by cloning this repository:
+#. In order to build the documentation, install `pandoc <https://pandoc.org/installing.html>`_
+   for your operating system.
+
+#. Clone this repository:
 
    .. code:: bash
 
       git clone https://github.com/pyansys/pyadditive
+      cd pyadditive
 
-#. Create a fresh-clean Python environment and activate it:
+#. Create a new Python environment and activate it:
 
    .. code:: bash
 
@@ -120,24 +124,30 @@ need to follow these steps:
       # Activate it in Windows Powershell
       .venv\Scripts\Activate.ps1
 
-#. Make sure you have the latest required build system tools:
+#. Install the required build system tools:
 
    .. code:: bash
 
-      python -m pip install -U pip poetry tox
+      python -m pip install -U pip tox
 
 
 #. Install the project in editable mode:
 
    .. code:: bash
 
-      poetry run python -m pip install ansys-additive
+      python -m pip install ansys-additive
 
-#. Finally, verify your development installation by running:
+# Verify your development installation by running:
 
    .. code:: bash
 
       tox
+
+# When finished, you can exit the virtual environment by running:
+
+   .. code:: bash
+
+      deactivate
 
 Offline mode installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -177,9 +187,9 @@ own virtual environment so anything being tested is isolated from the project in
 order to guarantee project's integrity. The following environments commands are provided:
 
 - **tox -e style**: will check for coding style quality.
-- **tox -e py**: checks for unit tests.
-- **tox -e py-coverage**: checks for unit testing and code coverage.
-- **tox -e doc**: checks for documentation building process.
+- **tox -e py**: runs unit tests.
+- **tox -e py-coverage**: runs unit tests and generates code coverage reports.
+- **tox -e doc**: builds and checks the documentation.
 
 
 Raw testing

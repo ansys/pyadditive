@@ -6,7 +6,6 @@ Direct API
 Fluent API
 Additive API
 Geometry Service
-Additive Service
 Geometry models
 PyGeometry
 PyAdditive

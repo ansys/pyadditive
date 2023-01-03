@@ -1,38 +1,36 @@
-Additive Service using Docker
-=============================
+Running the additive service
+############################
 
-Install the PyAdditive image
-----------------------------
+Start the additive Docker image
+-------------------------------
 
-#. Using your GitHub credentials, download the Docker image from the `PyAdditive <https://github.com/pyansys/pyadditive>`_ repository.
 #. If you have Docker installed, use a GitHub personal access token (PAT) with packages read permission to authorize Docker
-   to access this repository. For more information,
+   to access the container registry. For more information,
    see `creating a personal access token <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token>`_.
+   Make sure to save your token in a file or an environment variable for later reference.
 
-#. Save the token to a file:
-
-   .. code:: bash
-
-      echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX > GH_TOKEN.txt
-
-#. Authorize Docker to access the repository:
+#. Authorize Docker to access the repository by saving your token to your clipboard then pasting it (``Ctrl-V``) when prompted for
+   your password in the following command. Note that you may not get any indication that your token was pasted, just hit ``Enter``
+   after pasting.
 
    .. code:: bash
 
-      GH_USERNAME=<my-github-username>
-      cat GH_TOKEN.txt | docker login docker.pkg.github.com -u $GH_USERNAME --password-stdin
+      docker login ghcr.io
 
-#. Launch the PyAdditive Service locally using ``docker`` with:
+#. On Windows:
+
+#. Launch the PyAdditive service locally using ``docker`` with:
 
    .. code:: bash
 
-      docker run --name additive -p 50052:50052 ghcr.io/pyansys/pygeometry:latest
+      docker run --name additive -p 50052:50052 ghcr.io/pyansys/additive:latest
 
 
-Connect to Additive Service
+Connect to additive service
 ---------------------------
 
-After launching, connect to the service with:
+After launching the service, connect to the service inside a python environment
+with:
 
 .. code:: python
 

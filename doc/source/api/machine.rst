@@ -1,7 +1,7 @@
 .. _ref_machine_api:
 
-AdditiveMachine
----------------
+Additive machine
+----------------
 
 .. currentmodule:: ansys.additive.machine
 

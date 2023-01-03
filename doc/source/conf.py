@@ -7,7 +7,7 @@ from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_bl
 from ansys.additive import __version__
 
 # Project information
-project = "pyadditive"
+project = "PyAdditive"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS, Inc."
 release = version = __version__

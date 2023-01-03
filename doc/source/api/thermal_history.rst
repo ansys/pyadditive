@@ -1,7 +1,7 @@
 .. _ref_thermal_history_api:
 
-ThermalHistory
---------------
+Thermal history
+---------------
 
 .. currentmodule:: ansys.additive.thermal_history
 

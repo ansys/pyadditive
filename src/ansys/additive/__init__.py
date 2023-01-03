@@ -1,5 +1,5 @@
 """
-PyAdditive is a Python client for the Ansys Additive Service.
+PyAdditive is a Python client for the Ansys additive service.
 """
 
 # Version
