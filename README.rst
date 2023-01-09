@@ -1,5 +1,8 @@
+.. _ref_readme:
+
+##########
 PyAdditive
-==========
+##########
 |pyansys| |python| |pypi| |GH-CI| |codecov| |MIT| |black|
 
 .. |pyansys| image:: https://img.shields.io/badge/Py-Ansys-ffc107.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAABDklEQVQ4jWNgoDfg5mD8vE7q/3bpVyskbW0sMRUwofHD7Dh5OBkZGBgW7/3W2tZpa2tLQEOyOzeEsfumlK2tbVpaGj4N6jIs1lpsDAwMJ278sveMY2BgCA0NFRISwqkhyQ1q/Nyd3zg4OBgYGNjZ2ePi4rB5loGBhZnhxTLJ/9ulv26Q4uVk1NXV/f///////69du4Zdg78lx//t0v+3S88rFISInD59GqIH2esIJ8G9O2/XVwhjzpw5EAam1xkkBJn/bJX+v1365hxxuCAfH9+3b9/+////48cPuNehNsS7cDEzMTAwMMzb+Q2u4dOnT2vWrMHu9ZtzxP9vl/69RVpCkBlZ3N7enoDXBwEAAA+YYitOilMVAAAAAElFTkSuQmCC
@@ -33,13 +36,34 @@ PyAdditive
 
 A Python client library for the Ansys additive service.
 
+.. note::
+
+    PyAdditive has not been made public and is currently hosted in a private
+    PyPI repository. The PyAnsys team can provide you a read-only token to be
+    assigned to an environment variable called ``PYANSYS_PYPI_PRIVATE_PAT``.
+    To request a token, email
+    `pyansys.support@ansys.com <mailto:pyansys.support@ansys.com>`_.
+
+
+    Additionally, the additive service docker image is stored under the private
+    PyAnsys organization packages on GitHub. If you want to run the image yourself,
+    you'll need to have a GitHub account with
+    `two factor authentication <https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/configuring-two-factor-authentication>`_
+    and request to be added to the PyAnsys organization by contacting
+    `pyansys.support@ansys.com <mailto:pyansys.support@ansys.com>`_.
+
+
 Usage
------
+=====
 
 First, start the service locally. If you have docker installed and have
 `authenticated to ghcr.io
 <https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry>`_,
 you can start the additive service locally using ``docker`` with:
+
+.. warning::
+    In order to authenticate to ghcr.io, you will need to have your GitHub user
+    account added to the PyAnsys organization. See note above.
 
 .. code:: bash
 
@@ -52,6 +76,24 @@ Next, connect to the service with:
    >>> import ansys.additive as pyadditive
    >>> additive = pyadditive.launch_additive(ip='localhost', port=50052)
 
+Installation
+============
+
+Package dependencies
+--------------------
+
+PyAdditive is supported on Python versions 3.7+. Previous versions of Python are
+no longer supported as outlined `here <https://python3statement.org/>`_.
+PyAdditive dependencies are automatically checked when packages are installed.
+The following projects are required dependencies for PyAdditive:
+
+* `ansys-api-additive` - The gRPC code generated from Protobuf files.
+* `pandoc <https://pandoc.org/installing.html>`_ - pandoc is used for documentation generation
+* `NumPy <https://pypi.org/project/numpy/>`_ - NumPy arrays provide a core foundation for data array access for PyAdditive.
+* `PyVista <https://pypi.org/project/pyvista/>`_ - PyVista is used for result visualization interactive 3D plotting.
+
+..
+   * `Pint <https://pypi.org/project/Pint/>`_ - Pint is used for the measurement units.
 
 How to install
 --------------
@@ -63,7 +105,7 @@ For users
 
 On Windows systems, download and install `Python <https://www.python.org/downloads>`_, if it is not
 already installed.
-In order to install PyAdditive, make sure you have the latest version of `pip`_, then run:
+In order to install PyAdditive, make sure you have the latest version of `pip <https://pypi.org/project/pip/>`_, then run:
 
 .. code:: bash
 
@@ -75,20 +117,23 @@ Then, you can simply execute:
 
    python -m pip install ansys-additive
 
-.. caution::
+.. warning::
 
-    PyAdditive is currently hosted in a private PyPI repository. You must provide the index
-    URL to the private PyPI repository:
+    Until PyAdditive is made public, you must provide the index
+    URL to the private PyPI repository when performing a ``pip install``.
 
     * Index URL: ``https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/``
 
-    If access to this package registry is needed, email `pyansys.support@ansys.com <mailto:pyansys.support@ansys.com>`_
-    to request access. The PyAnsys team can provide you a read-only token to be inserted in ``${PRIVATE_PYPI_ACCESS_TOKEN}``.
-    Once you have it, run the following command:
-
     .. code:: bash
 
-        pip install ansys-additive --index-url=https://${PRIVATE_PYPI_ACCESS_TOKEN}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
+        # On linux
+        pip install ansys-additive --index-url=https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
+
+        # On Windows
+        pip install ansys-additive --index-url=https://%PYANSYS_PYPI_PRIVATE_PAT%@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
+
+    See note above for how to get the access token to use for ``PYANSYS_PYPI_PRIVATE_PAT``.
+
 
 For developers
 ^^^^^^^^^^^^^^
@@ -97,9 +142,6 @@ Installing PyAdditive in developer mode allows you to modify the source code and
 
 Before contributing to the project, please refer to the `Contributing <https://dev.docs.pyansys.com/how-to/contributing.html>`_ topic
 in the *PyAnsys Developer's Guide*. You will need to follow these steps:
-
-#. In order to build the documentation, install `pandoc <https://pandoc.org/installing.html>`_
-   for your operating system.
 
 #. Clone this repository:
 
@@ -118,7 +160,7 @@ in the *PyAnsys Developer's Guide*. You will need to follow these steps:
       # Activate it in a POSIX system
       source .venv/bin/activate
 
-      # Activate it in Windows CMD environment
+      # Activate it in Windows CMD shell
       .venv\Scripts\activate.bat
 
       # Activate it in Windows Powershell
@@ -130,20 +172,24 @@ in the *PyAnsys Developer's Guide*. You will need to follow these steps:
 
       python -m pip install -U pip tox
 
+#. Verify your development installation by running:
 
-#. Install the project in editable mode:
+    .. code:: bash
 
-   .. code:: bash
+        tox
 
-      python -m pip install ansys-additive
+    .. warning::
 
-# Verify your development installation by running:
+        ``PYANSYS_PYPI_PRIVATE_PAT`` must be defined for ``tox`` to run to completion.
+        See note above for more information.
 
-   .. code:: bash
+#. Optionally, install the project in editable mode:
 
-      tox
+    .. code:: bash
 
-# When finished, you can exit the virtual environment by running:
+        python -m pip install -e .
+
+#. When finished, you can exit the virtual environment by running:
 
    .. code:: bash
 
@@ -173,14 +219,14 @@ If you're on Windows with Python 3.9, unzip to a wheelhouse directory and instal
 Consider installing using a `virtual environment <https://docs.python.org/3/library/venv.html>`_.
 
 Testing
--------
+=======
 
 This project takes advantage of `tox`_. This tool allows to automate common
 development tasks (similar to Makefile) but it is oriented towards Python
 development.
 
 Using tox
-^^^^^^^^^
+---------
 
 As Makefile has rules, `tox`_ has environments. In fact, the tool creates its
 own virtual environment so anything being tested is isolated from the project in
@@ -193,22 +239,30 @@ order to guarantee project's integrity. The following environments commands are 
 
 
 Raw testing
-^^^^^^^^^^^
+-----------
 
 If required, you can always call the style commands (`black`_, `isort`_,
 `flake8`_...) or unit testing ones (`pytest`_) from the command line. However,
 this does not guarantee that your project is being tested in an isolated
 environment, which is the reason why tools like `tox`_ exist.
 
-To run the unit tests use the following command within the root folder of the project.
+To run the unit tests without using tox, first install ``pytest-cov`` and the
+project in editable mode.
+
+.. code:: bash
+
+   python -m pip install pytest-cov
+
+   python -m pip install -e .
+
+Then use the following command within the root folder of the project.
 
 .. code:: bash
 
    python -m pytest
 
-
-System testing on local host
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+System testing on localhost
+---------------------------
 
 Install `docker-compose <https://docker-docs.netlify.app/compose/install/>`_, if necessary.
 Start the server using the following command from the root folder of the project.
@@ -222,21 +276,21 @@ commands.
 
 .. code:: bash
 
-   python -m venv jupyter_venv​
+   python -m venv jupyter_venv
 
-   jupyter_venv\Scripts\activate.bat​
+   jupyter_venv\Scripts\activate.bat
 
-   pip install jupyterlab​
+   pip install jupyterlab
 
-   jupyter lab​
+   jupyter lab
 
 
-Open jupyter lab in your browser using http://localhost:8888/lab​. Note the port number may
-be different.
-
+Open jupyter lab in your browser using ``http://localhost:8888/lab``. Note the port number may
+be different but it will be listed in the ``jupyter lab`` start up messages. Example
+notebooks can be found in the ``examples`` folder of this repository.
 
 A note on pre-commit
-^^^^^^^^^^^^^^^^^^^^
+====================
 
 The style checks take advantage of `pre-commit`_. Developers are not forced but
 encouraged to install this tool via:
@@ -247,7 +301,7 @@ encouraged to install this tool via:
 
 
 Documentation
--------------
+=============
 
 For building documentation, you can either run the usual rules provided in the
 `Sphinx`_ Makefile, such us:
@@ -264,7 +318,7 @@ However, the recommended way of checking documentation integrity is using:
 
 
 Distributing
-------------
+============
 
 If you would like to create either source or wheel files, start by installing
 the building requirements and then executing the build module:
