@@ -1,10 +1,11 @@
-PyAdditive Examples
-===================
+.. _ref_example_gallery:
 
-Example usage of pyadditive.
+========
+Examples
+========
+End-to-end examples show how you can use PyAdditve. You can download
+these examples as Python files or Jupyter notebooks and run them locally.
 
 .. toctree::
+   :maxdepth: 1
    :hidden:
-   :maxdepth: 2
-
-   single-bead

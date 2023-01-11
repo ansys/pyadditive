@@ -57,13 +57,16 @@ sphinx-copybutton = {version = "==0.5.1", optional = true}
 sphinx-gallery = {version = "==0.7.0", optional = true}
 sphinx-autodoc-typehints = {version = "==1.19.5", optional = true}
 sphinx_design= {version = "==0.3.0", optional = true}
+sphinx-toolbox = {version = "*", optional = true}
+sphinxemoji = {version = "0.2.0", optional = true}
+sphinx-notfound-page = {version = "0.8", optional = true}
 jupyter_sphinx= {version = "0.4.0", optional = true}
 ipyvtklink = {version = "*", optional = true}
 panel = {version = "*", optional = true}
 matplotlib = {version = "==3.6.2", optional = true}
 pandoc = {version = "*", optional = true}
 enum-tools = {version = "*", optional = true}
-sphinx-toolbox = {version = "*", optional = true}
+pyvista = {version = "0.37.0", optional = true}
 
 [tool.poetry.dev-dependencies]
 numpy = {version = "==1.23.2", python = ">3.8"}

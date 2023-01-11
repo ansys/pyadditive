@@ -18,18 +18,18 @@ class BeadType(Enum):
 
 
 class SingleBeadInput:
-    """Input parameters for single bead simulation
+    """Input parameters for single bead simulation.
 
     ``id: string``
-        User provided identifier for this simulation
+        User provided identifier for this simulation.
     ``machine: AdditiveMachine``
-        Machine related parameters
+        Machine related parameters.
     ``material: AdditiveMaterial``
-        Material used during simulation
+        Material used during simulation.
     ``bead_length: float``
-        Length of bead to simulate (m)
+        Length of bead to simulate (m).
     ``bead_type: BeadType``
-        Type of bead, either BEAD_ON_POWDER or BEAD_ON_BASE_PLATE
+        Type of bead, either BEAD_ON_POWDER or BEAD_ON_BASE_PLATE.
 
     """
 
@@ -55,7 +55,7 @@ class SingleBeadInput:
     def _to_simulation_request(self) -> SimulationRequest:
         """Convert this object into a simulation request message"""
         input = SingleBeadInputMessage(
-            machine=self.machine.to_machine_message(),
+            machine=self.machine._to_machine_message(),
             material=self.material._to_material_message(),
             bead_length=self.bead_length,
         )

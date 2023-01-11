@@ -13,41 +13,41 @@ from ansys.additive.material import AdditiveMaterial
 
 
 class MicrostructureInput:
-    """Input parameters for microstructure simulation
+    """Input parameters for microstructure simulation.
 
     id: string
-        Simulation identifier
+        Simulation identifier.
     machine: AdditiveMachine
-        Machine related parameters
+        Machine related parameters.
     material: AdditiveMaterial
-        Material used during simulation
+        Material used during simulation.
     cube_min_x: float
-        Sample minimum x coordinate value (m), default 0
+        Sample minimum x coordinate value (m), default 0.
     cube_min_y: float
-        Sample minimum y coordinate value (m), default 0
+        Sample minimum y coordinate value (m), default 0.
     cube_min_z: float
-        Sample minimum z coordinate value (m), default 0
+        Sample minimum z coordinate value (m), default 0.
     cube_size_x: float
-        Sample size in x dimension (m), valid values: 0.001 to 0.01, default 0.0015
+        Sample size in x dimension (m), valid values: 0.001 to 0.01, default 0.0015.
     cube_size_y: float
-        Sample size in y dimension (m), valid values: 0.001 to 0.01, default 0.0015
+        Sample size in y dimension (m), valid values: 0.001 to 0.01, default 0.0015.
     cube_size_z: float
-        Sample size in z dimension (m), valid values: 0.001 to 0.01, default 0.0015
+        Sample size in z dimension (m), valid values: 0.001 to 0.01, default 0.0015.
     sensor_dimension: float
-        Sensor dimension (m), valid values: 0.0001 to 0.001, default 0.0005
+        Sensor dimension (m), valid values: 0.0001 to 0.001, default 0.0005.
     use_provided_thermal_parameters: bool
         Indicates that cooling_rate, thermal_gradient, melt_pool* have been provided by user,
-        default False, meaning values will be calculated
+        default False, meaning values will be calculated.
     cooling_rate: float, optional
-        Cooling rate (°K/s), valid values: 1e5 to 1e7, default 1e6
+        Cooling rate (°K/s), valid values: 1e5 to 1e7, default 1e6.
     thermal_gradient: float, optional
-        Thermal gradient (°K/m), valid values: 1e5 to 1e8, default 1e7
+        Thermal gradient (°K/m), valid values: 1e5 to 1e8, default 1e7.
     melt_pool_width: float, optional
-        Width of melt pool for a single bead scan, valid values: 7.5e-5 to 8e-4, default 1.5e-4
+        Width of melt pool for a single bead scan, valid values: 7.5e-5 to 8e-4, default 1.5e-4.
     melt_pool_depth: float, optional
-        Depth of melt pool for a single bead scan, valid values: 1.5e-5 to 8e-4, default 1e-4
+        Depth of melt pool for a single bead scan, valid values: 1.5e-5 to 8e-4, default 1e-4.
     random_seed: int, optional
-        Seed used for nucleation calculations, default None
+        Seed used for nucleation calculations, default None.
 
     """
 
@@ -84,7 +84,7 @@ class MicrostructureInput:
     def _to_simulation_request(self) -> SimulationRequest:
         """Convert this object into a simulation request message"""
         input = MicrostructureInputMessage(
-            machine=self.machine.to_machine_message(),
+            machine=self.machine._to_machine_message(),
             material=self.material._to_material_message(),
             cube_min_x=self.cube_min_x,
             cube_min_y=self.cube_min_y,
@@ -105,18 +105,18 @@ class MicrostructureInput:
 
 
 class MicrostructureSummary:
-    """Summary of a microstructure simulation
+    """Summary of a microstructure simulation.
 
     Units are SI unless otherwise noted.
 
     input: MicrostructureInput
         Simulation input parameters
     xy_vtk: vtk
-        Byte stream in vtk format representing 2-D grain structure in x-y plane
+        Byte stream in vtk format representing 2-D grain structure in x-y plane.
     xz_vtk: vtk
-        Byte stream in vtk format representing 2-D grain structure in x-z plane
+        Byte stream in vtk format representing 2-D grain structure in x-z plane.
     yz_vtk: vtk
-        Byte stream in vtk format representing 2-D grain structure in y-z plane
+        Byte stream in vtk format representing 2-D grain structure in y-z plane.
     xy_circle_equivalence: dict[str, np.array(float)]
         Circle equivalence data for XY plane. Keys include "grain_number", "area_fraction",
         "diameter_um" and "orientation_angle". Diameter_um values are in microns. Orientation

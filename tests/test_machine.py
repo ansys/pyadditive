@@ -28,7 +28,7 @@ def test_AdditiveMachine_init_raises_exception_for_arg():
         AdditiveMachine(bogus="bummer")
 
 
-def test_from_machine_message_returns_AdditiveMachine():
+def test__from_machine_message_returns_AdditiveMachine():
     # arrange
     msg = MachineMessage(
         laser_power=1,
@@ -43,7 +43,7 @@ def test_from_machine_message_returns_AdditiveMachine():
     )
 
     # act
-    machine = AdditiveMachine.from_machine_message(msg)
+    machine = AdditiveMachine._from_machine_message(msg)
 
     # assert
     abs_tol = 0.0001
@@ -67,13 +67,13 @@ def test_from_machine_message_returns_AdditiveMachine():
         AdditiveMachine(),
     ],
 )
-def test_from_machine_message_raises_exception_for_invalid_type(invalid_obj):
+def test__from_machine_message_raises_exception_for_invalid_type(invalid_obj):
     # arrange, act, assert
-    with pytest.raises(ValueError, match="Invalid message type passed to from_machine_message()"):
-        AdditiveMachine.from_machine_message(invalid_obj)
+    with pytest.raises(ValueError, match="Invalid message type passed to _from_machine_message()"):
+        AdditiveMachine._from_machine_message(invalid_obj)
 
 
-def test_to_machine_message_returns_MachineMessage():
+def test__to_machine_message_returns_MachineMessage():
     # arrange
     machine = AdditiveMachine(
         laser_power=1,
@@ -88,7 +88,7 @@ def test_to_machine_message_returns_MachineMessage():
     )
 
     # act
-    msg = machine.to_machine_message()
+    msg = machine._to_machine_message()
 
     # assert
     abs_tol = 0.0001

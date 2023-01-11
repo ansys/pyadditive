@@ -62,8 +62,8 @@ First, start the service locally. If you have docker installed and have
 you can start the additive service locally using ``docker`` with:
 
 .. warning::
-    In order to authenticate to ghcr.io, you will need to have your GitHub user
-    account added to the PyAnsys organization. See note above.
+   In order to authenticate to ghcr.io, you will need to have your GitHub user
+   account added to the PyAnsys organization. See note above.
 
 .. code:: bash
 
@@ -176,18 +176,18 @@ in the *PyAnsys Developer's Guide*. You will need to follow these steps:
 
     .. code:: bash
 
-        tox
+       tox
 
     .. warning::
 
-        ``PYANSYS_PYPI_PRIVATE_PAT`` must be defined for ``tox`` to run to completion.
-        See note above for more information.
+       ``PYANSYS_PYPI_PRIVATE_PAT`` must be defined for ``tox`` to run to completion.
+       See note above for more information.
 
 #. Optionally, install the project in editable mode:
 
     .. code:: bash
 
-        python -m pip install -e .
+       python -m pip install -e .
 
 #. When finished, you can exit the virtual environment by running:
 
@@ -276,9 +276,11 @@ commands.
 
 .. code:: bash
 
-   python -m venv jupyter_venv
+   python -m venv jupyter_venv​
 
-   jupyter_venv\Scripts\activate.bat
+   jupyter_venv\Scripts\activate.bat​
+
+   pip install jupyterlab​
 
    pip install jupyterlab
 

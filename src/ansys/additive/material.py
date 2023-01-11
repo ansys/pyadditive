@@ -218,7 +218,7 @@ class ThermalPropertiesDataPoint:
     @staticmethod
     def _from_thermal_properties_data_point_message(msg: ThermalPropertiesDataPointMessage):
         """Create a ``ThermalPropertiesDataPoint`` from a thermal characteristic
-        data point message received from the Additive service
+        data point message received from the Additive service.
 
         :meta private:
         """
@@ -235,7 +235,7 @@ class ThermalPropertiesDataPoint:
         self,
     ) -> ThermalPropertiesDataPointMessage:
         """Create a thermal characteristic data point message from this ``ThermalPropertiesDataPoint``
-        object to send to the Additive service
+        object to send to the Additive service.
 
         :meta private:
         """
@@ -500,7 +500,7 @@ class AdditiveMaterial:
     @property
     def nucleation_constant_bulk(self) -> float:
         """Controls the homogeneous nucleation rate (in bulk of the microstructure
-        simulation domain) during solidification (1/m^2/K^2)"""
+        simulation domain) during solidification (1/m^2/K^2)."""
         return self._nucleation_constant_bulk
 
     @nucleation_constant_bulk.setter
@@ -611,7 +611,7 @@ class AdditiveMaterial:
 
     @property
     def solid_density_at_room_temperature(self) -> float:
-        """Density of bulk material at room temperature, 298 K (kg/m^3)"""
+        """Density of bulk material at room temperature, 298 K (kg/m^3)."""
         return self._solid_density_at_room_temperature
 
     @solid_density_at_room_temperature.setter
@@ -696,6 +696,7 @@ class AdditiveMaterial:
 
     @characteristic_width_data.setter
     def characteristic_width_data(self, value: list[CharacteristicWidthDataPoint]):
+        """Set characteristic_width_data."""
         if not isinstance(value, collections.abc.Sequence):
             raise ValueError(
                 "Invalid object type, {}, passed to characteristic_width_data()".format(type(value))
@@ -709,6 +710,7 @@ class AdditiveMaterial:
 
     @thermal_properties_data.setter
     def thermal_properties_data(self, value: list[ThermalPropertiesDataPoint]):
+        """Set thermal_properties_data."""
         if not isinstance(value, collections.abc.Sequence):
             raise ValueError(
                 "Invalid object type, {}, passed to thermal_properties_data()".format(type(value))
@@ -718,7 +720,7 @@ class AdditiveMaterial:
     @staticmethod
     def _from_material_message(msg: MaterialMessage):
         """Create an ``AdditiveMaterial`` object from a material message received from
-        the Additive service"""
+        the Additive service."""
         if not isinstance(msg, MaterialMessage):
             raise ValueError("Invalid message object passed to from_material_message()")
         material = AdditiveMaterial()
@@ -736,7 +738,7 @@ class AdditiveMaterial:
         return material
 
     def _to_material_message(self) -> MaterialMessage:
-        """Create a material message from this ``AdditiveMaterial`` to send to the Additive service"""
+        """Create a material message from this ``AdditiveMaterial`` to send to the Additive service."""
         msg = MaterialMessage()
         for p in self.__dict__:
             if p != "_characteristic_width_data" and p != "_thermal_properties_data":

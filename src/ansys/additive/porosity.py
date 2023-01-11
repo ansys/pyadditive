@@ -7,20 +7,20 @@ from ansys.additive.material import AdditiveMaterial
 
 
 class PorosityInput:
-    """Input parameters for porosity simulation
+    """Input parameters for porosity simulation.
 
     ``id: string``
-        User provided identifier for this simulation
+        User provided identifier for this simulation.
     ``size_x: float``
-        Size of simulated sample in x dimension (m), valid values: 0.001 to 0.01
+        Size of simulated sample in x dimension (m), valid values: 0.001 to 0.01.
     ``size_y: float``
-        Size of simulated sample in y dimension (m), valid values: 0.001 to 0.01
+        Size of simulated sample in y dimension (m), valid values: 0.001 to 0.01.
     ``size_z: float``
-        Size of simulated sample in z dimension (m), valid values: 0.001 to 0.01
+        Size of simulated sample in z dimension (m), valid values: 0.001 to 0.01.
     ``machine: AdditiveMachine``
-        Machine related parameters
+        Machine related parameters.
     ``material: AdditiveMaterial``
-        Material used during simulation
+        Material used during simulation.
 
     """
 
@@ -47,7 +47,7 @@ class PorosityInput:
     def _to_simulation_request(self) -> SimulationRequest:
         """Convert this object into a simulation request message"""
         input = PorosityInputMessage(
-            machine=self.machine.to_machine_message(),
+            machine=self.machine._to_machine_message(),
             material=self.material._to_material_message(),
             size_x=self.size_x,
             size_y=self.size_y,

@@ -6,7 +6,7 @@ import ansys.additive.conversions as conversions
 
 
 class AdditiveMachine:
-    """Additive manufacturing machine settings used during simulation
+    """Additive manufacturing machine settings used during simulation.
 
     The properties listed use SI units unless otherwise noted.
 
@@ -95,8 +95,8 @@ class AdditiveMachine:
         return True
 
     @staticmethod
-    def from_machine_message(msg: MachineMessage):
-        """Create an ``AdditiveMachine`` from a machine message received from the Additive service"""
+    def _from_machine_message(msg: MachineMessage):
+        """Create an ``AdditiveMachine`` from a machine message received from the Additive service."""
         if isinstance(msg, MachineMessage):
             return AdditiveMachine(
                 laser_power=msg.laser_power,
@@ -110,10 +110,10 @@ class AdditiveMachine:
                 slicing_stripe_width=msg.slicing_stripe_width,
             )
         else:
-            raise ValueError("Invalid message type passed to from_machine_message()")
+            raise ValueError("Invalid message type passed to _from_machine_message()")
 
-    def to_machine_message(self) -> MachineMessage:
-        """Create a machine message from this ``AdditiveMachine`` to send to the Additive service"""
+    def _to_machine_message(self) -> MachineMessage:
+        """Create a machine message from this ``AdditiveMachine`` to send to the Additive service."""
         return MachineMessage(
             laser_power=self.laser_power,
             scan_speed=self.scan_speed,

@@ -330,7 +330,7 @@ def test_ThermalHistoryInput_eq():
     )
     assert input != ThermalHistoryInput()
     assert input != ThermalHistoryInputMessage(
-        machine=machine.to_machine_message(),
+        machine=machine._to_machine_message(),
         material=material._to_material_message(),
         coax_ave_sensor_inputs=coax_inputs._to_coaxial_average_sensor_inputs_message(),
         stl_file=StlFileMessage(name=stl_file.path),

@@ -18,12 +18,12 @@ from ansys.additive.material import AdditiveMaterial
 
 
 class Range:
-    """Defines a parameter that spans a range of values
+    """Defines a parameter that spans a range of values.
 
     min: float
-        Minimum value
+        Minimum value.
     max: float
-        Maximum value
+        Maximum value.
 
     """
 
@@ -56,7 +56,7 @@ class Range:
 
 
 class CoaxialAverageSensorInputs:
-    """Coaxial average sensor descriptions
+    """Coaxial average sensor descriptions.
 
     radius: float (meters)
         Radius for circular field of view of sensor. Validated values
@@ -101,18 +101,18 @@ class CoaxialAverageSensorInputs:
 
 
 class ThermalHistoryInput:
-    """Input parameters for microstructure simulation
+    """Input parameters for microstructure simulation.
 
     id: string
-        Simulation identifier
+        Simulation identifier.
     machine: AdditiveMachine
-        Machine related parameters
+        Machine related parameters.
     material: AdditiveMaterial
-        Material used during simulation
+        Material used during simulation.
     geometry: StlFile or BuildFile
-        Geometry to use in simulation
+        Geometry to use in simulation.
     coax_ave_sensor_inputs: CoaxialAverageSensorInputs
-        Coaxial average sensor definition
+        Coaxial average sensor definition.
 
     """
 
@@ -150,11 +150,12 @@ class ThermalHistoryInput:
 
     @property
     def geometry(self):
-        """Part geometry, either :class:`StlFile` or :class:`BuildFile`"""
+        """Part geometry, either :class:`StlFile` or :class:`BuildFile`."""
         return self._geometry
 
     @geometry.setter
     def geometry(self, value):
+        """Set geometry."""
         if not isinstance(value, (StlFile, BuildFile)):
             raise TypeError("ThermalHistoryInput.geometry must be an StlFile of BuildFile")
         self._geometry = value
@@ -170,7 +171,7 @@ class ThermalHistoryInput:
             )
 
         input = ThermalHistoryInputMessage(
-            machine=self.machine.to_machine_message(),
+            machine=self.machine._to_machine_message(),
             material=self.material._to_material_message(),
             coax_ave_sensor_inputs=self.coax_ave_sensor_inputs._to_coaxial_average_sensor_inputs_message(),
         )
@@ -186,10 +187,10 @@ class ThermalHistoryInput:
 
 
 class ThermalHistorySummary:
-    """Summary of a thermal history simulation
+    """Summary of a thermal history simulation.
 
     input: ThermalHistoryInput
-        Simulation input parameters
+        Simulation input parameters.
     remote_coax_ave_zip_file: str
         Identifier used by the server for the coaxial average sensor results zip archive.
         Use the download service endpoint to retrieve the archive from the server.

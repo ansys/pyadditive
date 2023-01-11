@@ -1,6 +1,6 @@
 services:
   backend:
-    image: azwepsifujiaksacr.azurecr.io/ansys/additive
+    image: ghcr.io/pyansys/additive
     ports:
       - "50052:50052"
     environment:
