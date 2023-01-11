@@ -1,3 +1,4 @@
+# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 import math
 
 from ansys.api.additive.v0.additive_domain_pb2 import MachineSettings as MachineMessage

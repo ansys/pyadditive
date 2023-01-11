@@ -14,12 +14,6 @@ def get_args():
         description="Update copyright in python files or add copyright if it is missing."
     )
     parser.add_argument("directory", help="root directory of project")
-    parser.add_argument(
-        "-y",
-        "--years",
-        help="year(s) to use for copyright, default is current year",
-        default=str(date.today().year),
-    )
     return parser.parse_args()
 
 
@@ -36,7 +30,7 @@ if __name__ == "__main__":
 
         tmp_name = ""
         with tempfile.NamedTemporaryFile("w", delete=False) as tmp:
-            tmp.write("# (c) {} ".format(args.years) + copyright_substr + "\n")
+            tmp.write("# (c) {} ".format(date.today().year) + copyright_substr + "\n")
             tmp.writelines(lines)
             tmp_name = tmp.name
 

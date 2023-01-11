@@ -1,4 +1,4 @@
-# (c) 2022 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
+# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 
 import hashlib
 import os

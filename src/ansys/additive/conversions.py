@@ -1,3 +1,4 @@
+# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 MM_TO_METER = 0.001
 METER_TO_MM = 1000
 

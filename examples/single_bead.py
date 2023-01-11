@@ -1,3 +1,4 @@
+# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 """
 .. _ref_example_single_bead:
 
@@ -16,8 +17,7 @@ import ansys.additive.additive as pyadditive
 from ansys.additive.machine import AdditiveMachine
 from ansys.additive.single_bead import BeadType, SingleBeadInput
 
-# WARNING: The connection method will change soon.
-additive = pyadditive.launch_additive(ip="localhost", port=50052)
+additive = pyadditive.Additive()
 
 ###############################################################################
 # Material Selection

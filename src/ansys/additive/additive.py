@@ -1,4 +1,4 @@
-# (c) ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
+# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 """
     additive.py
     -----------
@@ -28,7 +28,7 @@ from ansys.additive.single_bead import SingleBeadSummary
 from ansys.additive.thermal_history import ThermalHistoryInput, ThermalHistorySummary
 
 MAX_MESSAGE_LENGTH = int(256 * 1024**2)
-DEFAULT_ADDITIVE_SERVICE_PORT = 5000
+DEFAULT_ADDITIVE_SERVICE_PORT = 50052
 
 
 class Additive:
