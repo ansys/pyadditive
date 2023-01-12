@@ -15,6 +15,7 @@ from ansys.api.additive.v0.additive_materials_pb2 import GetMaterialRequest
 from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
 from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
+import ansys.platform.instancemanagement as pypim
 from google.protobuf.empty_pb2 import Empty
 import grpc
 
@@ -29,6 +30,7 @@ from ansys.additive.thermal_history import ThermalHistoryInput, ThermalHistorySu
 
 MAX_MESSAGE_LENGTH = int(256 * 1024**2)
 DEFAULT_ADDITIVE_SERVICE_PORT = 50052
+LOCALHOST = "127.0.0.1"
 
 
 class Additive:
@@ -45,17 +47,9 @@ class Additive:
         log_file: str = "",
         channel: grpc.Channel = None,
     ):
-        """Initialize connection to the server"""
-        if channel is not None:
-            if ip is not None or port is not None:
-                raise ValueError(
-                    "If `channel` is specified, neither `port` nor `ip` can be specified."
-                )
-        else:
-            if ip is None:
-                ip = "127.0.0.1"
-            if port is None:
-                port = DEFAULT_ADDITIVE_SERVICE_PORT
+        """Initialize connection to the server."""
+        if channel is not None and (ip is not None or port is not None):
+            raise ValueError("If `channel` is specified, neither `port` nor `ip` can be specified.")
 
         self._log = self._create_logger(log_file, loglevel)
         self._log.debug("Logging set to %s", loglevel)
@@ -70,6 +64,11 @@ class Additive:
         self._materials_stub = MaterialsServiceStub(self._channel)
         self._simulation_stub = SimulationServiceStub(self._channel)
 
+    def __del__(self):
+        """Destructor, used to clean up service connection."""
+        if self._server_instance:
+            self._server_instance.delete()
+
     def _create_logger(self, log_file, loglevel) -> logging.Logger:
         """Create the logger for this module"""
         numeric_level = getattr(logging, loglevel.upper(), None)
@@ -83,19 +82,59 @@ class Additive:
             logging.basicConfig(level=numeric_level)
         return logging.getLogger(__name__)
 
-    def _create_channel(self, ip, port):
-        """Create an insecured grpc channel."""
-        misc.check_valid_ip(ip)
-        misc.check_valid_port(port)
+    def _create_channel(self, ip: str = None, port: int = None, product_version: str = None):
+        """
+        Create an insecure grpc channel.
 
-        # open the channel
-        channel_str = f"{ip}:{port}"
-        self._log.debug("Opening insecure channel at %s", channel_str)
+        A channel connection will be established using one of the following methods.
+        The methods are listed in order of precedence.
+            1. Using the user provided ip and port values, if any
+            2. Using PyPim if the client is running in a PyPim enabled environment
+                such as Ansys Lab
+            3. Using an ip and port definition string defined by the
+                ANSYS_ADDITIVE_ADDRESS environment variable
+            4. Using a default ip and port, `localhost:50052`
+
+        Parameters
+        ----------
+
+        ip: str
+            Internet protocol address of remote server host in IPv4 dotted-quad string format.
+
+        port: int
+            Port number on server to connect to.
+
+        product_version: str
+            Additive server product version. Only applies in PyPim environments.
+
+        """
+
+        if ip and port:
+            misc.check_valid_ip(ip)
+            misc.check_valid_port(port)
+            return self.__open_insecure_channel(f"{ip}:{port}")
+
+        elif pypim.is_configured():
+            pim = pypim.connect()
+            self._server_instance = pim.create_instance(
+                product_name="additive", product_version=product_version
+            )
+            self._log.info("Waiting for server to initialize")
+            self._server_instance.wait_for_ready()
+            (_, target) = self._server_instance.services["grpc"].uri.split(":", 1)
+            return self.__open_insecure_channel(target)
+
+        elif os.getenv("ANSYS_ADDITIVE_ADDRESS"):
+            return self.__open_insecure_channel(os.getenv("ANSYS_ADDITIVE_ADDRESS"))
+
+        else:
+            return self.__open_insecure_channel(f"{LOCALHOST}:{DEFAULT_ADDITIVE_SERVICE_PORT}")
+
+    def __open_insecure_channel(self, target: str) -> grpc.Channel:
+        """Open an insecure grpc channel to a given target."""
+        self._log.info("Opening insecure channel at %s", target)
         return grpc.insecure_channel(
-            channel_str,
-            options=[
-                ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-            ],
+            target, options=[("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH)]
         )
 
     @property
@@ -215,8 +254,3 @@ class Additive:
             path = os.path.join(folder, summary.input.id)
             return download_file(self._simulation_stub, summary.remote_coax_ave_zip_file, path)
         raise ValueError("Only thermal history summaries have remote results that require download")
-
-
-def launch_additive(ip: str, port: int) -> Additive:
-    """Launch the Additive service"""
-    return Additive(ip, port)
