@@ -1,5 +1,4 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-
 from ansys.api.additive.v0.additive_domain_pb2 import (
     CoaxialAverageSensorInputs as CoaxialAverageSensorInputsMessage,
 )
@@ -9,7 +8,6 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 from ansys.api.additive.v0.additive_domain_pb2 import BuildFile as BuildFileMessage
 from ansys.api.additive.v0.additive_domain_pb2 import Range as RangeMessage
 from ansys.api.additive.v0.additive_domain_pb2 import StlFile as StlFileMessage
-from ansys.api.additive.v0.additive_domain_pb2 import ThermalHistoryResult
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 from ansys.additive.geometry_file import BuildFile, StlFile
@@ -187,23 +185,13 @@ class ThermalHistoryInput:
 
 
 class ThermalHistorySummary:
-    """Summary of a thermal history simulation.
+    """Summary of a thermal history simulation."""
 
-    input: ThermalHistoryInput
-        Simulation input parameters.
-    remote_coax_ave_zip_file: str
-        Identifier used by the server for the coaxial average sensor results zip archive.
-        Use the download service endpoint to retrieve the archive from the server.
-
-    """
-
-    def __init__(self, input: ThermalHistoryInput, result: ThermalHistoryResult):
+    def __init__(self, input: ThermalHistoryInput, coax_ave_output_folder: str):
         if not isinstance(input, ThermalHistoryInput):
             raise ValueError("Invalid input type passed to init, " + self.__class__.__name__)
-        if not isinstance(result, ThermalHistoryResult):
-            raise ValueError("Invalid result type passed to init, " + self.__class__.__name__)
         self._input = input
-        self._remote_coax_ave_zip_file = result.coax_ave_zip_file
+        self._coax_ave_output_folder = coax_ave_output_folder
 
     @property
     def input(self):
@@ -211,6 +199,6 @@ class ThermalHistorySummary:
         return self._input
 
     @property
-    def remote_coax_ave_zip_file(self):
-        """Name of zip file containing coaxial average sensor results."""
-        return self._remote_coax_ave_zip_file
+    def coax_ave_output_folder(self):
+        """Path to folder containing coaxial average sensor results."""
+        return self._coax_ave_output_folder

@@ -38,7 +38,7 @@ def test_download_file_calls_service_with_expected_params():
     tmp_dir = tempfile.TemporaryDirectory().name
 
     # act
-    local_file = download_file(mock_stub, remote_file_name, tmp_dir, False)
+    local_file = download_file(mock_stub, remote_file_name, tmp_dir)
 
     # assert
     mock_stub.DownloadFile.assert_called_once_with(expected_request)

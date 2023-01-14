@@ -1,21 +1,18 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 """
-.. _ref_example_single_bead:
+.. _ref_example_porosity:
 
-Single Bead Analysis
---------------------
+Porosity Analysis
+-----------------
 
 This tutorial shows how you can use PyAdditive to determine
-meltpool characteristics for given material and machine
-parameter combinations.
+porosity for given material and machine parameter combinations.
+
+Units are SI (m, kg, s, K) unless otherwise noted.
 
 First, connect to the Additive service.
 """
-import matplotlib.pyplot as plt
-
-import ansys.additive.additive as pyadditive
-from ansys.additive.machine import AdditiveMachine
-from ansys.additive.single_bead import BeadType, SingleBeadInput
+import ansys.additive as pyadditive
 
 additive = pyadditive.Additive()
 
@@ -23,10 +20,9 @@ additive = pyadditive.Additive()
 # Material Selection
 # ~~~~~~~~~~~~~~~~~~
 # The next step is a to choose a material. A list of available materials can
-# be obtained using the following command.
+# be obtained using the ``get_materials_list`` command.
 
-material_list = additive.get_materials_list()
-print(material_list)
+print(additive.get_materials_list())
 
 # Obtain the parameters for a single material using one of the names in the list.
 material = additive.get_material("17-4PH")
@@ -38,27 +34,28 @@ material = additive.get_material("17-4PH")
 # then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
-machine = AdditiveMachine()
+machine = pyadditive.AdditiveMachine()
 
 # See available parameters
 print(machine)
 
 # Set laser power and scan speed
-machine.scan_speed = 1  # m/s
-machine.laser_power = 500  # W
+machine.scan_speed = 1.2  # meters/sec
+machine.laser_power = 350  # Watts
 
 ###############################################################################
-# Specify Single Bead Simulation Inputs
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Create a ``SingleBeadInput`` object containing the desired simulation
+# Specify Porosity Simulation Inputs
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a ``PorosityInput`` object containing the desired simulation
 # parameters.
 
-input = SingleBeadInput(
+input = pyadditive.PorosityInput(
     machine=machine,
     material=material,
-    id="single-bead-example",
-    bead_length=0.001,  # meters (1 mm)
-    bead_type=BeadType.BEAD_ON_POWDER,  # See :class:`BeadType`
+    id="porosity-example",
+    size_x=0.001,  # in meters (1 mm)
+    size_y=0.001,
+    size_z=0.001,
 )
 
 ###############################################################################
@@ -68,21 +65,17 @@ input = SingleBeadInput(
 
 # NOTE: Change the log_progress parameter to True or remove it altogether when
 # using this example interactively.
-result = additive.simulate(input, log_progress=False)
+summary = additive.simulate(input, log_progress=False)
 
 ###############################################################################
-# Plot Melt Pool Statistics
-# ~~~~~~~~~~~~~~~~~~~~~~~~~
-# You can plot the melt pool statistics using matplotlib.
+# Print Results
+# ~~~~~~~~~~~~~
+# The result object has void_ratio, powder_ratio and solid_ratio properties.
 
-_, ax = plt.subplots()
-mp = result.melt_pool
-ax.plot(mp.laser_x, mp.length, label="length")
-ax.plot(mp.laser_x, mp.width, label="width")
-ax.plot(mp.laser_x, mp.depth, label="depth")
-ax.plot(mp.laser_x, mp.reference_width, label="reference_width")
-ax.plot(mp.laser_x, mp.reference_depth, label="reference_depth")
-ax.legend()
-ax.set_title("Melt Pool Statistics")
-
-plt.show()
+print(
+    f"For laser power of {summary.input.machine.laser_power} and "
+    + f"scan speed of {summary.input.machine.scan_speed}:"
+)
+print(f"    solid ratio = {summary.solid_ratio}")
+print(f"    powder ratio = {summary.powder_ratio}")
+print(f"    void ratio = {summary.void_ratio}")

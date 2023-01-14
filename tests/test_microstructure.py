@@ -1,5 +1,8 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 import math
+import os
+import shutil
+import tempfile
 
 from ansys.api.additive.v0.additive_domain_pb2 import GrainStatistics, MicrostructureResult
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
@@ -12,7 +15,10 @@ from ansys.additive.microstructure import MicrostructureInput, MicrostructureSum
 
 def test_MicrostructureSummary_init_returns_expected_value():
     # arrange
-    input = MicrostructureInput()
+    user_data_path = os.path.join(tempfile.gettempdir(), "microstructure_summary_test")
+    if not os.path.exists(user_data_path):
+        os.makedirs(user_data_path)
+    input = MicrostructureInput(id="id")
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
@@ -27,14 +33,17 @@ def test_MicrostructureSummary_init_returns_expected_value():
     result.yz_circle_equivalence.append(yz_stats)
 
     # act
-    summary = MicrostructureSummary(input, result)
+    summary = MicrostructureSummary(input, result, user_data_path)
 
     # assert
     assert isinstance(summary, MicrostructureSummary)
     assert input == summary.input
-    assert summary.xy_vtk == xy_vtk_bytes
-    assert summary.xz_vtk == xz_vtk_bytes
-    assert summary.yz_vtk == yz_vtk_bytes
+    assert summary.xy_vtk == os.path.join(user_data_path, "id", "xy.vtk")
+    assert os.path.exists(summary.xy_vtk)
+    assert summary.xz_vtk == os.path.join(user_data_path, "id", "xz.vtk")
+    assert os.path.exists(summary.xz_vtk)
+    assert summary.yz_vtk == os.path.join(user_data_path, "id", "yz.vtk")
+    assert os.path.exists(summary.yz_vtk)
     assert summary.xy_circle_equivalence["grain_number"][0] == 1
     assert summary.xy_circle_equivalence["area_fraction"][0] == 2
     assert summary.xy_circle_equivalence["diameter_um"][0] == 3
@@ -47,6 +56,9 @@ def test_MicrostructureSummary_init_returns_expected_value():
     assert summary.yz_circle_equivalence["area_fraction"][0] == 10
     assert summary.yz_circle_equivalence["diameter_um"][0] == 11
     assert summary.yz_circle_equivalence["orientation_angle"][0] == math.degrees(12)
+
+    # clean up
+    shutil.rmtree(user_data_path)
 
 
 @pytest.mark.parametrize(
@@ -62,7 +74,7 @@ def test_MicrostructureSummary_init_raises_exception_for_invalid_input_type(
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid input type") as exc_info:
-        MicrostructureSummary(invalid_obj, MicrostructureResult())
+        MicrostructureSummary(invalid_obj, MicrostructureResult(), ".")
 
 
 @pytest.mark.parametrize(
@@ -78,7 +90,22 @@ def test_MicrostructureSummary_init_raises_exception_for_invalid_result_type(
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid result type") as exc_info:
-        MicrostructureSummary(MicrostructureInput(), invalid_obj)
+        MicrostructureSummary(MicrostructureInput(), invalid_obj, ".")
+
+
+@pytest.mark.parametrize(
+    "invalid_path",
+    [
+        "",
+        None,
+    ],
+)
+def test_MicrostructureSummary_init_raises_exception_for_invalid_path(
+    invalid_path,
+):
+    # arrange, act, assert
+    with pytest.raises(ValueError, match="Invalid user data path") as exc_info:
+        MicrostructureSummary(MicrostructureInput(), MicrostructureResult(), invalid_path)
 
 
 def test_MicrostructureInput_init_creates_default_object():

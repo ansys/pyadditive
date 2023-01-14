@@ -9,6 +9,7 @@ import hashlib
 import logging
 import os
 from typing import Iterator
+import zipfile
 
 from ansys.api.additive.v0.additive_domain_pb2 import ProgressState
 from ansys.api.additive.v0.additive_materials_pb2 import GetMaterialRequest
@@ -16,6 +17,7 @@ from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceSt
 from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 import ansys.platform.instancemanagement as pypim
+import appdirs
 from google.protobuf.empty_pb2 import Empty
 import grpc
 
@@ -31,6 +33,8 @@ from ansys.additive.thermal_history import ThermalHistoryInput, ThermalHistorySu
 MAX_MESSAGE_LENGTH = int(256 * 1024**2)
 DEFAULT_ADDITIVE_SERVICE_PORT = 50052
 LOCALHOST = "127.0.0.1"
+APP_NAME = "ansys-pyadditive"
+COMPANY_NAME = "Ansys Inc."
 
 
 class Additive:
@@ -46,7 +50,7 @@ class Additive:
         loglevel: str = "INFO",
         log_file: str = "",
         channel: grpc.Channel = None,
-    ):
+    ) -> None:  # PEP 484
         """Initialize connection to the server."""
         if channel is not None and (ip is not None or port is not None):
             raise ValueError("If `channel` is specified, neither `port` nor `ip` can be specified.")
@@ -64,9 +68,15 @@ class Additive:
         self._materials_stub = MaterialsServiceStub(self._channel)
         self._simulation_stub = SimulationServiceStub(self._channel)
 
+        # Setup data directory
+        self._user_data_path = appdirs.user_data_dir(APP_NAME, COMPANY_NAME)
+        if not os.path.exists(self._user_data_path):  # pragma: no cover
+            os.makedirs(self._user_data_path)
+        print("user data path: " + self._user_data_path)
+
     def __del__(self):
         """Destructor, used to clean up service connection."""
-        if self._server_instance:
+        if hasattr(self, "_server_instance") and self._server_instance:
             self._server_instance.delete()
 
     def _create_logger(self, log_file, loglevel) -> logging.Logger:
@@ -132,7 +142,6 @@ class Additive:
 
     def __open_insecure_channel(self, target: str) -> grpc.Channel:
         """Open an insecure grpc channel to a given target."""
-        self._log.info("Opening insecure channel at %s", target)
         return grpc.insecure_channel(
             target, options=[("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH)]
         )
@@ -167,38 +176,30 @@ class Additive:
         or :class:`ThermalHistorySummary`
 
         """
-        logger = ProgressLogger("Simulation")
+        logger = None
+        if log_progress:
+            logger = ProgressLogger("Simulation")
 
-        remote_geometry_path = ""
         request = None
         if isinstance(input, ThermalHistoryInput):
-            if input.geometry == None or input.geometry.path == "":
-                raise ValueError("Geometry path not defined")
-            for response in self._simulation_stub.UploadFile(
-                self.__file_upload_reader(input.geometry.path)
-            ):
-                remote_geometry_path = response.remote_file_name
-                if log_progress:
-                    logger.log_progress(response.progress)
-                if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
-                    # TODO: figure out a better way to notify user of error
-                    print("ERROR: " + response.progress.message)
-                    return None
-            request = input._to_simulation_request(remote_geometry_path=remote_geometry_path)
+            return self._simulate_thermal_history(input, logger)
         else:
             request = input._to_simulation_request()
 
         for response in self._simulation_stub.Simulate(request):
-            if log_progress and response.HasField("progress"):
-                logger.log_progress(response.progress)
+            if response.HasField("progress"):
+                if logger:
+                    logger.log_progress(response.progress)
+                if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
+                    raise Exception(response.progress.message)
             if response.HasField("melt_pool"):
                 return SingleBeadSummary(input, response.melt_pool)
             if response.HasField("porosity_result"):
                 return PorositySummary(input, response.porosity_result)
             if response.HasField("microstructure_result"):
-                return MicrostructureSummary(input, response.microstructure_result)
-            if response.HasField("thermal_history_result"):
-                return ThermalHistorySummary(input, response.thermal_history_result)
+                return MicrostructureSummary(
+                    input, response.microstructure_result, self._user_data_path
+                )
 
     def get_materials_list(self) -> list[str]:
         """Retrieve a list of material names used in additive simulations.
@@ -248,9 +249,54 @@ class Additive:
                     content_md5=hashlib.md5(chunk).hexdigest(),
                 )
 
-    def download_results(self, summary, folder: str) -> str:
-        """Download results for a simulation."""
-        if isinstance(summary, ThermalHistorySummary):
-            path = os.path.join(folder, summary.input.id)
-            return download_file(self._simulation_stub, summary.remote_coax_ave_zip_file, path)
-        raise ValueError("Only thermal history summaries have remote results that require download")
+    def _simulate_thermal_history(
+        self, input: ThermalHistoryInput, out_dir: str, logger: ProgressLogger
+    ) -> ThermalHistorySummary:
+        """
+        Execute a thermal history simulation.
+
+        Parameters
+        ----------
+
+        input: ThermalHistoryInput
+            Simulation input parameters.
+
+        out_dir: str
+            Folder path for output files.
+
+        logger: ProgressLogger
+            Log message handler.
+
+        Returns
+        -------
+
+        :class:`ThermalHistorySummary`
+
+        """
+        if input.geometry == None or input.geometry.path == "":
+            raise ValueError("Geometry path not defined")
+        for response in self._simulation_stub.UploadFile(
+            self.__file_upload_reader(input.geometry.path)
+        ):
+            remote_geometry_path = response.remote_file_name
+            if logger:
+                logger.log_progress(response.progress)
+            if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
+                raise Exception(response.progress.message)
+
+        request = input._to_simulation_request(remote_geometry_path=remote_geometry_path)
+        for response in self._simulation_stub.Simulate(request):
+            if response.HasField("progress"):
+                if logger:
+                    logger.log_progress(response.progress)
+                if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
+                    raise Exception(response.progress.message)
+            if response.HasField("thermal_history_result"):
+                path = os.path.join(out_dir, response.input.id, "coax_ave_output")
+                local_zip = download_file(
+                    self._simulation_stub, response.remote_coax_ave_zip_file, path
+                )
+                with zipfile.ZipFile(local_zip, "r") as zip:
+                    zip.extractall(path)
+                os.remove(local_zip)
+                return ThermalHistorySummary(input, path)

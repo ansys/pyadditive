@@ -440,15 +440,15 @@ def test_ThermalHistoryInput__to_simulation_request_raises_exception_when_remote
 def test_ThermalHistorySummary_init_returns_expected_value():
     # arrange
     input = ThermalHistoryInput()
-    result = ThermalHistoryResult(coax_ave_zip_file="coax_file.zip")
+    out_dir = "output/path"
 
     # act
-    summary = ThermalHistorySummary(input, result)
+    summary = ThermalHistorySummary(input, out_dir)
 
     # assert
     assert isinstance(summary, ThermalHistorySummary)
     assert input == summary.input
-    assert summary.remote_coax_ave_zip_file == "coax_file.zip"
+    assert summary.coax_ave_output_folder == out_dir
 
 
 @pytest.mark.parametrize(
@@ -464,20 +464,4 @@ def test_ThermalHistorySummary_init_raises_exception_for_invalid_input_type(
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid input type") as exc_info:
-        ThermalHistorySummary(invalid_obj, ThermalHistoryResult())
-
-
-@pytest.mark.parametrize(
-    "invalid_obj",
-    [
-        int(1),
-        None,
-        ThermalHistoryInput(),
-    ],
-)
-def test_ThermalHistorySummary_init_raises_exception_for_invalid_result_type(
-    invalid_obj,
-):
-    # arrange, act, assert
-    with pytest.raises(ValueError, match="Invalid result type") as exc_info:
-        ThermalHistorySummary(ThermalHistoryInput(), invalid_obj)
+        ThermalHistorySummary(invalid_obj, "output/path")

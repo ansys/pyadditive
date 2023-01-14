@@ -1,5 +1,6 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 import math
+import os
 
 from ansys.api.additive.v0.additive_domain_pb2 import (
     MicrostructureInput as MicrostructureInputMessage,
@@ -108,40 +109,34 @@ class MicrostructureInput:
 class MicrostructureSummary:
     """Summary of a microstructure simulation.
 
-    Units are SI unless otherwise noted.
-
-    input: MicrostructureInput
-        Simulation input parameters
-    xy_vtk: vtk
-        Byte stream in vtk format representing 2-D grain structure in x-y plane.
-    xz_vtk: vtk
-        Byte stream in vtk format representing 2-D grain structure in x-z plane.
-    yz_vtk: vtk
-        Byte stream in vtk format representing 2-D grain structure in y-z plane.
-    xy_circle_equivalence: dict[str, np.array(float)]
-        Circle equivalence data for XY plane. Keys include "grain_number", "area_fraction",
-        "diameter_um" and "orientation_angle". Diameter_um values are in microns. Orientation
-        angle values are in degrees.
-    xz_circle_equivalence: dict[str, np.array(float)]
-        Circle equivalence data for XZ plane. Keys include "grain_number", "area_fraction",
-        "diameter_um" and "orientation_angle". Diameter_um values are in microns. Orientation
-        angle values are in degrees.
-    yz_circle_equivalence: dict[str, np.array(float)]
-        Circle equivalence data for YZ plane. Keys include "grain_number", "area_fraction",
-        "diameter_um" and "orientation_angle". Diameter_um values are in microns. Orientation
-        angle values are in degrees.
+    Units are typically SI (m, kg, s, K), however, some of the values listed
+    below do not use SI units. See descriptions for details.
 
     """
 
-    def __init__(self, input: MicrostructureInput, result: MicrostructureResult):
+    def __init__(
+        self, input: MicrostructureInput, result: MicrostructureResult, user_data_path: str
+    ) -> None:
         if not isinstance(input, MicrostructureInput):
             raise ValueError("Invalid input type passed to init, " + self.__class__.__name__)
         if not isinstance(result, MicrostructureResult):
             raise ValueError("Invalid result type passed to init, " + self.__class__.__name__)
+        if not user_data_path or (user_data_path == ""):
+            raise ValueError("Invalid user data path passed to init, " + self.__class__.__name__)
         self._input = input
-        self._xy_vtk = result.xy_vtk
-        self._xz_vtk = result.xz_vtk
-        self._yz_vtk = result.yz_vtk
+        self._output_path = os.path.join(user_data_path, input.id)
+        if not os.path.exists(self._output_path):  # pragma: no cover
+            os.makedirs(self._output_path)
+        self._xy_vtk = os.path.join(self._output_path, "xy.vtk")
+        with open(self._xy_vtk, "wb") as xy_vtk:
+            xy_vtk.write(result.xy_vtk)
+        self._xz_vtk = os.path.join(self._output_path, "xz.vtk")
+        with open(self._xz_vtk, "wb") as xz_vtk:
+            xz_vtk.write(result.xz_vtk)
+        self._yz_vtk = os.path.join(self._output_path, "yz.vtk")
+        with open(self._yz_vtk, "wb") as yz_vtk:
+            yz_vtk.write(result.yz_vtk)
+
         self._xy_circle_equivalence = MicrostructureSummary._get_equivalence_dict(
             result.xy_circle_equivalence
         )
@@ -154,38 +149,58 @@ class MicrostructureSummary:
 
     @property
     def input(self):
-        """Simulation input, :class:`MicrostructureInput`."""
+        """Simulation input, see :class:`MicrostructureInput`."""
         return self._input
 
-    # TODO: Change *_vtk to be local file names. Add output folder name to inputs.
     @property
-    def xy_vtk(self):
-        """Crystal structure in XY plane, contents of vtk file."""
+    def xy_vtk(self) -> str:
+        """Path to VTK file containing 2-D grain structure data in XY plane."""
         return self._xy_vtk
 
     @property
-    def xz_vtk(self):
-        """Crystal structure in XZ plane, contents of vtk file."""
+    def xz_vtk(self) -> str:
+        """Path to VTK file containing 2-D grain structure data in XZ plane."""
         return self._xz_vtk
 
     @property
-    def yz_vtk(self):
-        """Crystal structure in YZ plane, contents of vtk file."""
+    def yz_vtk(self) -> str:
+        """Path to VTK file containing 2-D grain structure data in YZ plane."""
         return self._yz_vtk
 
     @property
-    def xy_circle_equivalence(self):
-        """Circle equivalence data for XY plane."""
+    def xy_circle_equivalence(self) -> dict[str, np.array(float)]:
+        """
+        Circle equivalence data for XY plane.
+
+        Dictionary keys include ``grain_number``, ``area_fraction``, ``diameter_um``
+        and ``orientation_angle``. The ``diameter_um`` values are in microns and
+        ``orientation_angle`` values are in degrees.
+
+        """
         return self._xy_circle_equivalence
 
     @property
-    def xz_circle_equivalence(self):
-        """Circle equivalence data for XZ plane."""
+    def xz_circle_equivalence(self) -> dict[str, np.array(float)]:
+        """
+        Circle equivalence data for XZ plane.
+
+        Dictionary keys include ``grain_number``, ``area_fraction``, ``diameter_um``
+        and ``orientation_angle``. The ``diameter_um`` values are in microns and
+        ``orientation_angle`` values are in degrees.
+
+        """
         return self._xz_circle_equivalence
 
     @property
-    def yz_circle_equivalence(self):
-        """Circle equivalence data for YZ plane."""
+    def yz_circle_equivalence(self) -> dict[str, np.array(float)]:
+        """
+        Circle equivalence data for YZ plane.
+
+        Dictionary keys include ``grain_number``, ``area_fraction``, ``diameter_um``
+        and ``orientation_angle``. The ``diameter_um`` values are in microns and
+        ``orientation_angle`` values are in degrees.
+
+        """
         return self._yz_circle_equivalence
 
     @staticmethod

@@ -1,7 +1,18 @@
+# docker-compose file used to run additive server locally.
+#
+# To start the server use the following command.
+#   docker-compose up
+#
+# The server will use ./simulation_tmp for its working directory.
+# You must be on the Ansys network, either directly or via VPN, to
+# access the license server listed below.
+#
 services:
   backend:
     image: ghcr.io/pyansys/additive
     ports:
       - "50052:50052"
+    volumes:
+      - ./simulation_tmp:/tmp
     environment:
       ANSYSLMD_LICENSE_FILE: '1055@10.3.9.71'

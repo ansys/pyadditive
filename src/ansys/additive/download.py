@@ -13,7 +13,7 @@ def download_file(
     stub: SimulationServiceStub,
     remote_file_name: str,
     local_folder: str,
-    log_progress: bool = True,
+    logger: ProgressLogger = None,
 ):
     """Download a file from the server to the local host
 
@@ -22,14 +22,14 @@ def download_file(
 
     remote_file_name: str
         Path to file on the server
+
     local_folder: str
         Folder on local host to write file to
 
-    """
+    logger: ProgressLogger
+        Log message handler
 
-    logger = None
-    if log_progress:
-        logger = ProgressLogger("Download")
+    """
 
     if not os.path.isdir(local_folder):
         os.makedirs(local_folder)
