@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 # Check https://python-poetry.org/docs/pyproject/ for all available sections
 name = "ansys-additive"
-version = "0.3.6"
+version = "0.3.7"
 description = "A python client for the Ansys additive service"
 license = "MIT"
 authors = ["ANSYS, Inc. <ansys.support@ansys.com>"]
@@ -54,7 +54,7 @@ numpydoc = {version = "==1.5.0", optional = true}
 Sphinx = {version = "==5.3.0", optional = true}
 sphinx-autoapi = {version = "==2.0.0", optional = true}
 sphinx-copybutton = {version = "==0.5.1", optional = true}
-sphinx-gallery = {version = "==0.7.0", optional = true}
+sphinx-gallery = {version = "==0.10.1", optional = true}
 sphinx-autodoc-typehints = {version = "==1.19.5", optional = true}
 sphinx_design= {version = "==0.3.0", optional = true}
 sphinx-toolbox = {version = "*", optional = true}
@@ -64,7 +64,7 @@ jupyter_sphinx= {version = "0.4.0", optional = true}
 ipyvtklink = {version = "*", optional = true}
 panel = {version = "*", optional = true}
 matplotlib = {version = "==3.6.2", optional = true}
-pandoc = {version = "*", optional = true}
+pypandoc = {version = "==1.8.1", optional = true}
 enum-tools = {version = "*", optional = true}
 pyvista = {version = "0.37.0", optional = true}
 
@@ -93,7 +93,7 @@ doc = [
     "sphinx-autodoc-typehints",
     "sphinx_design",
     "matplotlib",
-    "pandoc",
+    "pypandoc",
     "enum-tools",
     "sphinx-toolbox",
 ]

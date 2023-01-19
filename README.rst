@@ -51,12 +51,34 @@ A Python client library for the Ansys additive service.
     `two factor authentication <https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/configuring-two-factor-authentication>`_
     and request to be added to the PyAnsys organization by contacting
     `pyansys.support@ansys.com <mailto:pyansys.support@ansys.com>`_.
+    You will also need to create a
+    `personal access token <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token>`_
+    with ``read:packages`` scope and `authorize it for single sign on
+    <https://docs.github.com/en/enterprise-cloud@latest/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on>`_.
 
 
-Usage
-=====
+Ansys Lab Usage
+===============
 
-First, start the service locally. If you have docker installed and have
+The easiest way to use PyAdditive is within a jupyter notebook in the `Ansys Lab
+<https://account.activedirectory.windowsazure.com/applications/signin/d95b9231-50da-45bf-badd-4afa22a5d067?tenantId=34c6ce67-15b8-4eff-80e9-52da8be89706>`_
+cloud environment.
+
+Once logged in to Ansys Lab, create a new jupyter notebook and connect to the additive service using:
+
+.. code:: python
+
+   >>> import ansys.additive as pyadditive
+   >>> additive = pyadditive.Additive()
+
+Example notebooks can found in the `Examples <https://additive.docs.pyansys.com/dev/examples/index.html>`_
+section of the `PyAdditive documentation <https://additive.docs.pyansys.com/dev/index.html>`_.
+
+
+Standalone Usage
+================
+
+To use PyAdditive in a standalone mode, first start the service locally. If you have docker installed and have
 `authenticated to ghcr.io
 <https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry>`_,
 you can start the additive service locally using ``docker`` with:
@@ -74,7 +96,7 @@ Next, connect to the service with:
 .. code:: python
 
    >>> import ansys.additive as pyadditive
-   >>> additive = pyadditive.launch_additive(ip='localhost', port=50052)
+   >>> additive = pyadditive.Additive()
 
 Installation
 ============

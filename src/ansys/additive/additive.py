@@ -17,10 +17,10 @@ from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceSt
 from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 import ansys.platform.instancemanagement as pypim
-import appdirs
 from google.protobuf.empty_pb2 import Empty
 import grpc
 
+from ansys.additive import USER_DATA_PATH
 from ansys.additive.download import download_file
 from ansys.additive.material import AdditiveMaterial
 from ansys.additive.microstructure import MicrostructureSummary
@@ -33,8 +33,6 @@ from ansys.additive.thermal_history import ThermalHistoryInput, ThermalHistorySu
 MAX_MESSAGE_LENGTH = int(256 * 1024**2)
 DEFAULT_ADDITIVE_SERVICE_PORT = 50052
 LOCALHOST = "127.0.0.1"
-APP_NAME = "ansys-pyadditive"
-COMPANY_NAME = "Ansys Inc."
 
 
 class Additive:
@@ -69,7 +67,7 @@ class Additive:
         self._simulation_stub = SimulationServiceStub(self._channel)
 
         # Setup data directory
-        self._user_data_path = appdirs.user_data_dir(APP_NAME, COMPANY_NAME)
+        self._user_data_path = USER_DATA_PATH
         if not os.path.exists(self._user_data_path):  # pragma: no cover
             os.makedirs(self._user_data_path)
         print("user data path: " + self._user_data_path)
@@ -182,7 +180,7 @@ class Additive:
 
         request = None
         if isinstance(input, ThermalHistoryInput):
-            return self._simulate_thermal_history(input, logger)
+            return self._simulate_thermal_history(input, USER_DATA_PATH, logger)
         else:
             request = input._to_simulation_request()
 
@@ -289,12 +287,17 @@ class Additive:
             if response.HasField("progress"):
                 if logger:
                     logger.log_progress(response.progress)
-                if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
+                if (
+                    response.progress.state == ProgressState.PROGRESS_STATE_ERROR
+                    and "WARN" not in response.progress.message
+                ):
                     raise Exception(response.progress.message)
             if response.HasField("thermal_history_result"):
-                path = os.path.join(out_dir, response.input.id, "coax_ave_output")
+                path = os.path.join(out_dir, input.id, "coax_ave_output")
                 local_zip = download_file(
-                    self._simulation_stub, response.remote_coax_ave_zip_file, path
+                    self._simulation_stub,
+                    response.thermal_history_result.coax_ave_zip_file,
+                    path,
                 )
                 with zipfile.ZipFile(local_zip, "r") as zip:
                     zip.extractall(path)

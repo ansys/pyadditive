@@ -53,10 +53,7 @@ machine.laser_power = 500  # W
 # specified, the thermal solver will be used to obtain the parameters prior
 # to running the microstructure solver.
 
-###############################################################################
 # Specifying microstructure inputs with thermal parameters
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 input_with_thermal = pyadditive.MicrostructureInput(
     machine=machine,
     material=material,
@@ -72,10 +69,7 @@ input_with_thermal = pyadditive.MicrostructureInput(
     melt_pool_depth=1.1e-4,  # meters (110 microns)
 )
 
-###############################################################################
 # Specifying microstructure inputs without thermal parameters
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 input_without_thermal = pyadditive.MicrostructureInput(
     machine=machine,
     material=material,
@@ -100,8 +94,9 @@ summary = additive.simulate(input_with_thermal, log_progress=False)
 # Plot Results
 # ------------
 # The microstructure simulation results include three VTK files, one for each
-# of the XY, XZ and YZ planes. The files contain data sets for grain orientation,
-# grain boundaries and grain number.
+# of the XY, XZ and YZ planes. Each of the files contains data sets for grain
+# orientation, boundaries and number. In addition, the results include grain
+# statistics. See :class:`MicrostructureSummary`.
 
 from matplotlib import colors
 from matplotlib.colors import LinearSegmentedColormap as colorMap
@@ -112,8 +107,8 @@ from matplotlib.ticker import PercentFormatter
 import pyvista as pv
 
 ###############################################################################
-# Plot grain 2D visualizations
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Plot Grain 2D Visualtions
+# ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 # Function to plot the planar data
 def plot_microstructure(
@@ -143,7 +138,7 @@ def plot_microstructure(
     return plotter
 
 
-# Read VTK data into ``pyvista.DataSet`` objects
+# Read VTK data into pyvista.DataSet objects
 xy = pv.read(summary.xy_vtk)
 xz = pv.read(summary.xz_vtk)
 yz = pv.read(summary.yz_vtk)
@@ -151,13 +146,13 @@ yz = pv.read(summary.yz_vtk)
 # Create colormap to use with boundary plot
 white_black_cmap = colorMap.from_list("whiteblack", ["white", "black"])
 
-plot_microstructure(xy, xz, yz, "GrainBoundaries", white_black_cmap).show()
-plot_microstructure(xy, xz, yz, "Orientation_(deg)", "spectral").show()
-plot_microstructure(xy, xz, yz, "GrainNumber", None).show()
+plot_microstructure(xy, xz, yz, "GrainBoundaries", white_black_cmap).show(title="Grain Boundaries")
+plot_microstructure(xy, xz, yz, "Orientation_(deg)", "spectral").show(title="Orientation °")
+plot_microstructure(xy, xz, yz, "GrainNumber", None).show(title="Grain Number")
 
 ###############################################################################
-# Plot grain statistics
-# ~~~~~~~~~~~~~~~~~~~~~
+# Plot Grain Statistics
+# ^^^^^^^^^^^^^^^^^^^^^
 
 # Function to simplify plotting grain statistics
 def add_grain_statistics_to_figure(
@@ -177,7 +172,7 @@ def add_grain_statistics_to_figure(
     orientation_axes.set_title(plane_str.upper() + " Orientation Angle")
 
 
-# Create figure
+# Create figure for grain statistics
 fig, axs = plt.subplots(3, 2, figsize=(10, 15), tight_layout=True)
 fig.suptitle("Circle Equivalence Grain Data", fontsize=16)
 add_grain_statistics_to_figure(summary.xy_circle_equivalence, "xy", axs[0][0], axs[0][1])
