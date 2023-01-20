@@ -27,7 +27,8 @@ additive = pyadditive.Additive()
 
 print(additive.get_materials_list())
 
-# Obtain the parameters for a single material using one of the names in the list.
+###############################################################################
+# Obtain the parameters for a single material using one of the names from the list.
 material = additive.get_material("17-4PH")
 
 ###############################################################################
@@ -39,9 +40,10 @@ material = additive.get_material("17-4PH")
 
 machine = pyadditive.AdditiveMachine()
 
-# See available parameters
+# Show available parameters
 print(machine)
 
+###############################################################################
 # Set laser power and scan speed
 machine.scan_speed = 1  # m/s
 machine.laser_power = 500  # W
@@ -56,7 +58,7 @@ input = pyadditive.SingleBeadInput(
     machine=machine,
     material=material,
     id="single-bead-example",
-    bead_length=0.001,  # meters (1 mm)
+    bead_length=0.001,  # meters
     bead_type=pyadditive.BeadType.BEAD_ON_POWDER,  # See :class:`BeadType`
 )
 

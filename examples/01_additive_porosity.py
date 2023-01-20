@@ -24,7 +24,8 @@ additive = pyadditive.Additive()
 
 print(additive.get_materials_list())
 
-# Obtain the parameters for a single material using one of the names in the list.
+###############################################################################
+# Obtain the parameters for a single material using one of the names from the list.
 material_name = "17-4PH"
 material = additive.get_material(material_name)
 
@@ -37,12 +38,13 @@ material = additive.get_material(material_name)
 
 machine = pyadditive.AdditiveMachine()
 
-# See available parameters
+# Show available parameters
 print(machine)
 
+###############################################################################
 # Set laser power and scan speed
-machine.scan_speed = 1.2  # meters/sec
-machine.laser_power = 350  # Watts
+machine.scan_speed = 1.2  # m/s
+machine.laser_power = 250  # W
 
 ###############################################################################
 # Specify Porosity Simulation Inputs

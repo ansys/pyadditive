@@ -25,7 +25,8 @@ additive = pyadditive.Additive()
 
 print(additive.get_materials_list())
 
-# Obtain the parameters for a single material using one of the names in the list.
+###############################################################################
+# Obtain the parameters for a single material using one of the names from the list.
 material = additive.get_material("17-4PH")
 
 ###############################################################################
@@ -37,9 +38,10 @@ material = additive.get_material("17-4PH")
 
 machine = pyadditive.AdditiveMachine()
 
-# See available parameters
+# Show available parameters
 print(machine)
 
+###############################################################################
 # Set laser power and scan speed
 machine.scan_speed = 1  # m/s
 machine.laser_power = 500  # W

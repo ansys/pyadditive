@@ -43,7 +43,6 @@ stl_file = pyadditive.StlFile(stl_name)
 build_file_name = examples.download_small_wedge_slm_build_file()
 build_file = pyadditive.BuildFile(pyadditive.MachineType.SLM, build_file_name)
 
-
 ###############################################################################
 # Material Selection
 # ------------------
@@ -52,7 +51,8 @@ build_file = pyadditive.BuildFile(pyadditive.MachineType.SLM, build_file_name)
 
 print(additive.get_materials_list())
 
-# Obtain the parameters for a single material using one of the names in the list.
+###############################################################################
+# Obtain the parameters for a single material using one of the names from the list.
 material = additive.get_material("17-4PH")
 
 ###############################################################################
@@ -64,9 +64,10 @@ material = additive.get_material("17-4PH")
 
 machine = pyadditive.AdditiveMachine()
 
-# See available parameters
+# Show available parameters
 print(machine)
 
+###############################################################################
 # Set laser power and scan speed
 machine.scan_speed = 1  # m/s
 machine.laser_power = 500  # W
