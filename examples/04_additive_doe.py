@@ -32,11 +32,13 @@ additive = pyadditive.Additive()
 bead_length = 0.001
 bead_type = pyadditive.BeadType.BEAD_ON_POWDER
 material = additive.get_material("17-4PH")
-powers = [50, 350, 700]
-scan_speeds = [0.35, 1.25, 2.5]
+initial_powers = [50, 350, 700]
+initial_scan_speeds = [0.35, 1.25, 2.5]
 # Use a comprehension to create a list of 9 machines
 machines = [
-    pyadditive.AdditiveMachine(laser_power=p, scan_speed=s) for p in powers for s in scan_speeds
+    pyadditive.AdditiveMachine(laser_power=p, scan_speed=s)
+    for p in initial_powers
+    for s in initial_scan_speeds
 ]
 inputs = []
 for count, machine in enumerate(machines):
@@ -60,7 +62,7 @@ summaries = []
 completed = 0
 total_simulations = len(inputs)
 print(f"Running {total_simulations} simulations")
-with concurrent.futures.ThreadPoolExecutor(10) as executor:
+with concurrent.futures.ThreadPoolExecutor(6) as executor:
     futures = []
     for input in inputs:
         futures.append(executor.submit(additive.simulate, input=input, log_progress=False))
@@ -74,8 +76,8 @@ with concurrent.futures.ThreadPoolExecutor(10) as executor:
 # Plot Individual Meltpool Statistics
 # -----------------------------------
 summaries.sort(key=lambda s: (s.input.machine.laser_power, s.input.machine.scan_speed))
-nrows = 3
-ncols = 3
+nrows = len(initial_powers)
+ncols = len(initial_scan_speeds)
 fig, axs = plt.subplots(nrows, ncols, figsize=(15, 15), layout="constrained")
 for r in range(nrows):
     for c in range(ncols):
