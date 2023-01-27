@@ -13,6 +13,9 @@ env:
   DOCUMENTATION_CNAME: "additive.docs.pyansys.com"
   LIBRARY_NAME: "ansys-additive"
   LIBRARY_NAMESPACE: "ansys.additive"
+  ANSYS_PRODUCT_IMAGE: "ghcr.io/pyansys/additive:latest"
+  ANSYS_PRODUCT_CONTAINER: "ansys-additive-container"
+
   PYANSYS_PYPI_PRIVATE_PAT: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
   PIP_INDEX_URL: "https://${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/"
 
@@ -71,28 +74,53 @@ jobs:
 
   doc-build:
     name: "Building library documentation"
-    runs-on: ubuntu-latest
+    runs-on:
+      group: "Default Larger Runners"
+      labels: ubuntu-latest-16-cores
     needs: [doc-style]
     steps:
-      - name: Install OS packages
+      - name: "Install system dependencies"
         run: |
-          sudo apt update
-          sudo apt install pandoc
+          sudo apt-get update
+          sudo apt-get install pandoc
 
-      - name: Start local server to use when building examples
+      - name: "Login into the GitHub registry container"
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Download the Docker image for Ansys Additive"
         run: |
-          echo "${{ secrets.PYANSYS_CI_BOT_PACKAGE_TOKEN }}" | docker login -u pyansys-ci-bot --password-stdin  ghcr.io
-          docker run --rm --detach -p 50052:50052 --name pyadditive -e "ANSYSLMD_LICENSE_FILE=1055@${{ secrets.LICENSE_SERVER }}" ghcr.io/pyansys/additive
+          docker pull ${{ env.ANSYS_PRODUCT_IMAGE }}
 
-      - name: Setup headless display
+      - name: "Start product server"
+        run: |
+          docker run --detach \
+            --name ${{ env.ANSYS_PRODUCT_CONTAINER }} \
+            -e ANSYSLMD_LICENSE_FILE=1055@${{ secrets.LICENSE_SERVER }} \
+            -p 50052:50052 \
+            ${{ env.ANSYS_PRODUCT_IMAGE }}
+
+      - name: "Setup headless display"
         uses: pyvista/setup-headless-display-action@v1
 
       - name: "Run Ansys documentation building action"
         uses: pyansys/actions/doc-build@v2
 
-      - name: Shut down server
+      - name: "Collect logs and shutdown server"
         if: ${{ always() }}
-        run: docker stop pyadditive
+        run: |
+          docker stop ${{ env.ANSYS_PRODUCT_CONTAINER }}
+          docker logs ${{ env.ANSYS_PRODUCT_CONTAINER }} >> docker-logs.txt
+          docker rm ${{ env.ANSYS_PRODUCT_CONTAINER }}
+
+      - name: "Upload container logs as artifacts"
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-logs.txt
+          path: docker-logs.txt
 
   doc-deploy-dev:
     name: "Deploy developers documentation"

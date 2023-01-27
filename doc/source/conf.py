@@ -96,6 +96,8 @@ sphinx_gallery_conf = {
     "image_scrapers": ("pyvista", "matplotlib"),
     "ignore_pattern": "flycheck*",
     "thumbnail_size": (350, 350),
+    # Set plot_gallery to False for building docs without running examples.
+    # "plot_gallery": False,
 }
 
 # Intersphinx mapping
@@ -142,8 +144,16 @@ numpydoc_validation_checks = {
 }
 
 
-# static path
+# Add any paths that contain custom static files (such as style sheets) here,
+# relative to this directory. They are copied after the builtin static files,
+# so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    "custom.css",
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

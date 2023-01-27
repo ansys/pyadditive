@@ -1,7 +1,5 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 """
-.. _ref_example_doe:
-
 Design Of Experiments
 =====================
 
