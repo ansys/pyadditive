@@ -4,7 +4,7 @@ import os
 from ansys.api.additive.v0.additive_domain_pb2 import (
     CharacteristicWidthDataPoint,
     MeltPoolTimeStep,
-    ThermalCharacteristicDataPoint,
+    ThermalPropertiesDataPoint,
 )
 
 from ansys.additive.machine import AdditiveMachine
@@ -65,12 +65,12 @@ def get_test_material() -> AdditiveMaterial:
         characteristic_width_data=[
             CharacteristicWidthDataPoint(
                 characteristic_width=133,
-                power=134,
-                speed=135,
+                laser_power=134,
+                scan_speed=135,
             )
         ],
         thermal_properties_data=[
-            ThermalCharacteristicDataPoint(
+            ThermalPropertiesDataPoint(
                 density=136,
                 density_ratio=137,
                 specific_heat=138,

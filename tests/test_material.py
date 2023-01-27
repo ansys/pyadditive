@@ -13,7 +13,7 @@ from ansys.additive.material import (
 
 def test_CharacteristicWidthDataPoint_setters_raise_exception_for_invalid_value():
     # arrange
-    props = ["characteristic_width", "power", "speed"]
+    props = ["characteristic_width", "laser_power", "scan_speed"]
     point = CharacteristicWidthDataPoint()
 
     # act, assert
@@ -24,8 +24,10 @@ def test_CharacteristicWidthDataPoint_setters_raise_exception_for_invalid_value(
 
 def test_CharacteristicWidthDataPoint_repr_returns_expected_string():
     # arrange
-    point = CharacteristicWidthDataPoint(characteristic_width=1, power=2, speed=3)
-    expected_str = "CharacteristicWidthDataPoint\ncharacteristic_width: 1\npower: 2\nspeed: 3\n"
+    point = CharacteristicWidthDataPoint(laser_power=2, scan_speed=3, characteristic_width=1)
+    expected_str = (
+        "CharacteristicWidthDataPoint\nlaser_power: 2\nscan_speed: 3\ncharacteristic_width: 1\n"
+    )
 
     # act, assert
     assert expected_str == point.__repr__()
@@ -35,8 +37,8 @@ def test_from_characteristic_width_data_point_message_creates_CharacteristicWidt
     # arrange
     msg = CharacteristicWidthDataPointMessage(
         characteristic_width=1,
-        power=2,
-        speed=3,
+        laser_power=2,
+        scan_speed=3,
     )
 
     # act
@@ -45,8 +47,8 @@ def test_from_characteristic_width_data_point_message_creates_CharacteristicWidt
     # assert
     assert isinstance(point, CharacteristicWidthDataPoint)
     assert point.characteristic_width == 1
-    assert point.power == 2
-    assert point.speed == 3
+    assert point.laser_power == 2
+    assert point.scan_speed == 3
 
 
 @pytest.mark.parametrize(
@@ -72,8 +74,8 @@ def test_to_characteristic_width_data_point_message_returns_CharacteristicWidthD
     # arrange
     point = CharacteristicWidthDataPoint(
         characteristic_width=1,
-        power=2,
-        speed=3,
+        laser_power=2,
+        scan_speed=3,
     )
 
     # act
@@ -82,8 +84,8 @@ def test_to_characteristic_width_data_point_message_returns_CharacteristicWidthD
     # assert
     assert isinstance(msg, CharacteristicWidthDataPointMessage)
     assert msg.characteristic_width == 1
-    assert msg.power == 2
-    assert msg.speed == 3
+    assert msg.laser_power == 2
+    assert msg.scan_speed == 3
 
 
 def test_ThermalPropertiesDataPoint_setters_raise_exception_for_invalid_value():
@@ -221,14 +223,14 @@ def test_from_material_message_creates_AdditiveMaterial():
         thermal_expansion_coefficient=31,
         vaporization_temperature=32,
     )
-    msg.characteristic_width_data_set.characteristic_width_data_points.append(
+    msg.characteristic_width_data_points.append(
         CharacteristicWidthDataPointMessage(
             characteristic_width=1,
-            power=2,
-            speed=3,
+            laser_power=2,
+            scan_speed=3,
         )
     )
-    msg.thermal_characteristic_data_set.thermal_characteristic_data_points.append(
+    msg.thermal_properties_data_points.append(
         ThermalPropertiesDataPointMessage(
             density=1,
             density_ratio=2,
@@ -281,8 +283,8 @@ def test_from_material_message_creates_AdditiveMaterial():
     assert len(am.characteristic_width_data) == 1
     cw = am.characteristic_width_data[0]
     assert cw.characteristic_width == 1
-    assert cw.power == 2
-    assert cw.speed == 3
+    assert cw.laser_power == 2
+    assert cw.scan_speed == 3
     assert len(am.thermal_properties_data) == 1
     tc = am.thermal_properties_data[0]
     assert tc.density == 1
@@ -294,7 +296,7 @@ def test_from_material_message_creates_AdditiveMaterial():
     assert tc.thermal_conductivity_ratio == 7
 
 
-def test_to_material_message_returns_material_message():
+def test_to_material_message_returns_MaterialMessage():
     # arrange
     am = AdditiveMaterial()
     am.absorptivity_maximum = 1
@@ -333,8 +335,8 @@ def test_to_material_message_returns_material_message():
     am.characteristic_width_data.append(
         CharacteristicWidthDataPoint(
             characteristic_width=1,
-            power=2,
-            speed=3,
+            laser_power=2,
+            scan_speed=3,
         )
     )
     am.thermal_properties_data.append(
@@ -387,13 +389,13 @@ def test_to_material_message_returns_material_message():
     assert msg.support_yield_strength_ratio == 30
     assert msg.thermal_expansion_coefficient == 31
     assert msg.vaporization_temperature == 32
-    assert len(msg.characteristic_width_data_set.characteristic_width_data_points) == 1
-    cw = msg.characteristic_width_data_set.characteristic_width_data_points[0]
+    assert len(msg.characteristic_width_data_points) == 1
+    cw = msg.characteristic_width_data_points[0]
     assert cw.characteristic_width == 1
-    assert cw.power == 2
-    assert cw.speed == 3
-    assert len(msg.thermal_characteristic_data_set.thermal_characteristic_data_points) == 1
-    tc = msg.thermal_characteristic_data_set.thermal_characteristic_data_points[0]
+    assert cw.laser_power == 2
+    assert cw.scan_speed == 3
+    assert len(msg.thermal_properties_data_points) == 1
+    tc = msg.thermal_properties_data_points[0]
     assert tc.density == 1
     assert tc.density_ratio == 2
     assert tc.specific_heat == 3

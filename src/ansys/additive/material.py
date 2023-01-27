@@ -5,7 +5,7 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
     CharacteristicWidthDataPoint as CharacteristicWidthDataPointMessage,
 )
 from ansys.api.additive.v0.additive_domain_pb2 import (
-    ThermalCharacteristicDataPoint as ThermalPropertiesDataPointMessage,
+    ThermalPropertiesDataPoint as ThermalPropertiesDataPointMessage,
 )
 from ansys.api.additive.v0.additive_domain_pb2 import AdditiveMaterial as MaterialMessage
 
@@ -15,14 +15,20 @@ class CharacteristicWidthDataPoint:
 
     Additive material definitions include a file containing a characteristic width
     lookup table which allows a given laser speed and power to be correlated to a
-    characteristic melt pool width.
+    characteristic melt pool width. This class represents a single row in the
+    lookup table.
+
+    Units are SI (m, kg, s, K) unless otherwise noted.
 
     """
 
-    def __init__(self, *, characteristic_width: float = 0, power: float = 0, speed: float = 0):
+    def __init__(
+        self, *, laser_power: float = 0, scan_speed: float = 0, characteristic_width: float = 0
+    ):
+        """Create a ``CharacteristicWidthDataPoint``."""
+        self._laser_power = laser_power
+        self._scan_speed = scan_speed
         self._characteristic_width = characteristic_width
-        self._power = power
-        self._speed = speed
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
@@ -51,28 +57,28 @@ class CharacteristicWidthDataPoint:
         self._characteristic_width = value
 
     @property
-    def power(self) -> float:
+    def laser_power(self) -> float:
         """Laser power (W)."""
-        return self._power
+        return self._laser_power
 
-    @power.setter
-    def power(self, value: float):
+    @laser_power.setter
+    def laser_power(self, value: float):
         """Set power value."""
         if value < 0:
             raise ValueError("Power must not be negative.")
-        self._power = value
+        self._laser_power = value
 
     @property
-    def speed(self) -> float:
+    def scan_speed(self) -> float:
         """Laser scan speed (m/s)."""
-        return self._speed
+        return self._scan_speed
 
-    @speed.setter
-    def speed(self, value: float):
+    @scan_speed.setter
+    def scan_speed(self, value: float):
         """Set speed value."""
         if value < 0:
             raise ValueError("Speed must not be negative.")
-        self._speed = value
+        self._scan_speed = value
 
     @staticmethod
     def _from_characteristic_width_data_point_message(msg: CharacteristicWidthDataPointMessage):
@@ -99,11 +105,14 @@ class CharacteristicWidthDataPoint:
 
 
 class ThermalPropertiesDataPoint:
-    """Container for a thermal characteristic data point.
+    """
+    Container for a temperature dependent properties.
 
     Additive material definitions include a file containing a lookup table
     which describes the material's thermal properties at different temperatures.
-    This class represents a single tuple in the lookup table.
+    This class represents a single row in the lookup table.
+
+    Units are SI (m, kg, s, K) unless otherwise noted.
 
     """
 
@@ -118,6 +127,7 @@ class ThermalPropertiesDataPoint:
         thermal_conductivity: float = 0,
         thermal_conductivity_ratio: float = 0
     ):
+        """Create a ``ThermalPropertiesDataPoint``."""
         self._density = density
         self._density_ratio = density_ratio
         self._specific_heat = specific_heat
@@ -288,6 +298,7 @@ class AdditiveMaterial:
         characteristic_width_data: list[CharacteristicWidthDataPoint] = None,
         thermal_properties_data: list[ThermalPropertiesDataPoint] = None
     ):
+        """Create an ``AdditiveMaterial``."""
         self._absorptivity_maximum = absorptivity_maximum
         self._absorptivity_minimum = absorptivity_minimum
         self._absorptivity_powder_coefficient_a = absorptivity_powder_coefficient_a
@@ -728,11 +739,11 @@ class AdditiveMaterial:
         for p in material.__dict__:
             if p != "_characteristic_width_data" and p != "_thermal_properties_data":
                 setattr(material, p, getattr(msg, p.replace("_", "", 1)))
-        for c in msg.characteristic_width_data_set.characteristic_width_data_points:
+        for c in msg.characteristic_width_data_points:
             material.characteristic_width_data.append(
                 CharacteristicWidthDataPoint._from_characteristic_width_data_point_message(c)
             )
-        for t in msg.thermal_characteristic_data_set.thermal_characteristic_data_points:
+        for t in msg.thermal_properties_data_points:
             material.thermal_properties_data.append(
                 ThermalPropertiesDataPoint._from_thermal_properties_data_point_message(t)
             )
@@ -745,11 +756,9 @@ class AdditiveMaterial:
             if p != "_characteristic_width_data" and p != "_thermal_properties_data":
                 setattr(msg, p.replace("_", "", 1), getattr(self, p))
         for c in self.characteristic_width_data:
-            msg.characteristic_width_data_set.characteristic_width_data_points.append(
+            msg.characteristic_width_data_points.append(
                 c._to_characteristic_width_data_point_message()
             )
         for t in self.thermal_properties_data:
-            msg.thermal_characteristic_data_set.thermal_characteristic_data_points.append(
-                t._to_thermal_properties_data_point_message()
-            )
+            msg.thermal_properties_data_points.append(t._to_thermal_properties_data_point_message())
         return msg
