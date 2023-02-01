@@ -229,6 +229,34 @@ class Additive:
         result = self._materials_stub.GetMaterial(request)
         return AdditiveMaterial._from_material_message(result)
 
+    def load_material(
+        parameters_file: str, thermal_lookup_file: str, cw_lookup_file: str
+    ) -> AdditiveMaterial:
+        """
+        Load a user provided material definition.
+
+        Parameters
+        ----------
+
+        parameters_file: str
+            Name of `json file containing material parameters
+            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/add_beta/add_print_udm_tool_create_tables.html>`_
+
+        thermal_lookup_file: str
+            Name of `CSV file containing a lookup table for thermal dependent properties
+            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/add_beta/add_print_udm_create_mat_lookup.html>`_
+
+        cw_lookup_file: str
+            Name of `CSV file containing a lookup table for characteristic melt pool width
+            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/add_beta/add_print_udm_tool_find_cw.html>`_
+
+        """
+        material = AdditiveMaterial()
+        material._load_parameters(parameters_file)
+        material._load_thermal_properties(thermal_lookup_file)
+        material._load_characteristic_width(cw_lookup_file)
+        return material
+
     def __file_upload_reader(
         self, file_name: str, chunk_size=2 * 1024 * 1024
     ) -> Iterator[UploadFileRequest]:

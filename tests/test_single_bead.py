@@ -91,7 +91,7 @@ def test_SingleBeadSummary_init_raises_exception_for_invalid_melt_pool_message(
         SingleBeadSummary(invalid_obj, MeltPoolMessage())
 
 
-def test_SingleBeadInput__to_simulation_request_assigns_values():
+def test_SingleBeadInput_to_simulation_request_assigns_values():
     # arrange
     machine = AdditiveMachine()
     machine.laser_power = 99

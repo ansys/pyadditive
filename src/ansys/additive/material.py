@@ -1,5 +1,8 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 import collections
+import csv
+import json
+import re
 
 from ansys.api.additive.v0.additive_domain_pb2 import (
     CharacteristicWidthDataPoint as CharacteristicWidthDataPointMessage,
@@ -46,7 +49,7 @@ class CharacteristicWidthDataPoint:
 
     @property
     def characteristic_width(self) -> float:
-        """Characteristic melt pool width for a given laser power and speed (m)."""
+        """Characteristic melt pool width for a given laser power and scan speed (m)."""
         return self._characteristic_width
 
     @characteristic_width.setter
@@ -710,7 +713,7 @@ class AdditiveMaterial:
     def characteristic_width_data(self, value: list[CharacteristicWidthDataPoint]):
         """Set characteristic_width_data."""
         if not isinstance(value, collections.abc.Sequence):
-            raise ValueError(
+            raise TypeError(
                 "Invalid object type, {}, passed to characteristic_width_data()".format(type(value))
             )
         self._characteristic_width_data = value
@@ -724,7 +727,7 @@ class AdditiveMaterial:
     def thermal_properties_data(self, value: list[ThermalPropertiesDataPoint]):
         """Set thermal_properties_data."""
         if not isinstance(value, collections.abc.Sequence):
-            raise ValueError(
+            raise TypeError(
                 "Invalid object type, {}, passed to thermal_properties_data()".format(type(value))
             )
         self._thermal_properties_data = value
@@ -762,3 +765,51 @@ class AdditiveMaterial:
         for t in self.thermal_properties_data:
             msg.thermal_properties_data_points.append(t._to_thermal_properties_data_point_message())
         return msg
+
+    def _load_parameters(self, parameters_file: str):
+        """Load material parameters from a json file."""
+        with open(parameters_file, "r") as f:
+            data = json.load(f)
+        self.name = data["name"]
+        parameters = data["configuration"]
+        # Convert camelCase to snake_case
+        pattern = re.compile(r"(?<!^)(?=[A-Z])")
+        for p in parameters:
+            if p != "materialName":
+                name = pattern.sub("_", p).lower()
+                name = name.replace("_coeff_", "_coefficient_")
+                setattr(self, name, parameters[p])
+
+    def _load_thermal_properties(self, thermal_lookup_file: str):
+        """Load thermal properties from a csv file."""
+        with open(thermal_lookup_file, "r") as f:
+            reader = csv.reader(f)
+            self.thermal_properties_data.clear()
+            next(reader)  # skip header
+            for row in reader:
+                self.thermal_properties_data.append(
+                    ThermalPropertiesDataPoint(
+                        temperature=float(row[0]),
+                        thermal_conductivity=float(row[1]),
+                        specific_heat=float(row[2]),
+                        density=float(row[3]),
+                        thermal_conductivity_ratio=float(row[4]),
+                        density_ratio=float(row[5]),
+                        specific_heat_ratio=float(row[6]),
+                    )
+                )
+
+    def _load_characteristic_width(self, cw_lookup_file: str):
+        """Load characteristic width values from a csv file."""
+        with open(cw_lookup_file, "r") as f:
+            reader = csv.reader(f)
+            self.characteristic_width_data.clear()
+            next(reader)
+            for row in reader:
+                self.characteristic_width_data.append(
+                    CharacteristicWidthDataPoint(
+                        scan_speed=float(row[0]),
+                        laser_power=float(row[1]),
+                        characteristic_width=float(row[2]),
+                    )
+                )
