@@ -291,7 +291,7 @@ Start the server using the following command from the root folder of the project
 
 .. code:: bash
 
-   docker-compose up
+   docker compose up
 
 Open a jupyter notebook in VS Code and execute it or start jupyter lab using the following
 commands.

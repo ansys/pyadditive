@@ -63,10 +63,10 @@ input = pyadditive.PorosityInput(
 # Run Simulation
 # --------------
 # Use the ``simulate`` method of the ``additive`` object to run the simulation.
+# The ``simulate`` method returns a list of summary objects so we
+# take the first element of the list.
 
-# NOTE: Change the log_progress parameter to True or remove it altogether when
-# using this example interactively.
-summary = additive.simulate(input, log_progress=False)
+summary = additive.simulate(input)[0]
 
 ###############################################################################
 # Print Results
@@ -74,9 +74,9 @@ summary = additive.simulate(input, log_progress=False)
 # The result object has void_ratio, powder_ratio and solid_ratio properties.
 
 print(
-    f"For {material_name} with laser power of {summary.input.machine.laser_power}"
-    + f" and scan speed of {summary.input.machine.scan_speed}:"
+    f"For {material_name} with laser power of {summary.input.machine.laser_power} W"
+    + f" and scan speed of {summary.input.machine.scan_speed} m/s:"
 )
-print(f"    solid ratio = {summary.solid_ratio}")
-print(f"    powder ratio = {summary.powder_ratio}")
-print(f"    void ratio = {summary.void_ratio}")
+print(f"    solid ratio = {round(summary.solid_ratio, 5)}")
+print(f"    powder ratio = {round(summary.powder_ratio, 5)}")
+print(f"    void ratio = {round(summary.void_ratio, 5)}")

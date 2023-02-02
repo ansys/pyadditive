@@ -44,7 +44,7 @@ print(machine)
 ###############################################################################
 # Set laser power and scan speed
 machine.scan_speed = 1  # m/s
-machine.laser_power = 500  # W
+machine.laser_power = 300  # W
 
 ###############################################################################
 # Specify Single Bead Simulation Inputs
@@ -56,7 +56,7 @@ input = pyadditive.SingleBeadInput(
     machine=machine,
     material=material,
     id="single-bead-example",
-    bead_length=0.001,  # meters
+    bead_length=0.0012,  # meters
     bead_type=pyadditive.BeadType.BEAD_ON_POWDER,  # See :class:`BeadType`
 )
 
@@ -64,10 +64,10 @@ input = pyadditive.SingleBeadInput(
 # Run Simulation
 # --------------
 # Use the ``simulate`` method of the ``additive`` object to run the simulation.
+# The ``simulate`` method returns a list of summary objects so we
+# take the first element of the list.
 
-# NOTE: Change the log_progress parameter to True or remove it altogether when
-# using this example interactively.
-summary = additive.simulate(input, log_progress=False)
+summary = additive.simulate(input)[0]
 
 ###############################################################################
 # Plot Melt Pool Statistics
@@ -82,6 +82,8 @@ ax.plot(mp.laser_x, mp.depth, label="depth")
 ax.plot(mp.laser_x, mp.reference_width, label="reference_width")
 ax.plot(mp.laser_x, mp.reference_depth, label="reference_depth")
 ax.legend()
+ax.set_xlabel("Bead Length (m)")
+ax.set_ylabel("Melt Pool (m)")
 ax.set_title("Melt Pool Statistics")
 
 plt.show()

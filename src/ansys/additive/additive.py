@@ -5,6 +5,7 @@
 
     This module contains the Additive class which interacts with the Additive service.
 """
+import concurrent.futures
 import hashlib
 import logging
 import os
@@ -87,7 +88,11 @@ class Additive:
                 log_file = "instance.log"
             logging.basicConfig(filename=log_file, level=numeric_level)
         else:
-            logging.basicConfig(level=numeric_level)
+            logging.basicConfig(
+                level=numeric_level,
+                format="%(asctime)s %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S",
+            )
         return logging.getLogger(__name__)
 
     def _create_channel(self, ip: str = None, port: int = None, product_version: str = None):
@@ -155,27 +160,62 @@ class Additive:
             return self._channel._channel.target().decode()
         return ""
 
-    def simulate(self, input, log_progress: bool = True):
+    def simulate(self, inputs):
         """Execute an additive simulation.
 
         Parameters
         ----------
-        input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput
-            Parameters to use during simulation.
+        inputs: :class:`SingleBeadInput`, :class:`PorosityInput`,
+        :class:`MicrostructureInput`, :class:`ThermalHistoryInput`
+        or a list of these input types
+            Parameters to use for simulation(s).
 
-        log_progress: bool
+
+        Returns
+        -------
+        A list containing one or more of the following summaries.
+        :class:`SingleBeadSummary`, :class:`PorositySummary`,
+        :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`
+
+        """
+        if type(inputs) is not list:
+            result = self._simulate(inputs, show_progress=True)
+            return [result]
+
+        summaries = []
+        completed = 0
+        total_simulations = len(inputs)
+        logging.info(f"Executing {total_simulations} simulations")
+        with concurrent.futures.ThreadPoolExecutor(10) as executor:
+            futures = []
+            for input in inputs:
+                futures.append(executor.submit(self._simulate, input=input, show_progress=False))
+            for future in concurrent.futures.as_completed(futures):
+                summaries.append(future.result())
+                completed += 1
+                logging.info(f"Completed {completed} of {total_simulations} simulations")
+        return summaries
+
+    def _simulate(self, input, show_progress: bool = False):
+        """Execute a single simulation.
+
+        Parameters
+        ----------
+        input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput
+            Parameters to use for simulation.
+
+        show_progress: bool
             If ``True``, send progress updates to user interface.
 
         Returns
         -------
-        :class:`SingleBeadSummary`
-        or :class:`PorositySummary`
-        or :class:`MicrostructureSummary`
-        or :class:`ThermalHistorySummary`
+        One of the follow summary objects.
+        :class:`SingleBeadSummary`, :class:`PorositySummary`,
+        :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`
 
         """
         logger = None
-        if log_progress:
+        if show_progress:
             logger = ProgressLogger("Simulation")
 
         request = None

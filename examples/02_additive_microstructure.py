@@ -85,10 +85,10 @@ input_without_thermal = pyadditive.MicrostructureInput(
 # Run Simulation
 # --------------
 # Use the ``simulate`` method of the ``additive`` object to run the simulation.
+# The ``simulate`` method returns a list of summary objects so we
+# take the first element of the list.
 
-# NOTE: Change the log_progress parameter to True or remove it altogether when
-# using this example interactively.
-summary = additive.simulate(input_with_thermal, log_progress=False)
+summary = additive.simulate(input_with_thermal)[0]
 
 ###############################################################################
 # Plot Results

@@ -11,8 +11,6 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 
 First, connect to the Additive service.
 """
-import concurrent.futures
-
 from matplotlib.colors import LinearSegmentedColormap as colorMap
 import matplotlib.pyplot as plt
 import numpy as np
@@ -53,26 +51,15 @@ for count, machine in enumerate(machines):
 ###############################################################################
 # Run Simulations
 # ---------------
-# We run the simulations in parallel and store the summaries as each simulation
-# completes.
-# *NOTE: At present it is not recommended to run more than 10 concurrent simulations.*
-summaries = []
-completed = 0
-total_simulations = len(inputs)
-print(f"Running {total_simulations} simulations")
-with concurrent.futures.ThreadPoolExecutor(6) as executor:
-    futures = []
-    for input in inputs:
-        futures.append(executor.submit(additive.simulate, input=input, log_progress=False))
-    for future in concurrent.futures.as_completed(futures):
-        summaries.append(future.result())
-        completed += 1
-        print(f"Completed {completed} of {total_simulations} simulations")
+# The ``simulate`` method returns a list of summaries. In this case they are of
+# type :class:`SingleBeadSummary`.
 
+summaries = additive.simulate(inputs)
 
 ###############################################################################
 # Plot Individual Meltpool Statistics
 # -----------------------------------
+
 summaries.sort(key=lambda s: (s.input.machine.laser_power, s.input.machine.scan_speed))
 nrows = len(initial_powers)
 ncols = len(initial_scan_speeds)
@@ -87,8 +74,8 @@ for r in range(nrows):
         axs[r][c].plot(mp.laser_x, mp.reference_depth, label="ref depth")
         axs[r][c].plot(mp.laser_x, mp.length, label="length")
         axs[r][c].legend()
-        axs[r][c].set_xlabel(f"Bead Length (m)")  # Add an x-label to the axes.
-        axs[r][c].set_ylabel(f"(m)")  # Add a y-label to the axes.
+        axs[r][c].set_xlabel(f"Bead Length (m)")
+        axs[r][c].set_ylabel(f"Melt Pool (m)")
         title = (
             "Power "
             + str(summaries[i].input.machine.laser_power)
@@ -96,7 +83,7 @@ for r in range(nrows):
             + str(summaries[i].input.machine.scan_speed)
             + "m/s"
         )
-        axs[r][c].set_title(title)  # Add a title to the axes.
+        axs[r][c].set_title(title)
 
 
 ###############################################################################

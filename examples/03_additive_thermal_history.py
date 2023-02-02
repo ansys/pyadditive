@@ -69,7 +69,6 @@ print(machine)
 # Set laser power and scan speed
 machine.scan_speed = 1  # m/s
 machine.laser_power = 500  # W
-machine.layer_thickness = 5e-5  # m (50 microns)
 
 ###############################################################################
 # Specify Thermal History Simulation Inputs
@@ -97,10 +96,10 @@ input = pyadditive.ThermalHistoryInput(
 # Run Simulation
 # --------------
 # Use the ``simulate`` method of the ``additive`` object to run the simulation.
+# The ``simulate`` method returns a list of summary objects so we
+# take the first element of the list.
 
-# NOTE: Change the log_progress parameter to True or remove it altogether when
-# using this example interactively.
-summary = additive.simulate(input, log_progress=False)
+summary = additive.simulate(input)[0]
 
 ###############################################################################
 # Plot Thermal History

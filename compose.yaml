@@ -1,7 +1,7 @@
-# docker-compose file used to run additive server locally.
+# Compose file used to run additive server locally.
 #
 # To start the server use the following command.
-#   docker-compose up
+#   docker compose up
 #
 # The server will use ./simulation_tmp for its working directory.
 # You must be on the Ansys network, either directly or via VPN, to
@@ -9,7 +9,7 @@
 #
 services:
   backend:
-    image: ghcr.io/pyansys/additive
+    image: ghcr.io/pyansys/additive:latest
     ports:
       - "50052:50052"
     volumes:

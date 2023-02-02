@@ -1,5 +1,6 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 import logging
+from os import getenv
 
 from ansys.api.additive.v0.additive_domain_pb2 import Progress, ProgressState
 from tqdm import tqdm
@@ -12,6 +13,9 @@ class ProgressLogger:
         self._last_context = "Initializing"
 
     def log_progress(self, progress: Progress):
+        if getenv("GENERATING_DOCS"):
+            # Don't send  progress when generating docs
+            return
         if not hasattr(self, "_pbar"):
             self._pbar = tqdm(total=100, colour="green", desc=self._last_context, mininterval=0.001)
 
