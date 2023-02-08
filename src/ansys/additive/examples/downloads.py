@@ -11,6 +11,7 @@ import ansys.additive as pyadditive
 EXAMPLES_URI = "https://github.com/pyansys/example-data/raw/master"
 PARTS_FOLDER = "pyadditive/part-only"
 BUILD_FILES_FOLDER = "pyadditive/buildfiles"
+MATERIAL_TUNING_FOLDER = "pyadditive/material_tuning_input"
 
 
 def get_ext(filename):
@@ -26,10 +27,16 @@ def delete_downloads():
     return True
 
 
-def decompress(filename):
+def decompress(filename, subdir=None) -> str:
+    """Decompress a zip file into the examples directory and return the path"""
+    outdir = pyadditive.EXAMPLES_PATH
     zip_ref = zipfile.ZipFile(filename, "r")
-    zip_ref.extractall(pyadditive.EXAMPLES_PATH)
-    return zip_ref.close()
+    if subdir:
+        outdir = os.path.join(outdir, subdir)
+        os.makedirs(outdir, exist_ok=True)
+    zip_ref.extractall(outdir)
+    zip_ref.close()
+    return outdir
 
 
 def _get_file_url(filename, directory=None):
@@ -76,3 +83,72 @@ def download_10mm_cube():
 def download_small_wedge_slm_build_file():
     """Download an SLM build file for a small wedge part."""
     return _download_file("small-wedge-slm.zip", BUILD_FILES_FOLDER)[0]
+
+
+class MaterialTuningExampleInputFiles:
+    """Class to hold the example inputs for the material tuning process."""
+
+    def __init__(
+        self,
+        experiment_data_file: str,
+        material_parameters_file: str,
+        thermal_properties_lookup_file: str,
+        characteristic_width_lookup_file: str,
+    ):
+        """Initialize the MaterialTuningInputs class.
+
+        Parameters
+        ----------
+        experiment_data_file : str
+            Path to the experiment data file.
+        material_parameters_file : str
+            Path to the material parameters file.
+        thermal_properties_lookup_file : str
+            Path to the thermal properties lookup file.
+        characteristic_width_lookup_file : str
+            Path to the characteristic width lookup file.
+        """
+        self._experiment_data_file = experiment_data_file
+        self._material_parameters_file = material_parameters_file
+        self._thermal_properties_lookup_file = thermal_properties_lookup_file
+        self._characteristic_width_lookup_file = characteristic_width_lookup_file
+
+    @property
+    def experiment_data_file(self):
+        return self._experiment_data_file
+
+    @property
+    def material_parameters_file(self):
+        return self._material_parameters_file
+
+    @property
+    def thermal_properties_lookup_file(self):
+        return self._thermal_properties_lookup_file
+
+    @property
+    def characteristic_width_lookup_file(self):
+        return self._characteristic_width_lookup_file
+
+
+def download_material_tuning_input() -> MaterialTuningExampleInputFiles:
+    """Download the input files for the material tuning example."""
+    zip_file = _download_file("material_tuning_input.zip", MATERIAL_TUNING_FOLDER)[0]
+    extract_dir = decompress(zip_file, "material_tuning_input")
+    experiment_data_file = os.path.join(extract_dir, "experiment_data.csv")
+    if not os.path.isfile(experiment_data_file):
+        raise FileNotFoundError("Failed to download experiment data file")
+    material_parameters_file = os.path.join(extract_dir, "material_parameters.json")
+    if not os.path.isfile(material_parameters_file):
+        raise FileNotFoundError("Failed to download material parameters file")
+    thermal_lookup_file = os.path.join(extract_dir, "thermal_lookup.csv")
+    if not os.path.isfile(thermal_lookup_file):
+        raise FileNotFoundError("Failed to download thermal lookup file")
+    characteristic_width_lookup_file = os.path.join(extract_dir, "characteristic_width_lookup.csv")
+    if not os.path.isfile(characteristic_width_lookup_file):
+        raise FileNotFoundError("Failed to download characteristic width lookup file")
+    return MaterialTuningExampleInputFiles(
+        experiment_data_file,
+        material_parameters_file,
+        thermal_lookup_file,
+        characteristic_width_lookup_file,
+    )

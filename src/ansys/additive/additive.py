@@ -24,6 +24,7 @@ import grpc
 from ansys.additive import USER_DATA_PATH
 from ansys.additive.download import download_file
 from ansys.additive.material import AdditiveMaterial
+from ansys.additive.material_tuning import MaterialTuningInput, MaterialTuningSummary
 from ansys.additive.microstructure import MicrostructureSummary
 import ansys.additive.misc as misc
 from ansys.additive.porosity import PorositySummary
@@ -52,7 +53,7 @@ class Additive:
     ) -> None:  # PEP 484
         """Initialize connection to the server."""
         if channel is not None and (ip is not None or port is not None):
-            raise ValueError("If `channel` is specified, neither `port` nor `ip` can be specified.")
+            raise ValueError("If 'channel' is specified, neither 'port' nor 'ip' can be specified.")
 
         self._log = self._create_logger(log_file, loglevel)
         self._log.debug("Logging set to %s", loglevel)
@@ -269,8 +270,9 @@ class Additive:
         result = self._materials_stub.GetMaterial(request)
         return AdditiveMaterial._from_material_message(result)
 
+    @staticmethod
     def load_material(
-        parameters_file: str, thermal_lookup_file: str, cw_lookup_file: str
+        parameters_file: str, thermal_lookup_file: str, characteristic_width_lookup_file: str
     ) -> AdditiveMaterial:
         """
         Load a user provided material definition.
@@ -286,7 +288,7 @@ class Additive:
             Name of `CSV file containing a lookup table for thermal dependent properties
             <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/add_beta/add_print_udm_create_mat_lookup.html>`_
 
-        cw_lookup_file: str
+        characteristic_width_lookup_file: str
             Name of `CSV file containing a lookup table for characteristic melt pool width
             <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/add_beta/add_print_udm_tool_find_cw.html>`_
 
@@ -294,8 +296,48 @@ class Additive:
         material = AdditiveMaterial()
         material._load_parameters(parameters_file)
         material._load_thermal_properties(thermal_lookup_file)
-        material._load_characteristic_width(cw_lookup_file)
+        material._load_characteristic_width(characteristic_width_lookup_file)
         return material
+
+    def tune_material(
+        self, input: MaterialTuningInput, out_dir: str = USER_DATA_PATH
+    ) -> MaterialTuningSummary:
+        """
+        Tune a custom material for use with additive simulations.
+
+        Parameters
+        ----------
+
+        input: MaterialTuningInput
+            Input parameters for material tuning.
+
+        Returns
+        -------
+
+        MaterialTuningSummary
+            Summary of material tuning.
+
+        """
+        if input.id == "":
+            input.id = misc.short_uuid()
+        if out_dir == USER_DATA_PATH:
+            out_dir = os.path.join(out_dir, input.id)
+
+        if os.path.exists(out_dir):
+            raise Exception(
+                f"Directory {out_dir} already exists. Please delete or choose a different output directory."
+            )
+
+        request = input._to_request()
+
+        for response in self._materials_stub.TuneMaterial(request):
+            if response.HasField("progress"):
+                if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
+                    raise Exception(response.progress.message)
+                else:
+                    logging.info(response.progress.message)
+            if response.HasField("result"):
+                return MaterialTuningSummary(input, response.result, out_dir)
 
     def __file_upload_reader(
         self, file_name: str, chunk_size=2 * 1024 * 1024

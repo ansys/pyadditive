@@ -14,7 +14,7 @@ except ModuleNotFoundError:  # pragma: no cover
 __version__ = importlib_metadata.version(__name__.replace(".", "-"))
 
 APP_NAME = "ansys-pyadditive"
-COMPANY_NAME = "Ansys Inc."
+COMPANY_NAME = "Ansys Inc"
 
 
 # Setup data directory
@@ -34,6 +34,7 @@ from .additive import *
 from .geometry_file import *
 from .machine import *
 from .material import *
+from .material_tuning import *
 from .microstructure import *
 from .porosity import *
 from .single_bead import *

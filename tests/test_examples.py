@@ -1,12 +1,21 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 import os
+import shutil
 
 from ansys.additive import EXAMPLES_PATH
 import ansys.additive.examples as examples
 
 
+def _clean_examples_path():
+    shutil.rmtree(EXAMPLES_PATH)
+    os.makedirs(EXAMPLES_PATH)
+
+
 def test_download_10mm_cube_retrieves_file():
-    # arrange, act
+    # arrange
+    _clean_examples_path()
+
+    # act
     filename = examples.download_10mm_cube()
 
     # assert
@@ -15,7 +24,10 @@ def test_download_10mm_cube_retrieves_file():
 
 
 def test_download_small_wedge_slm_build_file_retrieves_file():
-    # arrange, act
+    # arrange
+    _clean_examples_path()
+
+    # act
     filename = examples.download_small_wedge_slm_build_file()
     examples.decompress(filename)
 
@@ -36,3 +48,28 @@ def test_delete_downloads_removes_all_files():
 
     # assert
     assert len(os.listdir(EXAMPLES_PATH)) == 0
+
+
+def test_download_material_tuning_input_retrieves_files():
+    # arrange
+    _clean_examples_path()
+
+    # act
+    inputs = examples.download_material_tuning_input()
+
+    # assert
+    assert os.path.isfile(inputs.experiment_data_file)
+    assert os.path.isfile(inputs.material_parameters_file)
+    assert os.path.isfile(inputs.thermal_properties_lookup_file)
+    assert os.path.isfile(inputs.characteristic_width_lookup_file)
+
+
+def test_get_ext_returns_expected_extension():
+    # arrange
+    filename = "test.stl"
+
+    # act
+    ext = examples.get_ext(filename)
+
+    # assert
+    assert ext == ".stl"
