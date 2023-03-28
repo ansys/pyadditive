@@ -105,7 +105,7 @@ jobs:
             ${{ env.ANSYS_PRODUCT_IMAGE }}
 
       - name: "Setup headless display"
-        uses: pyvista/setup-headless-display-action@v1
+        uses: pyvista/setup-headless-display-action@v2
 
       - name: "Run Ansys documentation building action"
         uses: pyansys/actions/doc-build@v4
