@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 # Check https://python-poetry.org/docs/pyproject/ for all available sections
 name = "ansys-additive"
-version = "0.7.1"
+version = "0.7.2"
 description = "A python client for the Ansys additive service"
 license = "MIT"
 authors = ["ANSYS, Inc. <ansys.support@ansys.com>"]
@@ -39,9 +39,9 @@ protobuf = "~=3.20.2"
 six = ">=1.16.0"
 tqdm = ">=4.45.0"
 appdirs = ">=1.4.4"
+ansys-platform-instancemanagement = {version = "==1.0.2"}
 
 # Testing dependencies
-ansys-platform-instancemanagement = {version = "==1.0.2", optional = true}
 pytest = {version = "==7.2.0", optional = true}
 pytest-cov = {version = "==4.0.0", optional = true}
 

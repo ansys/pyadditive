@@ -335,7 +335,7 @@ class Additive:
                 if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
                     raise Exception(response.progress.message)
                 else:
-                    logging.info(response.progress.message)
+                    print(response.progress.message)
             if response.HasField("result"):
                 return MaterialTuningSummary(input, response.result, out_dir)
 
