@@ -335,7 +335,14 @@ class Additive:
                 if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
                     raise Exception(response.progress.message)
                 else:
-                    logging.info(response.progress.message)
+                    for m in response.progress.message.splitlines():
+                        if (
+                            "License successfully" in m
+                            or "Starting ThermalSolver" in m
+                            or "threads for solver" in m
+                        ):
+                            continue
+                        print(m)
             if response.HasField("result"):
                 return MaterialTuningSummary(input, response.result, out_dir)
 
