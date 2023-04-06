@@ -18,7 +18,7 @@ def get_args():
 
 if __name__ == "__main__":
     _ = get_args()
-    dirs = ["src", "tests", "examples"]
+    dirs = ["src", "tests"]
     for d in dirs:
         source_files = glob.glob(os.path.join(d, "**", "*.py"), recursive=True)
         for f in source_files:
