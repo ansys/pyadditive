@@ -1,17 +1,11 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-from ansys.api.additive.v0.additive_domain_pb2 import BEAD_TYPE_BEAD_ON_POWDER_LAYER
+from ansys.api.additive.v0.additive_domain_pb2 import MeltPoolTimeStep
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import pytest
 
 from ansys.additive.machine import AdditiveMachine
 from ansys.additive.material import AdditiveMaterial
-from ansys.additive.single_bead import (
-    BeadType,
-    MeltPool,
-    MeltPoolMessage,
-    SingleBeadInput,
-    SingleBeadSummary,
-)
+from ansys.additive.single_bead import MeltPool, MeltPoolMessage, SingleBeadInput, SingleBeadSummary
 
 from . import test_utils
 
@@ -45,7 +39,6 @@ def test_SingleBeadSummary_init_returns_valid_result():
     material = test_utils.get_test_material()
     input = SingleBeadInput(
         id="id",
-        bead_type=BeadType.BEAD_ON_BASE_PLATE,
         bead_length=9,
         machine=machine,
         material=material,
@@ -83,7 +76,7 @@ def test_SingleBeadSummary_init_raises_exception_for_invalid_melt_pool_message(
         MeltPoolMessage(),
     ],
 )
-def test_SingleBeadSummary_init_raises_exception_for_invalid_melt_pool_message(
+def test_SingleBeadSummary_init_raises_exception_for_invalid_single_bead_input(
     invalid_obj,
 ):
     # arrange, act, assert
@@ -100,7 +93,6 @@ def test_SingleBeadInput_to_simulation_request_assigns_values():
         id="myId",
         machine=machine,
         material=material,
-        bead_type=BeadType.BEAD_ON_POWDER,
         bead_length=1,
     )
 
@@ -113,5 +105,193 @@ def test_SingleBeadInput_to_simulation_request_assigns_values():
     sb_input = request.single_bead_input
     assert sb_input.machine.laser_power == 99
     assert sb_input.material.name == "vibranium"
-    assert sb_input.bead_type == BEAD_TYPE_BEAD_ON_POWDER_LAYER
     assert sb_input.bead_length == 1
+
+
+def test_SingleBeadInput_repr_creates_expected_string():
+    # arrange
+    input = SingleBeadInput(id="myId", bead_length=1)
+
+    # act
+    assert (
+        input.__repr__()
+        == "SingleBeadInput\n"
+        + "id: myId\n"
+        + "bead_length: 1\n"
+        + "\n"
+        + "machine: AdditiveMachine\n"
+        + "laser_power: 195\n"
+        + "scan_speed: 1.0\n"
+        + "heater_temperature: 80\n"
+        + "layer_thickness: 5e-05\n"
+        + "beam_diameter: 0.0001\n"
+        + "starting_layer_angle: 57\n"
+        + "layer_rotation_angle: 67\n"
+        + "hatch_spacing: 0.0001\n"
+        + "slicing_stripe_width: 0.01\n"
+        + "\n"
+        + "material: AdditiveMaterial\n"
+        + "absorptivity_maximum: 0\n"
+        + "absorptivity_minimum: 0\n"
+        + "absorptivity_powder_coefficient_a: 0\n"
+        + "absorptivity_powder_coefficient_b: 0\n"
+        + "absorptivity_solid_coefficient_a: 0\n"
+        + "absorptivity_solid_coefficient_b: 0\n"
+        + "anisotropic_strain_coefficient_parallel: 0\n"
+        + "anisotropic_strain_coefficient_perpendicular: 0\n"
+        + "anisotropic_strain_coefficient_z: 0\n"
+        + "elastic_modulus: 0\n"
+        + "hardening_factor: 0\n"
+        + "liquidus_temperature: 0\n"
+        + "material_yield_strength: 0\n"
+        + "name: \n"
+        + "nucleation_constant_bulk: 0\n"
+        + "nucleation_constant_interface: 0\n"
+        + "penetration_depth_maximum: 0\n"
+        + "penetration_depth_minimum: 0\n"
+        + "penetration_depth_powder_coefficient_a: 0\n"
+        + "penetration_depth_powder_coefficient_b: 0\n"
+        + "penetration_depth_solid_coefficient_a: 0\n"
+        + "penetration_depth_solid_coefficient_b: 0\n"
+        + "poisson_ratio: 0\n"
+        + "powder_packing_density: 0\n"
+        + "purging_gas_convection_coefficient: 0\n"
+        + "solid_density_at_room_temperature: 0\n"
+        + "solid_specific_heat_at_room_temperature: 0\n"
+        + "solid_thermal_conductivity_at_room_temperature: 0\n"
+        + "solidus_temperature: 0\n"
+        + "strain_scaling_factor: 0\n"
+        + "support_yield_strength_ratio: 0\n"
+        + "thermal_expansion_coefficient: 0\n"
+        + "vaporization_temperature: 0\n"
+        + "characteristic_width_data: CharacteristicWidthDataPoint[]\n"
+        + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
+    )
+
+
+def test_MeltPool_eq_returns_expected_value():
+    # arrange
+    mp_msg = MeltPoolMessage()
+    mp1 = MeltPool(mp_msg)
+    mp2 = MeltPool(mp_msg)
+    mp_msg.time_steps.append(
+        MeltPoolTimeStep(
+            laser_x=1,
+            laser_y=2,
+            length=3,
+            width=4,
+            depth=5,
+            reference_width=6,
+            reference_depth=7,
+        )
+    )
+    mp3 = MeltPool(mp_msg)
+
+    # act, assert
+    assert mp1 == mp2
+    assert mp1 != mp3
+    assert mp1 != MeltPoolMessage()
+
+
+def test_MeltPool_repr_returns_expected_string():
+    # arrange
+    mp_msg = MeltPoolMessage()
+    mp_msg.time_steps.append(
+        MeltPoolTimeStep(
+            laser_x=1,
+            laser_y=2,
+            length=3,
+            width=4,
+            depth=5,
+            reference_width=6,
+            reference_depth=7,
+        )
+    )
+    mp = MeltPool(mp_msg)
+
+    # act, assert
+    assert (
+        mp.__repr__()
+        == "MeltPool\n"
+        + "laser_x: [1.0]\n"
+        + "laser_y: [2.0]\n"
+        + "length: [3.0]\n"
+        + "width: [4.0]\n"
+        + "depth: [5.0]\n"
+        + "reference_width: [6.0]\n"
+        + "reference_depth: [7.0]\n"
+    )
+
+
+def test_SingleBeadSummary_repr_returns_expected_string():
+    # arrange
+    msg = MeltPoolMessage()
+    input = SingleBeadInput(id="myId", bead_length=1)
+    summary = SingleBeadSummary(input, msg)
+
+    # act, assert
+    assert (
+        summary.__repr__()
+        == "SingleBeadSummary\n"
+        + "input: SingleBeadInput\n"
+        + "id: myId\n"
+        + "bead_length: 1\n"
+        + "\n"
+        + "machine: AdditiveMachine\n"
+        + "laser_power: 195\n"
+        + "scan_speed: 1.0\n"
+        + "heater_temperature: 80\n"
+        + "layer_thickness: 5e-05\n"
+        + "beam_diameter: 0.0001\n"
+        + "starting_layer_angle: 57\n"
+        + "layer_rotation_angle: 67\n"
+        + "hatch_spacing: 0.0001\n"
+        + "slicing_stripe_width: 0.01\n"
+        + "\n"
+        + "material: AdditiveMaterial\n"
+        + "absorptivity_maximum: 0\n"
+        + "absorptivity_minimum: 0\n"
+        + "absorptivity_powder_coefficient_a: 0\n"
+        + "absorptivity_powder_coefficient_b: 0\n"
+        + "absorptivity_solid_coefficient_a: 0\n"
+        + "absorptivity_solid_coefficient_b: 0\n"
+        + "anisotropic_strain_coefficient_parallel: 0\n"
+        + "anisotropic_strain_coefficient_perpendicular: 0\n"
+        + "anisotropic_strain_coefficient_z: 0\n"
+        + "elastic_modulus: 0\n"
+        + "hardening_factor: 0\n"
+        + "liquidus_temperature: 0\n"
+        + "material_yield_strength: 0\n"
+        + "name: \n"
+        + "nucleation_constant_bulk: 0\n"
+        + "nucleation_constant_interface: 0\n"
+        + "penetration_depth_maximum: 0\n"
+        + "penetration_depth_minimum: 0\n"
+        + "penetration_depth_powder_coefficient_a: 0\n"
+        + "penetration_depth_powder_coefficient_b: 0\n"
+        + "penetration_depth_solid_coefficient_a: 0\n"
+        + "penetration_depth_solid_coefficient_b: 0\n"
+        + "poisson_ratio: 0\n"
+        + "powder_packing_density: 0\n"
+        + "purging_gas_convection_coefficient: 0\n"
+        + "solid_density_at_room_temperature: 0\n"
+        + "solid_specific_heat_at_room_temperature: 0\n"
+        + "solid_thermal_conductivity_at_room_temperature: 0\n"
+        + "solidus_temperature: 0\n"
+        + "strain_scaling_factor: 0\n"
+        + "support_yield_strength_ratio: 0\n"
+        + "thermal_expansion_coefficient: 0\n"
+        + "vaporization_temperature: 0\n"
+        + "characteristic_width_data: CharacteristicWidthDataPoint[]\n"
+        + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
+        + "\n"
+        + "melt_pool: MeltPool\n"
+        + "laser_x: []\n"
+        + "laser_y: []\n"
+        + "length: []\n"
+        + "width: []\n"
+        + "depth: []\n"
+        + "reference_width: []\n"
+        + "reference_depth: []\n"
+        + "\n"
+    )

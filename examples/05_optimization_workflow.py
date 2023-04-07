@@ -33,9 +33,8 @@ material = additive.get_material("17-4PH")
 initial_powers = [50, 170, 340, 510, 700]
 initial_scan_speeds = [0.35, 0.75, 1.25, 1.75, 2.25, 2.5]
 
-# Specify the other single bead parameters
+# Specify length of the bead
 bead_length = 0.001
-bead_type = pyadditive.BeadType.BEAD_ON_POWDER
 
 # Create a list of machines, one per power and scan speed combination.
 # We use a comprehension to create the list.
@@ -52,7 +51,6 @@ for count, machine in enumerate(machines):
             material=material,
             machine=machine,
             bead_length=bead_length,
-            bead_type=bead_type,
         )
     )
 

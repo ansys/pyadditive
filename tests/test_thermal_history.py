@@ -222,8 +222,6 @@ def test_ThermalHistoryInput_repr_creates_expected_string():
     )
     file_name = os.path.abspath(__file__)
     stl_file = StlFile(path=file_name)
-
-    # act
     input = ThermalHistoryInput(
         id="myId",
         machine=AdditiveMachine(),
@@ -232,7 +230,7 @@ def test_ThermalHistoryInput_repr_creates_expected_string():
         geometry=stl_file,
     )
 
-    # assert
+    # act, assert
     assert (
         input.__repr__()
         == "ThermalHistoryInput\n"
@@ -311,7 +309,6 @@ def test_ThermalHistoryInput_eq():
     )
     stl_file = StlFile(path=os.path.abspath(__file__))
 
-    # act
     input = ThermalHistoryInput(
         id="myId",
         machine=machine,

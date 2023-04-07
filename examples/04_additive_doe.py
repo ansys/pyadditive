@@ -25,7 +25,6 @@ additive = pyadditive.Additive()
 # and scan speed combinations.
 
 bead_length = 0.001
-bead_type = pyadditive.BeadType.BEAD_ON_POWDER
 material = additive.get_material("17-4PH")
 initial_powers = [50, 350, 700]
 initial_scan_speeds = [0.35, 1.25, 2.5]
@@ -43,7 +42,6 @@ for count, machine in enumerate(machines):
             material=material,
             machine=machine,
             bead_length=bead_length,
-            bead_type=bead_type,
         )
     )
 
