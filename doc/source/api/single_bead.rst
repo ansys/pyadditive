@@ -8,7 +8,6 @@ Single bead
 .. autosummary::
    :toctree: _autosummary
 
-   BeadType
    MeltPool
    SingleBeadInput
    SingleBeadSummary
