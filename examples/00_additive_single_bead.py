@@ -52,11 +52,7 @@ machine.laser_power = 300  # W
 # parameters.
 
 input = pyadditive.SingleBeadInput(
-    machine=machine,
-    material=material,
-    id="single-bead-example",
-    bead_length=0.0012,  # meters
-    bead_type=pyadditive.BeadType.BEAD_ON_POWDER,  # See :class:`BeadType`
+    machine=machine, material=material, id="single-bead-example", bead_length=0.0012  # meters
 )
 
 ###############################################################################

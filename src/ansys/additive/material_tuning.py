@@ -21,8 +21,6 @@ class MaterialTuningInput:
         Material used during simulation.
     ``bead_length: float``
         Length of bead to simulate (m).
-    ``bead_type: BeadType``
-        Type of bead, either BEAD_ON_POWDER or BEAD_ON_BASE_PLATE.
 
     """
 
