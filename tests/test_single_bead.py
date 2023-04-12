@@ -35,11 +35,11 @@ def test_SingleBeadSummary_init_returns_valid_result():
     # arrange
     melt_pool_msg = test_utils.get_test_melt_pool_message()
     expected_melt_pool = MeltPool(melt_pool_msg)
-    machine = test_utils.get_test_machine()
+    machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input = SingleBeadInput(
         id="id",
-        bead_length=9,
+        bead_length=0.001,
         machine=machine,
         material=material,
     )
@@ -93,7 +93,7 @@ def test_SingleBeadInput_to_simulation_request_assigns_values():
         id="myId",
         machine=machine,
         material=material,
-        bead_length=1,
+        bead_length=0.01,
     )
 
     # act
@@ -105,19 +105,19 @@ def test_SingleBeadInput_to_simulation_request_assigns_values():
     sb_input = request.single_bead_input
     assert sb_input.machine.laser_power == 99
     assert sb_input.material.name == "vibranium"
-    assert sb_input.bead_length == 1
+    assert sb_input.bead_length == 0.01
 
 
 def test_SingleBeadInput_repr_creates_expected_string():
     # arrange
-    input = SingleBeadInput(id="myId", bead_length=1)
+    input = SingleBeadInput(id="myId")
 
     # act
     assert (
         input.__repr__()
         == "SingleBeadInput\n"
         + "id: myId\n"
-        + "bead_length: 1\n"
+        + "bead_length: 0.003\n"
         + "\n"
         + "machine: AdditiveMachine\n"
         + "laser_power: 195\n"
@@ -226,7 +226,7 @@ def test_MeltPool_repr_returns_expected_string():
 def test_SingleBeadSummary_repr_returns_expected_string():
     # arrange
     msg = MeltPoolMessage()
-    input = SingleBeadInput(id="myId", bead_length=1)
+    input = SingleBeadInput(id="myId")
     summary = SingleBeadSummary(input, msg)
 
     # act, assert
@@ -235,7 +235,7 @@ def test_SingleBeadSummary_repr_returns_expected_string():
         == "SingleBeadSummary\n"
         + "input: SingleBeadInput\n"
         + "id: myId\n"
-        + "bead_length: 1\n"
+        + "bead_length: 0.003\n"
         + "\n"
         + "machine: AdditiveMachine\n"
         + "laser_power: 195\n"
@@ -295,3 +295,14 @@ def test_SingleBeadSummary_repr_returns_expected_string():
         + "reference_depth: []\n"
         + "\n"
     )
+
+
+def test_SingleBeadInput_setters_raise_expected_errors():
+    # arrange
+    input = SingleBeadInput()
+
+    # act, assert
+    with pytest.raises(ValueError):
+        input.bead_length = 0.5e-3
+    with pytest.raises(ValueError):
+        input.bead_length = 1.1e-2

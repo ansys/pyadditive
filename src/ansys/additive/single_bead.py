@@ -10,34 +10,76 @@ from ansys.additive.material import AdditiveMaterial
 class SingleBeadInput:
     """Input parameters for single bead simulation.
 
-    ``id: string``
-        User provided identifier for this simulation.
-    ``machine: AdditiveMachine``
-        Machine related parameters.
-    ``material: AdditiveMaterial``
-        Material used during simulation.
-    ``bead_length: float``
-        Length of bead to simulate (m).
+    Units are SI (m, kg, s, K) unless otherwise noted.
 
     """
 
-    def __init__(self, **kwargs):
-        self.id = ""
-        self.bead_length = 1e-3
-        self.machine = AdditiveMachine()
-        self.material = AdditiveMaterial()
-        for key, value in kwargs.items():
-            getattr(self, key)  # raises AttributeError if key not found
-            setattr(self, key, value)
+    __DEFAULT_BEAD_LENGTH = 3e-3
+    __MIN_BEAD_LENGTH = 1e-3
+    __MAX_BEAD_LENGTH = 1e-2
+
+    def __init__(
+        self,
+        id="",
+        bead_length=__DEFAULT_BEAD_LENGTH,
+        machine=AdditiveMachine(),
+        material=AdditiveMaterial(),
+    ):
+        self.id = id
+        self.bead_length = bead_length
+        self.machine = machine
+        self.material = material
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
         for k in self.__dict__:
-            if k == "machine" or k == "material":
-                repr += "\n" + k + ": " + str(getattr(self, k))
+            if k == "_machine" or k == "_material":
+                repr += "\n" + k.replace("_", "", 1) + ": " + str(getattr(self, k))
             else:
-                repr += k + ": " + str(getattr(self, k)) + "\n"
+                repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
         return repr
+
+    def __validate_range(self, value, min, max, name):
+        if value < min or value > max:
+            raise ValueError("{} must be between {} and {}.".format(name, min, max))
+
+    @property
+    def id(self):
+        """User provided identifier for this simulation."""
+        return self._id
+
+    @id.setter
+    def id(self, value):
+        self._id = value
+
+    @property
+    def machine(self):
+        """Machine related parameters."""
+        return self._machine
+
+    @machine.setter
+    def machine(self, value):
+        self._machine = value
+
+    @property
+    def material(self):
+        """Material used during simulation."""
+        return self._material
+
+    @material.setter
+    def material(self, value):
+        self._material = value
+
+    @property
+    def bead_length(self):
+        """Length of bead to simulate (m).
+        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm)."""
+        return self._bead_length
+
+    @bead_length.setter
+    def bead_length(self, value):
+        self.__validate_range(value, self.__MIN_BEAD_LENGTH, self.__MAX_BEAD_LENGTH, "bead_length")
+        self._bead_length = value
 
     def _to_simulation_request(self) -> SimulationRequest:
         """Convert this object into a simulation request message"""
