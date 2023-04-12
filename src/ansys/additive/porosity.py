@@ -25,25 +25,99 @@ class PorosityInput:
 
     """
 
-    def __init__(self, **kwargs):
-        self.id = ""
-        self.size_x = 1e-3
-        self.size_y = 1e-3
-        self.size_z = 1e-3
-        self.machine = AdditiveMachine()
-        self.material = AdditiveMaterial()
-        for key, value in kwargs.items():
-            getattr(self, key)  # raises AttributeError if key not found
-            setattr(self, key, value)
+    __DEFAULT_CUBE_DIMENSION = 3e-3
+    __MIN_CUBE_DIMENSION = 1e-3
+    __MAX_CUBE_DIMENSION = 1e-2
+
+    def __init__(
+        self,
+        id="",
+        *,
+        size_x=__DEFAULT_CUBE_DIMENSION,
+        size_y=__DEFAULT_CUBE_DIMENSION,
+        size_z=__DEFAULT_CUBE_DIMENSION,
+        machine=AdditiveMachine(),
+        material=AdditiveMaterial()
+    ):
+        self.id = id
+        self.size_x = size_x
+        self.size_y = size_y
+        self.size_z = size_z
+        self.machine = machine
+        self.material = material
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
         for k in self.__dict__:
-            if k == "machine" or k == "material":
-                repr += "\n" + k + ": " + str(getattr(self, k))
+            if k == "_machine" or k == "_material":
+                repr += "\n" + k.replace("_", "", 1) + ": " + str(getattr(self, k))
             else:
-                repr += k + ": " + str(getattr(self, k)) + "\n"
+                repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
         return repr
+
+    def __validate_range(self, value, min, max, name):
+        if value < min or value > max:
+            raise ValueError("{} must be between {} and {}.".format(name, min, max))
+
+    @property
+    def id(self):
+        """User provided identifier for this simulation."""
+        return self._id
+
+    @id.setter
+    def id(self, value):
+        self._id = value
+
+    @property
+    def machine(self):
+        """Machine related parameters."""
+        return self._machine
+
+    @machine.setter
+    def machine(self, value):
+        self._machine = value
+
+    @property
+    def material(self):
+        """Material used during simulation."""
+        return self._material
+
+    @material.setter
+    def material(self, value):
+        self._material = value
+
+    @property
+    def size_x(self):
+        """Size of simulated sample in x dimension (m).
+        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm)."""
+        return self._size_x
+
+    @size_x.setter
+    def size_x(self, value):
+        self.__validate_range(value, self.__MIN_CUBE_DIMENSION, self.__MAX_CUBE_DIMENSION, "size_x")
+        self._size_x = value
+
+    @property
+    def size_y(self):
+        """Size of simulated sample in y dimension (m).
+        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm)."""
+        return self._size_y
+
+    @size_y.setter
+    def size_y(self, value):
+        self.__validate_range(value, self.__MIN_CUBE_DIMENSION, self.__MAX_CUBE_DIMENSION, "size_y")
+        self._size_y = value
+
+    @property
+    def size_z(self):
+        """Size of simulated sample in z dimension (m).
+        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm)."""
+        return self._size_z
+
+    @size_z.setter
+    def size_z(self, value):
+        self.__validate_range(value, self.__MIN_CUBE_DIMENSION, self.__MAX_CUBE_DIMENSION, "size_z")
+        self._size_z = value
 
     def _to_simulation_request(self) -> SimulationRequest:
         """Convert this object into a simulation request message"""

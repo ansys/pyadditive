@@ -7,23 +7,8 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
     ThermalPropertiesDataPoint,
 )
 
-from ansys.additive.machine import AdditiveMachine
 from ansys.additive.material import AdditiveMaterial
 from ansys.additive.single_bead import MeltPoolMessage
-
-
-def get_test_machine() -> AdditiveMachine:
-    return AdditiveMachine(
-        laser_power=10,
-        scan_speed=11,
-        heater_temperature=12,
-        layer_thickness=13,
-        beam_diameter=14,
-        starting_layer_angle=15,
-        layer_rotation_angle=16,
-        hatch_spacing=17,
-        slicing_stripe_width=18,
-    )
 
 
 def get_test_material() -> AdditiveMaterial:

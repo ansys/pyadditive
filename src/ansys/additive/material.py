@@ -775,7 +775,7 @@ class AdditiveMaterial:
         # Convert camelCase to snake_case
         pattern = re.compile(r"(?<!^)(?=[A-Z])")
         for p in parameters:
-            if p != "materialName":
+            if p != "materialName" and p != "elasticModulusOfBase":
                 name = pattern.sub("_", p).lower()
                 name = name.replace("_coeff_", "_coefficient_")
                 setattr(self, name, parameters[p])

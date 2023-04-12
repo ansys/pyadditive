@@ -5,10 +5,11 @@ import os
 from ansys.api.additive.v0.additive_domain_pb2 import (
     MicrostructureInput as MicrostructureInputMessage,
 )
-from ansys.api.additive.v0.additive_domain_pb2 import GrainStatistics
 from ansys.api.additive.v0.additive_domain_pb2 import MicrostructureResult
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
+from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
 import numpy as np
+import numpy.typing as npt
 
 from ansys.additive.machine import AdditiveMachine
 from ansys.additive.material import AdditiveMaterial
@@ -17,90 +18,357 @@ from ansys.additive.material import AdditiveMaterial
 class MicrostructureInput:
     """Input parameters for microstructure simulation.
 
-    id: string
-        Simulation identifier.
-    machine: AdditiveMachine
-        Machine related parameters.
-    material: AdditiveMaterial
-        Material used during simulation.
-    cube_min_x: float
-        Sample minimum x coordinate value (m), default 0.
-    cube_min_y: float
-        Sample minimum y coordinate value (m), default 0.
-    cube_min_z: float
-        Sample minimum z coordinate value (m), default 0.
-    cube_size_x: float
-        Sample size in x dimension (m), valid values: 0.001 to 0.01, default 0.0015.
-    cube_size_y: float
-        Sample size in y dimension (m), valid values: 0.001 to 0.01, default 0.0015.
-    cube_size_z: float
-        Sample size in z dimension (m), valid values: 0.001 to 0.01, default 0.0015.
-    sensor_dimension: float
-        Sensor dimension (m), valid values: 0.0001 to 0.001, default 0.0005.
-    use_provided_thermal_parameters: bool
-        Indicates that cooling_rate, thermal_gradient, melt_pool* have been provided by user,
-        default False, meaning values will be calculated.
-    cooling_rate: float, optional
-        Cooling rate (°K/s), valid values: 1e5 to 1e7, default 1e6.
-    thermal_gradient: float, optional
-        Thermal gradient (°K/m), valid values: 1e5 to 1e8, default 1e7.
-    melt_pool_width: float, optional
-        Width of melt pool for a single bead scan, valid values: 7.5e-5 to 8e-4, default 1.5e-4.
-    melt_pool_depth: float, optional
-        Depth of melt pool for a single bead scan, valid values: 1.5e-5 to 8e-4, default 1e-4.
-    random_seed: int, optional
-        Seed used for nucleation calculations, default None.
+    Units are SI (m, kg, s, K) unless otherwise noted.
 
     """
 
-    def __init__(self, **kwargs):
-        self.id = ""
-        self.cube_min_x = 0
-        self.cube_min_y = 0
-        self.cube_min_z = 0
-        self.cube_size_x = 1.5e-3
-        self.cube_size_y = 1.5e-3
-        self.cube_size_z = 1.5e-3
-        self.sensor_dimension = 5e-4
-        self.use_provided_thermal_parameters = False
-        self.cooling_rate = 1e6
-        self.thermal_gradient = 1e7
-        self.melt_pool_width = 1.5e-4
-        self.melt_pool_depth = 1e-4
-        self.random_seed = None
-        self.machine = AdditiveMachine()
-        self.material = AdditiveMaterial()
-        for key, value in kwargs.items():
-            getattr(self, key)  # raises AttributeError if key not found
-            setattr(self, key, value)
+    __DEFAULT_POSITION_COORDINATE = 0
+    __MIN_POSITION_COORDINATE = 0
+    __MAX_POSITION_COORDINATE = 10
+    __DEFAULT_SAMPLE_SIZE = 1.5e-3
+    __MIN_SAMPLE_SIZE = 0.001
+    __MAX_SAMPLE_SIZE = 0.01
+    __DEFAULT_SENSOR_DIMENSION = 5e-4
+    __MIN_SENSOR_DIMENSION = 1e-4
+    __MAX_SENSOR_DIMENSION = 1e-3
+    __MIN_XY_SIZE_CUSHION = 5e-4
+    __MIN_Z_SIZE_CUSHION = 1e-3
+    __DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS = False
+    __DEFAULT_COOLING_RATE = 1e6
+    __MIN_COOLING_RATE = 1e5
+    __MAX_COOLING_RATE = 1e7
+    __DEFAULT_THERMAL_GRADIENT = 1e7
+    __MIN_THERMAL_GRADIENT = 1e5
+    __MAX_THERMAL_GRADIENT = 1e8
+    __DEFAULT_MELT_POOL_WIDTH = 1.5e-4
+    __MIN_MELT_POOL_WIDTH = 7.5e-5
+    __MAX_MELT_POOL_WIDTH = 8e-4
+    __DEFAULT_MELT_POOL_DEPTH = 1e-4
+    __MIN_MELT_POOL_DEPTH = 1.5e-5
+    __MAX_MELT_POOL_DEPTH = 8e-4
+    # The default random seed is outside the range of valid seeds.
+    # It indicates that the user did not provide a seed.
+    __DEFAULT_RANDOM_SEED = 0
+    __MIN_RANDOM_SEED = 1
+    __MAX_RANDOM_SEED = 2**31 - 1
+
+    def __init__(
+        self,
+        id: str = "",
+        *,
+        sample_min_x: float = __DEFAULT_POSITION_COORDINATE,
+        sample_min_y: float = __DEFAULT_POSITION_COORDINATE,
+        sample_min_z: float = __DEFAULT_POSITION_COORDINATE,
+        sample_size_x: float = __DEFAULT_SAMPLE_SIZE,
+        sample_size_y: float = __DEFAULT_SAMPLE_SIZE,
+        sample_size_z: float = __DEFAULT_SAMPLE_SIZE,
+        sensor_dimension: float = __DEFAULT_SENSOR_DIMENSION,
+        use_provided_thermal_parameters: bool = __DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS,
+        cooling_rate: float = __DEFAULT_COOLING_RATE,
+        thermal_gradient: float = __DEFAULT_THERMAL_GRADIENT,
+        melt_pool_width: float = __DEFAULT_MELT_POOL_WIDTH,
+        melt_pool_depth: float = __DEFAULT_MELT_POOL_DEPTH,
+        random_seed: int = __DEFAULT_RANDOM_SEED,
+        machine: AdditiveMachine = AdditiveMachine(),
+        material: AdditiveMaterial = AdditiveMaterial()
+    ):
+        # we have a circular dependency here, so we validate sensor_dimension
+        # and sample_size_* then assign them without calling the setters
+        self.__validate_range(
+            sensor_dimension,
+            self.__MIN_SENSOR_DIMENSION,
+            self.__MAX_SENSOR_DIMENSION,
+            "sensor_dimension",
+        )
+        self.__validate_size(
+            sample_size_x, sensor_dimension, self.__MIN_XY_SIZE_CUSHION, "sample_size_x"
+        )
+        self.__validate_size(
+            sample_size_y, sensor_dimension, self.__MIN_XY_SIZE_CUSHION, "sample_size_y"
+        )
+        self.__validate_size(
+            sample_size_z, sensor_dimension, self.__MIN_Z_SIZE_CUSHION, "sample_size_z"
+        )
+        self._sensor_dimension = sensor_dimension
+        self._sample_size_x = sample_size_x
+        self._sample_size_y = sample_size_y
+        self._sample_size_z = sample_size_z
+
+        # use setters for remaining properties
+        self.id = id
+        self.sample_min_x = sample_min_x
+        self.sample_min_y = sample_min_y
+        self.sample_min_z = sample_min_z
+        self.use_provided_thermal_parameters = use_provided_thermal_parameters
+        self.cooling_rate = cooling_rate
+        self.thermal_gradient = thermal_gradient
+        self.melt_pool_width = melt_pool_width
+        self.melt_pool_depth = melt_pool_depth
+        self.machine = machine
+        self.material = material
+        if random_seed != self.__DEFAULT_RANDOM_SEED:
+            self.random_seed = random_seed
+        else:
+            self._random_seed = random_seed
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
         for k in self.__dict__:
-            if k == "machine" or k == "material":
-                repr += "\n" + k + ": " + str(getattr(self, k))
+            if k == "_machine" or k == "_material":
+                repr += "\n" + k.replace("_", "", 1) + ": " + str(getattr(self, k))
             else:
-                repr += k + ": " + str(getattr(self, k)) + "\n"
+                repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
         return repr
+
+    @staticmethod
+    def __validate_range(value, min, max, name):
+        if value < min or value > max:
+            raise ValueError("{} must be between {} and {}.".format(name, min, max))
+
+    @staticmethod
+    def __validate_size(size_value, sensor_value, cushion, name):
+        if size_value - sensor_value < cushion:
+            raise ValueError(
+                "{} must be at least {} larger than sensor_dimension.".format(name, cushion)
+            )
+
+    @property
+    def id(self) -> str:
+        """User provided identifier for this simulation."""
+        return self._id
+
+    @id.setter
+    def id(self, value: str):
+        self._id = value
+
+    @property
+    def machine(self):
+        """Machine related parameters."""
+        return self._machine
+
+    @machine.setter
+    def machine(self, value):
+        self._machine = value
+
+    @property
+    def material(self):
+        """Material used during simulation."""
+        return self._material
+
+    @material.setter
+    def material(self, value):
+        self._material = value
+
+    @property
+    def sample_min_x(self) -> float:
+        """Minimum x coordinate of the geometry sample (m)."""
+        return self._sample_min_x
+
+    @sample_min_x.setter
+    def sample_min_x(self, value: float):
+        self.__validate_range(
+            value, self.__MIN_POSITION_COORDINATE, self.__MAX_POSITION_COORDINATE, "sample_min_x"
+        )
+        self._sample_min_x = value
+
+    @property
+    def sample_min_y(self) -> float:
+        """Minimum y coordinate of the geometry sample (m)."""
+        return self._sample_min_y
+
+    @sample_min_y.setter
+    def sample_min_y(self, value: float):
+        self.__validate_range(
+            value, self.__MIN_POSITION_COORDINATE, self.__MAX_POSITION_COORDINATE, "sample_min_y"
+        )
+        self._sample_min_y = value
+
+    @property
+    def sample_min_z(self) -> float:
+        """Minimum z coordinate of the geometry sample (m)."""
+        return self._sample_min_z
+
+    @sample_min_z.setter
+    def sample_min_z(self, value: float):
+        self.__validate_range(
+            value, self.__MIN_POSITION_COORDINATE, self.__MAX_POSITION_COORDINATE, "sample_min_z"
+        )
+        self._sample_min_z = value
+
+    @property
+    def sample_size_x(self) -> float:
+        """Size of the geometry sample in the x direction (m).
+        Valid values are 0.001 to 0.01."""
+        return self._sample_size_x
+
+    @sample_size_x.setter
+    def sample_size_x(self, value: float):
+        self.__validate_range(
+            value, self.__MIN_SAMPLE_SIZE, self.__MAX_SAMPLE_SIZE, "sample_size_x"
+        )
+        self.__validate_size(
+            value, self.sensor_dimension, self.__MIN_XY_SIZE_CUSHION, "sample_size_x"
+        )
+        self._sample_size_x = value
+
+    @property
+    def sample_size_y(self) -> float:
+        """Size of the geometry sample in the y direction (m).
+        Valid values are 0.001 to 0.01."""
+        return self._sample_size_y
+
+    @sample_size_y.setter
+    def sample_size_y(self, value: float):
+        self.__validate_range(
+            value, self.__MIN_SAMPLE_SIZE, self.__MAX_SAMPLE_SIZE, "sample_size_y"
+        )
+        self.__validate_size(
+            value, self.sensor_dimension, self.__MIN_XY_SIZE_CUSHION, "sample_size_y"
+        )
+        self._sample_size_y = value
+
+    @property
+    def sample_size_z(self) -> float:
+        """Size of the geometry sample in the z direction (m).
+        Valid values are 0.001 to 0.01."""
+        return self._sample_size_z
+
+    @sample_size_z.setter
+    def sample_size_z(self, value: float):
+        self.__validate_range(
+            value, self.__MIN_SAMPLE_SIZE, self.__MAX_SAMPLE_SIZE, "sample_size_z"
+        )
+        self.__validate_size(
+            value, self.sensor_dimension, self.__MIN_Z_SIZE_CUSHION, "sample_size_z"
+        )
+        self._sample_size_z = value
+
+    @property
+    def sensor_dimension(self) -> float:
+        """Dimension of the sensor (m).
+        Valid values are 0.0001 to 0.001."""
+        return self._sensor_dimension
+
+    @sensor_dimension.setter
+    def sensor_dimension(self, value: float):
+        self.__validate_range(
+            value, self.__MIN_SENSOR_DIMENSION, self.__MAX_SENSOR_DIMENSION, "sensor_dimension"
+        )
+        size_errors = ""
+        try:
+            self.__validate_size(
+                self.sample_size_x, value, self.__MIN_XY_SIZE_CUSHION, "sample_size_x"
+            )
+        except ValueError as e:
+            size_errors += str(e) + "\n"
+        try:
+            self.__validate_size(
+                self.sample_size_y, value, self.__MIN_XY_SIZE_CUSHION, "sample_size_y"
+            )
+        except ValueError as e:
+            size_errors += str(e) + "\n"
+        try:
+            self.__validate_size(
+                self.sample_size_z, value, self.__MIN_Z_SIZE_CUSHION, "sample_size_z"
+            )
+        except ValueError as e:
+            size_errors += str(e) + "\n"
+        if size_errors:
+            raise ValueError(size_errors)
+
+        self._sensor_dimension = value
+
+    @property
+    def use_provided_thermal_parameters(self) -> bool:
+        """If ``True``, indicates that cooling_rate, thermal_gradient, melt_pool_depth and
+        melt_pool_width have been provided by the user."""
+        return self._use_provided_thermal_parameters
+
+    @use_provided_thermal_parameters.setter
+    def use_provided_thermal_parameters(self, value: bool):
+        self._use_provided_thermal_parameters = value
+
+    @property
+    def cooling_rate(self) -> float:
+        """Material cooling rate (K/s).
+        Valid values are 1e5 to 1e7."""
+        return self._cooling_rate
+
+    @cooling_rate.setter
+    def cooling_rate(self, value: float):
+        self.__validate_range(
+            value, self.__MIN_COOLING_RATE, self.__MAX_COOLING_RATE, "cooling_rate"
+        )
+        self._cooling_rate = value
+
+    @property
+    def thermal_gradient(self) -> float:
+        """Material thermal gradient (K/m).
+        Valid values are 1e5 to 1e8."""
+        return self._thermal_gradient
+
+    @thermal_gradient.setter
+    def thermal_gradient(self, value: float):
+        self.__validate_range(
+            value, self.__MIN_THERMAL_GRADIENT, self.__MAX_THERMAL_GRADIENT, "thermal_gradient"
+        )
+        self._thermal_gradient = value
+
+    @property
+    def melt_pool_width(self) -> float:
+        """Melt pool width (m).
+        Valid values are 7.5e-5 to 8e-4."""
+        return self._melt_pool_width
+
+    @melt_pool_width.setter
+    def melt_pool_width(self, value: float):
+        self.__validate_range(
+            value, self.__MIN_MELT_POOL_WIDTH, self.__MAX_MELT_POOL_WIDTH, "melt_pool_width"
+        )
+        self._melt_pool_width = value
+
+    @property
+    def melt_pool_depth(self) -> float:
+        """Melt pool depth (m).
+        Valid values are 1.5e-5 to 8e-4."""
+        return self._melt_pool_depth
+
+    @melt_pool_depth.setter
+    def melt_pool_depth(self, value: float):
+        self.__validate_range(
+            value, self.__MIN_MELT_POOL_DEPTH, self.__MAX_MELT_POOL_DEPTH, "melt_pool_depth"
+        )
+        self._melt_pool_depth = value
+
+    @property
+    def random_seed(self) -> int:
+        """Random seed for the simulation.
+        Valid values are 1 to 4294967295."""
+        return self._random_seed
+
+    @random_seed.setter
+    def random_seed(self, value: int):
+        self.__validate_range(value, self.__MIN_RANDOM_SEED, self.__MAX_RANDOM_SEED, "random_seed")
+        self._random_seed = value
 
     def _to_simulation_request(self) -> SimulationRequest:
         """Convert this object into a simulation request message"""
         input = MicrostructureInputMessage(
             machine=self.machine._to_machine_message(),
             material=self.material._to_material_message(),
-            cube_min_x=self.cube_min_x,
-            cube_min_y=self.cube_min_y,
-            cube_min_z=self.cube_min_z,
-            cube_size_x=self.cube_size_x,
-            cube_size_y=self.cube_size_y,
-            cube_size_z=self.cube_size_z,
+            cube_min_x=self.sample_min_x,
+            cube_min_y=self.sample_min_y,
+            cube_min_z=self.sample_min_z,
+            cube_size_x=self.sample_size_x,
+            cube_size_y=self.sample_size_y,
+            cube_size_z=self.sample_size_z,
             sensor_dimension=self.sensor_dimension,
             use_provided_thermal_parameters=self.use_provided_thermal_parameters,
             cooling_rate=self.cooling_rate,
             thermal_gradient=self.thermal_gradient,
             melt_pool_width=self.melt_pool_width,
             melt_pool_depth=self.melt_pool_depth,
-            use_random_seed=(self.random_seed != None),
+            use_random_seed=(self.random_seed != self.__DEFAULT_RANDOM_SEED),
             random_seed=self.random_seed,
         )
         return SimulationRequest(id=self.id, microstructure_input=input)
@@ -125,7 +393,7 @@ class MicrostructureSummary:
             raise ValueError("Invalid user data path passed to init, " + self.__class__.__name__)
         self._input = input
         self._output_path = os.path.join(user_data_path, input.id)
-        if not os.path.exists(self._output_path):  # pragma: no cover
+        if not os.path.exists(self._output_path):
             os.makedirs(self._output_path)
         self._xy_vtk = os.path.join(self._output_path, "xy.vtk")
         with open(self._xy_vtk, "wb") as xy_vtk:
@@ -168,7 +436,7 @@ class MicrostructureSummary:
         return self._yz_vtk
 
     @property
-    def xy_circle_equivalence(self) -> dict[str, np.array(float)]:
+    def xy_circle_equivalence(self) -> dict[str, npt.NDArray]:
         """
         Circle equivalence data for XY plane.
 
@@ -180,7 +448,7 @@ class MicrostructureSummary:
         return self._xy_circle_equivalence
 
     @property
-    def xz_circle_equivalence(self) -> dict[str, np.array(float)]:
+    def xz_circle_equivalence(self) -> dict[str, npt.NDArray]:
         """
         Circle equivalence data for XZ plane.
 
@@ -192,7 +460,7 @@ class MicrostructureSummary:
         return self._xz_circle_equivalence
 
     @property
-    def yz_circle_equivalence(self) -> dict[str, np.array(float)]:
+    def yz_circle_equivalence(self) -> dict[str, npt.NDArray]:
         """
         Circle equivalence data for YZ plane.
 
@@ -204,7 +472,7 @@ class MicrostructureSummary:
         return self._yz_circle_equivalence
 
     @staticmethod
-    def _get_equivalence_dict(src: list[GrainStatistics]) -> dict:
+    def _get_equivalence_dict(src: RepeatedCompositeFieldContainer) -> dict:
         d = {}
         d["grain_number"] = np.asarray([x.grain_number for x in src])
         d["area_fraction"] = np.asarray([x.area_fraction for x in src])

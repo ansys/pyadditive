@@ -351,7 +351,7 @@ def test_thermal_properties_data_setter_raises_exception_for_nonsequence_type():
         material.thermal_properties_data = ThermalPropertiesDataPoint()
 
 
-def test_characteristic_width_data_setter_assigns_characteristic_width_data_points():
+def test_thermal_properties_data_setter_assigns_thermal_properties_data_points():
     # arrange
     material = AdditiveMaterial()
     data_points = [
@@ -534,7 +534,6 @@ def test_to_material_message_returns_MaterialMessage():
     # act
     msg = am._to_material_message()
 
-    # assert
     assert isinstance(msg, MaterialMessage)
     assert msg.absorptivity_maximum == 1
     assert msg.absorptivity_minimum == 2
@@ -667,7 +666,6 @@ def test_load_parameters_parses_parameter_file():
     assert material.anisotropic_strain_coefficient_perpendicular == 8
     assert material.anisotropic_strain_coefficient_z == 9
     assert material.elastic_modulus == 10
-    assert material.elastic_modulus_of_base == 11
     assert material.hardening_factor == 12
     assert material.liquidus_temperature == 13
     assert material.material_yield_strength == 14
