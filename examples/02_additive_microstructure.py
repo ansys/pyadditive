@@ -58,9 +58,9 @@ input_with_thermal = pyadditive.MicrostructureInput(
     material=material,
     id="micro-with-thermal",
     sensor_dimension=0.0005,
-    cube_size_x=0.001,  # in meters (1 mm), must be >= sensor_dimension + 0.0005
-    cube_size_y=0.001,  # in meters (1 mm), must be >= sensor_dimension + 0.0005
-    cube_size_z=0.0015,  # in meters (1 mm), must be >= sensor_dimension + 0.001
+    sample_size_x=0.001,  # in meters (1 mm), must be >= sensor_dimension + 0.0005
+    sample_size_y=0.001,  # in meters (1 mm), must be >= sensor_dimension + 0.0005
+    sample_size_z=0.0015,  # in meters (1 mm), must be >= sensor_dimension + 0.001
     use_provided_thermal_parameters=True,
     cooling_rate=1.1e6,  # °K/s
     thermal_gradient=1.2e7,  # °K/m
@@ -74,9 +74,9 @@ input_without_thermal = pyadditive.MicrostructureInput(
     material=material,
     id="micro-without-thermal",
     sensor_dimension=0.0005,
-    cube_size_x=0.001,  # in meters (1 mm), must be >= sensor_dimension + 0.0005
-    cube_size_y=0.001,  # in meters (1 mm), must be >= sensor_dimension + 0.0005
-    cube_size_z=0.0015,  # in meters (1 mm), must be >= sensor_dimension + 0.001
+    sample_size_x=0.001,  # in meters (1 mm), must be >= sensor_dimension + 0.0005
+    sample_size_y=0.001,  # in meters (1 mm), must be >= sensor_dimension + 0.0005
+    sample_size_z=0.0015,  # in meters (1 mm), must be >= sensor_dimension + 0.001
     # use_provided_thermal_parameters defaults to False
 )
 
