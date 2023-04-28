@@ -186,7 +186,7 @@ class Additive:
         summaries = []
         completed = 0
         total_simulations = len(inputs)
-        logging.info(f"Executing {total_simulations} simulations")
+        print(f"Executing {total_simulations} simulations")
         with concurrent.futures.ThreadPoolExecutor(10) as executor:
             futures = []
             for input in inputs:
@@ -194,7 +194,7 @@ class Additive:
             for future in concurrent.futures.as_completed(futures):
                 summaries.append(future.result())
                 completed += 1
-                logging.info(f"Completed {completed} of {total_simulations} simulations")
+                print(f"Completed {completed} of {total_simulations} simulations")
         return summaries
 
     def _simulate(self, input, show_progress: bool = False):
