@@ -104,7 +104,7 @@ Installation
 Package dependencies
 --------------------
 
-PyAdditive is supported on Python versions 3.7+. Previous versions of Python are
+PyAdditive is supported on Python versions >= 3.8. Previous versions of Python are
 no longer supported as outlined `here <https://python3statement.org/>`_.
 PyAdditive dependencies are automatically checked when packages are installed.
 The following projects are required dependencies for PyAdditive:
@@ -226,14 +226,14 @@ archive from the `Releases Page <https://github.com/pyansys/pyadditive/releases>
 corresponding machine architecture.
 
 Each wheelhouse archive contains all the Python wheels necessary to install PyAdditive from scratch on Windows,
-Linux, and MacOS from Python 3.7 to 3.10. You can install this on an isolated system with a fresh Python
+Linux, and MacOS from Python 3.8 to 3.11. You can install this on an isolated system with a fresh Python
 installation or on a virtual environment.
 
-For example, on Linux with Python 3.7, unzip the wheelhouse archive and install it with the following:
+For example, on Linux with Python 3.8, unzip the wheelhouse archive and install it with the following:
 
 .. code:: bash
 
-    unzip ansys-additive-v0.1.dev0-wheelhouse-Linux-3.7.zip wheelhouse
+    unzip ansys-additive-v0.1.dev0-wheelhouse-Linux-3.8.zip wheelhouse
     pip install ansys-additive -f wheelhouse --no-index --upgrade --ignore-installed
 
 If you're on Windows with Python 3.9, unzip to a wheelhouse directory and install using the same command as above.
