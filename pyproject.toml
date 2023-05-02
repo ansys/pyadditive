@@ -28,6 +28,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
 ansys-api-additive = "==1.2.0"
+ansys-platform-instancemanagement = "^1.0.2"
 appdirs = ">=1.4.4"
 google-api-python-client = ">=1.7.11"
 googleapis-common-protos = ">=1.52.0"
@@ -38,7 +39,6 @@ numpy = ">=1.20.3"
 protobuf = "~=3.20.2"
 six = ">=1.16.0"
 tqdm = ">=4.45.0"
-ansys-platform-instancemanagement = {version = "==1.0.2"}
 
 # Testing dependencies
 pytest = {version = "==7.2.0", optional = true}
@@ -69,15 +69,14 @@ pypandoc = {version = "==1.8.1", optional = true}
 enum-tools = {version = "*", optional = true}
 pyvista = {version = "0.37.0", optional = true}
 
-[tool.poetry.dev-dependencies]
-numpy = {version = "==1.23.2", python = ">3.8"}
-Pint = {version = "==0.19.2", python = ">3.8"}
+# [tool.poetry.dev-dependencies]
+# numpy = {version = "==1.23.2", python = ">3.8"}
+# Pint = {version = "==0.19.2", python = ">3.8"}
 
 [tool.poetry.extras]
-tests = ["ansys-platform-instancemanagement","pytest","pytest-cov"]
+tests = ["pytest","pytest-cov"]
 doc = [
     "ansys-sphinx-theme",
-    "ansys-platform-instancemanagement",
     "jupytext",
     "myst-parser",
     "nbsphinx",
