@@ -44,6 +44,9 @@ def launch_server(port: int, cwd: str = USER_DATA_PATH):
     else:
         raise OSError(f"Unsupported OS {os.name}")
 
+    if not os.path.exists(server_exe):
+        raise FileNotFoundError(f"Cannot find {server_exe}")
+
     if not os.path.exists(cwd):
         os.makedirs(cwd)  # pragma: no cover
 

@@ -1,6 +1,7 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 import glob
 import os
+from pathlib import Path
 import subprocess
 import tempfile
 from unittest.mock import ANY, Mock, patch
@@ -48,6 +49,17 @@ def test_launch_server_with_linux_os_and_no_install_dir_raises_exception(mock_is
 
 
 @patch("os.name", "nt")
+def test_launch_server_when_exe_not_found_raises_exception():
+    # arrange
+    os.environ["AWP_ROOT241"] = "Bogus"
+
+    # act, assert
+    with pytest.raises(FileNotFoundError) as excinfo:
+        launch_server(0)
+    assert "Cannot find " in str(excinfo.value)
+
+
+@patch("os.name", "nt")
 @patch("subprocess.Popen")
 def test_launch_server_calls_popen_as_expected(mock_popen):
     # arrange
@@ -57,16 +69,16 @@ def test_launch_server_calls_popen_as_expected(mock_popen):
     attrs = {"poll.return_value": None}
     mock_process.configure_mock(**attrs)
     mock_popen.return_value = mock_process
+    exe_path = os.path.join(tmpdir.name, "Additive", "additive_grpc", "Additive.Grpc.exe")
+    os.makedirs(os.path.dirname(exe_path), exist_ok=True)
+    Path(exe_path).touch(mode=0o777, exist_ok=True)
 
     # act
     launch_server(0, tmpdir.name)
 
     # assert
     mock_popen.assert_called_once_with(
-        '"'
-        + os.path.join(tmpdir.name, "Additive", "additive_grpc", "Additive.Grpc.exe")
-        + '"'
-        + " --port 0",
+        '"' + exe_path + '"' + " --port 0",
         shell=False,
         cwd=tmpdir.name,
         stdout=ANY,
@@ -85,6 +97,9 @@ def test_launch_server_raises_exception_if_process_fails_to_start(mock_popen):
     attrs = {"poll.return_value": 1}
     mock_process.configure_mock(**attrs)
     mock_popen.return_value = mock_process
+    exe_path = os.path.join(tmpdir.name, "Additive", "additive_grpc", "Additive.Grpc.exe")
+    os.makedirs(os.path.dirname(exe_path), exist_ok=True)
+    Path(exe_path).touch(mode=0o777, exist_ok=True)
 
     # act, assert
     with pytest.raises(Exception) as excinfo:
