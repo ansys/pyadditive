@@ -9,7 +9,7 @@ DEFAULT_ANSYS_VERSION = "241"
 ADDITIVE_SERVER_EXE_NAME = "Additive.Grpc"
 
 
-def launch_server(port: int):
+def launch_server(port: int, cwd: str = USER_DATA_PATH):
     """Launch a local gRPC server for the Additive service.
 
     Parameters
@@ -17,6 +17,10 @@ def launch_server(port: int):
 
     port: int
         Port number to use for gRPC connections.
+
+    cwd: str
+        Current working directory to use for the server process.
+
     """
     ver = DEFAULT_ANSYS_VERSION
     server_exe = ""
@@ -31,7 +35,7 @@ def launch_server(port: int):
         base_path = None
         for path in ["/usr/ansys_inc", "/ansys_inc"]:
             if os.path.isdir(path):
-                base_path = path
+                base_path = path  # pragma: no cover
         if not base_path:
             raise Exception("Cannot find Ansys installation directory")
         server_exe = os.path.join(
@@ -40,23 +44,21 @@ def launch_server(port: int):
     else:
         raise OSError(f"Unsupported OS {os.name}")
 
-    working_dir = os.path.join(USER_DATA_PATH, "additive_server")
-    if not os.path.exists(working_dir):
-        os.makedirs(working_dir)
+    if not os.path.exists(cwd):
+        os.makedirs(cwd)  # pragma: no cover
 
     start_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_file = open(os.path.join(working_dir, f"additive_server_{start_time}.log"), "w")
 
-    cmd = f'"{server_exe}" --port {port}'
-    server_process = subprocess.Popen(
-        cmd,
-        shell=os.name != "nt",  # use shell on Linux
-        cwd=working_dir,
-        stdout=log_file,
-        stderr=subprocess.STDOUT,
-    )
-    time.sleep(2)  # wait for server to start
-    if server_process.poll():
-        raise Exception(f"Server exited with code {server_process.returncode}")
+    with open(os.path.join(cwd, f"additive_server_{start_time}.log"), "w") as log_file:
+        server_process = subprocess.Popen(
+            f'"{server_exe}" --port {port}',
+            shell=os.name != "nt",  # use shell on Linux
+            cwd=cwd,
+            stdout=log_file,
+            stderr=subprocess.STDOUT,
+        )
+        time.sleep(2)  # wait for server to start
+        if server_process.poll():
+            raise Exception(f"Server exited with code {server_process.returncode}")
 
     return server_process
