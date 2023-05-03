@@ -8,7 +8,6 @@ from unittest.mock import ANY, Mock, patch
 
 import pytest
 
-from ansys.additive import USER_DATA_PATH
 from ansys.additive.server_utils import DEFAULT_ANSYS_VERSION, launch_server
 
 
@@ -60,7 +59,7 @@ def test_launch_server_when_exe_not_found_raises_exception():
     assert "Cannot find " in str(excinfo.value)
 
 
-@pytest.mark.skipif(os.name == "linux", reason="Test only valid on Windows")
+@pytest.mark.skipif(os.name == "posix", reason="Test only valid on Windows")
 @patch("subprocess.Popen")
 def test_launch_server_calls_popen_as_expected_win(mock_popen):
     # arrange
@@ -109,15 +108,15 @@ def test_launch_server_calls_popen_as_expected_linux(mock_popen, mock_isdir, moc
     # assert
     mock_popen.assert_called_once_with(
         '"' + exe_path + '"' + " --port 0",
-        shell=False,
-        cwd=USER_DATA_PATH,
+        shell=True,
+        cwd=tmpdir.name,
         stdout=ANY,
         stderr=subprocess.STDOUT,
     )
     assert len(glob.glob(os.path.join(tmpdir.name, "additive_server_*.log"))) == 1
 
 
-@pytest.mark.skipif(os.name == "linux", reason="Test only valid on Windows")
+@pytest.mark.skipif(os.name == "posix", reason="Test only valid on Windows")
 @patch("subprocess.Popen")
 def test_launch_server_raises_exception_if_process_fails_to_start_win(mock_popen):
     # arrange
