@@ -8,6 +8,7 @@ from unittest.mock import ANY, Mock, patch
 
 import pytest
 
+from ansys.additive import USER_DATA_PATH
 from ansys.additive.server_utils import DEFAULT_ANSYS_VERSION, launch_server
 
 
@@ -59,16 +60,16 @@ def test_launch_server_when_exe_not_found_raises_exception():
     assert "Cannot find " in str(excinfo.value)
 
 
-@patch("os.name", "nt")
+@pytest.mark.skipif(os.name == "linux", reason="Test only valid on Windows")
 @patch("subprocess.Popen")
-def test_launch_server_calls_popen_as_expected(mock_popen):
+def test_launch_server_calls_popen_as_expected_win(mock_popen):
     # arrange
     tmpdir = tempfile.TemporaryDirectory()
-    os.environ["AWP_ROOT241"] = tmpdir.name
     mock_process = Mock()
     attrs = {"poll.return_value": None}
     mock_process.configure_mock(**attrs)
     mock_popen.return_value = mock_process
+    os.environ["AWP_ROOT241"] = tmpdir.name
     exe_path = os.path.join(tmpdir.name, "Additive", "additive_grpc", "Additive.Grpc.exe")
     os.makedirs(os.path.dirname(exe_path), exist_ok=True)
     Path(exe_path).touch(mode=0o777, exist_ok=True)
@@ -87,9 +88,38 @@ def test_launch_server_calls_popen_as_expected(mock_popen):
     assert len(glob.glob(os.path.join(tmpdir.name, "additive_server_*.log"))) == 1
 
 
-@patch("os.name", "nt")
+@pytest.mark.skipif(os.name == "nt", reason="Test only valid on linux")
+@patch("os.path.exists")
+@patch("os.path.isdir")
 @patch("subprocess.Popen")
-def test_launch_server_raises_exception_if_process_fails_to_start(mock_popen):
+def test_launch_server_calls_popen_as_expected_linux(mock_popen, mock_isdir, mock_exists):
+    # arrange
+    tmpdir = tempfile.TemporaryDirectory()
+    mock_process = Mock()
+    attrs = {"poll.return_value": None}
+    mock_process.configure_mock(**attrs)
+    mock_popen.return_value = mock_process
+    mock_isdir.return_value = True
+    mock_exists.return_value = True
+    exe_path = "/usr/ansys_inc/v241/Additive/additive_grpc/Additive.Grpc"
+
+    # act
+    launch_server(0, tmpdir.name)
+
+    # assert
+    mock_popen.assert_called_once_with(
+        '"' + exe_path + '"' + " --port 0",
+        shell=False,
+        cwd=USER_DATA_PATH,
+        stdout=ANY,
+        stderr=subprocess.STDOUT,
+    )
+    assert len(glob.glob(os.path.join(tmpdir.name, "additive_server_*.log"))) == 1
+
+
+@pytest.mark.skipif(os.name == "linux", reason="Test only valid on Windows")
+@patch("subprocess.Popen")
+def test_launch_server_raises_exception_if_process_fails_to_start_win(mock_popen):
     # arrange
     tmpdir = tempfile.TemporaryDirectory()
     os.environ["AWP_ROOT241"] = tmpdir.name
@@ -100,6 +130,28 @@ def test_launch_server_raises_exception_if_process_fails_to_start(mock_popen):
     exe_path = os.path.join(tmpdir.name, "Additive", "additive_grpc", "Additive.Grpc.exe")
     os.makedirs(os.path.dirname(exe_path), exist_ok=True)
     Path(exe_path).touch(mode=0o777, exist_ok=True)
+
+    # act, assert
+    with pytest.raises(Exception) as excinfo:
+        launch_server(0, tmpdir.name)
+    assert "Server exited with code" in str(excinfo.value)
+
+
+@pytest.mark.skipif(os.name == "nt", reason="Test only valid on linux")
+@patch("os.path.exists")
+@patch("os.path.isdir")
+@patch("subprocess.Popen")
+def test_launch_server_raises_exception_if_process_fails_to_start_linux(
+    mock_popen, mock_isdir, mock_exists
+):
+    # arrange
+    tmpdir = tempfile.TemporaryDirectory()
+    mock_process = Mock()
+    attrs = {"poll.return_value": 1}
+    mock_process.configure_mock(**attrs)
+    mock_popen.return_value = mock_process
+    mock_isdir.return_value = True
+    mock_exists.return_value = True
 
     # act, assert
     with pytest.raises(Exception) as excinfo:

@@ -36,6 +36,7 @@ def launch_server(port: int, cwd: str = USER_DATA_PATH):
         for path in ["/usr/ansys_inc", "/ansys_inc"]:
             if os.path.isdir(path):
                 base_path = path  # pragma: no cover
+                break
         if not base_path:
             raise Exception("Cannot find Ansys installation directory")
         server_exe = os.path.join(
