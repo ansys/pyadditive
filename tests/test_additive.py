@@ -4,6 +4,7 @@ from unittest.mock import create_autospec
 import ansys.platform.instancemanagement as pypim
 import grpc
 
+import ansys.additive.additive
 from ansys.additive.additive import MAX_MESSAGE_LENGTH, Additive
 
 
@@ -16,6 +17,9 @@ def test_Additive_init_connects_with_defaults(monkeypatch):
             ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
         ],
     )
+
+    mock_launcher = create_autospec(ansys.additive.additive.launch_server, return_value=None)
+    monkeypatch.setattr(ansys.additive.additive, "launch_server", mock_launcher)
     mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=channel)
     monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
 
@@ -118,7 +122,7 @@ def test_Additive_init_connects_with_ip_and_port_parameters(monkeypatch):
     monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
 
     # act
-    additive = Additive(ip, port)
+    additive = Additive(ip=ip, port=port)
 
     # assert
     mock_insecure_channel.assert_called_with(

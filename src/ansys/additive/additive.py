@@ -9,7 +9,7 @@ import concurrent.futures
 import hashlib
 import logging
 import os
-from typing import Iterator
+import typing
 import zipfile
 
 from ansys.api.additive.v0.additive_domain_pb2 import ProgressState
@@ -29,6 +29,7 @@ from ansys.additive.microstructure import MicrostructureSummary
 import ansys.additive.misc as misc
 from ansys.additive.porosity import PorositySummary
 from ansys.additive.progress_logger import ProgressLogger, ProgressState
+from ansys.additive.server_utils import launch_server
 from ansys.additive.single_bead import SingleBeadSummary
 from ansys.additive.thermal_history import ThermalHistoryInput, ThermalHistorySummary
 
@@ -45,16 +46,18 @@ class Additive:
 
     def __init__(
         self,
-        ip: str = None,
-        port: int = None,
-        loglevel: str = "INFO",
-        log_file: str = "",
-        channel: grpc.Channel = None,
+        nproc: typing.Optional[int] = 4,
+        ip: typing.Optional[str] = None,
+        port: typing.Optional[int] = None,
+        loglevel: typing.Optional[str] = "INFO",
+        log_file: typing.Optional[str] = "",
+        channel: typing.Optional[grpc.Channel] = None,
     ) -> None:  # PEP 484
         """Initialize connection to the server."""
         if channel is not None and (ip is not None or port is not None):
             raise ValueError("If 'channel' is specified, neither 'port' nor 'ip' can be specified.")
 
+        self._nproc = nproc
         self._log = self._create_logger(log_file, loglevel)
         self._log.debug("Logging set to %s", loglevel)
 
@@ -78,6 +81,8 @@ class Additive:
         """Destructor, used to clean up service connection."""
         if hasattr(self, "_server_instance") and self._server_instance:
             self._server_instance.delete()
+        if hasattr(self, "_server_process") and self._server_process:
+            self._server_process.kill()
 
     def _create_logger(self, log_file, loglevel) -> logging.Logger:
         """Create the logger for this module"""
@@ -96,7 +101,12 @@ class Additive:
             )
         return logging.getLogger(__name__)
 
-    def _create_channel(self, ip: str = None, port: int = None, product_version: str = None):
+    def _create_channel(
+        self,
+        ip: typing.Optional[str] = None,
+        port: typing.Optional[int] = None,
+        product_version: typing.Optional[str] = None,
+    ):
         """
         Create an insecure grpc channel.
 
@@ -122,10 +132,13 @@ class Additive:
             Additive server product version. Only applies in PyPim environments.
 
         """
-
-        if ip and port:
-            misc.check_valid_ip(ip)
+        if port:
             misc.check_valid_port(port)
+        else:
+            port = DEFAULT_ADDITIVE_SERVICE_PORT
+
+        if ip:
+            misc.check_valid_ip(ip)
             return self.__open_insecure_channel(f"{ip}:{port}")
 
         elif pypim.is_configured():
@@ -142,7 +155,8 @@ class Additive:
             return self.__open_insecure_channel(os.getenv("ANSYS_ADDITIVE_ADDRESS"))
 
         else:
-            return self.__open_insecure_channel(f"{LOCALHOST}:{DEFAULT_ADDITIVE_SERVICE_PORT}")
+            self._server_process = launch_server(port)
+            return self.__open_insecure_channel(f"{LOCALHOST}:{port}")
 
     def __open_insecure_channel(self, target: str) -> grpc.Channel:
         """Open an insecure grpc channel to a given target."""
@@ -161,7 +175,7 @@ class Additive:
             return self._channel._channel.target().decode()
         return ""
 
-    def simulate(self, inputs):
+    def simulate(self, inputs, nproc: typing.Optional[int] = None):
         """Execute an additive simulation.
 
         Parameters
@@ -170,6 +184,12 @@ class Additive:
         :class:`MicrostructureInput`, :class:`ThermalHistoryInput`
         or a list of these input types
             Parameters to use for simulation(s).
+
+        nproc: int
+            Number of processors to use for simulation. This corresponds
+            to the maximum number of licenses that will be checked out
+            at a time. If not specified, the value of ``npoc`` provided
+            in the Additive service constructor will be used.
 
 
         Returns
@@ -184,17 +204,17 @@ class Additive:
             return [result]
 
         summaries = []
-        completed = 0
-        total_simulations = len(inputs)
-        print(f"Executing {total_simulations} simulations")
-        with concurrent.futures.ThreadPoolExecutor(10) as executor:
+        nthreads = self._nproc
+        if nproc:
+            nthreads = nproc
+        print(f"Executing {len(inputs)} simulations")
+        with concurrent.futures.ThreadPoolExecutor(nthreads) as executor:
             futures = []
             for input in inputs:
                 futures.append(executor.submit(self._simulate, input=input, show_progress=False))
             for future in concurrent.futures.as_completed(futures):
                 summaries.append(future.result())
-                completed += 1
-                print(f"Completed {completed} of {total_simulations} simulations")
+                print(f"Completed {len(summaries)} of {len(inputs)} simulations")
         return summaries
 
     def _simulate(self, input, show_progress: bool = False):
@@ -348,7 +368,7 @@ class Additive:
 
     def __file_upload_reader(
         self, file_name: str, chunk_size=2 * 1024 * 1024
-    ) -> Iterator[UploadFileRequest]:
+    ) -> typing.Iterator[UploadFileRequest]:
         """Read a file and return an iterator of UploadFileRequests"""
         file_size = os.path.getsize(file_name)
         short_name = os.path.basename(file_name)
@@ -365,8 +385,11 @@ class Additive:
                 )
 
     def _simulate_thermal_history(
-        self, input: ThermalHistoryInput, out_dir: str, logger: ProgressLogger
-    ) -> ThermalHistorySummary:
+        self,
+        input: ThermalHistoryInput,
+        out_dir: str,
+        logger: typing.Optional[ProgressLogger] = None,
+    ) -> typing.Optional[ThermalHistorySummary]:
         """
         Execute a thermal history simulation.
 
@@ -390,6 +413,8 @@ class Additive:
         """
         if input.geometry == None or input.geometry.path == "":
             raise ValueError("Geometry path not defined")
+
+        remote_geometry_path = ""
         for response in self._simulation_stub.UploadFile(
             self.__file_upload_reader(input.geometry.path)
         ):

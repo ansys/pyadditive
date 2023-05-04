@@ -12,7 +12,7 @@ services:
     image: ghcr.io/pyansys/additive:latest
     ports:
       - "50052:50052"
-    volumes:
-      - ./simulation_tmp:/tmp
+    # volumes:
+    #   - ./simulation_tmp:/tmp
     environment:
       ANSYSLMD_LICENSE_FILE: '1055@10.3.9.71'
