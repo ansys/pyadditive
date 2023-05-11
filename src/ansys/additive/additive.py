@@ -202,6 +202,8 @@ class Additive:
         if type(inputs) is not list:
             result = self._simulate(inputs, show_progress=True)
             return result
+        else:
+            self._validate_inputs(inputs)
 
         summaries = []
         nthreads = self._nproc
@@ -238,6 +240,9 @@ class Additive:
         logger = None
         if show_progress:
             logger = ProgressLogger("Simulation")
+
+        if input.material == AdditiveMaterial():
+            raise ValueError("Material must be specified")
 
         request = None
         if isinstance(input, ThermalHistoryInput):
@@ -445,3 +450,12 @@ class Additive:
                     zip.extractall(path)
                 os.remove(local_zip)
                 return ThermalHistorySummary(input, path)
+
+    def _validate_inputs(self, inputs):
+        ids = []
+        for input in inputs:
+            if input.id == "":
+                input.id = misc.short_uuid()
+            if input.id in ids:
+                raise ValueError(f'Duplicate simulation id "{input.id}" in input list')
+            ids.append(input.id)
