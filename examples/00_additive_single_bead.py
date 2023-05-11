@@ -59,10 +59,8 @@ input = pyadditive.SingleBeadInput(
 # Run Simulation
 # --------------
 # Use the ``simulate`` method of the ``additive`` object to run the simulation.
-# The ``simulate`` method returns a list of summary objects so we
-# take the first element of the list.
 
-summary = additive.simulate(input)[0]
+summary = additive.simulate(input)
 
 ###############################################################################
 # Plot Melt Pool Statistics
