@@ -194,14 +194,14 @@ class Additive:
 
         Returns
         -------
-        A list containing one or more of the following summaries.
-        :class:`SingleBeadSummary`, :class:`PorositySummary`,
-        :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`
+        A :class:`SingleBeadSummary`, :class:`PorositySummary`,
+        :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`,
+        or, if a list of inputs was provided, a list of these summary types.
 
         """
         if type(inputs) is not list:
             result = self._simulate(inputs, show_progress=True)
-            return [result]
+            return result
 
         summaries = []
         nthreads = self._nproc
