@@ -10,6 +10,6 @@
    :maxdepth: 2
 
    getting_started/index
-   examples/index
    api/index
+   examples/index
    contributing

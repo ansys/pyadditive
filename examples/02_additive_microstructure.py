@@ -84,10 +84,9 @@ input_without_thermal = pyadditive.MicrostructureInput(
 # Run Simulation
 # --------------
 # Use the ``simulate`` method of the ``additive`` object to run the simulation.
-# The ``simulate`` method returns a list of summary objects so we
-# take the first element of the list.
 
-summary = additive.simulate(input_with_thermal)[0]
+
+summary = additive.simulate(input_with_thermal)
 
 ###############################################################################
 # Plot Results
@@ -108,6 +107,7 @@ import pyvista as pv
 ###############################################################################
 # Plot Grain 2D Visualtions
 # ^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
 # Function to plot the planar data
 def plot_microstructure(
@@ -152,6 +152,7 @@ plot_microstructure(xy, xz, yz, "GrainNumber", None).show(title="Grain Number")
 ###############################################################################
 # Plot Grain Statistics
 # ^^^^^^^^^^^^^^^^^^^^^
+
 
 # Function to simplify plotting grain statistics
 def add_grain_statistics_to_figure(
