@@ -3,9 +3,17 @@ from unittest.mock import create_autospec
 
 import ansys.platform.instancemanagement as pypim
 import grpc
+import pytest
 
+from ansys.additive import (
+    MAX_MESSAGE_LENGTH,
+    Additive,
+    MicrostructureInput,
+    PorosityInput,
+    SingleBeadInput,
+    ThermalHistoryInput,
+)
 import ansys.additive.additive
-from ansys.additive.additive import MAX_MESSAGE_LENGTH, Additive
 
 
 def test_Additive_init_connects_with_defaults(monkeypatch):
@@ -130,3 +138,34 @@ def test_Additive_init_connects_with_ip_and_port_parameters(monkeypatch):
     )
     assert additive._channel == channel
     assert hasattr(additive, "_server_instance") == False
+
+
+@pytest.mark.parametrize(
+    "input",
+    [
+        SingleBeadInput(),
+        PorosityInput(),
+        MicrostructureInput(),
+        ThermalHistoryInput(),
+    ],
+)
+def test_simulate_without_material_assigned_raises_exception(input):
+    # arrange
+    additive = Additive(ip="localhost", port=12345)
+
+    # act, assert
+    with pytest.raises(ValueError, match="Material must be specified"):
+        additive.simulate(input)
+
+
+def test_simulate_list_of_inputs_with_duplicate_ids_raises_exception():
+    # arrange
+    additive = Additive(ip="localhost", port=12345)
+    inputs = [
+        SingleBeadInput(id="id"),
+        SingleBeadInput(id="id"),
+    ]
+
+    # act, assert
+    with pytest.raises(ValueError, match='Duplicate simulation id "id" in input list'):
+        additive.simulate(inputs)
