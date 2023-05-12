@@ -37,10 +37,11 @@ jobs:
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v3
+
       - name: "Copy long running examples to examples folder"
-        # only run on merge or tag
         if: github.event_name == 'push'
         run: cp long_running_examples/*.py examples/
+
       - name: "Running documentation style checks"
         uses: pyansys/actions/doc-style@v4
         with:
@@ -112,8 +113,17 @@ jobs:
       - name: "Setup headless display"
         uses: pyvista/setup-headless-display-action@v2
 
+      - name: "Checkout code"
+        uses: actions/checkout@v3
+
+      - name: "Copy long running examples to examples folder"
+        if: github.event_name == 'push'
+        run: cp long_running_examples/*.py examples/
+
       - name: "Run Ansys documentation building action"
         uses: pyansys/actions/doc-build@v4
+        with:
+          checkout: false
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
