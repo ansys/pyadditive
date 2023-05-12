@@ -39,7 +39,6 @@ jobs:
         uses: actions/checkout@v3
 
       - name: "Copy long running examples to examples folder"
-        if: github.event_name == 'push'
         run: cp long_running_examples/*.py examples/
 
       - name: "Running documentation style checks"
