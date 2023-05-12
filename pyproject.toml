@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 # Check https://python-poetry.org/docs/pyproject/ for all available sections
 name = "ansys-additive"
-version = "0.11.1"
+version = "0.12.0"
 description = "A python client for the Ansys additive service"
 license = "MIT"
 authors = ["ANSYS, Inc. <ansys.support@ansys.com>"]
@@ -43,6 +43,7 @@ tqdm = ">=4.45.0"
 # Testing dependencies
 pytest = {version = "==7.2.0", optional = true}
 pytest-cov = {version = "==4.0.0", optional = true}
+callee = {version = "==0.3.1", optional = true}
 
 # Documentation dependencies
 ansys-sphinx-theme = {version = "==0.8.2", optional = true}
@@ -74,7 +75,7 @@ pyvista = {version = "0.37.0", optional = true}
 # Pint = {version = "==0.19.2", python = ">3.8"}
 
 [tool.poetry.extras]
-tests = ["pytest","pytest-cov"]
+tests = ["pytest","pytest-cov","callee"]
 doc = [
     "ansys-sphinx-theme",
     "jupytext",

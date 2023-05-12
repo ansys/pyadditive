@@ -9,7 +9,7 @@ DEFAULT_ANSYS_VERSION = "241"
 ADDITIVE_SERVER_EXE_NAME = "Additive.Grpc"
 
 
-def launch_server(port: int, cwd: str = USER_DATA_PATH):
+def launch_server(port: int, cwd: str = USER_DATA_PATH) -> subprocess.Popen:
     """Launch a local gRPC server for the Additive service.
 
     Parameters
@@ -20,6 +20,11 @@ def launch_server(port: int, cwd: str = USER_DATA_PATH):
 
     cwd: str
         Current working directory to use for the server process.
+
+    Returns
+    -------
+    process: subprocess.Popen
+        Server process. To stop the server, call ``kill()`` on the returned object.
 
     """
     ver = DEFAULT_ANSYS_VERSION
@@ -66,3 +71,22 @@ def launch_server(port: int, cwd: str = USER_DATA_PATH):
             raise Exception(f"Server exited with code {server_process.returncode}")
 
     return server_process
+
+
+def find_open_port() -> int:
+    """Find an open port on the local host.
+
+    Returns
+    -------
+    port: int
+        Open port number. *Note:* this port may be taken by the time you try to use it.
+
+    """
+    import socket
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("", 0))
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    port = s.getsockname()[1]
+    s.close()
+    return port

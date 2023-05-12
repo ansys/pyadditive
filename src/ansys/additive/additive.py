@@ -29,7 +29,7 @@ from ansys.additive.microstructure import MicrostructureSummary
 import ansys.additive.misc as misc
 from ansys.additive.porosity import PorositySummary
 from ansys.additive.progress_logger import ProgressLogger, ProgressState
-from ansys.additive.server_utils import launch_server
+from ansys.additive.server_utils import find_open_port, launch_server
 from ansys.additive.single_bead import SingleBeadSummary
 from ansys.additive.thermal_history import ThermalHistoryInput, ThermalHistorySummary
 
@@ -131,6 +131,11 @@ class Additive:
         product_version: str
             Additive server product version. Only applies in PyPim environments.
 
+        Returns
+        -------
+        channel: grpc.Channel
+            Insecure grpc channel.
+
         """
         if port:
             misc.check_valid_port(port)
@@ -155,6 +160,7 @@ class Additive:
             return self.__open_insecure_channel(os.getenv("ANSYS_ADDITIVE_ADDRESS"))
 
         else:
+            port = find_open_port()
             self._server_process = launch_server(port)
             return self.__open_insecure_channel(f"{LOCALHOST}:{port}")
 
