@@ -2,6 +2,7 @@
 from unittest.mock import create_autospec
 
 import ansys.platform.instancemanagement as pypim
+from callee import Contains
 import grpc
 import pytest
 
@@ -18,7 +19,6 @@ import ansys.additive.additive
 
 def test_Additive_init_connects_with_defaults(monkeypatch):
     # arrange
-    target = "127.0.0.1:50052"
     channel = grpc.insecure_channel(
         "channel_str",
         options=[
@@ -36,7 +36,7 @@ def test_Additive_init_connects_with_defaults(monkeypatch):
 
     # assert
     mock_insecure_channel.assert_called_with(
-        target, options=[("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH)]
+        Contains("127.0.0.1:"), options=[("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH)]
     )
     assert additive._channel == channel
     assert hasattr(additive, "_server_instance") == False

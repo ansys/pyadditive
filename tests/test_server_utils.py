@@ -8,7 +8,7 @@ from unittest.mock import ANY, Mock, patch
 
 import pytest
 
-from ansys.additive.server_utils import DEFAULT_ANSYS_VERSION, launch_server
+from ansys.additive.server_utils import DEFAULT_ANSYS_VERSION, find_open_port, launch_server
 
 
 @patch("os.name", "unknown_os")
@@ -156,3 +156,11 @@ def test_launch_server_raises_exception_if_process_fails_to_start_linux(
     with pytest.raises(Exception) as excinfo:
         launch_server(0, tmpdir.name)
     assert "Server exited with code" in str(excinfo.value)
+
+
+def test_find_open_port_returns_valid_port():
+    # act
+    port = find_open_port()
+
+    # assert
+    assert port > 1024 and port < 65535
