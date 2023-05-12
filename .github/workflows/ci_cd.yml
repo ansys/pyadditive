@@ -35,6 +35,8 @@ jobs:
     name: "Running documentation style checks"
     runs-on: ubuntu-latest
     steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v3
       - name: "Copy long running examples to examples folder"
         # only run on merge or tag
         if: github.event_name == 'push'
@@ -43,6 +45,7 @@ jobs:
         uses: pyansys/actions/doc-style@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          checkout: false
 
   smoke-tests:
     name: "Build wheelhouse for Python versions"
