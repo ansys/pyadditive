@@ -35,6 +35,9 @@ jobs:
     name: "Running documentation style checks"
     runs-on: ubuntu-latest
     steps:
+      - name: "Copy long running examples to examples folder"
+        if: (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true) || (github.event_name == 'push' && contains(github.ref, 'refs/tags'))
+        run: cp long_running_examples/*.py examples/
       - name: "Running documentation style checks"
         uses: pyansys/actions/doc-style@v4
         with:

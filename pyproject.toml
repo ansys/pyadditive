@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 # Check https://python-poetry.org/docs/pyproject/ for all available sections
 name = "ansys-additive"
-version = "0.12.0"
+version = "0.12.1"
 description = "A python client for the Ansys additive service"
 license = "MIT"
 authors = ["ANSYS, Inc. <ansys.support@ansys.com>"]
@@ -21,9 +21,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-packages = [
-    { include = "ansys", from = "src" },
-]
+packages = [{ include = "ansys", from = "src" }]
 
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
@@ -34,48 +32,48 @@ google-api-python-client = ">=1.7.11"
 googleapis-common-protos = ">=1.52.0"
 grpcio = ">=1.46.3"
 grpcio-health-checking = ">=1.45.0"
-importlib-metadata = {version = "^4.0", python = "<3.8"}
+importlib-metadata = { version = "^4.0", python = "<3.8" }
 numpy = ">=1.20.3"
 protobuf = "~=3.20.2"
 six = ">=1.16.0"
 tqdm = ">=4.45.0"
 
 # Testing dependencies
-pytest = {version = "==7.2.0", optional = true}
-pytest-cov = {version = "==4.0.0", optional = true}
-callee = {version = "==0.3.1", optional = true}
+pytest = { version = "==7.2.0", optional = true }
+pytest-cov = { version = "==4.0.0", optional = true }
+callee = { version = "==0.3.1", optional = true }
 
 # Documentation dependencies
-ansys-sphinx-theme = {version = "==0.8.2", optional = true}
-jupytext = {version = ">=1.14.1", optional = true}
-myst-parser = {version = ">=0.18.0", optional = true}
-nbsphinx = {version = "*", optional = true}
-nbconvert = {version = "*", optional = true}
-notebook = {version = "*", optional = true}
-numpydoc = {version = "==1.5.0", optional = true}
-Sphinx = {version = "==5.3.0", optional = true}
-sphinx-autoapi = {version = "==2.0.0", optional = true}
-sphinx-copybutton = {version = "==0.5.1", optional = true}
-sphinx-gallery = {version = "==0.10.1", optional = true}
-sphinx-autodoc-typehints = {version = "==1.19.5", optional = true}
-sphinx_design= {version = "==0.3.0", optional = true}
-sphinx-toolbox = {version = "*", optional = true}
-sphinxemoji = {version = "0.2.0", optional = true}
-sphinx-notfound-page = {version = "0.8", optional = true}
-jupyter_sphinx= {version = "0.4.0", optional = true}
-ipyvtklink = {version = "*", optional = true}
-panel = {version = "*", optional = true}
-matplotlib = {version = "==3.6.2", optional = true}
-pypandoc = {version = "==1.8.1", optional = true}
-enum-tools = {version = "*", optional = true}
-pyvista = {version = "0.37.0", optional = true}
+ansys-sphinx-theme = { version = "==0.8.2", optional = true }
+jupytext = { version = ">=1.14.1", optional = true }
+myst-parser = { version = ">=0.18.0", optional = true }
+nbsphinx = { version = "*", optional = true }
+nbconvert = { version = "*", optional = true }
+notebook = { version = "*", optional = true }
+numpydoc = { version = "==1.5.0", optional = true }
+Sphinx = { version = "==5.3.0", optional = true }
+sphinx-autoapi = { version = "==2.0.0", optional = true }
+sphinx-copybutton = { version = "==0.5.1", optional = true }
+sphinx-gallery = { version = "==0.10.1", optional = true }
+sphinx-autodoc-typehints = { version = "==1.19.5", optional = true }
+sphinx_design = { version = "==0.3.0", optional = true }
+sphinx-toolbox = { version = "*", optional = true }
+sphinxemoji = { version = "0.2.0", optional = true }
+sphinx-notfound-page = { version = "0.8", optional = true }
+jupyter_sphinx = { version = "0.4.0", optional = true }
+ipyvtklink = { version = "*", optional = true }
+panel = { version = "*", optional = true }
+matplotlib = { version = "==3.6.2", optional = true }
+pypandoc = { version = "==1.8.1", optional = true }
+enum-tools = { version = "*", optional = true }
+pyvista = { version = "0.37.0", optional = true }
 
 # [tool.poetry.dev-dependencies]
 # numpy = {version = "==1.23.2", python = ">3.8"}
 # Pint = {version = "==0.19.2", python = ">3.8"}
 
 [tool.poetry.extras]
-tests = ["pytest","pytest-cov","callee"]
+tests = ["pytest", "pytest-cov", "callee"]
 doc = [
     "ansys-sphinx-theme",
     "jupytext",
@@ -124,6 +122,4 @@ show_missing = true
 [tool.pytest.ini_options]
 minversion = "7.1"
 addopts = "-ra --cov=ansys.additive --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv"
-testpaths = [
-    "tests",
-]
+testpaths = ["tests"]
