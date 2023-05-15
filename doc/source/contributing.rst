@@ -18,14 +18,14 @@ development mode, run:
 
 .. code::
 
-    git clone https://github.com/pyansys/pyadditive
+    git clone https://github.com/ansys-internal/pyadditive
     cd pyadditive
     pip install -e .
 
 
 Post issues
 -----------
-Use the `PyAdditive Issues <https://github.com/pyansys/pyadditive/issues>`_
+Use the `PyAdditive Issues <https://github.com/ansys-internal/pyadditive/issues>`_
 page to submit questions, report bugs, and request new features.
 
 To reach the PyAnsys support team, email `pyansys.support@ansys.com <pyansys.support@ansys.com>`_.

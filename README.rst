@@ -21,8 +21,8 @@ PyAdditive
    :target: https://codecov.io/gh/pyansys/pyadditive
    :alt: Codecov
 
-.. |GH-CI| image:: https://github.com/pyansys/pyadditive/actions/workflows/ci_cd.yml/badge.svg
-   :target: https://github.com/pyansys/pyadditive/actions/workflows/ci_cd.yml
+.. |GH-CI| image:: https://github.com/ansys-internal/pyadditive/actions/workflows/ci_cd.yml/badge.svg
+   :target: https://github.com/ansys-internal/pyadditive/actions/workflows/ci_cd.yml
    :alt: GH-CI
 
 .. |MIT| image:: https://img.shields.io/badge/License-MIT-yellow.svg
@@ -169,7 +169,7 @@ in the *PyAnsys Developer's Guide*. You will need to follow these steps:
 
    .. code:: bash
 
-      git clone https://github.com/pyansys/pyadditive
+      git clone https://github.com/ansys-internal/pyadditive
       cd pyadditive
 
 #. Create a new Python environment and activate it:
@@ -222,7 +222,7 @@ Offline mode installation
 
 If you lack an internet connection on your installation machine (or you do not have access to the
 private Ansys PyPI packages repository), the recommended way of installing PyAdditive is downloading the wheelhouse
-archive from the `Releases Page <https://github.com/pyansys/pyadditive/releases>`_ for your
+archive from the `Releases Page <https://github.com/ansys-internal/pyadditive/releases>`_ for your
 corresponding machine architecture.
 
 Each wheelhouse archive contains all the Python wheels necessary to install PyAdditive from scratch on Windows,

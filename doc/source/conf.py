@@ -48,7 +48,7 @@ html_favicon = ansys_favicon
 
 # specify the location of your github repo
 html_theme_options = {
-    "github_url": "https://github.com/pyansys/pyadditive",
+    "github_url": "https://github.com/ansys-internal/pyadditive",
     "show_prev_next": False,
     "switcher": {
         "json_url": f"https://{cname}/versions.json",
