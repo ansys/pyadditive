@@ -13,7 +13,7 @@ env:
   DOCUMENTATION_CNAME: "additive.docs.pyansys.com"
   LIBRARY_NAME: "ansys-additive"
   LIBRARY_NAMESPACE: "ansys.additive"
-  ANSYS_PRODUCT_IMAGE: "ghcr.io/pyansys/additive:latest"
+  ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys/additive:latest"
   ANSYS_PRODUCT_CONTAINER: "ansys-additive-container"
 
   PYANSYS_PYPI_PRIVATE_PAT: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
