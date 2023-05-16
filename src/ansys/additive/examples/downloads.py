@@ -8,7 +8,7 @@ import zipfile
 
 from ansys.additive import EXAMPLES_PATH
 
-EXAMPLES_URI = "https://github.com/ansys-internal/example-data/raw/master"
+EXAMPLES_URI = "https://github.com/ansys/example-data/raw/master"
 PARTS_FOLDER = "pyadditive/part-only"
 BUILD_FILES_FOLDER = "pyadditive/buildfiles"
 MATERIAL_TUNING_FOLDER = "pyadditive/material_tuning_input"
