@@ -15,20 +15,15 @@ def test_MeltPool_init_converts_MeltPoolMessage():
     melt_pool = MeltPool(test_utils.get_test_melt_pool_message())
 
     # assert
-    assert len(melt_pool.laser_x) == 1
-    assert len(melt_pool.laser_y) == 1
-    assert len(melt_pool.length) == 1
-    assert len(melt_pool.width) == 1
-    assert len(melt_pool.reference_width) == 1
-    assert len(melt_pool.depth) == 1
-    assert len(melt_pool.reference_depth) == 1
-    assert melt_pool.laser_x[0] == 1
-    assert melt_pool.laser_y[0] == 2
-    assert melt_pool.length[0] == 3
-    assert melt_pool.width[0] == 4
-    assert melt_pool.reference_width[0] == 5
-    assert melt_pool.depth[0] == 6
-    assert melt_pool.reference_depth[0] == 7
+    df = melt_pool.data_frame
+    assert df is not None
+    assert len(df.index) == 1
+    assert df.index[0] == 1
+    assert df.iloc[0]["length"] == 3
+    assert df.iloc[0]["width"] == 4
+    assert df.iloc[0]["reference_width"] == 5
+    assert df.iloc[0]["depth"] == 6
+    assert df.iloc[0]["reference_depth"] == 7
 
 
 def test_SingleBeadSummary_init_returns_valid_result():
@@ -210,16 +205,10 @@ def test_MeltPool_repr_returns_expected_string():
     mp = MeltPool(mp_msg)
 
     # act, assert
-    assert (
-        mp.__repr__()
-        == "MeltPool\n"
-        + "laser_x: [1.0]\n"
-        + "laser_y: [2.0]\n"
-        + "length: [3.0]\n"
-        + "width: [4.0]\n"
-        + "depth: [5.0]\n"
-        + "reference_width: [6.0]\n"
-        + "reference_depth: [7.0]\n"
+    assert mp.__repr__() == (
+        "MeltPool\n"
+        "     length  width  depth  reference_width  reference_depth\n"
+        "1.0     3.0    4.0    5.0              6.0              7.0"
     )
 
 
@@ -286,13 +275,7 @@ def test_SingleBeadSummary_repr_returns_expected_string():
         + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
         + "\n"
         + "melt_pool: MeltPool\n"
-        + "laser_x: []\n"
-        + "laser_y: []\n"
-        + "length: []\n"
-        + "width: []\n"
-        + "depth: []\n"
-        + "reference_width: []\n"
-        + "reference_depth: []\n"
+        + "Empty DataFrame\nColumns: [length, width, depth, reference_width, reference_depth]\nIndex: []"
         + "\n"
     )
 
