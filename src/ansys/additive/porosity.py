@@ -152,7 +152,7 @@ class PorositySummary:
 
     @property
     def input(self) -> PorosityInput:
-        """Simulation input."""
+        """Simulation input, see :class:`PorosityInput`."""
         return self._input
 
     @property

@@ -164,12 +164,12 @@ class SingleBeadSummary:
 
     @property
     def input(self) -> SingleBeadInput:
-        """Simulation inputs."""
+        """Simulation input, see :class:`SingleBeadInput`."""
         return self._input
 
     @property
     def melt_pool(self) -> MeltPool:
-        """Resulting simulated melt pool."""
+        """Resulting melt pool, see :class:`MeltPool`."""
         return self._melt_pool
 
     def __repr__(self):
