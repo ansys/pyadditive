@@ -19,7 +19,7 @@ additive = pyadditive.Additive()
 # ---------------
 # The next step is a to choose a material. A list of available materials can
 # be obtained using the
-# :meth:`get_materials_list() <ansys.additive.additive.get_materials_list>`
+# :meth:`get_materials_list() <ansys.additive.additive.Additive.get_materials_list>`
 # command.
 
 print(additive.get_materials_list())
@@ -27,7 +27,7 @@ print(additive.get_materials_list())
 ###############################################################################
 # Obtain the parameters for a single material by passing one of the names
 # from the materials list to
-# :meth:`get_material() <ansys.additive.additive.get_material>`.
+# :meth:`get_material() <ansys.additive.additive.Additive.get_material>`.
 material = additive.get_material("17-4PH")
 
 ###############################################################################

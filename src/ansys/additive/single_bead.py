@@ -9,11 +9,7 @@ from ansys.additive.material import AdditiveMaterial
 
 
 class SingleBeadInput:
-    """Input parameters for single bead simulation.
-
-    Units are SI (m, kg, s, K) unless otherwise noted.
-
-    """
+    """Input parameters for single bead simulation."""
 
     __DEFAULT_BEAD_LENGTH = 3e-3
     __MIN_BEAD_LENGTH = 1e-3
@@ -119,24 +115,23 @@ class MeltPool:
 
     @property
     def data_frame(self) -> DataFrame:
-        """
-        Pandas DataFrame containing melt pool data.
+        """:class:`Pandas DataFrame <pandas.DataFrame>` containing melt pool data.
 
         Values are in meters.
 
-        Index is:
-        - bead_length: Length of bead at each time step.
+        Indices:
+            - bead_length: Length of bead at each time step.
 
-        Columns are:
-        - length: length of melt pool at each time step.
-        - width: width of melt pool at each time step.
-        - depth: depth of melt pool at each time step.
-        - reference_width: reference width of melt pool at each time step.
-            Reference width is the melt pool width at the bottom of the powder layer,
-            or, the width at the top of the substrate.
-        - reference_depth: reference depth of melt pool at each time step.
-            Reference depth is the depth of the entire melt pool minus the powder
-            layer thickness, or, the depth of penetration into the substrate.
+        Columns:
+            - length: length of melt pool at each time step.
+            - width: width of melt pool at each time step.
+            - depth: depth of melt pool at each time step.
+            - reference_width: reference width of melt pool at each time step.
+              Reference width is the melt pool width at the bottom of the powder layer,
+              or, the width at the top of the substrate.
+            - reference_depth: reference depth of melt pool at each time step.
+              Reference depth is the depth of the entire melt pool minus the powder
+              layer thickness, or, the depth of penetration into the substrate.
         """
         return self._df
 

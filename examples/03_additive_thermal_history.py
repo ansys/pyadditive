@@ -54,7 +54,7 @@ material = additive.get_material("17-4PH")
 
 ###############################################################################
 # Set Machine Parameters
-# -------------------------------
+# ----------------------
 # Specify machine parameters by first creating an ``AdditiveMachine`` object
 # then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.

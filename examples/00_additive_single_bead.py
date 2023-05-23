@@ -19,7 +19,7 @@ additive = pyadditive.Additive()
 # ---------------
 # The next step is a to choose a material. A list of available materials can
 # be obtained using the
-# :meth:`get_materials_list() <ansys.additive.additive.get_materials_list>`
+# :meth:`get_materials_list() <ansys.additive.additive.Additive.get_materials_list>`
 # command.
 
 print(additive.get_materials_list())
@@ -27,7 +27,7 @@ print(additive.get_materials_list())
 ###############################################################################
 # Obtain the parameters for a single material by passing one of the names
 # from the materials list to
-# :meth:`get_material() <ansys.additive.additive.get_material>`.
+# :meth:`get_material() <ansys.additive.additive.Additive.get_material>`.
 material = additive.get_material("17-4PH")
 
 ###############################################################################
@@ -74,7 +74,7 @@ summary = additive.simulate(input)
 # -------------------------
 # A :class:`Pandas DataFrame <pandas.DataFrame>` containing the melt pool
 # statistics can be obtained using the
-# :meth:`data_fram() <ansys.additive.single_bead.MeltPool.data_frame` property
+# :meth:`data_frame() <ansys.additive.single_bead.MeltPool.data_frame>` property
 # of the ``melt_pool`` attribute of the ``summary`` object. The
 # :meth:`plot() <pandas.DataFrame.plot>` method can be used to plot the melt
 # pool dimensions as a function of bead length.
@@ -93,10 +93,11 @@ df.plot(
 ###############################################################################
 # List Melt Pool Statistics
 # -------------------------
-# A table of the melt pool statistics can be obtained using one of
-# `various methods <https://pandas.pydata.org/docs/user_guide/style.html>`_.
+# A table of the melt pool statistics can be obtained using a
+# `Pandas Styler <https://pandas.pydata.org/docs/user_guide/style.html>`_.
+# Here we show only the first few rows using ``head()`` for brevity.
 
-df.style.format("{:.2f}").format_index("{:.2f}")
+df.head().style.format("{:.2f}").format_index("{:.2f}")
 
 ###############################################################################
 # Save Melt Pool Statistics
