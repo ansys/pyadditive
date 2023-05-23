@@ -69,9 +69,7 @@ def test_PorositySummary_init_creates_expected_object():
 
     # assert
     assert input == summary.input
-    assert 10 == summary.void_ratio
-    assert 11 == summary.powder_ratio
-    assert 12 == summary.solid_ratio
+    assert 12 == summary.relative_density
 
 
 @pytest.mark.parametrize(
@@ -269,7 +267,5 @@ def test_PorositySummary_repr_retuns_expected_string():
         + "characteristic_width_data: CharacteristicWidthDataPoint[]\n"
         + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
         + "\n"
-        + "void_ratio: 0.0\n"
-        + "powder_ratio: 0.0\n"
-        + "solid_ratio: 0.0\n"
+        + "relative_density: 0.0\n"
     )

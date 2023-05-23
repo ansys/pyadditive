@@ -14,25 +14,28 @@ import ansys.additive as pyadditive
 additive = pyadditive.Additive()
 
 ###############################################################################
-# Material Selection
-# ------------------
+# Select Material
+# ---------------
 # The next step is a to choose a material. A list of available materials can
-# be obtained using the ``get_materials_list`` command.
+# be obtained using the
+# :meth:`get_materials_list() <ansys.additive.additive.get_materials_list>`
+# command.
 
 print(additive.get_materials_list())
 
 ###############################################################################
-# Obtain the parameters for a single material using one of the names from the list.
-material_name = "17-4PH"
-material = additive.get_material(material_name)
+# Obtain the parameters for a single material by passing one of the names
+# from the materials list to
+# :meth:`get_material() <ansys.additive.additive.get_material>`.
+material = additive.get_material("316L")
 
 ###############################################################################
-# Machine Parameter Specification
-# -------------------------------
-# Specify machine parameters by first creating an ``AdditiveMachine`` object
+# Set Machine Parameters
+# ----------------------
+# Specify machine parameters by first creating an
+# :class:`AdditiveMachine <ansys.additive.machine.AdditiveMachine>` object
 # then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
-
 machine = pyadditive.AdditiveMachine()
 
 # Show available parameters
@@ -46,14 +49,14 @@ machine.laser_power = 250  # W
 ###############################################################################
 # Specify Porosity Simulation Inputs
 # ----------------------------------
-# Create a ``PorosityInput`` object containing the desired simulation
-# parameters.
+# Create a :class:`PorosityInput <ansys.additive.porosity.PorosityInput>` object
+# containing the desired simulation parameters.
 
 input = pyadditive.PorosityInput(
     machine=machine,
     material=material,
     id="porosity-example",
-    size_x=0.001,  # in meters (1 mm)
+    size_x=0.001,  # meters
     size_y=0.001,
     size_z=0.001,
 )
@@ -61,19 +64,16 @@ input = pyadditive.PorosityInput(
 ###############################################################################
 # Run Simulation
 # --------------
-# Use the ``simulate`` method of the ``additive`` object to run the simulation.
+# Use the :meth:`simulate() <ansys.additive.additive.Additive.simulate>` method
+# on the ``additive`` object to run the simulation. The returned object is a
+# :class:`PorositySummary <ansys.additive.porosity.PorositySummary>` object
+# containing the input and the relative density of the simulated sample.
 
 summary = additive.simulate(input)
 
 ###############################################################################
 # Print Results
 # -------------
-# The result object has void_ratio, powder_ratio and solid_ratio properties.
 
-print(
-    f"For {material_name} with laser power of {summary.input.machine.laser_power} W"
-    + f" and scan speed of {summary.input.machine.scan_speed} m/s:"
-)
-print(f"    solid ratio = {round(summary.solid_ratio, 5)}")
-print(f"    powder ratio = {round(summary.powder_ratio, 5)}")
-print(f"    void ratio = {round(summary.void_ratio, 5)}")
+print(f"For {summary.input.material.name} with \n", summary.input.machine)
+print(f"\n    relative density = {round(summary.relative_density, 5)}")

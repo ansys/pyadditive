@@ -15,20 +15,24 @@ import ansys.additive as pyadditive
 additive = pyadditive.Additive()
 
 ###############################################################################
-# Material Selection
-# ------------------
+# Select Material
+# ---------------
 # The next step is a to choose a material. A list of available materials can
-# be obtained using the ``get_materials_list`` command.
+# be obtained using the
+# :meth:`get_materials_list() <ansys.additive.additive.get_materials_list>`
+# command.
 
 print(additive.get_materials_list())
 
 ###############################################################################
-# Obtain the parameters for a single material using one of the names from the list.
+# Obtain the parameters for a single material by passing one of the names
+# from the materials list to
+# :meth:`get_material() <ansys.additive.additive.get_material>`.
 material = additive.get_material("17-4PH")
 
 ###############################################################################
-# Machine Parameter Specification
-# -------------------------------
+# Set Machine Parameters
+# ----------------------
 # Specify machine parameters by first creating an ``AdditiveMachine`` object
 # then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.

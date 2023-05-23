@@ -148,9 +148,7 @@ class PorositySummary:
         if not isinstance(result, PorosityResult):
             raise ValueError("Invalid result type passed to init, " + self.__class__.__name__)
         self._input = input
-        self._void_ratio = result.void_ratio
-        self._powder_ratio = result.powder_ratio
-        self._solid_ratio = result.solid_ratio
+        self._relative_density = result.solid_ratio
 
     @property
     def input(self) -> PorosityInput:
@@ -158,19 +156,9 @@ class PorositySummary:
         return self._input
 
     @property
-    def void_ratio(self) -> float:
-        """Ratio of void to total volume of simulated sample."""
-        return self._void_ratio
-
-    @property
-    def powder_ratio(self) -> float:
-        """Ratio of powder to total volume of simulated sample."""
-        return self._powder_ratio
-
-    @property
-    def solid_ratio(self) -> float:
-        """Ratio of solid to total volume of simulated sample."""
-        return self._solid_ratio
+    def relative_density(self) -> float:
+        """Ratio of the density of the simulated sample to a completely solid sample."""
+        return self._relative_density
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
