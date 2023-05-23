@@ -112,6 +112,7 @@ class MeltPool:
                 "reference_depth": reference_depth,
             },
         )
+        self._df.index.name = "bead_length"
 
     @property
     def data_frame(self) -> DataFrame:

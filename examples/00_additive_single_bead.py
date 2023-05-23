@@ -105,4 +105,4 @@ df.head().style.format("{:.2f}").format_index("{:.2f}")
 # The melt pool statistics can be saved to a CSV file using the
 # :meth:`to_csv() <pandas.DataFrame.to_csv>` method.
 
-df.to_csv("melt_pool.csv", index_label="bead_length")
+df.to_csv("melt_pool.csv")

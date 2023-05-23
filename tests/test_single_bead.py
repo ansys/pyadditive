@@ -207,8 +207,9 @@ def test_MeltPool_repr_returns_expected_string():
     # act, assert
     assert mp.__repr__() == (
         "MeltPool\n"
-        "     length  width  depth  reference_width  reference_depth\n"
-        "1.0     3.0    4.0    5.0              6.0              7.0"
+        "             length  width  depth  reference_width  reference_depth\n"
+        "bead_length                                                        \n"
+        "1.0             3.0    4.0    5.0              6.0              7.0"
     )
 
 
