@@ -68,8 +68,15 @@ class AdditiveMachine:
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
-        for k in self.__dict__:
-            repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
+        repr += "laser_power: {} W\n".format(self._laser_power)
+        repr += "scan_speed: {} m/s\n".format(self._scan_speed)
+        repr += "heater_temperature: {} °C\n".format(self._heater_temperature)
+        repr += "layer_thickness: {} m\n".format(self._layer_thickness)
+        repr += "beam_diameter: {} m\n".format(self._beam_diameter)
+        repr += "starting_layer_angle: {} °\n".format(self._starting_layer_angle)
+        repr += "layer_rotation_angle: {} °\n".format(self._layer_rotation_angle)
+        repr += "hatch_spacing: {} m\n".format(self._hatch_spacing)
+        repr += "slicing_stripe_width: {} m\n".format(self._slicing_stripe_width)
         return repr
 
     def __eq__(self, __o: object) -> bool:

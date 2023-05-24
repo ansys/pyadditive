@@ -69,9 +69,7 @@ def test_PorositySummary_init_creates_expected_object():
 
     # assert
     assert input == summary.input
-    assert 10 == summary.void_ratio
-    assert 11 == summary.powder_ratio
-    assert 12 == summary.solid_ratio
+    assert 12 == summary.relative_density
 
 
 @pytest.mark.parametrize(
@@ -157,15 +155,15 @@ def test_PorosityInput_repr_returns_expected_string():
         + "size_z: 0.003\n"
         + "\n"
         + "machine: AdditiveMachine\n"
-        + "laser_power: 195\n"
-        + "scan_speed: 1.0\n"
-        + "heater_temperature: 80\n"
-        + "layer_thickness: 5e-05\n"
-        + "beam_diameter: 0.0001\n"
-        + "starting_layer_angle: 57\n"
-        + "layer_rotation_angle: 67\n"
-        + "hatch_spacing: 0.0001\n"
-        + "slicing_stripe_width: 0.01\n"
+        + "laser_power: 195 W\n"
+        + "scan_speed: 1.0 m/s\n"
+        + "heater_temperature: 80 °C\n"
+        + "layer_thickness: 5e-05 m\n"
+        + "beam_diameter: 0.0001 m\n"
+        + "starting_layer_angle: 57 °\n"
+        + "layer_rotation_angle: 67 °\n"
+        + "hatch_spacing: 0.0001 m\n"
+        + "slicing_stripe_width: 0.01 m\n"
         + "\n"
         + "material: AdditiveMaterial\n"
         + "absorptivity_maximum: 0\n"
@@ -222,15 +220,15 @@ def test_PorositySummary_repr_retuns_expected_string():
         + "size_z: 0.003\n"
         + "\n"
         + "machine: AdditiveMachine\n"
-        + "laser_power: 195\n"
-        + "scan_speed: 1.0\n"
-        + "heater_temperature: 80\n"
-        + "layer_thickness: 5e-05\n"
-        + "beam_diameter: 0.0001\n"
-        + "starting_layer_angle: 57\n"
-        + "layer_rotation_angle: 67\n"
-        + "hatch_spacing: 0.0001\n"
-        + "slicing_stripe_width: 0.01\n"
+        + "laser_power: 195 W\n"
+        + "scan_speed: 1.0 m/s\n"
+        + "heater_temperature: 80 °C\n"
+        + "layer_thickness: 5e-05 m\n"
+        + "beam_diameter: 0.0001 m\n"
+        + "starting_layer_angle: 57 °\n"
+        + "layer_rotation_angle: 67 °\n"
+        + "hatch_spacing: 0.0001 m\n"
+        + "slicing_stripe_width: 0.01 m\n"
         + "\n"
         + "material: AdditiveMaterial\n"
         + "absorptivity_maximum: 0\n"
@@ -269,7 +267,5 @@ def test_PorositySummary_repr_retuns_expected_string():
         + "characteristic_width_data: CharacteristicWidthDataPoint[]\n"
         + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
         + "\n"
-        + "void_ratio: 0.0\n"
-        + "powder_ratio: 0.0\n"
-        + "solid_ratio: 0.0\n"
+        + "relative_density: 0.0\n"
     )

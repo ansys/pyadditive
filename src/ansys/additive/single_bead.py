@@ -2,17 +2,14 @@
 from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
 from ansys.api.additive.v0.additive_domain_pb2 import SingleBeadInput as SingleBeadInputMessage
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
+from pandas import DataFrame
 
 from ansys.additive.machine import AdditiveMachine
 from ansys.additive.material import AdditiveMaterial
 
 
 class SingleBeadInput:
-    """Input parameters for single bead simulation.
-
-    Units are SI (m, kg, s, K) unless otherwise noted.
-
-    """
+    """Input parameters for single bead simulation."""
 
     __DEFAULT_BEAD_LENGTH = 3e-3
     __MIN_BEAD_LENGTH = 1e-3
@@ -92,88 +89,61 @@ class SingleBeadInput:
 
 
 class MeltPool:
-    """Description of the melt pool evolution during a single bead simulation.
+    """Container for the melt pool evolution during a single bead simulation.
 
-    Each index in the property arrays represents a single time step.
     Units are SI unless otherwise noted.
 
     """
 
     def __init__(self, msg: MeltPoolMessage):
-        self._laser_x = []
-        self._laser_y = []
-        self._length = []
-        self._width = []
-        self._depth = []
-        self._reference_width = []
-        self._reference_depth = []
-
-        for ts in msg.time_steps:
-            self._laser_x.append(ts.laser_x)
-            self._laser_y.append(ts.laser_y)
-            self._length.append(ts.length)
-            self._width.append(ts.width)
-            self._depth.append(ts.depth)
-            self._reference_width.append(ts.reference_width)
-            self._reference_depth.append(ts.reference_depth)
-
-    @property
-    def laser_x(self) -> list[float]:
-        """X coordinate of laser positions."""
-        return self._laser_x
+        bead_length = [ts.laser_x for ts in msg.time_steps]
+        length = [ts.length for ts in msg.time_steps]
+        width = [ts.width for ts in msg.time_steps]
+        depth = [ts.depth for ts in msg.time_steps]
+        reference_width = [ts.reference_width for ts in msg.time_steps]
+        reference_depth = [ts.reference_depth for ts in msg.time_steps]
+        self._df = DataFrame(
+            index=bead_length,
+            data={
+                "length": length,
+                "width": width,
+                "depth": depth,
+                "reference_width": reference_width,
+                "reference_depth": reference_depth,
+            },
+        )
+        self._df.index.name = "bead_length"
 
     @property
-    def laser_y(self) -> list[float]:
-        """Y coordinate of laser positions."""
-        return self._laser_y
+    def data_frame(self) -> DataFrame:
+        """:class:`Pandas DataFrame <pandas.DataFrame>` containing melt pool data.
 
-    @property
-    def length(self) -> list[float]:
-        """Z coordinate of laser positions."""
-        return self._length
+        Values are in meters.
 
-    @property
-    def width(self) -> list[float]:
-        """Width of melt pool at each laser position."""
-        return self._width
+        Indices:
+            - bead_length: Length of bead at each time step.
 
-    @property
-    def depth(self) -> list[float]:
-        """Depth of melt pool at each laser position."""
-        return self._depth
-
-    @property
-    def reference_width(self) -> list[float]:
-        """Reference width of melt pool at each laser position.
-
-        Reference width is the melt pool width at the bottom of the powder
-        layer, or, the width at the top of the substrate.
-
+        Columns:
+            - length: length of melt pool at each time step.
+            - width: width of melt pool at each time step.
+            - depth: depth of melt pool at each time step.
+            - reference_width: reference width of melt pool at each time step.
+              Reference width is the melt pool width at the bottom of the powder layer,
+              or, the width at the top of the substrate.
+            - reference_depth: reference depth of melt pool at each time step.
+              Reference depth is the depth of the entire melt pool minus the powder
+              layer thickness, or, the depth of penetration into the substrate.
         """
-        return self._reference_width
-
-    @property
-    def reference_depth(self) -> list[float]:
-        """Reference depth of melt pool at each laser position.
-
-        Reference depth is the depth of the entire melt pool minus the powder
-        layer thickness, or, the depth of penetration into into the substrate.
-
-        """
-        return self._reference_depth
+        return self._df
 
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, MeltPool):
             return False
-        for k in self.__dict__:
-            if getattr(self, k) != getattr(__o, k):
-                return False
-        return True
+        return self._df.equals(__o._df)
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
-        for k in self.__dict__:
-            repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
+        repr += self._df.to_string()
         return repr
 
 
@@ -194,12 +164,12 @@ class SingleBeadSummary:
 
     @property
     def input(self) -> SingleBeadInput:
-        """Simulation inputs."""
+        """Simulation input, see :class:`SingleBeadInput`."""
         return self._input
 
     @property
     def melt_pool(self) -> MeltPool:
-        """Resulting simulated melt pool."""
+        """Resulting melt pool, see :class:`MeltPool`."""
         return self._melt_pool
 
     def __repr__(self):

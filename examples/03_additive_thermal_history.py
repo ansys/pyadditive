@@ -41,8 +41,8 @@ build_file_name = examples.download_small_wedge_slm_build_file()
 build_file = pyadditive.BuildFile(pyadditive.MachineType.SLM, build_file_name)
 
 ###############################################################################
-# Material Selection
-# ------------------
+# Select Material
+# ---------------
 # The next step is a to choose a material. A list of available materials can
 # be obtained using the ``get_materials_list`` command.
 
@@ -53,8 +53,8 @@ print(additive.get_materials_list())
 material = additive.get_material("17-4PH")
 
 ###############################################################################
-# Machine Parameter Specification
-# -------------------------------
+# Set Machine Parameters
+# ----------------------
 # Specify machine parameters by first creating an ``AdditiveMachine`` object
 # then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
