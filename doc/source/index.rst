@@ -5,11 +5,17 @@
 
 .. include:: ../../README.rst
 
-.. toctree::
-   :hidden:
-   :maxdepth: 2
+.. jinja:: main_toctree
 
-   getting_started/index
-   api/index
-   examples/index
-   contributing
+    .. toctree::
+       :hidden:
+       :maxdepth: 2
+    
+       getting_started/index
+       {% if build_api %}
+       api/index
+       {% endif %}
+       {% if build_examples %}
+       examples/index
+       {% endif %} 
+       contributing
