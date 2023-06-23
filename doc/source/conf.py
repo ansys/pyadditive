@@ -207,5 +207,5 @@ jinja_contexts = {
         "build_api": BUILD_API,
         "build_examples": BUILD_EXAMPLES,
     },
-    "build_examples": {"build_examples_long": BUILD_EXAMPLES_LONG},
+    "examples_toctree": {"build_examples_long": BUILD_EXAMPLES_LONG},
 }
