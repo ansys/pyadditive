@@ -172,6 +172,12 @@ if BUILD_EXAMPLES is True:
     if not BUILD_EXAMPLES_LONG:
         ignore_patterns.extend(
             [
+                # "00_additive_single_bead.py",
+                # "01_additive_porosity.py",
+                "02_additive_microstructure.py",
+                "03_additive_thermal_history.py",
+                "04_additive_doe.py",
+                "05_optimization_workflow.py",
                 "06_additive_custom_material_tuning.py",
                 "07_using_a_custom_material.py",
             ]
@@ -207,5 +213,4 @@ jinja_contexts = {
         "build_api": BUILD_API,
         "build_examples": BUILD_EXAMPLES,
     },
-    "examples_toctree": {"build_examples_long": BUILD_EXAMPLES_LONG},
 }
