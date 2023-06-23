@@ -1,6 +1,7 @@
 """Sphinx documentation configuration file."""
 from datetime import datetime
 import os
+import re
 import warnings
 
 from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_black
@@ -157,13 +158,26 @@ BUILD_API = True if os.environ.get("BUILD_API", "true") == "true" else False
 if not BUILD_API:
     exclude_patterns.append("api")
 
-BUILD_EXAMPLES = (
-    True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
-)
+BUILD_EXAMPLES = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
+BUILD_EXAMPLES_LONG = True if os.environ.get("BUILD_EXAMPLES_LONG", "true") == "true" else False
 if BUILD_EXAMPLES is True:
     # Necessary to build examples using PyVista
     pyvista.BUILDING_GALLERY = True
     extensions.append("sphinx_gallery.gen_gallery")
+
+    # Declare the ignore patterns for sphinx gallery
+    ignore_patterns = ["flycheck*"]
+
+    # Include additional examples if required
+    if not BUILD_EXAMPLES_LONG:
+        ignore_patterns.extend(
+            [
+                "06_additive_custom_material_tuning.py",
+                "07_using_a_custom_material.py",
+            ]
+        )
+
+    # Sphinx gallery configuration
     sphinx_gallery_conf = {
         # convert rst to md for ipynb
         "pypandoc": True,
@@ -182,7 +196,7 @@ if BUILD_EXAMPLES is True:
         # Modules for which function level galleries are created.
         "doc_module": "ansys-additive",
         "image_scrapers": ("pyvista", "matplotlib"),
-        "ignore_pattern": "flycheck*",
+        "ignore_pattern": r"\b(" + "|".join(map(re.escape, ignore_patterns)) + r")\b",
         "thumbnail_size": (350, 350),
         # Set plot_gallery to False for building docs without running examples.
         # "plot_gallery": False,
@@ -193,4 +207,5 @@ jinja_contexts = {
         "build_api": BUILD_API,
         "build_examples": BUILD_EXAMPLES,
     },
+    "build_examples": {"build_examples_long": BUILD_EXAMPLES_LONG},
 }
