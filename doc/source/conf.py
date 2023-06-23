@@ -172,8 +172,7 @@ if BUILD_EXAMPLES is True:
     if not BUILD_EXAMPLES_LONG:
         ignore_patterns.extend(
             [
-                "06_additive_custom_material_tuning.py",
-                "07_using_a_custom_material.py",
+                "*advanced*.py",
             ]
         )
 
