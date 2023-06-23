@@ -38,9 +38,6 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v3
 
-      - name: "Copy long running examples to examples folder"
-        run: cp long_running_examples/*.py examples/
-
       - name: "Running documentation style checks"
         uses: ansys/actions/doc-style@v4
         with:
@@ -115,11 +112,17 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v3
 
-      - name: "Copy long running examples to examples folder"
-        if: github.event_name == 'push'
-        run: cp long_running_examples/*.py examples/
+      - name: "Build documentation with short examples"
+        uses: ansys/actions/doc-build@v4
+        with:
+          checkout: false
+        env:
+          GENERATING_DOCS: 1
+          ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
+          BUILD_EXAMPLES_LONG: false
 
-      - name: "Run Ansys documentation building action"
+      - name: "Build documentation with long examples"
+        if: github.event_name == 'push'
         uses: ansys/actions/doc-build@v4
         with:
           checkout: false

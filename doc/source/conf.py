@@ -1,6 +1,7 @@
 """Sphinx documentation configuration file."""
 from datetime import datetime
 import os
+import re
 import warnings
 
 from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_black
@@ -23,9 +24,6 @@ pyvista.rcParams["window_size"] = np.array([1024, 768])
 pyvista.FIGURE_PATH = os.path.join(os.path.abspath("./images/"), "auto-generated/")
 if not os.path.exists(pyvista.FIGURE_PATH):
     os.makedirs(pyvista.FIGURE_PATH)
-
-# necessary when building the sphinx gallery
-pyvista.BUILDING_GALLERY = True
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
@@ -71,34 +69,9 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
-    "sphinx_gallery.gen_gallery",
     "sphinxemoji.sphinxemoji",
+    "sphinx_jinja",
 ]
-
-# -- Sphinx Gallery Options ---------------------------------------------------
-sphinx_gallery_conf = {
-    # convert rst to md for ipynb
-    "pypandoc": True,
-    # path to your examples scripts
-    "examples_dirs": ["../../examples/"],
-    # where to save gallery generated examples
-    "gallery_dirs": ["examples"],
-    # Pattern to search for example files
-    "filename_pattern": r"\.py",
-    # Remove the "Download all examples" button from the top level gallery
-    "download_all_examples": False,
-    # Sort gallery examples by file name instead of number of lines (default)
-    "within_subsection_order": FileNameSortKey,
-    # directory where function granular galleries are stored
-    "backreferences_dir": None,
-    # Modules for which function level galleries are created.
-    "doc_module": "ansys-additive",
-    "image_scrapers": ("pyvista", "matplotlib"),
-    "ignore_pattern": "flycheck*",
-    "thumbnail_size": (350, 350),
-    # Set plot_gallery to False for building docs without running examples.
-    # "plot_gallery": False,
-}
 
 # Intersphinx mapping
 intersphinx_mapping = {
@@ -179,3 +152,58 @@ todo_include_todos = False
 # exclude traditional Python prompts from the copied code
 copybutton_prompt_text = r">>> ?|\.\.\. "
 copybutton_prompt_is_regexp = True
+
+# -- Declare the Jinja context -----------------------------------------------
+BUILD_API = True if os.environ.get("BUILD_API", "true") == "true" else False
+if not BUILD_API:
+    exclude_patterns.append("api")
+
+BUILD_EXAMPLES = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
+BUILD_EXAMPLES_LONG = True if os.environ.get("BUILD_EXAMPLES_LONG", "true") == "true" else False
+if BUILD_EXAMPLES is True:
+    # Necessary to build examples using PyVista
+    pyvista.BUILDING_GALLERY = True
+    extensions.append("sphinx_gallery.gen_gallery")
+
+    # Declare the ignore patterns for sphinx gallery
+    ignore_patterns = ["flycheck*"]
+
+    # Include additional examples if required
+    if not BUILD_EXAMPLES_LONG:
+        ignore_patterns.extend(
+            [
+                "*advanced*.py",
+            ]
+        )
+
+    # Sphinx gallery configuration
+    sphinx_gallery_conf = {
+        # convert rst to md for ipynb
+        "pypandoc": True,
+        # path to your examples scripts
+        "examples_dirs": ["../../examples/"],
+        # where to save gallery generated examples
+        "gallery_dirs": ["examples"],
+        # Pattern to search for example files
+        "filename_pattern": r"\.py",
+        # Remove the "Download all examples" button from the top level gallery
+        "download_all_examples": False,
+        # Sort gallery examples by file name instead of number of lines (default)
+        "within_subsection_order": FileNameSortKey,
+        # directory where function granular galleries are stored
+        "backreferences_dir": None,
+        # Modules for which function level galleries are created.
+        "doc_module": "ansys-additive",
+        "image_scrapers": ("pyvista", "matplotlib"),
+        "ignore_pattern": r"\b(" + "|".join(map(re.escape, ignore_patterns)) + r")\b",
+        "thumbnail_size": (350, 350),
+        # Set plot_gallery to False for building docs without running examples.
+        # "plot_gallery": False,
+    }
+
+jinja_contexts = {
+    "main_toctree": {
+        "build_api": BUILD_API,
+        "build_examples": BUILD_EXAMPLES,
+    },
+}

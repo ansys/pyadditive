@@ -68,6 +68,7 @@ matplotlib = { version = "==3.6.2", optional = true }
 pypandoc = { version = "==1.8.1", optional = true }
 enum-tools = { version = "*", optional = true }
 pyvista = { version = "0.37.0", optional = true }
+sphinx-jinja= { version= "2.0.2", optional = true }
 
 # [tool.poetry.dev-dependencies]
 # numpy = {version = "==1.23.2", python = ">3.8"}
@@ -96,6 +97,7 @@ doc = [
     "pypandoc",
     "enum-tools",
     "sphinx-toolbox",
+    "sphinx-jinja",
 ]
 
 [[tool.poetry.source]]
