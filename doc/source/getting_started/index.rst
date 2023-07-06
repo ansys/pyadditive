@@ -47,7 +47,7 @@ Example notebooks can found in the `Examples <https://additive.docs.pyansys.com/
 section of the `PyAdditive documentation <https://additive.docs.pyansys.com/dev/index.html>`_.
 
 
-Standalone Usage
+Standalone usage
 ================
 
 To use PyAdditive in a standalone mode, first start the service locally. If you have docker installed and have
