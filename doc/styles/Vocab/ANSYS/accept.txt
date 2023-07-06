@@ -19,3 +19,4 @@ Jupyter
 Makefile
 isort
 pandoc
+Ansys Lab
