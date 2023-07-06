@@ -4,7 +4,7 @@ Please, refer to the [PyAnsys Developer's Guide] for contributing to this projec
 
 [PyAnsys Developer's Guide]: https://dev.docs.pyansys.com/index.html
 
-The following contribution information is specific to PyAdditive
+The following contribution information is specific to PyAdditive.
 
 ## Cloning the repository
 
