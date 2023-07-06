@@ -29,7 +29,7 @@ PyAdditive is a Python client library for the Ansys additive service.
     <https://docs.github.com/en/enterprise-cloud@latest/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on>`_.
 
 
-Ansys Lab Usage
+Ansys Lab usage
 ===============
 
 The easiest way to use PyAdditive is within a jupyter notebook in the `Ansys Lab
