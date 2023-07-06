@@ -13,3 +13,8 @@ api
 Protobuf
 Scipy
 PyPI
+pytest
+jupyter
+Jupyter
+Makefile
+isort
