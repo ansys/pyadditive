@@ -49,7 +49,7 @@ tests = ["pytest==7.2.0", "pytest-cov==4.0.0", "callee==0.3.1"]
 
 doc = [
     "ansys-sphinx-theme==0.9.9",
-    "enum-tools",
+    "enum-tools==0.10.0",
     "jupyter_sphinx==0.4.0",
     "matplotlib==3.6.2",
     "numpydoc==1.5.0",
@@ -64,13 +64,6 @@ doc = [
     "sphinx-notfound-page==0.8",
     "sphinx-toolbox==3.4.0",
     "sphinxemoji==0.2.0",
-    # "jupytext>=1.14.1",
-    # "myst-parser>=0.18.0",
-    # "nbsphinx",
-    # "nbconvert",
-    # "notebook",
-    # "ipyvtklink",
-    # "panel",
 ]
 
 [project.urls]
