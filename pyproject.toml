@@ -26,8 +26,8 @@ packages = [{ include = "ansys", from = "src" }]
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
 ansys-api-additive = "==1.2.2"
-ansys-platform-instancemanagement = "^1.0.2"
-appdirs = ">=1.4.4"
+ansys-platform-instancemanagement = "^1.1.1"
+platformdirs = ">=3.8.0"
 google-api-python-client = ">=1.7.11"
 googleapis-common-protos = ">=1.52.0"
 grpcio = ">=1.46.3"
@@ -125,3 +125,4 @@ show_missing = true
 minversion = "7.1"
 addopts = "-ra --cov=ansys.additive --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv"
 testpaths = ["tests"]
+filterwarnings = ["ignore:::.*protoc_gen_swagger*"]

@@ -4,7 +4,7 @@ PyAdditive is a Python client for the Ansys additive service.
 """
 import os
 
-import appdirs
+import platformdirs
 
 try:
     import importlib.metadata as importlib_metadata
@@ -18,17 +18,13 @@ COMPANY_NAME = "Ansys Inc"
 
 
 # Setup data directory
-# try:
-USER_DATA_PATH = appdirs.user_data_dir(APP_NAME, COMPANY_NAME)
+USER_DATA_PATH = platformdirs.user_data_dir(APP_NAME, COMPANY_NAME)
 if not os.path.exists(USER_DATA_PATH):  # pragma: no cover
     os.makedirs(USER_DATA_PATH)
 
 EXAMPLES_PATH = os.path.join(USER_DATA_PATH, "examples")
 if not os.path.exists(EXAMPLES_PATH):  # pragma: no cover
     os.makedirs(EXAMPLES_PATH)
-
-# except:  # pragma: no cover
-#     pass
 
 from .additive import *
 from .geometry_file import *
