@@ -1,109 +1,84 @@
 [build-system]
-requires = ["poetry-core>=1.0.0,<1.3.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
 
-[tool.poetry]
-# Check https://python-poetry.org/docs/pyproject/ for all available sections
+[project]
+# Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-additive"
-version = "0.12.dev0"
+version = "0.12.dev1"
 description = "A python client for the Ansys additive service"
-license = "MIT"
-authors = ["ANSYS, Inc. <ansys.support@ansys.com>"]
-maintainers = ["PyAnsys developers <pyansys.maintainers@ansys.com>"]
 readme = "README.rst"
-repository = "https://github.com/ansys-internal/pyadditive"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+authors = [{ name = "Ansys, Inc.", email = "pyansys.support@ansys.com" }]
+maintainers = [
+    { name = "PyAnsys developers", email = "pyansys.support@ansys.com" },
+]
 classifiers = [
     "Development Status :: 4 - Beta",
+    "Intended Audience :: Manufacturing",
+    "Topic :: Scientific/Engineering",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+    # TODO: Remove this once we have a public release
+    "Private :: Do Not Upload",
 ]
-packages = [{ include = "ansys", from = "src" }]
 
-[tool.poetry.dependencies]
-python = ">=3.8,<4.0"
-ansys-api-additive = "==1.2.2"
-ansys-platform-instancemanagement = "^1.1.1"
-platformdirs = ">=3.8.0"
-google-api-python-client = ">=1.7.11"
-googleapis-common-protos = ">=1.52.0"
-grpcio = ">=1.46.3"
-grpcio-health-checking = ">=1.45.0"
-importlib-metadata = { version = "^4.0", python = "<3.8" }
-numpy = ">=1.20.3"
-protobuf = "~=3.20.2"
-six = ">=1.16.0"
-tqdm = ">=4.45.0"
-pandas = ">=1.3.2"
+dependencies = [
+    "ansys-api-additive==1.2.2",
+    "ansys-platform-instancemanagement>=1.1.1",
+    "platformdirs>=3.8.0",
+    "google-api-python-client>=1.7.11",
+    "googleapis-common-protos>=1.52.0",
+    "grpcio>=1.46.3",
+    "grpcio-health-checking>=1.45.0",
+    "importlib-metadata>=4.0",
+    "numpy>=1.20.3",
+    "protobuf~=3.20.2",
+    "six>=1.16.0",
+    "tqdm>=4.45.0",
+    "pandas>=1.3.2",
+]
 
-# Testing dependencies
-pytest = { version = "==7.2.0", optional = true }
-pytest-cov = { version = "==4.0.0", optional = true }
-callee = { version = "==0.3.1", optional = true }
+[project.optional-dependencies]
+tests = ["pytest==7.2.0", "pytest-cov==4.0.0", "callee==0.3.1"]
 
-# Documentation dependencies
-ansys-sphinx-theme = { version = "==0.9.9", optional = true }
-jupytext = { version = ">=1.14.1", optional = true }
-myst-parser = { version = ">=0.18.0", optional = true }
-nbsphinx = { version = "*", optional = true }
-nbconvert = { version = "*", optional = true }
-notebook = { version = "*", optional = true }
-numpydoc = { version = "==1.5.0", optional = true }
-Sphinx = { version = "==6.2.1", optional = true }
-sphinx-autoapi = { version = "==2.0.0", optional = true }
-sphinx-copybutton = { version = "==0.5.1", optional = true }
-sphinx-gallery = { version = "==0.10.1", optional = true }
-sphinx-autodoc-typehints = { version = "==1.19.5", optional = true }
-sphinx-toolbox = { version = "*", optional = true }
-sphinxemoji = { version = "0.2.0", optional = true }
-sphinx-notfound-page = { version = "0.8", optional = true }
-jupyter_sphinx = { version = "0.4.0", optional = true }
-ipyvtklink = { version = "*", optional = true }
-panel = { version = "*", optional = true }
-matplotlib = { version = "==3.6.2", optional = true }
-pypandoc = { version = "==1.8.1", optional = true }
-enum-tools = { version = "*", optional = true }
-pyvista = { version = "0.37.0", optional = true }
-sphinx-jinja = { version = "2.0.2", optional = true }
-
-# [tool.poetry.dev-dependencies]
-# numpy = {version = "==1.23.2", python = ">3.8"}
-# Pint = {version = "==0.19.2", python = ">3.8"}
-
-[tool.poetry.extras]
-tests = ["pytest", "pytest-cov", "callee"]
 doc = [
-    "ansys-sphinx-theme",
-    "jupytext",
-    "myst-parser",
-    "nbsphinx",
-    "nbconvert",
-    "notebook",
-    "numpydoc",
-    "Sphinx",
-    "sphinx-autoapi",
-    "sphinx-copybutton",
-    "sphinx-gallery",
-    "ipyvtklink",
-    "panel",
-    "jupyter_sphinx",
-    "sphinx-autodoc-typehints",
-    "sphinx_design",
-    "matplotlib",
-    "pypandoc",
+    "ansys-sphinx-theme==0.9.9",
     "enum-tools",
-    "sphinx-toolbox",
-    "sphinx-jinja",
+    "jupyter_sphinx==0.4.0",
+    "matplotlib==3.6.2",
+    "numpydoc==1.5.0",
+    "pypandoc==1.8.1",
+    "pyvista==0.37.0",
+    "Sphinx==6.2.1",
+    "sphinx-autoapi==2.0.0",
+    "sphinx-autodoc-typehints==1.19.5",
+    "sphinx-copybutton==0.5.1",
+    "sphinx-gallery==0.10.1",
+    "sphinx-jinja==2.0.2",
+    "sphinx-notfound-page==0.8",
+    "sphinx-toolbox==3.4.0",
+    "sphinxemoji==0.2.0",
+    # "jupytext>=1.14.1",
+    # "myst-parser>=0.18.0",
+    # "nbsphinx",
+    # "nbconvert",
+    # "notebook",
+    # "ipyvtklink",
+    # "panel",
 ]
 
-[[tool.poetry.source]]
-name = "privatepypi"
-url = "https://@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/"
-default = false
-secondary = false
+[project.urls]
+Source = "https://github.com/ansys-interal/pyadditive"
+Documentation = "https://additive.docs.pyansys.com"
+
+[tool.flit.module]
+name = "ansys.additive"
 
 [tool.black]
 line-length = 100
