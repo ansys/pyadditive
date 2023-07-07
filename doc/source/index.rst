@@ -10,12 +10,12 @@
     .. toctree::
        :hidden:
        :maxdepth: 2
-    
+
        getting_started/index
        {% if build_api %}
        api/index
        {% endif %}
        {% if build_examples %}
-       examples/index
-       {% endif %} 
-       contributing
+       examples/gallery_examples/index
+       {% endif %}
+

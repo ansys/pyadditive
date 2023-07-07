@@ -39,20 +39,51 @@ author = "ANSYS, Inc."
 release = version = __version__
 cname = os.getenv("DOCUMENTATION_CNAME", "nocname.com")
 
+REPOSITORY_NAME = "pyadditive"
+USERNAME = "ansys-internal"
+BRANCH = "main"
+GALLERY_EXAMPLES_PATH = "examples/gallery_examples"
+EXAMPLES_ROOT = "examples"
+EXAMPLES_PATH_FOR_DOCS = f"../../{EXAMPLES_ROOT}/"
+DOC_PATH = "doc/source"
+SEARCH_HINTS = ["def", "class"]
+
 # use the default pyansys logo
 html_logo = pyansys_logo_black
 html_theme = "ansys_sphinx_theme"
 html_favicon = ansys_favicon
+html_show_sourcelink = False
 
 # specify the location of your github repo
 html_theme_options = {
-    "github_url": "https://github.com/ansys-internal/pyadditive",
+    "github_url": f"https://github.com/ansys-internal/{REPOSITORY_NAME}",
     "show_prev_next": False,
+    "show_breadcrumbs": True,
+    "collapse_navigation": True,
+    "use_edit_page_button": True,
+    "additional_breadcrumbs": [
+        ("PyAnsys", "https://docs.pyansys.com/"),
+    ],
+    "icon_links": [
+        {
+            "name": "Support",
+            "url": f"https://github.com/{USERNAME}/{REPOSITORY_NAME}/discussions",
+            "icon": "fa fa-comment fa-fw",
+        },
+    ],
     "switcher": {
         "json_url": f"https://{cname}/versions.json",
         "version_match": get_version_match(__version__),
     },
-    "navbar_end": ["version-switcher", "theme-switcher", "navbar-icon-links"],
+    "check_switcher": False,
+}
+
+html_context = {
+    "display_github": True,  # Integrate GitHub
+    "github_user": USERNAME,
+    "github_repo": REPOSITORY_NAME,
+    "github_version": BRANCH,
+    "doc_path": DOC_PATH,
 }
 
 # Sphinx extensions
@@ -181,9 +212,9 @@ if BUILD_EXAMPLES is True:
         # convert rst to md for ipynb
         "pypandoc": True,
         # path to your examples scripts
-        "examples_dirs": ["../../examples/"],
+        "examples_dirs": [f"{EXAMPLES_PATH_FOR_DOCS}"],
         # where to save gallery generated examples
-        "gallery_dirs": ["examples"],
+        "gallery_dirs": [f"{GALLERY_EXAMPLES_PATH}"],
         # Pattern to search for example files
         "filename_pattern": r"\.py",
         # Remove the "Download all examples" button from the top level gallery
