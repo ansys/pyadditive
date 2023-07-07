@@ -70,11 +70,6 @@ html_theme_options = {
             "url": f"https://github.com/{USERNAME}/{REPOSITORY_NAME}/discussions",
             "icon": "fa fa-comment fa-fw",
         },
-        # {
-        #     "name": "Contribute",
-        #     "url": "https://mapdl.docs.pyansys.com/version/dev/getting_started/contribution.html",
-        #     "icon": "fa fa-wrench",
-        # },
     ],
     "switcher": {
         "json_url": f"https://{cname}/versions.json",
