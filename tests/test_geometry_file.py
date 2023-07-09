@@ -2,6 +2,7 @@
 import os
 
 from ansys.api.additive.v0.additive_domain_pb2 import BuildFile as BuildFileMessage
+from ansys.api.additive.v0.additive_domain_pb2 import BuildFileMachineType
 from ansys.api.additive.v0.additive_domain_pb2 import StlFile as StlFileMessage
 
 from ansys.additive.geometry_file import BuildFile, MachineType, StlFile
@@ -29,7 +30,9 @@ def test_BuildFile_eq():
 
     # act, assert
     assert bf == BuildFile(type=bf.type, path=bf.path)
-    assert bf != BuildFileMessage(type=bf.type, name=bf.path)
+    assert bf != BuildFileMessage(
+        type=BuildFileMachineType.BUILD_FILE_MACHINE_TYPE_EOS, name=bf.path
+    )
     assert bf != not_bf
 
 
@@ -39,7 +42,7 @@ def test_BuildFile_repr():
     bf = BuildFile(type=MachineType.EOS, path=file_path)
 
     # act, assert
-    assert bf.__repr__() == "BuildFile\ntype: MachineType.EOS\npath: {}\n".format(file_path)
+    assert bf.__repr__() == f"BuildFile\ntype: EOS\npath: {file_path}\n"
 
 
 def test_StlFile_init_with_args_returns_expected_object():

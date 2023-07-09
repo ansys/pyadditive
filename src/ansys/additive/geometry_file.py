@@ -28,9 +28,12 @@ class BuildFile:
         self._path = path
 
     def __repr__(self):
-        repr = type(self).__name__ + "\n"
-        for k in self.__dict__:
-            repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
+        repr = (
+            type(self).__name__
+            + "\n"
+            + f"type: {MachineType(self._type).name}\n"
+            + f"path: {self._path}\n"
+        )
         return repr
 
     def __eq__(self, other: object) -> bool:
