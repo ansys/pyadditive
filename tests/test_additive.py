@@ -1,9 +1,12 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-from unittest.mock import create_autospec
+from unittest.mock import create_autospec, Mock
+from google.protobuf.empty_pb2 import Empty
+from callee import Contains
 
 import ansys.platform.instancemanagement as pypim
-from callee import Contains
+import contextlib
 import grpc
+import io
 import pytest
 
 from ansys.additive import (
@@ -13,8 +16,12 @@ from ansys.additive import (
     PorosityInput,
     SingleBeadInput,
     ThermalHistoryInput,
+    __version__,
 )
 import ansys.additive.additive
+from ansys.api.additive import __version__ as api_version
+from ansys.api.additive.v0.about_pb2 import AboutResponse
+from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
 
 
 def test_Additive_init_connects_with_defaults(monkeypatch):
@@ -169,3 +176,35 @@ def test_simulate_list_of_inputs_with_duplicate_ids_raises_exception():
     # act, assert
     with pytest.raises(ValueError, match='Duplicate simulation id "id" in input list'):
         additive.simulate(inputs)
+
+
+def test_about_returns_about_response():
+    # arrange
+    def mock_about_endpoint(request: Empty):
+        response = AboutResponse()
+        response.metadata["key1"] = "value1"
+        response.metadata["key2"] = "value2"
+        response.metadata["key3"] = "value3"
+        return response
+
+    mock_stub = Mock(AboutServiceStub)
+    mock_stub.About = Mock(side_effect=mock_about_endpoint)
+    additive = Additive(ip="localhost", port=12345)
+    additive._about_stub = mock_stub
+    f = io.StringIO()
+    expected_result = (
+        "Client\n"
+        f"    Version: {__version__}\n"
+        f"    API version: {api_version}\n"
+        "Server localhost:12345\n"
+        "    key1: value1\n"
+        "    key2: value2\n"
+        "    key3: value3\n"
+    )
+
+    # act
+    with contextlib.redirect_stdout(f):
+        additive.about()
+
+    # assert
+    assert f.getvalue() == expected_result

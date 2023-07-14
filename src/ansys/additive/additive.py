@@ -12,16 +12,18 @@ import os
 import typing
 import zipfile
 
+from ansys.api.additive import __version__ as api_version
 from ansys.api.additive.v0.additive_domain_pb2 import ProgressState
 from ansys.api.additive.v0.additive_materials_pb2 import GetMaterialRequest
 from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
 from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
+from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
 import ansys.platform.instancemanagement as pypim
 from google.protobuf.empty_pb2 import Empty
 import grpc
 
-from ansys.additive import USER_DATA_PATH
+from ansys.additive import USER_DATA_PATH, __version__
 from ansys.additive.download import download_file
 from ansys.additive.material import AdditiveMaterial
 from ansys.additive.material_tuning import MaterialTuningInput, MaterialTuningSummary
@@ -70,6 +72,7 @@ class Additive:
         # assign service stubs
         self._materials_stub = MaterialsServiceStub(self._channel)
         self._simulation_stub = SimulationServiceStub(self._channel)
+        self._about_stub = AboutServiceStub(self._channel)
 
         # Setup data directory
         self._user_data_path = USER_DATA_PATH
@@ -180,6 +183,20 @@ class Additive:
         if self._channel is not None:
             return self._channel._channel.target().decode()
         return ""
+
+    def about(self) -> None:
+        """Print information about the client and server."""
+        print("Client")
+        print(f"    Version: {__version__}")
+        print(f"    API version: {api_version}")
+        if self._channel is None:
+            print("Not connected to server")
+            return
+        print(f"Server {self._channel_str}")
+        response = self._about_stub.About(Empty())
+        for key in response.metadata:
+            value = response.metadata[key]
+            print(f"    {key}: {value}")
 
     def simulate(self, inputs, nproc: typing.Optional[int] = None):
         """Execute an additive simulation.
