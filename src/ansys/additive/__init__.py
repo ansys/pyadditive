@@ -13,13 +13,12 @@ except ModuleNotFoundError:  # pragma: no cover
 
 __version__ = importlib_metadata.version(__name__.replace(".", "-"))
 
-APP_NAME = "PyAdditive"
-APP_NAME_DIR = "ansys-pyadditive"
+APP_NAME = "ansys-pyadditive"
 COMPANY_NAME = "Ansys Inc"
 
 
 # Setup data directory
-USER_DATA_PATH = platformdirs.user_data_dir(APP_NAME_DIR, COMPANY_NAME)
+USER_DATA_PATH = platformdirs.user_data_dir(APP_NAME, COMPANY_NAME)
 if not os.path.exists(USER_DATA_PATH):  # pragma: no cover
     os.makedirs(USER_DATA_PATH)
 
