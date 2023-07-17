@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-additive"
-version = "0.12.dev1"
+version = "0.12.dev3"
 description = "A python client for the Ansys additive service"
 readme = "README.rst"
 requires-python = ">=3.8"
@@ -29,7 +29,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "ansys-api-additive==1.2.2",
+    "ansys-api-additive==1.2.5",
     "ansys-platform-instancemanagement>=1.1.1",
     "platformdirs>=3.8.0",
     "google-api-python-client>=1.7.11",
