@@ -205,7 +205,7 @@ For example, on Linux with Python 3.8, unzip the wheelhouse archive and install 
 
 .. code:: bash
 
-    unzip ansys-additive-v0.1.dev0-wheelhouse-Linux-3.8.zip wheelhouse
+    unzip ansys-additive-v0.1.0-wheelhouse-Linux-3.8.zip wheelhouse
     pip install ansys-additive -f wheelhouse --no-index --upgrade --ignore-installed
 
 If you're on Windows with Python 3.9, unzip to a wheelhouse directory and install using the preceding command.
