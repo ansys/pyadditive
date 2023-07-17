@@ -23,7 +23,7 @@ PyAdditive is a Python client library for the Ansys additive service.
     `two factor authentication <https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/configuring-two-factor-authentication>`_
     and request to be added to the PyAnsys organization by contacting
     `pyansys.support@ansys.com <mailto:pyansys.support@ansys.com>`_.
-    You will also need to create a
+    You also need to create a
     `personal access token <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token>`_
     with ``read:packages`` scope and `authorize it for single sign on
     <https://docs.github.com/en/enterprise-cloud@latest/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on>`_.
@@ -56,8 +56,8 @@ To use PyAdditive in a standalone mode, first start the service locally. If you 
 you can start the additive service locally using ``docker`` with:
 
 .. warning::
-   In order to authenticate to ghcr.io, you will need to have your GitHub user
-   account added to the PyAnsys organization. See note above.
+   In order to authenticate to ghcr.io, you need to have your GitHub user
+   account added to the PyAnsys organization. See preceding note.
 
 .. code:: bash
 
@@ -92,12 +92,12 @@ The following projects are required dependencies for PyAdditive:
 How to install
 --------------
 
-We have three modes of installation: user, developer and offline.
+There are three modes of installation: user, developer, and offline.
 
 For users
 ^^^^^^^^^
 
-On Windows systems, download and install `Python <https://www.python.org/downloads>`_, if it is not
+On Windows systems, install `Python <https://www.python.org/downloads>`_, if it is not
 already installed.
 In order to install PyAdditive, make sure you have the latest version of `pip <https://pypi.org/project/pip/>`_, then run:
 
@@ -126,7 +126,7 @@ Then, you can simply execute:
         # On Windows
         pip install ansys-additive --index-url=https://%PYANSYS_PYPI_PRIVATE_PAT%@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
 
-    See note above for how to get the access token to use for ``PYANSYS_PYPI_PRIVATE_PAT``.
+    See preceding note for how to get the access token to use for ``PYANSYS_PYPI_PRIVATE_PAT``.
 
 
 For developers
@@ -135,7 +135,7 @@ For developers
 Installing PyAdditive in developer mode allows you to modify the source code and enhance it.
 
 Before contributing to the project, please refer to the `Contributing <https://dev.docs.pyansys.com/how-to/contributing.html>`_ topic
-in the *PyAnsys Developer's Guide*. You will need to follow these steps:
+in the *PyAnsys Developer's Guide*, then, follow these steps:
 
 #. Clone this repository:
 
@@ -175,7 +175,7 @@ in the *PyAnsys Developer's Guide*. You will need to follow these steps:
     .. warning::
 
        ``PYANSYS_PYPI_PRIVATE_PAT`` must be defined for ``tox`` to run to completion.
-       See note above for more information.
+       See preceding note for more information.
 
 #. Optionally, install the project in editable mode:
 
@@ -208,7 +208,7 @@ For example, on Linux with Python 3.8, unzip the wheelhouse archive and install 
     unzip ansys-additive-v0.1.dev0-wheelhouse-Linux-3.8.zip wheelhouse
     pip install ansys-additive -f wheelhouse --no-index --upgrade --ignore-installed
 
-If you're on Windows with Python 3.9, unzip to a wheelhouse directory and install using the same command as above.
+If you're on Windows with Python 3.9, unzip to a wheelhouse directory and install using the preceding command.
 
 Consider installing using a `virtual environment <https://docs.python.org/3/library/venv.html>`_.
 
@@ -239,7 +239,7 @@ Raw testing
 -----------
 
 If required, you can always call the style commands (`black`_, `isort`_,
-`flake8`_...) or unit testing ones (`pytest`_) from the command line. However,
+`flake8`_, or other) or unit testing ones (`pytest`_) from the command line. However,
 this does not guarantee that your project is being tested in an isolated
 environment, which is the reason why tools like `tox`_ exist.
 
@@ -303,7 +303,7 @@ Documentation
 =============
 
 For building documentation, you can run the usual rules provided in the
-`Sphinx`_ Makefile, such us:
+`Sphinx`_ Makefile, such as:
 
 .. code:: bash
 
