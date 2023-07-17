@@ -197,9 +197,6 @@ def test_about_returns_about_response():
         f"    Version: {__version__}\n"
         f"    API version: {api_version}\n"
         "Server localhost:12345\n"
-        "    key1: value1\n"
-        "    key2: value2\n"
-        "    key3: value3\n"
     )
 
     # act
@@ -207,4 +204,9 @@ def test_about_returns_about_response():
         additive.about()
 
     # assert
-    assert f.getvalue() == expected_result
+    out_str = f.getvalue()
+    assert expected_result in out_str
+    # the order of the metadata is not guaranteed
+    assert "    key1: value1\n" in out_str
+    assert "    key2: value2\n" in out_str
+    assert "    key3: value3\n" in out_str
