@@ -1,12 +1,15 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-from unittest.mock import create_autospec, Mock
-from google.protobuf.empty_pb2 import Empty
-from callee import Contains
-
-import ansys.platform.instancemanagement as pypim
 import contextlib
-import grpc
 import io
+from unittest.mock import Mock, create_autospec
+
+from ansys.api.additive import __version__ as api_version
+from ansys.api.additive.v0.about_pb2 import AboutResponse
+from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
+import ansys.platform.instancemanagement as pypim
+from callee import Contains
+from google.protobuf.empty_pb2 import Empty
+import grpc
 import pytest
 
 from ansys.additive import (
@@ -19,9 +22,6 @@ from ansys.additive import (
     __version__,
 )
 import ansys.additive.additive
-from ansys.api.additive import __version__ as api_version
-from ansys.api.additive.v0.about_pb2 import AboutResponse
-from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
 
 
 def test_Additive_init_connects_with_defaults(monkeypatch):

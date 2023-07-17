@@ -13,12 +13,12 @@ import typing
 import zipfile
 
 from ansys.api.additive import __version__ as api_version
+from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
 from ansys.api.additive.v0.additive_domain_pb2 import ProgressState
 from ansys.api.additive.v0.additive_materials_pb2 import GetMaterialRequest
 from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
 from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
-from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
 import ansys.platform.instancemanagement as pypim
 from google.protobuf.empty_pb2 import Empty
 import grpc
