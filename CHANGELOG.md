@@ -1,6 +1,12 @@
 # Changelog
 
-## PyAdditive 0.12.2, 2023-07-05
+## PyAdditive 0.13.1, 2023-
+
+### Bugs fixed
+
+* Downgraded version of protobuf dependency to 3.12.0
+
+## PyAdditive 0.13.0, 2023-07-17
 
 <!-- ### Bugs fixed
 
