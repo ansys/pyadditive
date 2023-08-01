@@ -1,10 +1,14 @@
 # Changelog
 
-## PyAdditive 0.13.1, 2023-
+## PyAdditive 0.13.1, 2023-08-01
 
 ### Bugs fixed
 
-* Downgraded version of protobuf dependency to 3.12.0, [#19](https://github.com/ansys-internal/pyadditive/pull/19)
+* Expanded acceptable version of protobuf dependency, [#19](https://github.com/ansys-internal/pyadditive/pull/19)
+
+### Contributors
+
+* Peter Krull - <peter.krull@ansys.com>
 
 ## PyAdditive 0.13.0, 2023-07-17
 
