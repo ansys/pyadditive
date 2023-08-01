@@ -261,7 +261,7 @@ Then use the following command within the root folder of the project.
 System testing on localhost
 ---------------------------
 
-Install `docker-compose <https://docker-docs.netlify.app/compose/install/>`_, if necessary.
+Install `docker-compose <https://docs.docker.com/compose/>`_, if necessary.
 Start the server using the following command from the root folder of the project.
 
 .. code:: bash
