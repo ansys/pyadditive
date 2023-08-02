@@ -2,9 +2,9 @@
 
 ## PyAdditive 0.13.1, 2023-08-01
 
-### Bugs fixed
+### Doc improvements
 
-* Expanded acceptable version of protobuf dependency, [#19](https://github.com/ansys-internal/pyadditive/pull/19)
+* Added link checks during doc builds [#19](https://github.com/ansys-internal/pyadditive/pull/19)
 
 ### Contributors
 
