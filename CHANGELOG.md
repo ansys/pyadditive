@@ -4,7 +4,7 @@
 
 ### New features
 
-* Microstructure circle equivalence data now returned as Pandas DataFrame [#2](https://github.com/ansys-internal/pyadditive/issues/2)
+* Microstructure circle equivalence data now returned as Pandas DataFrame. Added ParametricStudy [#2](https://github.com/ansys-internal/pyadditive/issues/2)
 
 ### Doc improvements
 
