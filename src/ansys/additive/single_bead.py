@@ -88,6 +88,21 @@ class SingleBeadInput:
         return SimulationRequest(id=self.id, single_bead_input=input)
 
 
+class MeltPoolColumnNames:
+    """Column names for melt pool data frame."""
+
+    #: Width of melt pool (m).
+    WIDTH = "width"
+    #: Depth of melt pool (m).
+    DEPTH = "depth"
+    #: Length of melt pool (m).
+    LENGTH = "length"
+    #: Width of melt pool at the surface of the base plate (m).
+    REFERENCE_WIDTH = "reference_width"
+    #: Depth of melt pool measured from the surface of the base plate (m).
+    REFERENCE_DEPTH = "reference_depth"
+
+
 class MeltPool:
     """Container for the melt pool evolution during a single bead simulation.
 
@@ -105,11 +120,11 @@ class MeltPool:
         self._df = DataFrame(
             index=bead_length,
             data={
-                "length": length,
-                "width": width,
-                "depth": depth,
-                "reference_width": reference_width,
-                "reference_depth": reference_depth,
+                MeltPoolColumnNames.LENGTH: length,
+                MeltPoolColumnNames.WIDTH: width,
+                MeltPoolColumnNames.DEPTH: depth,
+                MeltPoolColumnNames.REFERENCE_WIDTH: reference_width,
+                MeltPoolColumnNames.REFERENCE_DEPTH: reference_depth,
             },
         )
         self._df.index.name = "bead_length"
@@ -124,13 +139,13 @@ class MeltPool:
             - bead_length: Length of bead at each time step.
 
         Columns:
-            - length: length of melt pool at each time step.
-            - width: width of melt pool at each time step.
-            - depth: depth of melt pool at each time step.
-            - reference_width: reference width of melt pool at each time step.
+            - ``MeltPoolColumnNames.LENGTH``: length of melt pool at each time step.
+            - ``MeltPoolColumnNames.WIDTH``: width of melt pool at each time step.
+            - ``MeltPoolColumnNames.DEPTH``: depth of melt pool at each time step.
+            - ``MeltPoolColumnNames.REFERENCE_WIDTH``: reference width of melt pool at each time step.
               Reference width is the melt pool width at the bottom of the powder layer,
               or, the width at the top of the substrate.
-            - reference_depth: reference depth of melt pool at each time step.
+            - ``MeltPoolColumnNames.REFERENCE_DEPTH``: reference depth of melt pool at each time step.
               Reference depth is the depth of the entire melt pool minus the powder
               layer thickness, or, the depth of penetration into the substrate.
         """

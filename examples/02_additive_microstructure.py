@@ -104,13 +104,15 @@ from matplotlib import colors
 from matplotlib.colors import LinearSegmentedColormap as colorMap
 import matplotlib.pyplot as plt
 from matplotlib.ticker import PercentFormatter
-
-# import plotting dependencies
+import pandas as pd
 import pyvista as pv
 
+# import plotting dependencies
+from ansys.additive import CircleEquivalenceColumnNames
+
 ###############################################################################
-# Plot Grain 2D Visualtions
-# ^^^^^^^^^^^^^^^^^^^^^^^^^
+# Plot Grain 2D Visualizations
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 # Function to plot the planar data
@@ -160,16 +162,18 @@ plot_microstructure(xy, xz, yz, "GrainNumber", None).show(title="Grain Number")
 
 # Function to simplify plotting grain statistics
 def add_grain_statistics_to_figure(
-    plane_data: dict, plane_str: str, diameter_axes: plt.Axes, orientation_axes: plt.Axes
+    plane_data: pd.DataFrame, plane_str: str, diameter_axes: plt.Axes, orientation_axes: plt.Axes
 ):
     """Convenience function to add grain statistic plots to a figure."""
-    xmax = len(plane_data["diameter_um"])
-    diameter_axes.hist(plane_data["diameter_um"], bins=20, rwidth=0.75)
+    xmax = len(plane_data[CircleEquivalenceColumnNames.DIAMETER])
+    diameter_axes.hist(plane_data[CircleEquivalenceColumnNames.DIAMETER], bins=20, rwidth=0.75)
     diameter_axes.set_xlabel(f"Grain Diameter (µm)")
     diameter_axes.set_ylabel("Area Fraction")
     diameter_axes.set_title(plane_str.upper() + " Grain Size Distribution")
     diameter_axes.yaxis.set_major_formatter(PercentFormatter(xmax=xmax))
-    orientation_axes.hist(plane_data["orientation_angle"], bins=9, rwidth=0.75)
+    orientation_axes.hist(
+        plane_data[CircleEquivalenceColumnNames.ORIENTATION_ANGLE], bins=9, rwidth=0.75
+    )
     orientation_axes.yaxis.set_major_formatter(PercentFormatter(xmax=xmax))
     orientation_axes.set_xlabel(f"Orientation Angle (°)")
     orientation_axes.set_ylabel("Number Fraction")
