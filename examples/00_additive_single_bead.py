@@ -10,7 +10,10 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 
 First, connect to the Additive service.
 """
+import matplotlib.pyplot as plt
+
 import ansys.additive as pyadditive
+from ansys.additive import MeltPoolColumnNames
 
 additive = pyadditive.Additive()
 
@@ -83,21 +86,29 @@ df = summary.melt_pool.data_frame.multiply(1e6)  # convert from meters to micron
 df.index *= 1e3  # convert bead length from meters to millimeters
 
 df.plot(
-    y=["length", "width", "depth", "reference_width", "reference_depth"],
+    y=[
+        MeltPoolColumnNames.LENGTH,
+        MeltPoolColumnNames.WIDTH,
+        MeltPoolColumnNames.DEPTH,
+        MeltPoolColumnNames.REFERENCE_WIDTH,
+        MeltPoolColumnNames.REFERENCE_DEPTH,
+    ],
     ylabel="Melt Pool Dimensions (µm)",
     xlabel="Bead Length (mm)",
     title="Melt Pool Dimensions vs Bead Length",
 )
+plt.show()
 
 
 ###############################################################################
 # List Melt Pool Statistics
 # -------------------------
-# A table of the melt pool statistics can be obtained using a
-# `Pandas Styler <https://pandas.pydata.org/docs/user_guide/style.html>`_.
+# A table of the melt pool statistics can be shown by simply
+# typing the name of the data frame object and pressing enter.
 # Here we show only the first few rows using ``head()`` for brevity.
+# NOTE: If running this example as a python script, no output will be shown.
 
-df.head().style.format("{:.2f}").format_index("{:.2f}")
+df.head()
 
 ###############################################################################
 # Save Melt Pool Statistics

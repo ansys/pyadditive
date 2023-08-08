@@ -9,7 +9,7 @@ from ansys.api.additive.v0.additive_domain_pb2 import MicrostructureResult
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
 import numpy as np
-import numpy.typing as npt
+import pandas as pd
 
 from ansys.additive.machine import AdditiveMachine
 from ansys.additive.material import AdditiveMaterial
@@ -70,7 +70,7 @@ class MicrostructureInput:
         melt_pool_depth: float = __DEFAULT_MELT_POOL_DEPTH,
         random_seed: int = __DEFAULT_RANDOM_SEED,
         machine: AdditiveMachine = AdditiveMachine(),
-        material: AdditiveMaterial = AdditiveMaterial()
+        material: AdditiveMaterial = AdditiveMaterial(),
     ):
         # we have a circular dependency here, so we validate sensor_dimension
         # and sample_size_* then assign them without calling the setters
@@ -374,6 +374,19 @@ class MicrostructureInput:
         return SimulationRequest(id=self.id, microstructure_input=input)
 
 
+class CircleEquivalenceColumnNames:
+    """Column names for the circle equivalence data frame."""
+
+    #: Grain number
+    GRAIN_NUMBER = "grain_number"
+    #: Area fraction for grain
+    AREA_FRACTION = "area_fraction"
+    #: Grain diameter (µm)
+    DIAMETER = "diameter_um"
+    #: Orientation angle (degrees)
+    ORIENTATION_ANGLE = "orientation_angle"
+
+
 class MicrostructureSummary:
     """Summary of a microstructure simulation.
 
@@ -436,49 +449,42 @@ class MicrostructureSummary:
         return self._yz_vtk
 
     @property
-    def xy_circle_equivalence(self) -> dict[str, npt.NDArray]:
+    def xy_circle_equivalence(self) -> pd.DataFrame:
         """
         Circle equivalence data for XY plane.
 
-        Dictionary keys include ``grain_number``, ``area_fraction``, ``diameter_um``
-        and ``orientation_angle``. The ``diameter_um`` values are in microns and
-        ``orientation_angle`` values are in degrees.
-
+        See :class:`CircleEquivalenceColumnNames` for data frame column names.
         """
         return self._xy_circle_equivalence
 
     @property
-    def xz_circle_equivalence(self) -> dict[str, npt.NDArray]:
+    def xz_circle_equivalence(self) -> pd.DataFrame:
         """
         Circle equivalence data for XZ plane.
 
-        Dictionary keys include ``grain_number``, ``area_fraction``, ``diameter_um``
-        and ``orientation_angle``. The ``diameter_um`` values are in microns and
-        ``orientation_angle`` values are in degrees.
-
+        See :class:`CircleEquivalenceColumnNames` for data frame column names.
         """
         return self._xz_circle_equivalence
 
     @property
-    def yz_circle_equivalence(self) -> dict[str, npt.NDArray]:
+    def yz_circle_equivalence(self) -> pd.DataFrame:
         """
         Circle equivalence data for YZ plane.
 
-        Dictionary keys include ``grain_number``, ``area_fraction``, ``diameter_um``
-        and ``orientation_angle``. The ``diameter_um`` values are in microns and
-        ``orientation_angle`` values are in degrees.
-
+        See :class:`CircleEquivalenceColumnNames` for data frame column names.
         """
         return self._yz_circle_equivalence
 
     @staticmethod
-    def _get_equivalence_dict(src: RepeatedCompositeFieldContainer) -> dict:
+    def _get_equivalence_dict(src: RepeatedCompositeFieldContainer) -> pd.DataFrame:
         d = {}
-        d["grain_number"] = np.asarray([x.grain_number for x in src])
-        d["area_fraction"] = np.asarray([x.area_fraction for x in src])
-        d["diameter_um"] = np.asarray([x.diameter_um for x in src])
-        d["orientation_angle"] = np.asarray([math.degrees(x.orientation_angle) for x in src])
-        return d
+        d[CircleEquivalenceColumnNames.GRAIN_NUMBER] = np.asarray([x.grain_number for x in src])
+        d[CircleEquivalenceColumnNames.AREA_FRACTION] = np.asarray([x.area_fraction for x in src])
+        d[CircleEquivalenceColumnNames.DIAMETER] = np.asarray([x.diameter_um for x in src])
+        d[CircleEquivalenceColumnNames.ORIENTATION_ANGLE] = np.asarray(
+            [math.degrees(x.orientation_angle) for x in src]
+        )
+        return pd.DataFrame(d)
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"

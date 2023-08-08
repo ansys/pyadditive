@@ -1,6 +1,10 @@
 # Changelog
 
-## PyAdditive 0.13.1, 2023-08-01
+## PyAdditive 0.14.0, 2023-08-08
+
+### New features
+
+* Microstructure circle equivalence data now returned as Pandas DataFrame [#2](https://github.com/ansys-internal/pyadditive/issues/2)
 
 ### Doc improvements
 

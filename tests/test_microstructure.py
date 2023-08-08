@@ -505,12 +505,12 @@ def test_MicrostructureSummary_repr_returns_expected_string():
         + "yz_vtk: "
         + os.path.join(expected_output_dir, "yz.vtk")
         + "\n"
-        + "xy_circle_equivalence: {'grain_number': array([1]), 'area_fraction': "
-        + "array([2.]), 'diameter_um': array([3.]), 'orientation_angle': array([229.18311805])}\n"
-        + "xz_circle_equivalence: {'grain_number': array([5]), 'area_fraction': "
-        + "array([6.]), 'diameter_um': array([7.]), 'orientation_angle': array([458.3662361])}\n"
-        + "yz_circle_equivalence: {'grain_number': array([9]), 'area_fraction': "
-        + "array([10.]), 'diameter_um': array([11.]), 'orientation_angle': array([687.54935416])}\n"
+        + "xy_circle_equivalence:    grain_number  area_fraction  diameter_um  orientation_angle\n"
+        + "0             1            2.0          3.0         229.183118\n"
+        + "xz_circle_equivalence:    grain_number  area_fraction  diameter_um  orientation_angle\n"
+        + "0             5            6.0          7.0         458.366236\n"
+        + "yz_circle_equivalence:    grain_number  area_fraction  diameter_um  orientation_angle\n"
+        + "0             9           10.0         11.0         687.549354\n"
     )
 
     # cleanup
