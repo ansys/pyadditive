@@ -109,8 +109,6 @@ import pyvista as pv
 
 from ansys.additive import CircleEquivalenceColumnNames
 
-from ansys.additive import CircleEquivalenceColumnNames
-
 ###############################################################################
 # Plot Grain 2D Visualizations
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
