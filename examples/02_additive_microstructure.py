@@ -109,8 +109,6 @@ import pyvista as pv
 
 from ansys.additive import CircleEquivalenceColumnNames
 
-from ansys.additive import CircleEquivalenceColumnNames
-
 ###############################################################################
 # Plot Grain 2D Visualizations
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -163,14 +161,20 @@ plot_microstructure(xy, xz, yz, "GrainNumber", None).show(title="Grain Number")
 
 # Function to simplify plotting grain statistics
 def add_grain_statistics_to_figure(
-    plane_data: pd.DataFrame, plane_str: str, diameter_axes: plt.Axes, orientation_axes: plt.Axes
+    plane_data: pd.DataFrame,
+    plane_str: str,
+    plane_ave_grain_size: float,
+    diameter_axes: plt.Axes,
+    orientation_axes: plt.Axes,
 ):
     """Convenience function to add grain statistic plots to a figure."""
     xmax = len(plane_data[CircleEquivalenceColumnNames.DIAMETER])
     diameter_axes.hist(plane_data[CircleEquivalenceColumnNames.DIAMETER], bins=20, rwidth=0.75)
     diameter_axes.set_xlabel(f"Grain Diameter (µm)")
     diameter_axes.set_ylabel("Area Fraction")
-    diameter_axes.set_title(plane_str.upper() + " Grain Size Distribution")
+    diameter_axes.set_title(
+        plane_str.upper() + f" Grain Size Distribution, ave: {plane_ave_grain_size:.2f} µm"
+    )
     diameter_axes.yaxis.set_major_formatter(PercentFormatter(xmax=xmax))
     orientation_axes.hist(
         plane_data[CircleEquivalenceColumnNames.ORIENTATION_ANGLE], bins=9, rwidth=0.75
@@ -184,7 +188,13 @@ def add_grain_statistics_to_figure(
 # Create figure for grain statistics
 fig, axs = plt.subplots(3, 2, figsize=(10, 15), tight_layout=True)
 fig.suptitle("Circle Equivalence Grain Data", fontsize=16)
-add_grain_statistics_to_figure(summary.xy_circle_equivalence, "xy", axs[0][0], axs[0][1])
-add_grain_statistics_to_figure(summary.xz_circle_equivalence, "xz", axs[1][0], axs[1][1])
-add_grain_statistics_to_figure(summary.yz_circle_equivalence, "yz", axs[2][0], axs[2][1])
+add_grain_statistics_to_figure(
+    summary.xy_circle_equivalence, "xy", summary.xy_average_grain_size, axs[0][0], axs[0][1]
+)
+add_grain_statistics_to_figure(
+    summary.xz_circle_equivalence, "xz", summary.xz_average_grain_size, axs[1][0], axs[1][1]
+)
+add_grain_statistics_to_figure(
+    summary.yz_circle_equivalence, "yz", summary.yz_average_grain_size, axs[2][0], axs[2][1]
+)
 plt.show()

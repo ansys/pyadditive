@@ -6,6 +6,36 @@ from ansys.api.additive.v0.additive_domain_pb2 import MachineSettings as Machine
 import ansys.additive.conversions as conversions
 
 
+class MachineConstants:
+    DEFAULT_LASER_POWER = 195
+    MIN_LASER_POWER = 50
+    MAX_LASER_POWER = 700
+    DEFAULT_SCAN_SPEED = 1.0
+    MIN_SCAN_SPEED = 0.35
+    MAX_SCAN_SPEED = 2.5
+    DEFAULT_HEATER_TEMP = 80
+    MIN_HEATER_TEMP = 20
+    MAX_HEATER_TEMP = 500
+    DEFAULT_LAYER_THICKNESS = 5e-5
+    MIN_LAYER_THICKNESS = 1e-5
+    MAX_LAYER_THICKNESS = 1e-4
+    DEFAULT_BEAM_DIAMETER = 1e-4
+    MIN_BEAM_DIAMETER = 2e-5
+    MAX_BEAM_DIAMETER = 1.4e-4
+    DEFAULT_STARTING_LAYER_ANGLE = 57
+    MIN_STARTING_LAYER_ANGLE = 0
+    MAX_STARTING_LAYER_ANGLE = 180
+    DEFAULT_LAYER_ROTATION_ANGLE = 67
+    MIN_LAYER_ROTATION_ANGLE = 0
+    MAX_LAYER_ROTATION_ANGLE = 180
+    DEFAULT_HATCH_SPACING = 1e-4
+    MIN_HATCH_SPACING = 6e-5
+    MAX_HATCH_SPACING = 2e-4
+    DEFAULT_SLICING_STRIPE_WIDTH = 0.01
+    MIN_SLICING_STRIPE_WIDTH = 0.001
+    MAX_SLICING_STRIPE_WIDTH = 0.1
+
+
 class AdditiveMachine:
     """Additive manufacturing machine settings used during simulation.
 
@@ -15,46 +45,18 @@ class AdditiveMachine:
 
     """
 
-    __DEFAULT_LASER_POWER = 195
-    __MIN_LASER_POWER = 50
-    __MAX_LASER_POWER = 700
-    __DEFAULT_SCAN_SPEED = 1.0
-    __MIN_SCAN_SPEED = 0.35
-    __MAX_SCAN_SPEED = 2.5
-    __DEFAULT_HEATER_TEMP = 80
-    __MIN_HEATER_TEMP = 20
-    __MAX_HEATER_TEMP = 500
-    __DEFAULT_LAYER_THICKNESS = 5e-5
-    __MIN_LAYER_THICKNESS = 1e-5
-    __MAX_LAYER_THICKNESS = 1e-4
-    __DEFAULT_BEAM_DIAMETER = 1e-4
-    __MIN_BEAM_DIAMETER = 2e-5
-    __MAX_BEAM_DIAMETER = 1.4e-4
-    __DEFAULT_STARTING_LAYER_ANGLE = 57
-    __MIN_STARTING_LAYER_ANGLE = 0
-    __MAX_STARTING_LAYER_ANGLE = 180
-    __DEFAULT_LAYER_ROTATION_ANGLE = 67
-    __MIN_LAYER_ROTATION_ANGLE = 0
-    __MAX_LAYER_ROTATION_ANGLE = 180
-    __DEFAULT_HATCH_SPACING = 1e-4
-    __MIN_HATCH_SPACING = 6e-5
-    __MAX_HATCH_SPACING = 2e-4
-    __DEFAULT_SLICING_STRIPE_WIDTH = 0.01
-    __MIN_SLICING_STRIPE_WIDTH = 0.001
-    __MAX_SLICING_STRIPE_WIDTH = 0.1
-
     def __init__(
         self,
         *,
-        laser_power: float = __DEFAULT_LASER_POWER,
-        scan_speed: float = __DEFAULT_SCAN_SPEED,
-        heater_temperature: float = __DEFAULT_HEATER_TEMP,
-        layer_thickness: float = __DEFAULT_LAYER_THICKNESS,
-        beam_diameter: float = __DEFAULT_BEAM_DIAMETER,
-        starting_layer_angle: float = __DEFAULT_STARTING_LAYER_ANGLE,
-        layer_rotation_angle: float = __DEFAULT_LAYER_ROTATION_ANGLE,
-        hatch_spacing: float = __DEFAULT_HATCH_SPACING,
-        slicing_stripe_width: float = __DEFAULT_SLICING_STRIPE_WIDTH
+        laser_power: float = MachineConstants.DEFAULT_LASER_POWER,
+        scan_speed: float = MachineConstants.DEFAULT_SCAN_SPEED,
+        heater_temperature: float = MachineConstants.DEFAULT_HEATER_TEMP,
+        layer_thickness: float = MachineConstants.DEFAULT_LAYER_THICKNESS,
+        beam_diameter: float = MachineConstants.DEFAULT_BEAM_DIAMETER,
+        starting_layer_angle: float = MachineConstants.DEFAULT_STARTING_LAYER_ANGLE,
+        layer_rotation_angle: float = MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE,
+        hatch_spacing: float = MachineConstants.DEFAULT_HATCH_SPACING,
+        slicing_stripe_width: float = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH,
     ):
         self.laser_power = laser_power
         self.scan_speed = scan_speed
@@ -99,7 +101,9 @@ class AdditiveMachine:
 
     @laser_power.setter
     def laser_power(self, value: float):
-        self.__validate_range(value, self.__MIN_LASER_POWER, self.__MAX_LASER_POWER, "laser_power")
+        self.__validate_range(
+            value, MachineConstants.MIN_LASER_POWER, MachineConstants.MAX_LASER_POWER, "laser_power"
+        )
         self._laser_power = value
 
     @property
@@ -110,7 +114,9 @@ class AdditiveMachine:
 
     @scan_speed.setter
     def scan_speed(self, value: float):
-        self.__validate_range(value, self.__MIN_SCAN_SPEED, self.__MAX_SCAN_SPEED, "scan_speed")
+        self.__validate_range(
+            value, MachineConstants.MIN_SCAN_SPEED, MachineConstants.MAX_SCAN_SPEED, "scan_speed"
+        )
         self._scan_speed = value
 
     @property
@@ -122,7 +128,10 @@ class AdditiveMachine:
     @heater_temperature.setter
     def heater_temperature(self, value: float):
         self.__validate_range(
-            value, self.__MIN_HEATER_TEMP, self.__MAX_HEATER_TEMP, "heater_temperature"
+            value,
+            MachineConstants.MIN_HEATER_TEMP,
+            MachineConstants.MAX_HEATER_TEMP,
+            "heater_temperature",
         )
         self._heater_temperature = value
 
@@ -135,7 +144,10 @@ class AdditiveMachine:
     @layer_thickness.setter
     def layer_thickness(self, value: float):
         self.__validate_range(
-            value, self.__MIN_LAYER_THICKNESS, self.__MAX_LAYER_THICKNESS, "layer_thickness"
+            value,
+            MachineConstants.MIN_LAYER_THICKNESS,
+            MachineConstants.MAX_LAYER_THICKNESS,
+            "layer_thickness",
         )
         self._layer_thickness = value
 
@@ -150,7 +162,10 @@ class AdditiveMachine:
     @beam_diameter.setter
     def beam_diameter(self, value: float):
         self.__validate_range(
-            value, self.__MIN_BEAM_DIAMETER, self.__MAX_BEAM_DIAMETER, "beam_diameter"
+            value,
+            MachineConstants.MIN_BEAM_DIAMETER,
+            MachineConstants.MAX_BEAM_DIAMETER,
+            "beam_diameter",
         )
         self._beam_diameter = value
 
@@ -166,8 +181,8 @@ class AdditiveMachine:
     def starting_layer_angle(self, value: float):
         self.__validate_range(
             value,
-            self.__MIN_STARTING_LAYER_ANGLE,
-            self.__MAX_STARTING_LAYER_ANGLE,
+            MachineConstants.MIN_STARTING_LAYER_ANGLE,
+            MachineConstants.MAX_STARTING_LAYER_ANGLE,
             "starting_layer_angle",
         )
         self._starting_layer_angle = value
@@ -183,8 +198,8 @@ class AdditiveMachine:
     def layer_rotation_angle(self, value: float):
         self.__validate_range(
             value,
-            self.__MIN_LAYER_ROTATION_ANGLE,
-            self.__MAX_LAYER_ROTATION_ANGLE,
+            MachineConstants.MIN_LAYER_ROTATION_ANGLE,
+            MachineConstants.MAX_LAYER_ROTATION_ANGLE,
             "layer_rotation_angle",
         )
         self._layer_rotation_angle = value
@@ -201,7 +216,10 @@ class AdditiveMachine:
     @hatch_spacing.setter
     def hatch_spacing(self, value: float):
         self.__validate_range(
-            value, self.__MIN_HATCH_SPACING, self.__MAX_HATCH_SPACING, "hatch_spacing"
+            value,
+            MachineConstants.MIN_HATCH_SPACING,
+            MachineConstants.MAX_HATCH_SPACING,
+            "hatch_spacing",
         )
         self._hatch_spacing = value
 
@@ -215,8 +233,8 @@ class AdditiveMachine:
     def slicing_stripe_width(self, value: float):
         self.__validate_range(
             value,
-            self.__MIN_SLICING_STRIPE_WIDTH,
-            self.__MAX_SLICING_STRIPE_WIDTH,
+            MachineConstants.MIN_SLICING_STRIPE_WIDTH,
+            MachineConstants.MAX_SLICING_STRIPE_WIDTH,
             "slicing_stripe_width",
         )
         self._slicing_stripe_width = value
