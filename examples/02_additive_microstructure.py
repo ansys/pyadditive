@@ -107,6 +107,9 @@ from matplotlib.ticker import PercentFormatter
 import pandas as pd
 import pyvista as pv
 
+# import plotting dependencies
+from ansys.additive import CircleEquivalenceColumnNames
+
 from ansys.additive import CircleEquivalenceColumnNames
 
 ###############################################################################
