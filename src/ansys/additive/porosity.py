@@ -25,6 +25,7 @@ class PorosityInput:
 
     """
 
+    #: Default sample size (m) in each dimension.
     DEFAULT_SAMPLE_SIZE = 3e-3
     __MIN_SAMPLE_SIZE = 1e-3
     __MAX_SAMPLE_SIZE = 1e-2

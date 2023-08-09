@@ -22,32 +22,40 @@ class MicrostructureInput:
 
     """
 
+    #: Default minimum x, y, z, position coordinate (m).
     DEFAULT_POSITION_COORDINATE = 0
     __MIN_POSITION_COORDINATE = 0
     __MAX_POSITION_COORDINATE = 10
+    #: Default sample size (m) in each dimension.
     DEFAULT_SAMPLE_SIZE = 1.5e-3
     __MIN_SAMPLE_SIZE = 0.001
     __MAX_SAMPLE_SIZE = 0.01
+    #: Default sensor dimension (m).
     DEFAULT_SENSOR_DIMENSION = 5e-4
     __MIN_SENSOR_DIMENSION = 1e-4
     __MAX_SENSOR_DIMENSION = 1e-3
     __MIN_XY_SIZE_CUSHION = 5e-4
     __MIN_Z_SIZE_CUSHION = 1e-3
+    #: Default flag value indicating whether to use user provided thermal parameters.
     DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS = False
+    #: Default cooling rate (K/s).
     DEFAULT_COOLING_RATE = 1e6
     __MIN_COOLING_RATE = 1e5
     __MAX_COOLING_RATE = 1e7
+    #: Default thermal gradient (K/m).
     DEFAULT_THERMAL_GRADIENT = 1e7
     __MIN_THERMAL_GRADIENT = 1e5
     __MAX_THERMAL_GRADIENT = 1e8
+    #: Default melt pool width (m).
     DEFAULT_MELT_POOL_WIDTH = 1.5e-4
     __MIN_MELT_POOL_WIDTH = 7.5e-5
     __MAX_MELT_POOL_WIDTH = 8e-4
+    #: Default melt pool depth (m).
     DEFAULT_MELT_POOL_DEPTH = 1e-4
     __MIN_MELT_POOL_DEPTH = 1.5e-5
     __MAX_MELT_POOL_DEPTH = 8e-4
-    # The default random seed is outside the range of valid seeds.
-    # It indicates that the user did not provide a seed.
+    #: The default random seed is outside the range of valid seeds.
+    #: It indicates that the user did not provide a seed.
     DEFAULT_RANDOM_SEED = 0
     __MIN_RANDOM_SEED = 1
     __MAX_RANDOM_SEED = 2**31 - 1
