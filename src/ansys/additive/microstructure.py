@@ -418,14 +418,23 @@ class MicrostructureSummary:
         with open(self._yz_vtk, "wb") as yz_vtk:
             yz_vtk.write(result.yz_vtk)
 
-        self._xy_circle_equivalence = MicrostructureSummary._get_equivalence_dict(
+        self._xy_circle_equivalence = MicrostructureSummary._circle_equivalence_frame(
             result.xy_circle_equivalence
         )
-        self._xz_circle_equivalence = MicrostructureSummary._get_equivalence_dict(
+        self._xz_circle_equivalence = MicrostructureSummary._circle_equivalence_frame(
             result.xz_circle_equivalence
         )
-        self._yz_circle_equivalence = MicrostructureSummary._get_equivalence_dict(
+        self._yz_circle_equivalence = MicrostructureSummary._circle_equivalence_frame(
             result.yz_circle_equivalence
+        )
+        self._xy_average_grain_size = MicrostructureSummary._average_grain_size(
+            self._xy_circle_equivalence
+        )
+        self._xz_average_grain_size = MicrostructureSummary._average_grain_size(
+            self._xz_circle_equivalence
+        )
+        self._yz_average_grain_size = MicrostructureSummary._average_grain_size(
+            self._yz_circle_equivalence
         )
 
     @property
@@ -475,8 +484,23 @@ class MicrostructureSummary:
         """
         return self._yz_circle_equivalence
 
+    @property
+    def xy_average_grain_size(self) -> float:
+        """Average grain size (µm) for XY plane."""
+        return self._xy_average_grain_size
+
+    @property
+    def xz_average_grain_size(self) -> float:
+        """Average grain size (µm) for XZ plane."""
+        return self._xz_average_grain_size
+
+    @property
+    def yz_average_grain_size(self) -> float:
+        """Average grain size (µm) for YZ plane."""
+        return self._yz_average_grain_size
+
     @staticmethod
-    def _get_equivalence_dict(src: RepeatedCompositeFieldContainer) -> pd.DataFrame:
+    def _circle_equivalence_frame(src: RepeatedCompositeFieldContainer) -> pd.DataFrame:
         d = {}
         d[CircleEquivalenceColumnNames.GRAIN_NUMBER] = np.asarray([x.grain_number for x in src])
         d[CircleEquivalenceColumnNames.AREA_FRACTION] = np.asarray([x.area_fraction for x in src])
@@ -485,6 +509,26 @@ class MicrostructureSummary:
             [math.degrees(x.orientation_angle) for x in src]
         )
         return pd.DataFrame(d)
+
+    @staticmethod
+    def _average_grain_size(df: pd.DataFrame) -> float:
+        """Calculate the average grain size (µm) for a given plane.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Data frame containing circle equivalence data for a given plane.
+
+        Returns
+        -------
+        float
+            Average grain size (µm).
+        """
+
+        return (
+            df[CircleEquivalenceColumnNames.DIAMETER]
+            * df[CircleEquivalenceColumnNames.AREA_FRACTION]
+        ).sum()
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
