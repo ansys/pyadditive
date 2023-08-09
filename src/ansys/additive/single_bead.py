@@ -11,14 +11,14 @@ from ansys.additive.material import AdditiveMaterial
 class SingleBeadInput:
     """Input parameters for single bead simulation."""
 
-    __DEFAULT_BEAD_LENGTH = 3e-3
+    DEFAULT_BEAD_LENGTH = 3e-3
     __MIN_BEAD_LENGTH = 1e-3
     __MAX_BEAD_LENGTH = 1e-2
 
     def __init__(
         self,
         id="",
-        bead_length=__DEFAULT_BEAD_LENGTH,
+        bead_length=DEFAULT_BEAD_LENGTH,
         machine=AdditiveMachine(),
         material=AdditiveMaterial(),
     ):
