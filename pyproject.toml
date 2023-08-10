@@ -46,7 +46,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-tests = ["pytest==7.2.0", "pytest-cov==4.0.0", "callee==0.3.1"]
+tests = ["pytest==7.2.0", "pytest-cov==4.1.0", "callee==0.3.1"]
 
 doc = [
     "ansys-sphinx-theme==0.9.9",
