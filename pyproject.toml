@@ -52,7 +52,7 @@ doc = [
     "ansys-sphinx-theme==0.9.9",
     "enum-tools==0.10.0",
     "jupyter_sphinx==0.4.0",
-    "matplotlib==3.6.2",
+    "matplotlib==3.7.2",
     "numpydoc==1.5.0",
     "pypandoc==1.8.1",
     "pyvista==0.37.0",
