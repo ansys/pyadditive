@@ -113,7 +113,8 @@ intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
     "pyvista": ("https://docs.pyvista.org/", None),
-    "pypim": ("https://pypim.docs.pyansys.com/", None),
+    "pypim": ("https://pypim.docs.pyansys.com/version/stable", None),
+    # "panel": ("https://panel.holoviz.org/", None),
 }
 
 # List of patterns, relative to source directory, that match files and
