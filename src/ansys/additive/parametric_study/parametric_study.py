@@ -240,12 +240,17 @@ class ParametricStudy:
         br = ParametricStudy.build_rate(
             summary.input.machine.scan_speed, summary.input.machine.layer_thickness
         )
+        ed = ParametricStudy.energy_density(
+            summary.input.machine.laser_power,
+            summary.input.machine.scan_speed,
+            summary.input.machine.layer_thickness,
+        )
         row = pd.Series(
             {
                 **self.__common_param_to_dict(summary, iteration),
                 ColumnNames.TYPE: SimulationType.SINGLE_BEAD,
                 ColumnNames.BUILD_RATE: br,
-                ColumnNames.ENERGY_DENSITY: summary.input.machine.laser_power / br,
+                ColumnNames.ENERGY_DENSITY: ed,
                 ColumnNames.SINGLE_BEAD_LENGTH: summary.input.bead_length,
                 ColumnNames.MELT_POOL_WIDTH: median_mp[MeltPoolColumnNames.WIDTH],
                 ColumnNames.MELT_POOL_DEPTH: median_mp[MeltPoolColumnNames.DEPTH],
@@ -268,12 +273,18 @@ class ParametricStudy:
             summary.input.machine.layer_thickness,
             summary.input.machine.hatch_spacing,
         )
+        ed = ParametricStudy.energy_density(
+            summary.input.machine.laser_power,
+            summary.input.machine.scan_speed,
+            summary.input.machine.layer_thickness,
+            summary.input.machine.hatch_spacing,
+        )
         row = pd.Series(
             {
                 **self.__common_param_to_dict(summary, iteration),
                 ColumnNames.TYPE: SimulationType.POROSITY,
                 ColumnNames.BUILD_RATE: br,
-                ColumnNames.ENERGY_DENSITY: summary.input.machine.laser_power / br,
+                ColumnNames.ENERGY_DENSITY: ed,
                 ColumnNames.POROSITY_SIZE_X: summary.input.size_x,
                 ColumnNames.POROSITY_SIZE_Y: summary.input.size_y,
                 ColumnNames.POROSITY_SIZE_Z: summary.input.size_z,
@@ -284,6 +295,12 @@ class ParametricStudy:
 
     def _add_microstructure_result(self, summary: MicrostructureSummary, iteration: int = 0):
         br = ParametricStudy.build_rate(
+            summary.input.machine.scan_speed,
+            summary.input.machine.layer_thickness,
+            summary.input.machine.hatch_spacing,
+        )
+        ed = ParametricStudy.energy_density(
+            summary.input.machine.laser_power,
             summary.input.machine.scan_speed,
             summary.input.machine.layer_thickness,
             summary.input.machine.hatch_spacing,
@@ -301,7 +318,7 @@ class ParametricStudy:
                 **self.__common_param_to_dict(summary, iteration),
                 ColumnNames.TYPE: SimulationType.MICROSTRUCTURE,
                 ColumnNames.BUILD_RATE: br,
-                ColumnNames.ENERGY_DENSITY: summary.input.machine.laser_power / br,
+                ColumnNames.ENERGY_DENSITY: ed,
                 ColumnNames.MICRO_SENSOR_DIM: summary.input.sensor_dimension,
                 ColumnNames.MICRO_MIN_X: summary.input.sample_min_x,
                 ColumnNames.MICRO_MIN_Y: summary.input.sample_min_y,
@@ -322,17 +339,23 @@ class ParametricStudy:
         self._data_frame = pd.concat([self._data_frame, row.to_frame().T], ignore_index=True)
 
     @staticmethod
-    def build_rate(v: float, lt: float, hs: Optional[float] = None) -> float:
+    def build_rate(
+        scan_speed: float, layer_thickness: float, hatch_spacing: Optional[float] = None
+    ) -> float:
         """Calculate the build rate.
+
+        This is an approximate value useful for comparison but not for an accurate prediction
+        of build time. The returned value is simply the product of the scan speed, layer thickness,
+        and hatch spacing (if provided).
 
         Parameters
         ----------
-        v : float
-            Scan speed.
-        lt : float
-            Layer thickness.
-        hs : float, optional
-            Hatch spacing.
+        scan_speed : float
+            Laser scan speed.
+        layer_thickness : float
+            Powder deposit layer thickness.
+        hatch_spacing : float, optional
+            Distance between hatch scan lines.
 
         Returns
         -------
@@ -342,9 +365,43 @@ class ParametricStudy:
             the output units are m^3/s or m^2/s.
 
         """
-        if hs is None:
-            return v * lt
-        return v * lt * hs
+        if hatch_spacing is None:
+            return scan_speed * layer_thickness
+        return scan_speed * layer_thickness * hatch_spacing
+
+    @staticmethod
+    def energy_density(
+        laser_power: float,
+        scan_speed: float,
+        layer_thickness: float,
+        hatch_spacing: Optional[float] = None,
+    ) -> float:
+        """Calculate the energy density.
+
+        This is an approximate value useful for comparison. The returned value is simply
+        the laser power divided by the build rate. See :method:`build_rate`.
+
+        Parameters
+        ----------
+        laser_power : float
+            Laser power.
+        scan_speed : float
+            Laser scan speed.
+        layer_thickness : float
+            Powder deposit layer thickness.
+        hatch_spacing : float, optional
+            Distance between hatch scan lines.
+
+        Returns
+        -------
+        float
+            The volumetric energy density if hatch spacing is provided,
+            otherwise an area energy density. If input units are W, m/s, m, m,
+            the output units are J/m^3 or J/m^2.
+
+        """
+        br = ParametricStudy.build_rate(scan_speed, layer_thickness, hatch_spacing)
+        return laser_power / br if br else float("nan")
 
     def __common_param_to_dict(
         self,
@@ -442,7 +499,7 @@ class ParametricStudy:
         for p in laser_powers:
             for v in scan_speeds:
                 for l in lt:
-                    aed = p / ParametricStudy.build_rate(v, l)
+                    aed = ParametricStudy.energy_density(p, v, l)
                     if aed < min_aed or aed > max_aed:
                         continue
 
@@ -598,7 +655,7 @@ class ParametricStudy:
                 for l in lt:
                     for h in hs:
                         br = ParametricStudy.build_rate(v, l, h)
-                        ed = p / br
+                        ed = ParametricStudy.energy_density(p, v, l, h)
                         if br < min_br or br > max_br or ed < min_ed or ed > max_ed:
                             continue
 
@@ -832,7 +889,7 @@ class ParametricStudy:
                 for l in lt:
                     for h in hs:
                         br = ParametricStudy.build_rate(v, l, h)
-                        ed = p / br
+                        ed = ParametricStudy.energy_density(p, v, l, h)
                         if br < min_br or br > max_br or ed < min_ed or ed > max_ed:
                             continue
 
