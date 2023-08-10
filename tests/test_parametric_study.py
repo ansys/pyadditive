@@ -1,4 +1,5 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
+import math
 import os
 import shutil
 import tempfile
@@ -12,6 +13,7 @@ import numpy as np
 
 from ansys.additive import (
     AdditiveMachine,
+    MachineConstants,
     MeltPoolColumnNames,
     MicrostructureInput,
     MicrostructureSummary,
@@ -76,6 +78,15 @@ def test_build_rate_calculates_correctly():
     # assert
     assert ps.ParametricStudy.build_rate(2, 3, 4) == 24
     assert ps.ParametricStudy.build_rate(2, 3) == 6
+
+
+def test_energy_density_calulcates_correctly():
+    # arrange
+    # act
+    # assert
+    assert ps.ParametricStudy.energy_density(24, 2, 3, 4) == 1
+    assert ps.ParametricStudy.energy_density(6, 2, 3) == 1
+    assert math.isnan(ps.ParametricStudy.energy_density(6, 0, 3, 4))
 
 
 def test_add_results_with_porosity_summary_adds_row():
@@ -207,7 +218,17 @@ def test_add_results_with_microstructure_summary_adds_row():
     user_data_path = os.path.join(tempfile.gettempdir(), "microstructure_summary_init")
     if not os.path.exists(user_data_path):
         os.makedirs(user_data_path)
-    input = MicrostructureInput(id="id", random_seed=123, machine=machine, material=material)
+    input = MicrostructureInput(
+        id="id",
+        machine=machine,
+        material=material,
+        random_seed=123,
+        use_provided_thermal_parameters=True,
+        cooling_rate=1.2e6,
+        thermal_gradient=3.4e6,
+        melt_pool_width=0.5e-3,
+        melt_pool_depth=0.6e-3,
+    )
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
@@ -256,9 +277,450 @@ def test_add_results_with_microstructure_summary_adds_row():
     assert row[ps.ColumnNames.MICRO_SIZE_Z] == input.sample_size_z
     assert row[ps.ColumnNames.MICRO_SENSOR_DIM] == input.sensor_dimension
     assert row[ps.ColumnNames.RANDOM_SEED] == 123
+    assert row[ps.ColumnNames.COOLING_RATE] == 1.2e6
+    assert row[ps.ColumnNames.THERMAL_GRADIENT] == 3.4e6
+    assert row[ps.ColumnNames.MICRO_MELT_POOL_WIDTH] == 0.5e-3
+    assert row[ps.ColumnNames.MICRO_MELT_POOL_DEPTH] == 0.6e-3
     assert row[ps.ColumnNames.XY_AVERAGE_GRAIN_SIZE] == summary.xy_average_grain_size
     assert row[ps.ColumnNames.XZ_AVERAGE_GRAIN_SIZE] == summary.xz_average_grain_size
     assert row[ps.ColumnNames.YZ_AVERAGE_GRAIN_SIZE] == summary.yz_average_grain_size
 
     # clean up
     shutil.rmtree(user_data_path)
+
+
+def test_generate_single_bead_permutations_creates_permutations():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    bead_length = 0.005
+    powers = [50, 250, 700]
+    scan_speeds = [0.35, 1, 2.4]
+    layer_thicknesses = [30e-6, 50e-6]
+    heater_temperatures = [80, 100]
+    beam_diameters = [2e-5]
+
+    # act
+    study.generate_single_bead_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        bead_length=bead_length,
+        layer_thicknesses=layer_thicknesses,
+        heater_temperatures=heater_temperatures,
+        beam_diameters=beam_diameters,
+    )
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 36
+    for p in powers:
+        for v in scan_speeds:
+            for l in layer_thicknesses:
+                for t in heater_temperatures:
+                    for d in beam_diameters:
+                        assert any(
+                            (df[ps.ColumnNames.PROJECT] == "test_study")
+                            & (df[ps.ColumnNames.ITERATION] == 0)
+                            & (df[ps.ColumnNames.TYPE] == ps.SimulationType.SINGLE_BEAD)
+                            & (df[ps.ColumnNames.STATUS] == ps.SimulationStatus.PENDING)
+                            & (df[ps.ColumnNames.MATERIAL] == "material")
+                            & (df[ps.ColumnNames.HEATER_TEMPERATURE] == t)
+                            & (df[ps.ColumnNames.LAYER_THICKNESS] == l)
+                            & (df[ps.ColumnNames.BEAM_DIAMETER] == d)
+                            & (df[ps.ColumnNames.LASER_POWER] == p)
+                            & (df[ps.ColumnNames.SCAN_SPEED] == v)
+                            & (df[ps.ColumnNames.START_ANGLE].isnull())
+                            & (df[ps.ColumnNames.ROTATION_ANGLE].isnull())
+                            & (df[ps.ColumnNames.HATCH_SPACING].isnull())
+                            & (df[ps.ColumnNames.STRIPE_WIDTH].isnull())
+                            & (df[ps.ColumnNames.ENERGY_DENSITY].notnull())
+                            & (df[ps.ColumnNames.BUILD_RATE].notnull())
+                            & (df[ps.ColumnNames.SINGLE_BEAD_LENGTH] == bead_length)
+                        )
+
+
+def test_generate_single_bead_permutations_filters_by_energy_density():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    powers = [50, 250, 700]
+    scan_speeds = [1]
+    layer_thicknesses = [50e-6]
+    min_energy_density = 1.1e6
+    max_energy_density = 5.1e6
+
+    # act
+    study.generate_single_bead_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        layer_thicknesses=layer_thicknesses,
+        min_area_energy_density=min_energy_density,
+        max_area_energy_density=max_energy_density,
+    )
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+    assert df.loc[0, ps.ColumnNames.LASER_POWER] == 250
+
+
+def test_generate_single_bead_permutations_only_adds_valid_permutations():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    powers = [
+        MachineConstants.MIN_LASER_POWER - 1,
+        MachineConstants.DEFAULT_LASER_POWER,
+        MachineConstants.MAX_LASER_POWER + 1,
+    ]
+    scan_speeds = [
+        MachineConstants.MIN_SCAN_SPEED - 1,
+        MachineConstants.DEFAULT_SCAN_SPEED,
+        MachineConstants.MAX_SCAN_SPEED + 1,
+    ]
+
+    # act
+    study.generate_single_bead_permutations("material", powers, scan_speeds)
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+    assert df.loc[0, ps.ColumnNames.LASER_POWER] == MachineConstants.DEFAULT_LASER_POWER
+    assert df.loc[0, ps.ColumnNames.SCAN_SPEED] == MachineConstants.DEFAULT_SCAN_SPEED
+
+
+def test_generate_porosity_permutations_creates_permutations():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    powers = [50, 250, 700]
+    scan_speeds = [0.35, 1, 2.4]
+    layer_thicknesses = [30e-6, 50e-6]
+    heater_temperatures = [80, 100]
+    beam_diameters = [2e-5]
+    start_angles = [22.5, 0]
+    rotation_angles = [30]
+    hatch_spacings = [1e-4]
+    stripe_widths = [0.05]
+    size_x = 0.001
+    size_y = 0.002
+    size_z = 0.003
+
+    # act
+    study.generate_porosity_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        size_x=size_x,
+        size_y=size_y,
+        size_z=size_z,
+        layer_thicknesses=layer_thicknesses,
+        heater_temperatures=heater_temperatures,
+        beam_diameters=beam_diameters,
+        start_angles=start_angles,
+        rotation_angles=rotation_angles,
+        hatch_spacings=hatch_spacings,
+        stripe_widths=stripe_widths,
+    )
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 72
+    for p in powers:
+        for v in scan_speeds:
+            for l in layer_thicknesses:
+                for t in heater_temperatures:
+                    for d in beam_diameters:
+                        for a in start_angles:
+                            for r in rotation_angles:
+                                for h in hatch_spacings:
+                                    for w in stripe_widths:
+                                        assert any(
+                                            (df[ps.ColumnNames.PROJECT] == "test_study")
+                                            & (df[ps.ColumnNames.ITERATION] == 0)
+                                            & (
+                                                df[ps.ColumnNames.TYPE]
+                                                == ps.SimulationType.POROSITY
+                                            )
+                                            & (
+                                                df[ps.ColumnNames.STATUS]
+                                                == ps.SimulationStatus.PENDING
+                                            )
+                                            & (df[ps.ColumnNames.MATERIAL] == "material")
+                                            & (df[ps.ColumnNames.HEATER_TEMPERATURE] == t)
+                                            & (df[ps.ColumnNames.LAYER_THICKNESS] == l)
+                                            & (df[ps.ColumnNames.BEAM_DIAMETER] == d)
+                                            & (df[ps.ColumnNames.LASER_POWER] == p)
+                                            & (df[ps.ColumnNames.SCAN_SPEED] == v)
+                                            & (df[ps.ColumnNames.START_ANGLE] == a)
+                                            & (df[ps.ColumnNames.ROTATION_ANGLE] == r)
+                                            & (df[ps.ColumnNames.HATCH_SPACING] == h)
+                                            & (df[ps.ColumnNames.STRIPE_WIDTH] == w)
+                                            & (df[ps.ColumnNames.ENERGY_DENSITY].notnull())
+                                            & (df[ps.ColumnNames.BUILD_RATE].notnull())
+                                            & (df[ps.ColumnNames.POROSITY_SIZE_X] == size_x)
+                                            & (df[ps.ColumnNames.POROSITY_SIZE_Y] == size_y)
+                                            & (df[ps.ColumnNames.POROSITY_SIZE_Z] == size_z)
+                                        )
+
+
+def test_generate_porosity_permutations_filters_by_energy_density():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    powers = [50, 250, 700]
+    scan_speeds = [1]
+    layer_thicknesses = [50e-6]
+    hatch_spacings = [1e-4]
+    min_energy_density = 1.1e10
+    max_energy_density = 5.1e10
+
+    # act
+    study.generate_porosity_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        layer_thicknesses=layer_thicknesses,
+        hatch_spacings=hatch_spacings,
+        min_energy_density=min_energy_density,
+        max_energy_density=max_energy_density,
+    )
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+    assert df.loc[0, ps.ColumnNames.LASER_POWER] == 250
+
+
+def test_generate_porosity_permutations_filters_by_build_rate():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    powers = [50]
+    scan_speeds = [1]
+    layer_thicknesses = [30e-6, 50e-6, 90e-6]
+    hatch_spacings = [1e-4]
+    min_build_rate = 31e-10
+    max_build_rate = 89e-10
+
+    # act
+    study.generate_porosity_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        layer_thicknesses=layer_thicknesses,
+        hatch_spacings=hatch_spacings,
+        min_build_rate=min_build_rate,
+        max_build_rate=max_build_rate,
+    )
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+    assert df.loc[0, ps.ColumnNames.LAYER_THICKNESS] == 50e-6
+
+
+def test_generate_porosity_permutations_only_adds_valid_permutations():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    powers = [
+        MachineConstants.MIN_LASER_POWER - 1,
+        MachineConstants.DEFAULT_LASER_POWER,
+        MachineConstants.MAX_LASER_POWER + 1,
+    ]
+    scan_speeds = [
+        MachineConstants.MIN_SCAN_SPEED - 1,
+        MachineConstants.DEFAULT_SCAN_SPEED,
+        MachineConstants.MAX_SCAN_SPEED + 1,
+    ]
+
+    # act
+    study.generate_porosity_permutations("material", powers, scan_speeds)
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+    assert df.loc[0, ps.ColumnNames.LASER_POWER] == MachineConstants.DEFAULT_LASER_POWER
+    assert df.loc[0, ps.ColumnNames.SCAN_SPEED] == MachineConstants.DEFAULT_SCAN_SPEED
+
+
+def test_generate_microstructure_permutations_creates_permutations():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    powers = [50, 250, 700]
+    scan_speeds = [0.35, 1, 2.4]
+    layer_thicknesses = [30e-6, 50e-6]
+    heater_temperatures = [80, 100]
+    beam_diameters = [2e-5]
+    start_angles = [22.5, 0]
+    rotation_angles = [30]
+    hatch_spacings = [1e-4]
+    stripe_widths = [0.05]
+    min_x = 1
+    min_y = 2
+    min_z = 3
+    size_x = 0.001
+    size_y = 0.002
+    size_z = 0.003
+    cooling_rate = MicrostructureInput.DEFAULT_COOLING_RATE
+    thermal_gradient = MicrostructureInput.DEFAULT_THERMAL_GRADIENT
+    melt_pool_width = MicrostructureInput.DEFAULT_MELT_POOL_WIDTH
+    melt_pool_depth = MicrostructureInput.DEFAULT_MELT_POOL_DEPTH
+    random_seed = 1234
+
+    # act
+    study.generate_microstructure_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        min_x=min_x,
+        min_y=min_y,
+        min_z=min_z,
+        size_x=size_x,
+        size_y=size_y,
+        size_z=size_z,
+        layer_thicknesses=layer_thicknesses,
+        heater_temperatures=heater_temperatures,
+        beam_diameters=beam_diameters,
+        start_angles=start_angles,
+        rotation_angles=rotation_angles,
+        hatch_spacings=hatch_spacings,
+        stripe_widths=stripe_widths,
+        cooling_rate=cooling_rate,
+        thermal_gradient=thermal_gradient,
+        melt_pool_width=melt_pool_width,
+        melt_pool_depth=melt_pool_depth,
+        random_seed=random_seed,
+        iteration=9,
+    )
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 72
+    for p in powers:
+        for v in scan_speeds:
+            for l in layer_thicknesses:
+                for t in heater_temperatures:
+                    for d in beam_diameters:
+                        for a in start_angles:
+                            for r in rotation_angles:
+                                for h in hatch_spacings:
+                                    for w in stripe_widths:
+                                        assert any(
+                                            (df[ps.ColumnNames.PROJECT] == "test_study")
+                                            & (df[ps.ColumnNames.ITERATION] == 9)
+                                            & (
+                                                df[ps.ColumnNames.TYPE]
+                                                == ps.SimulationType.MICROSTRUCTURE
+                                            )
+                                            & (
+                                                df[ps.ColumnNames.STATUS]
+                                                == ps.SimulationStatus.PENDING
+                                            )
+                                            & (df[ps.ColumnNames.MATERIAL] == "material")
+                                            & (df[ps.ColumnNames.HEATER_TEMPERATURE] == t)
+                                            & (df[ps.ColumnNames.LAYER_THICKNESS] == l)
+                                            & (df[ps.ColumnNames.BEAM_DIAMETER] == d)
+                                            & (df[ps.ColumnNames.LASER_POWER] == p)
+                                            & (df[ps.ColumnNames.SCAN_SPEED] == v)
+                                            & (df[ps.ColumnNames.START_ANGLE] == a)
+                                            & (df[ps.ColumnNames.ROTATION_ANGLE] == r)
+                                            & (df[ps.ColumnNames.HATCH_SPACING] == h)
+                                            & (df[ps.ColumnNames.STRIPE_WIDTH] == w)
+                                            & (df[ps.ColumnNames.ENERGY_DENSITY].notnull())
+                                            & (df[ps.ColumnNames.BUILD_RATE].notnull())
+                                            & (df[ps.ColumnNames.MICRO_MIN_X] == min_x)
+                                            & (df[ps.ColumnNames.MICRO_MIN_Y] == min_y)
+                                            & (df[ps.ColumnNames.MICRO_MIN_Z] == min_z)
+                                            & (df[ps.ColumnNames.MICRO_SIZE_X] == size_x)
+                                            & (df[ps.ColumnNames.MICRO_SIZE_Y] == size_y)
+                                            & (df[ps.ColumnNames.MICRO_SIZE_Z] == size_z)
+                                            & (df[ps.ColumnNames.COOLING_RATE] == cooling_rate)
+                                            & (
+                                                df[ps.ColumnNames.THERMAL_GRADIENT]
+                                                == thermal_gradient
+                                            )
+                                            & (
+                                                df[ps.ColumnNames.MICRO_MELT_POOL_WIDTH]
+                                                == melt_pool_width
+                                            )
+                                            & (
+                                                df[ps.ColumnNames.MICRO_MELT_POOL_DEPTH]
+                                                == melt_pool_depth
+                                            )
+                                            & (df[ps.ColumnNames.RANDOM_SEED] == random_seed)
+                                        )
+
+
+def test_generate_microstructure_permutations_filters_by_energy_density():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    powers = [50, 250, 700]
+    scan_speeds = [1]
+    layer_thicknesses = [50e-6]
+    hatch_spacings = [1e-4]
+    min_energy_density = 1.1e10
+    max_energy_density = 5.1e10
+
+    # act
+    study.generate_microstructure_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        layer_thicknesses=layer_thicknesses,
+        hatch_spacings=hatch_spacings,
+        min_energy_density=min_energy_density,
+        max_energy_density=max_energy_density,
+    )
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+    assert df.loc[0, ps.ColumnNames.LASER_POWER] == 250
+
+
+def test_generate_microstructure_permutations_filters_by_build_rate():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    powers = [50]
+    scan_speeds = [1]
+    layer_thicknesses = [30e-6, 50e-6, 90e-6]
+    hatch_spacings = [1e-4]
+    min_build_rate = 31e-10
+    max_build_rate = 89e-10
+
+    # act
+    study.generate_microstructure_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        layer_thicknesses=layer_thicknesses,
+        hatch_spacings=hatch_spacings,
+        min_build_rate=min_build_rate,
+        max_build_rate=max_build_rate,
+    )
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+    assert df.loc[0, ps.ColumnNames.LAYER_THICKNESS] == 50e-6
+
+
+def test_generate_microstructure_permutations_only_adds_valid_permutations():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    powers = [
+        MachineConstants.MIN_LASER_POWER - 1,
+        MachineConstants.DEFAULT_LASER_POWER,
+        MachineConstants.MAX_LASER_POWER + 1,
+    ]
+    scan_speeds = [
+        MachineConstants.MIN_SCAN_SPEED - 1,
+        MachineConstants.DEFAULT_SCAN_SPEED,
+        MachineConstants.MAX_SCAN_SPEED + 1,
+    ]
+
+    # act
+    study.generate_microstructure_permutations("material", powers, scan_speeds)
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+    assert df.loc[0, ps.ColumnNames.LASER_POWER] == MachineConstants.DEFAULT_LASER_POWER
+    assert df.loc[0, ps.ColumnNames.SCAN_SPEED] == MachineConstants.DEFAULT_SCAN_SPEED

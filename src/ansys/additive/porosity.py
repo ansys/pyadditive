@@ -25,19 +25,20 @@ class PorosityInput:
 
     """
 
-    __DEFAULT_CUBE_DIMENSION = 3e-3
-    __MIN_CUBE_DIMENSION = 1e-3
-    __MAX_CUBE_DIMENSION = 1e-2
+    #: Default sample size (m) in each dimension.
+    DEFAULT_SAMPLE_SIZE = 3e-3
+    __MIN_SAMPLE_SIZE = 1e-3
+    __MAX_SAMPLE_SIZE = 1e-2
 
     def __init__(
         self,
         id="",
         *,
-        size_x=__DEFAULT_CUBE_DIMENSION,
-        size_y=__DEFAULT_CUBE_DIMENSION,
-        size_z=__DEFAULT_CUBE_DIMENSION,
+        size_x=DEFAULT_SAMPLE_SIZE,
+        size_y=DEFAULT_SAMPLE_SIZE,
+        size_z=DEFAULT_SAMPLE_SIZE,
         machine=AdditiveMachine(),
-        material=AdditiveMaterial()
+        material=AdditiveMaterial(),
     ):
         self.id = id
         self.size_x = size_x
@@ -94,7 +95,7 @@ class PorosityInput:
 
     @size_x.setter
     def size_x(self, value):
-        self.__validate_range(value, self.__MIN_CUBE_DIMENSION, self.__MAX_CUBE_DIMENSION, "size_x")
+        self.__validate_range(value, self.__MIN_SAMPLE_SIZE, self.__MAX_SAMPLE_SIZE, "size_x")
         self._size_x = value
 
     @property
@@ -105,7 +106,7 @@ class PorosityInput:
 
     @size_y.setter
     def size_y(self, value):
-        self.__validate_range(value, self.__MIN_CUBE_DIMENSION, self.__MAX_CUBE_DIMENSION, "size_y")
+        self.__validate_range(value, self.__MIN_SAMPLE_SIZE, self.__MAX_SAMPLE_SIZE, "size_y")
         self._size_y = value
 
     @property
@@ -116,7 +117,7 @@ class PorosityInput:
 
     @size_z.setter
     def size_z(self, value):
-        self.__validate_range(value, self.__MIN_CUBE_DIMENSION, self.__MAX_CUBE_DIMENSION, "size_z")
+        self.__validate_range(value, self.__MIN_SAMPLE_SIZE, self.__MAX_SAMPLE_SIZE, "size_z")
         self._size_z = value
 
     def _to_simulation_request(self) -> SimulationRequest:

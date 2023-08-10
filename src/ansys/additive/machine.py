@@ -7,30 +7,39 @@ import ansys.additive.conversions as conversions
 
 
 class MachineConstants:
+    #: Default laser power in Watts.
     DEFAULT_LASER_POWER = 195
     MIN_LASER_POWER = 50
     MAX_LASER_POWER = 700
+    #: Default scan speed in m/s.
     DEFAULT_SCAN_SPEED = 1.0
     MIN_SCAN_SPEED = 0.35
     MAX_SCAN_SPEED = 2.5
+    #: Default heater temperature in degrees Celsius.
     DEFAULT_HEATER_TEMP = 80
     MIN_HEATER_TEMP = 20
     MAX_HEATER_TEMP = 500
+    #: Default layer thickness in meters.
     DEFAULT_LAYER_THICKNESS = 5e-5
     MIN_LAYER_THICKNESS = 1e-5
     MAX_LAYER_THICKNESS = 1e-4
+    #: Default beam diameter in meters.
     DEFAULT_BEAM_DIAMETER = 1e-4
     MIN_BEAM_DIAMETER = 2e-5
     MAX_BEAM_DIAMETER = 1.4e-4
+    #: Default starting layer angle in degrees.
     DEFAULT_STARTING_LAYER_ANGLE = 57
     MIN_STARTING_LAYER_ANGLE = 0
     MAX_STARTING_LAYER_ANGLE = 180
+    #: Default layer rotation angle in degrees.
     DEFAULT_LAYER_ROTATION_ANGLE = 67
     MIN_LAYER_ROTATION_ANGLE = 0
     MAX_LAYER_ROTATION_ANGLE = 180
+    #: Default hatch spacing in meters.
     DEFAULT_HATCH_SPACING = 1e-4
     MIN_HATCH_SPACING = 6e-5
     MAX_HATCH_SPACING = 2e-4
+    #: Default slicing stripe width in meters.
     DEFAULT_SLICING_STRIPE_WIDTH = 0.01
     MIN_SLICING_STRIPE_WIDTH = 0.001
     MAX_SLICING_STRIPE_WIDTH = 0.1

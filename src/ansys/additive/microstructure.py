@@ -22,33 +22,41 @@ class MicrostructureInput:
 
     """
 
-    __DEFAULT_POSITION_COORDINATE = 0
+    #: Default minimum x, y, z, position coordinate (m).
+    DEFAULT_POSITION_COORDINATE = 0
     __MIN_POSITION_COORDINATE = 0
     __MAX_POSITION_COORDINATE = 10
-    __DEFAULT_SAMPLE_SIZE = 1.5e-3
+    #: Default sample size (m) in each dimension.
+    DEFAULT_SAMPLE_SIZE = 1.5e-3
     __MIN_SAMPLE_SIZE = 0.001
     __MAX_SAMPLE_SIZE = 0.01
-    __DEFAULT_SENSOR_DIMENSION = 5e-4
+    #: Default sensor dimension (m).
+    DEFAULT_SENSOR_DIMENSION = 5e-4
     __MIN_SENSOR_DIMENSION = 1e-4
     __MAX_SENSOR_DIMENSION = 1e-3
     __MIN_XY_SIZE_CUSHION = 5e-4
     __MIN_Z_SIZE_CUSHION = 1e-3
-    __DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS = False
-    __DEFAULT_COOLING_RATE = 1e6
+    #: Default flag value indicating whether to use user provided thermal parameters.
+    DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS = False
+    #: Default cooling rate (K/s).
+    DEFAULT_COOLING_RATE = 1e6
     __MIN_COOLING_RATE = 1e5
     __MAX_COOLING_RATE = 1e7
-    __DEFAULT_THERMAL_GRADIENT = 1e7
+    #: Default thermal gradient (K/m).
+    DEFAULT_THERMAL_GRADIENT = 1e7
     __MIN_THERMAL_GRADIENT = 1e5
     __MAX_THERMAL_GRADIENT = 1e8
-    __DEFAULT_MELT_POOL_WIDTH = 1.5e-4
+    #: Default melt pool width (m).
+    DEFAULT_MELT_POOL_WIDTH = 1.5e-4
     __MIN_MELT_POOL_WIDTH = 7.5e-5
     __MAX_MELT_POOL_WIDTH = 8e-4
-    __DEFAULT_MELT_POOL_DEPTH = 1e-4
+    #: Default melt pool depth (m).
+    DEFAULT_MELT_POOL_DEPTH = 1e-4
     __MIN_MELT_POOL_DEPTH = 1.5e-5
     __MAX_MELT_POOL_DEPTH = 8e-4
-    # The default random seed is outside the range of valid seeds.
-    # It indicates that the user did not provide a seed.
-    __DEFAULT_RANDOM_SEED = 0
+    #: The default random seed is outside the range of valid seeds.
+    #: It indicates that the user did not provide a seed.
+    DEFAULT_RANDOM_SEED = 0
     __MIN_RANDOM_SEED = 1
     __MAX_RANDOM_SEED = 2**31 - 1
 
@@ -56,19 +64,19 @@ class MicrostructureInput:
         self,
         id: str = "",
         *,
-        sample_min_x: float = __DEFAULT_POSITION_COORDINATE,
-        sample_min_y: float = __DEFAULT_POSITION_COORDINATE,
-        sample_min_z: float = __DEFAULT_POSITION_COORDINATE,
-        sample_size_x: float = __DEFAULT_SAMPLE_SIZE,
-        sample_size_y: float = __DEFAULT_SAMPLE_SIZE,
-        sample_size_z: float = __DEFAULT_SAMPLE_SIZE,
-        sensor_dimension: float = __DEFAULT_SENSOR_DIMENSION,
-        use_provided_thermal_parameters: bool = __DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS,
-        cooling_rate: float = __DEFAULT_COOLING_RATE,
-        thermal_gradient: float = __DEFAULT_THERMAL_GRADIENT,
-        melt_pool_width: float = __DEFAULT_MELT_POOL_WIDTH,
-        melt_pool_depth: float = __DEFAULT_MELT_POOL_DEPTH,
-        random_seed: int = __DEFAULT_RANDOM_SEED,
+        sample_min_x: float = DEFAULT_POSITION_COORDINATE,
+        sample_min_y: float = DEFAULT_POSITION_COORDINATE,
+        sample_min_z: float = DEFAULT_POSITION_COORDINATE,
+        sample_size_x: float = DEFAULT_SAMPLE_SIZE,
+        sample_size_y: float = DEFAULT_SAMPLE_SIZE,
+        sample_size_z: float = DEFAULT_SAMPLE_SIZE,
+        sensor_dimension: float = DEFAULT_SENSOR_DIMENSION,
+        use_provided_thermal_parameters: bool = DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS,
+        cooling_rate: float = DEFAULT_COOLING_RATE,
+        thermal_gradient: float = DEFAULT_THERMAL_GRADIENT,
+        melt_pool_width: float = DEFAULT_MELT_POOL_WIDTH,
+        melt_pool_depth: float = DEFAULT_MELT_POOL_DEPTH,
+        random_seed: int = DEFAULT_RANDOM_SEED,
         machine: AdditiveMachine = AdditiveMachine(),
         material: AdditiveMaterial = AdditiveMaterial(),
     ):
@@ -106,7 +114,7 @@ class MicrostructureInput:
         self.melt_pool_depth = melt_pool_depth
         self.machine = machine
         self.material = material
-        if random_seed != self.__DEFAULT_RANDOM_SEED:
+        if random_seed != self.DEFAULT_RANDOM_SEED:
             self.random_seed = random_seed
         else:
             self._random_seed = random_seed
@@ -368,7 +376,7 @@ class MicrostructureInput:
             thermal_gradient=self.thermal_gradient,
             melt_pool_width=self.melt_pool_width,
             melt_pool_depth=self.melt_pool_depth,
-            use_random_seed=(self.random_seed != self.__DEFAULT_RANDOM_SEED),
+            use_random_seed=(self.random_seed != self.DEFAULT_RANDOM_SEED),
             random_seed=self.random_seed,
         )
         return SimulationRequest(id=self.id, microstructure_input=input)

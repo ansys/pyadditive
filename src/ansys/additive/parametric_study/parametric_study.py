@@ -6,9 +6,15 @@ import numpy as np
 import pandas as pd
 
 from ansys.additive import (
+    AdditiveMachine,
+    AdditiveMaterial,
+    MachineConstants,
     MeltPoolColumnNames,
+    MicrostructureInput,
     MicrostructureSummary,
+    PorosityInput,
     PorositySummary,
+    SingleBeadInput,
     SingleBeadSummary,
 )
 
@@ -32,7 +38,7 @@ class SimulationStatus:
     #: Simulation was executed.
     COMPLETED = "completed"
     #: Simulation failed.
-    FAILURE = "failure"
+    FAILED = "failed"
     #: Do not execute this simulation.
     SKIP = "skip"
 
@@ -118,8 +124,15 @@ class ColumnNames:
     MICRO_SIZE_Z = "micro_size_z"
     #: Sensor dimension used in microstructure simulations (m).
     MICRO_SENSOR_DIM = "micro_sensor_dim"
+    #: User provided cooling rate used in microstructure simulations (°K/s).
+    COOLING_RATE = "cooling_rate"
+    #: User provided thermal gradient used in microstructure simulations (°K/m).
+    THERMAL_GRADIENT = "thermal_gradient"
+    #: User provided melt pool width used in microstructure simulation (m).
+    MICRO_MELT_POOL_WIDTH = "micro_melt_pool_width"
+    #: User provided melt pool depth used in microstructure simulation (m).
+    MICRO_MELT_POOL_DEPTH = "micro_melt_pool_depth"
     #: User provided random seed used in microstructure simulation.
-    #: May be NAN if random seed was not provided.
     RANDOM_SEED = "random_seed"
     #: Average microstructure grain size in the XY plane (microns).
     XY_AVERAGE_GRAIN_SIZE = "xy_average_grain_size"
@@ -227,12 +240,17 @@ class ParametricStudy:
         br = ParametricStudy.build_rate(
             summary.input.machine.scan_speed, summary.input.machine.layer_thickness
         )
+        ed = ParametricStudy.energy_density(
+            summary.input.machine.laser_power,
+            summary.input.machine.scan_speed,
+            summary.input.machine.layer_thickness,
+        )
         row = pd.Series(
             {
                 **self.__common_param_to_dict(summary, iteration),
                 ColumnNames.TYPE: SimulationType.SINGLE_BEAD,
                 ColumnNames.BUILD_RATE: br,
-                ColumnNames.ENERGY_DENSITY: summary.input.machine.laser_power / br,
+                ColumnNames.ENERGY_DENSITY: ed,
                 ColumnNames.SINGLE_BEAD_LENGTH: summary.input.bead_length,
                 ColumnNames.MELT_POOL_WIDTH: median_mp[MeltPoolColumnNames.WIDTH],
                 ColumnNames.MELT_POOL_DEPTH: median_mp[MeltPoolColumnNames.DEPTH],
@@ -255,12 +273,18 @@ class ParametricStudy:
             summary.input.machine.layer_thickness,
             summary.input.machine.hatch_spacing,
         )
+        ed = ParametricStudy.energy_density(
+            summary.input.machine.laser_power,
+            summary.input.machine.scan_speed,
+            summary.input.machine.layer_thickness,
+            summary.input.machine.hatch_spacing,
+        )
         row = pd.Series(
             {
                 **self.__common_param_to_dict(summary, iteration),
                 ColumnNames.TYPE: SimulationType.POROSITY,
                 ColumnNames.BUILD_RATE: br,
-                ColumnNames.ENERGY_DENSITY: summary.input.machine.laser_power / br,
+                ColumnNames.ENERGY_DENSITY: ed,
                 ColumnNames.POROSITY_SIZE_X: summary.input.size_x,
                 ColumnNames.POROSITY_SIZE_Y: summary.input.size_y,
                 ColumnNames.POROSITY_SIZE_Z: summary.input.size_z,
@@ -275,13 +299,26 @@ class ParametricStudy:
             summary.input.machine.layer_thickness,
             summary.input.machine.hatch_spacing,
         )
+        ed = ParametricStudy.energy_density(
+            summary.input.machine.laser_power,
+            summary.input.machine.scan_speed,
+            summary.input.machine.layer_thickness,
+            summary.input.machine.hatch_spacing,
+        )
         random_seed = summary.input.random_seed if summary.input.random_seed > 0 else np.nan
+        cooling_rate = thermal_gradient = melt_pool_width = melt_pool_depth = np.nan
+        if summary.input.use_provided_thermal_parameters:
+            cooling_rate = summary.input.cooling_rate
+            thermal_gradient = summary.input.thermal_gradient
+            melt_pool_width = summary.input.melt_pool_width
+            melt_pool_depth = summary.input.melt_pool_depth
+
         row = pd.Series(
             {
                 **self.__common_param_to_dict(summary, iteration),
                 ColumnNames.TYPE: SimulationType.MICROSTRUCTURE,
                 ColumnNames.BUILD_RATE: br,
-                ColumnNames.ENERGY_DENSITY: summary.input.machine.laser_power / br,
+                ColumnNames.ENERGY_DENSITY: ed,
                 ColumnNames.MICRO_SENSOR_DIM: summary.input.sensor_dimension,
                 ColumnNames.MICRO_MIN_X: summary.input.sample_min_x,
                 ColumnNames.MICRO_MIN_Y: summary.input.sample_min_y,
@@ -289,6 +326,10 @@ class ParametricStudy:
                 ColumnNames.MICRO_SIZE_X: summary.input.sample_size_x,
                 ColumnNames.MICRO_SIZE_Y: summary.input.sample_size_y,
                 ColumnNames.MICRO_SIZE_Z: summary.input.sample_size_z,
+                ColumnNames.COOLING_RATE: cooling_rate,
+                ColumnNames.THERMAL_GRADIENT: thermal_gradient,
+                ColumnNames.MICRO_MELT_POOL_WIDTH: melt_pool_width,
+                ColumnNames.MICRO_MELT_POOL_DEPTH: melt_pool_depth,
                 ColumnNames.RANDOM_SEED: random_seed,
                 ColumnNames.XY_AVERAGE_GRAIN_SIZE: summary.xy_average_grain_size,
                 ColumnNames.XZ_AVERAGE_GRAIN_SIZE: summary.xz_average_grain_size,
@@ -298,17 +339,23 @@ class ParametricStudy:
         self._data_frame = pd.concat([self._data_frame, row.to_frame().T], ignore_index=True)
 
     @staticmethod
-    def build_rate(v: float, lt: float, hs: Optional[float] = None) -> float:
+    def build_rate(
+        scan_speed: float, layer_thickness: float, hatch_spacing: Optional[float] = None
+    ) -> float:
         """Calculate the build rate.
+
+        This is an approximate value useful for comparison but not for an accurate prediction
+        of build time. The returned value is simply the product of the scan speed, layer thickness,
+        and hatch spacing (if provided).
 
         Parameters
         ----------
-        v : float
-            Scan speed.
-        lt : float
-            Layer thickness.
-        hs : float, optional
-            Hatch spacing.
+        scan_speed : float
+            Laser scan speed.
+        layer_thickness : float
+            Powder deposit layer thickness.
+        hatch_spacing : float, optional
+            Distance between hatch scan lines.
 
         Returns
         -------
@@ -318,9 +365,43 @@ class ParametricStudy:
             the output units are m^3/s or m^2/s.
 
         """
-        if hs is None:
-            return v * lt
-        return v * lt * hs
+        if hatch_spacing is None:
+            return scan_speed * layer_thickness
+        return scan_speed * layer_thickness * hatch_spacing
+
+    @staticmethod
+    def energy_density(
+        laser_power: float,
+        scan_speed: float,
+        layer_thickness: float,
+        hatch_spacing: Optional[float] = None,
+    ) -> float:
+        """Calculate the energy density.
+
+        This is an approximate value useful for comparison. The returned value is simply
+        the laser power divided by the build rate. See :method:`build_rate`.
+
+        Parameters
+        ----------
+        laser_power : float
+            Laser power.
+        scan_speed : float
+            Laser scan speed.
+        layer_thickness : float
+            Powder deposit layer thickness.
+        hatch_spacing : float, optional
+            Distance between hatch scan lines.
+
+        Returns
+        -------
+        float
+            The volumetric energy density if hatch spacing is provided,
+            otherwise an area energy density. If input units are W, m/s, m, m,
+            the output units are J/m^3 or J/m^2.
+
+        """
+        br = ParametricStudy.build_rate(scan_speed, layer_thickness, hatch_spacing)
+        return laser_power / br if br else float("nan")
 
     def __common_param_to_dict(
         self,
@@ -359,3 +440,538 @@ class ParametricStudy:
             ColumnNames.ROTATION_ANGLE: summary.input.machine.layer_rotation_angle,
             ColumnNames.STRIPE_WIDTH: summary.input.machine.slicing_stripe_width,
         }
+
+    def generate_single_bead_permutations(
+        self,
+        material_name: str,
+        laser_powers: List[float],
+        scan_speeds: List[float],
+        bead_length: float = SingleBeadInput.DEFAULT_BEAD_LENGTH,
+        layer_thicknesses: Optional[List[float]] = None,
+        heater_temperatures: Optional[List[float]] = None,
+        beam_diameters: Optional[List[float]] = None,
+        min_area_energy_density: Optional[float] = None,
+        max_area_energy_density: Optional[float] = None,
+        iteration: int = 0,
+    ):
+        """Add single bead permutations to the parametric study.
+
+        Parameters
+        ----------
+        material_name : str
+            The material name.
+        laser_powers : List[float]
+            Laser powers (W) to use for single bead simulations.
+        scan_speeds : List[float]
+            Scan speeds (m/s) to use for single bead simulations.
+        bead_length : float, optional
+            The length of the bead (m).
+        layer_thicknesses : Optional[List[float]]
+            Layer thicknesses (m) to use for single bead simulations.
+            If None, ``MachineConstants.DEFAULT_LAYER_THICKNESS`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        heater_temperatures : Optional[List[float]]
+            Heater temperatures (C) to use for single bead simulations.
+            If None, ``MachineConstants.DEFAULT_HEATER_TEMP`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        beam_diameters : Optional[List[float]]
+            Beam diameters (m) to use for single bead simulations.
+            If None, ``MachineConstants.DEFAULT_BEAM_DIAMETER`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        min_area_energy_density : Optional[float]
+            The minimum area energy density (J/m^2) to use for single bead simulations.
+            Parameter combinations with an area energy density below this value will
+            not be included.
+            Area energy density is defined as laser power / (layer thickness * scan speed).
+        max_area_energy_density : Optional[float]
+            The maximum area energy density (J/m^2) to use for single bead simulations.
+            Parameter combinations with an area energy density above this value will
+            not be included.
+            Area energy density is defined as laser power / (layer thickness * scan speed).
+        iteration : int, optional
+            The iteration number for this set of simulations.
+        """
+        lt = layer_thicknesses or [MachineConstants.DEFAULT_LAYER_THICKNESS]
+        bd = beam_diameters or [MachineConstants.DEFAULT_BEAM_DIAMETER]
+        ht = heater_temperatures or [MachineConstants.DEFAULT_HEATER_TEMP]
+        min_aed = min_area_energy_density or 0.0
+        max_aed = max_area_energy_density or float("inf")
+        for p in laser_powers:
+            for v in scan_speeds:
+                for l in lt:
+                    aed = ParametricStudy.energy_density(p, v, l)
+                    if aed < min_aed or aed > max_aed:
+                        continue
+
+                    for t in ht:
+                        for d in bd:
+                            # validate parameters by trying to create input objects
+                            try:
+                                machine = AdditiveMachine(
+                                    laser_power=p,
+                                    scan_speed=v,
+                                    heater_temperature=t,
+                                    layer_thickness=l,
+                                    beam_diameter=d,
+                                )
+                                sb_input = SingleBeadInput(
+                                    bead_length=bead_length,
+                                    machine=machine,
+                                    material=AdditiveMaterial(),
+                                )
+                            except ValueError as e:
+                                print(f"Invalid parameter combination: {e}")
+                                continue
+
+                            # add row to parametric study data frame
+                            row = pd.Series(
+                                {
+                                    ColumnNames.PROJECT: self.project_name,
+                                    ColumnNames.ITERATION: iteration,
+                                    ColumnNames.TYPE: SimulationType.SINGLE_BEAD,
+                                    ColumnNames.ID: f"sb_{iteration}_{sb_input.id}",
+                                    ColumnNames.STATUS: SimulationStatus.PENDING,
+                                    ColumnNames.MATERIAL: material_name,
+                                    ColumnNames.HEATER_TEMPERATURE: t,
+                                    ColumnNames.LAYER_THICKNESS: l,
+                                    ColumnNames.BEAM_DIAMETER: d,
+                                    ColumnNames.LASER_POWER: p,
+                                    ColumnNames.SCAN_SPEED: v,
+                                    ColumnNames.ENERGY_DENSITY: aed,
+                                    ColumnNames.BUILD_RATE: ParametricStudy.build_rate(v, l),
+                                    ColumnNames.SINGLE_BEAD_LENGTH: bead_length,
+                                }
+                            )
+                            self._data_frame = pd.concat(
+                                [self._data_frame, row.to_frame().T], ignore_index=True
+                            )
+
+    def generate_porosity_permutations(
+        self,
+        material_name: str,
+        laser_powers: List[float],
+        scan_speeds: List[float],
+        size_x: float = PorosityInput.DEFAULT_SAMPLE_SIZE,
+        size_y: float = PorosityInput.DEFAULT_SAMPLE_SIZE,
+        size_z: float = PorosityInput.DEFAULT_SAMPLE_SIZE,
+        layer_thicknesses: Optional[List[float]] = None,
+        heater_temperatures: Optional[List[float]] = None,
+        beam_diameters: Optional[List[float]] = None,
+        start_angles: Optional[List[float]] = None,
+        rotation_angles: Optional[List[float]] = None,
+        hatch_spacings: Optional[List[float]] = None,
+        stripe_widths: Optional[List[float]] = None,
+        min_energy_density: Optional[float] = None,
+        max_energy_density: Optional[float] = None,
+        min_build_rate: Optional[float] = None,
+        max_build_rate: Optional[float] = None,
+        iteration: int = 0,
+    ):
+        """Add porosity permutations to the parametric study.
+
+        Parameters
+        ----------
+        material_name : str
+            The material name.
+        laser_powers : List[float]
+            Laser powers (W) to use for porosity simulations.
+        scan_speeds : List[float]
+            Scan speeds (m/s) to use for porosity simulations.
+        size_x : float, optional
+            The size (m) of the porosity sample in the x direction.
+            Valid values are between 0.001 and 0.01.
+        size_y : float, optional
+            The size (m) of the porosity sample in the y direction.
+            Valid values are between 0.001 and 0.01.
+        size_z : float, optional
+            The size (m) of the porosity sample in the z direction.
+            Valid values are between 0.001 and 0.01.
+        layer_thicknesses : Optional[List[float]]
+            Layer thicknesses (m) to use for porosity simulations.
+            If None, ``MachineConstants.DEFAULT_LAYER_THICKNESS`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        heater_temperatures : Optional[List[float]]
+            Heater temperatures (C) to use for porosity simulations.
+            If None, ``MachineConstants.DEFAULT_HEATER_TEMP`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        beam_diameters : Optional[List[float]]
+            Beam diameters (m) to use for porosity simulations.
+            If None, ``MachineConstants.DEFAULT_BEAM_DIAMETER`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        start_angles : Optional[List[float]]
+            Scan angles (deg) for the first layer to use for porosity simulations.
+            If None, ``MachineConstants.DEFAULT_STARTING_LAYER_ANGLE`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        rotation_angles : Optional[List[float]]
+            Angles (deg) by which the scan direction is rotated with each layer
+            to use for porosity simulations.
+            If None, ``MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        hatch_spacings : Optional[List[float]]
+            Hatch spacings (m) to use for porosity simulations.
+            If None, ``MachineConstants.DEFAULT_HATCH_SPACING`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        stripe_widths : Optional[List[float]]
+            Stripe widths (m) to use for porosity simulations.
+            If None, ``MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        min_energy_density : Optional[float]
+            The minimum energy density (J/m^3) to use for porosity simulations.
+            Parameter combinations with an area energy density below this value will
+            not be included.
+            Area energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
+        max_energy_density : Optional[float]
+            The maximum energy density (J/m^3) to use for porosity simulations.
+            Parameter combinations with an area energy density above this value will
+            not be included.
+            Energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
+        min_build_rate : Optional[float]
+            The minimum build rate (m^3/s) to use for porosity simulations.
+            Parameter combinations with a build rate below this value will
+            not be included.
+            Build rate is defined as layer thickness * scan speed * hatch spacing.
+        max_build_rate : Optional[float]
+            The maximum build rate (m^3/s) to use for porosity simulations.
+            Parameter combinations with a build rate above this value will
+            not be included.
+            Build rate is defined as layer thickness * scan speed * hatch spacing.
+        iteration : int, optional
+            The iteration number for this set of simulations.
+
+        """
+        lt = layer_thicknesses or [MachineConstants.DEFAULT_LAYER_THICKNESS]
+        bd = beam_diameters or [MachineConstants.DEFAULT_BEAM_DIAMETER]
+        ht = heater_temperatures or [MachineConstants.DEFAULT_HEATER_TEMP]
+        sa = start_angles or [MachineConstants.DEFAULT_STARTING_LAYER_ANGLE]
+        ra = rotation_angles or [MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE]
+        hs = hatch_spacings or [MachineConstants.DEFAULT_HATCH_SPACING]
+        sw = stripe_widths or [MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH]
+        min_ed = min_energy_density or 0.0
+        max_ed = max_energy_density or float("inf")
+        min_br = min_build_rate or 0.0
+        max_br = max_build_rate or float("inf")
+        for p in laser_powers:
+            for v in scan_speeds:
+                for l in lt:
+                    for h in hs:
+                        br = ParametricStudy.build_rate(v, l, h)
+                        ed = ParametricStudy.energy_density(p, v, l, h)
+                        if br < min_br or br > max_br or ed < min_ed or ed > max_ed:
+                            continue
+
+                        for t in ht:
+                            for d in bd:
+                                for a in sa:
+                                    for r in ra:
+                                        for w in sw:
+                                            # validate parameters by trying to create input objects
+                                            try:
+                                                machine = AdditiveMachine(
+                                                    laser_power=p,
+                                                    scan_speed=v,
+                                                    heater_temperature=t,
+                                                    layer_thickness=l,
+                                                    beam_diameter=d,
+                                                    starting_layer_angle=a,
+                                                    layer_rotation_angle=r,
+                                                    hatch_spacing=h,
+                                                    slicing_stripe_width=w,
+                                                )
+                                                input = PorosityInput(
+                                                    size_x=size_x,
+                                                    size_y=size_y,
+                                                    size_z=size_z,
+                                                    machine=machine,
+                                                    material=AdditiveMaterial(),
+                                                )
+                                            except ValueError as e:
+                                                print(f"Invalid parameter combination: {e}")
+                                                continue
+
+                                            # add row to parametric study data frame
+                                            row = pd.Series(
+                                                {
+                                                    ColumnNames.PROJECT: self.project_name,
+                                                    ColumnNames.ITERATION: iteration,
+                                                    ColumnNames.TYPE: SimulationType.POROSITY,
+                                                    ColumnNames.ID: f"por_{iteration}_{input.id}",
+                                                    ColumnNames.STATUS: SimulationStatus.PENDING,
+                                                    ColumnNames.MATERIAL: material_name,
+                                                    ColumnNames.HEATER_TEMPERATURE: t,
+                                                    ColumnNames.LAYER_THICKNESS: l,
+                                                    ColumnNames.BEAM_DIAMETER: d,
+                                                    ColumnNames.LASER_POWER: p,
+                                                    ColumnNames.SCAN_SPEED: v,
+                                                    ColumnNames.START_ANGLE: a,
+                                                    ColumnNames.ROTATION_ANGLE: r,
+                                                    ColumnNames.HATCH_SPACING: h,
+                                                    ColumnNames.STRIPE_WIDTH: w,
+                                                    ColumnNames.ENERGY_DENSITY: ed,
+                                                    ColumnNames.BUILD_RATE: br,
+                                                    ColumnNames.POROSITY_SIZE_X: size_x,
+                                                    ColumnNames.POROSITY_SIZE_Y: size_y,
+                                                    ColumnNames.POROSITY_SIZE_Z: size_z,
+                                                }
+                                            )
+                                            self._data_frame = pd.concat(
+                                                [self._data_frame, row.to_frame().T],
+                                                ignore_index=True,
+                                            )
+
+    def generate_microstructure_permutations(
+        self,
+        material_name: str,
+        laser_powers: List[float],
+        scan_speeds: List[float],
+        min_x: float = MicrostructureInput.DEFAULT_POSITION_COORDINATE,
+        min_y: float = MicrostructureInput.DEFAULT_POSITION_COORDINATE,
+        min_z: float = MicrostructureInput.DEFAULT_POSITION_COORDINATE,
+        size_x: float = MicrostructureInput.DEFAULT_SAMPLE_SIZE,
+        size_y: float = MicrostructureInput.DEFAULT_SAMPLE_SIZE,
+        size_z: float = MicrostructureInput.DEFAULT_SAMPLE_SIZE,
+        sensor_dimension: float = MicrostructureInput.DEFAULT_SENSOR_DIMENSION,
+        layer_thicknesses: Optional[List[float]] = None,
+        heater_temperatures: Optional[List[float]] = None,
+        beam_diameters: Optional[List[float]] = None,
+        start_angles: Optional[List[float]] = None,
+        rotation_angles: Optional[List[float]] = None,
+        hatch_spacings: Optional[List[float]] = None,
+        stripe_widths: Optional[List[float]] = None,
+        min_energy_density: Optional[float] = None,
+        max_energy_density: Optional[float] = None,
+        min_build_rate: Optional[float] = None,
+        max_build_rate: Optional[float] = None,
+        cooling_rate: Optional[float] = None,
+        thermal_gradient: Optional[float] = None,
+        melt_pool_width: Optional[float] = None,
+        melt_pool_depth: Optional[float] = None,
+        random_seed: Optional[int] = None,
+        iteration: int = 0,
+    ):
+        """Add microstructure permutations to the parametric study.
+
+        Parameters
+        ----------
+        material_name : str
+            The material name.
+        laser_powers : List[float]
+            Laser powers (W) to use for microstructure simulations.
+        scan_speeds : List[float]
+            Scan speeds (m/s) to use for microstructure simulations.
+        min_x : float, optional
+            The minimum x coordinate (m) of the microstructure sample.
+        min_y : float, optional
+            The minimum y coordinate (m) of the microstructure sample.
+        min_z : float, optional
+            The minimum z coordinate (m) of the microstructure sample.
+        size_x : float, optional
+            The size (m) of the microstructure sample in the x direction.
+            Valid values are between 0.001 and 0.01.
+        size_y : float, optional
+            The size (m) of the microstructure sample in the y direction.
+            Valid values are between 0.001 and 0.01.
+        size_z : float, optional
+            The size (m) of the microstructure sample in the z direction.
+            Valid values are between 0.001 and 0.01.
+        sensor_dimension : float, optional
+            The sensor dimension (m) to use for microstructure simulations.
+            Valid values are between 0.0001 and 0.001.
+            ``size_x`` and ``size_y`` must be greater than ``sensor_dimension`` by 0.0005.
+            ``size_z`` must be greater than ``sensor_dimension`` by 0.001.
+        layer_thicknesses : Optional[List[float]]
+            Layer thicknesses (m) to use for microstructure simulations.
+            If None, ``MachineConstants.DEFAULT_LAYER_THICKNESS`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        heater_temperatures : Optional[List[float]]
+            Heater temperatures (C) to use for microstructure simulations.
+            If None, ``MachineConstants.DEFAULT_HEATER_TEMP`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        beam_diameters : Optional[List[float]]
+            Beam diameters (m) to use for microstructure simulations.
+            If None, ``MachineConstants.DEFAULT_BEAM_DIAMETER`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        start_angles : Optional[List[float]]
+            Scan angles (deg) for the first layer to use for microstructure simulations.
+            If None, ``MachineConstants.DEFAULT_STARTING_LAYER_ANGLE`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        rotation_angles : Optional[List[float]]
+            Angles (deg) by which the scan direction is rotated with each layer
+            to use for microstructure simulations.
+            If None, ``MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        hatch_spacings : Optional[List[float]]
+            Hatch spacings (m) to use for microstructure simulations.
+            If None, ``MachineConstants.DEFAULT_HATCH_SPACING`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        stripe_widths : Optional[List[float]]
+            Stripe widths (m) to use for microstructure simulations.
+            If None, ``MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH`` is used.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        min_energy_density : Optional[float]
+            The minimum energy density (J/m^3) to use for microstructure simulations.
+            Parameter combinations with an area energy density below this value will
+            not be included.
+            Area energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
+        max_energy_density : Optional[float]
+            The maximum energy density (J/m^3) to use for microstructure simulations.
+            Parameter combinations with an area energy density above this value will
+            not be included.
+            Energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
+        min_build_rate : Optional[float]
+            The minimum build rate (m^3/s) to use for microstructure simulations.
+            Parameter combinations with a build rate below this value will
+            not be included.
+            Build rate is defined as layer thickness * scan speed * hatch spacing.
+        max_build_rate : Optional[float]
+            The maximum build rate (m^3/s) to use for microstructure simulations.
+            Parameter combinations with a build rate above this value will
+            not be included.
+            Build rate is defined as layer thickness * scan speed * hatch spacing.
+        cooling_rate : Optional[float]
+            The cooling rate (K/s) to use for microstructure simulations.
+            If None, and ``thermal_gradient``, ``melt_pool_width``, and ``melt_pool_depth``
+            are None, it will be calculated. If None and any of the other three parameters
+            are not None, it will be set to ``MachineConstants.DEFAULT_COOLING_RATE``.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        thermal_gradient : Optional[float]
+            The thermal gradient (K/m) to use for microstructure simulations.
+            If None, and ``cooling_rate``, ``melt_pool_width``, and ``melt_pool_depth``
+            are None, it will be calculated. If None and any of the other three parameters
+            are not None, it will be set to ``MachineConstants.DEFAULT_THERMAL_GRADIENT``.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        melt_pool_width : Optional[float]
+            The melt pool width (m) to use for microstructure simulations.
+            If None, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_depth``
+            are None, it will be calculated. If None and any of the other three parameters
+            are not None, it will be set to ``MachineConstants.DEFAULT_MELT_POOL_WIDTH``.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        melt_pool_depth : Optional[float]
+            The melt pool depth (m) to use for microstructure simulations.
+            If None, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_width``
+            are None, it will be calculated. If None and any of the other three parameters
+            are not None, it will be set to ``MachineConstants.DEFAULT_MELT_POOL_DEPTH``.
+            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+        random_seed : Optional[int]
+            The random seed to use for microstructure simulations. If None,
+            an automatically generated random seed will be used.
+            Valid values are between 1 and 2^31 - 1.
+        iteration : int, optional
+            The iteration number for this set of simulations.
+
+        """
+        lt = layer_thicknesses or [MachineConstants.DEFAULT_LAYER_THICKNESS]
+        bd = beam_diameters or [MachineConstants.DEFAULT_BEAM_DIAMETER]
+        ht = heater_temperatures or [MachineConstants.DEFAULT_HEATER_TEMP]
+        sa = start_angles or [MachineConstants.DEFAULT_STARTING_LAYER_ANGLE]
+        ra = rotation_angles or [MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE]
+        hs = hatch_spacings or [MachineConstants.DEFAULT_HATCH_SPACING]
+        sw = stripe_widths or [MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH]
+        min_ed = min_energy_density or 0.0
+        max_ed = max_energy_density or float("inf")
+        min_br = min_build_rate or 0.0
+        max_br = max_build_rate or float("inf")
+        # determine if the user provided thermal parameters
+        use_thermal_params = (
+            (cooling_rate is not None)
+            or (thermal_gradient is not None)
+            or (melt_pool_width is not None)
+            or (melt_pool_depth is not None)
+        )
+        if use_thermal_params:
+            # set any uninitialized thermal parameters to default values
+            cooling_rate = cooling_rate or MachineConstants.DEFAULT_COOLING_RATE
+            thermal_gradient = thermal_gradient or MachineConstants.DEFAULT_THERMAL_GRADIENT
+            melt_pool_width = melt_pool_width or MachineConstants.DEFAULT_MELT_POOL_WIDTH
+            melt_pool_depth = melt_pool_depth or MachineConstants.DEFAULT_MELT_POOL_DEPTH
+
+        for p in laser_powers:
+            for v in scan_speeds:
+                for l in lt:
+                    for h in hs:
+                        br = ParametricStudy.build_rate(v, l, h)
+                        ed = ParametricStudy.energy_density(p, v, l, h)
+                        if br < min_br or br > max_br or ed < min_ed or ed > max_ed:
+                            continue
+
+                        for t in ht:
+                            for d in bd:
+                                for a in sa:
+                                    for r in ra:
+                                        for w in sw:
+                                            # validate parameters by trying to create input objects
+                                            try:
+                                                machine = AdditiveMachine(
+                                                    laser_power=p,
+                                                    scan_speed=v,
+                                                    heater_temperature=t,
+                                                    layer_thickness=l,
+                                                    beam_diameter=d,
+                                                    starting_layer_angle=a,
+                                                    layer_rotation_angle=r,
+                                                    hatch_spacing=h,
+                                                    slicing_stripe_width=w,
+                                                )
+                                                input = MicrostructureInput(
+                                                    sample_min_x=min_x,
+                                                    sample_min_y=min_y,
+                                                    sample_min_z=min_z,
+                                                    sample_size_x=size_x,
+                                                    sample_size_y=size_y,
+                                                    sample_size_z=size_z,
+                                                    sensor_dimension=sensor_dimension,
+                                                    use_provided_thermal_parameters=use_thermal_params,
+                                                    cooling_rate=cooling_rate
+                                                    or MicrostructureInput.DEFAULT_COOLING_RATE,
+                                                    thermal_gradient=thermal_gradient
+                                                    or MicrostructureInput.DEFAULT_THERMAL_GRADIENT,
+                                                    melt_pool_width=melt_pool_width
+                                                    or MicrostructureInput.DEFAULT_MELT_POOL_WIDTH,
+                                                    melt_pool_depth=melt_pool_depth
+                                                    or MicrostructureInput.DEFAULT_MELT_POOL_DEPTH,
+                                                    random_seed=random_seed
+                                                    or MicrostructureInput.DEFAULT_RANDOM_SEED,
+                                                    machine=machine,
+                                                    material=AdditiveMaterial(),
+                                                )
+                                            except ValueError as e:
+                                                print(f"Invalid parameter combination: {e}")
+                                                continue
+
+                                            # add row to parametric study data frame
+                                            row = pd.Series(
+                                                {
+                                                    ColumnNames.PROJECT: self.project_name,
+                                                    ColumnNames.ITERATION: iteration,
+                                                    ColumnNames.TYPE: SimulationType.MICROSTRUCTURE,
+                                                    ColumnNames.ID: f"micro_{iteration}_{input.id}",
+                                                    ColumnNames.STATUS: SimulationStatus.PENDING,
+                                                    ColumnNames.MATERIAL: material_name,
+                                                    ColumnNames.HEATER_TEMPERATURE: t,
+                                                    ColumnNames.LAYER_THICKNESS: l,
+                                                    ColumnNames.BEAM_DIAMETER: d,
+                                                    ColumnNames.LASER_POWER: p,
+                                                    ColumnNames.SCAN_SPEED: v,
+                                                    ColumnNames.START_ANGLE: a,
+                                                    ColumnNames.ROTATION_ANGLE: r,
+                                                    ColumnNames.HATCH_SPACING: h,
+                                                    ColumnNames.STRIPE_WIDTH: w,
+                                                    ColumnNames.ENERGY_DENSITY: ed,
+                                                    ColumnNames.BUILD_RATE: br,
+                                                    ColumnNames.MICRO_MIN_X: min_x,
+                                                    ColumnNames.MICRO_MIN_Y: min_y,
+                                                    ColumnNames.MICRO_MIN_Z: min_z,
+                                                    ColumnNames.MICRO_SIZE_X: size_x,
+                                                    ColumnNames.MICRO_SIZE_Y: size_y,
+                                                    ColumnNames.MICRO_SIZE_Z: size_z,
+                                                    ColumnNames.MICRO_SENSOR_DIM: sensor_dimension,
+                                                    ColumnNames.COOLING_RATE: cooling_rate,
+                                                    ColumnNames.THERMAL_GRADIENT: thermal_gradient,
+                                                    ColumnNames.MICRO_MELT_POOL_WIDTH: melt_pool_width,
+                                                    ColumnNames.MICRO_MELT_POOL_DEPTH: melt_pool_depth,
+                                                    ColumnNames.RANDOM_SEED: random_seed,
+                                                }
+                                            )
+                                            self._data_frame = pd.concat(
+                                                [self._data_frame, row.to_frame().T],
+                                                ignore_index=True,
+                                            )
