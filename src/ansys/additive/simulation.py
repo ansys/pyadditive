@@ -46,3 +46,5 @@ class SimulationError:
     def message(self) -> str:
         """Simulation error message."""
         return self._message
+
+
