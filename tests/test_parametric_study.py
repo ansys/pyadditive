@@ -1,7 +1,6 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 import math
 import os
-import pandas as pd
 import shutil
 import tempfile
 
@@ -725,6 +724,7 @@ def test_generate_microstructure_permutations_only_adds_valid_permutations():
     assert df.loc[0, ps.ColumnNames.LASER_POWER] == MachineConstants.DEFAULT_LASER_POWER
     assert df.loc[0, ps.ColumnNames.SCAN_SPEED] == MachineConstants.DEFAULT_SCAN_SPEED
 
+
 def test_update_updates_error_status():
     # arrange
     study = ps.ParametricStudy(project_name="test_study")
@@ -743,6 +743,7 @@ def test_update_updates_error_status():
     assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.PENDING
     assert df2.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.ERROR
     assert df2.loc[0, ps.ColumnNames.ERROR_MESSAGE] == "error message"
+
 
 def test_update_updates_single_bead_permutation():
     # arrange
@@ -769,11 +770,19 @@ def test_update_updates_single_bead_permutation():
     assert df2.loc[0, ps.ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] == (
         mp_median[MeltPoolColumnNames.LENGTH] / mp_median[MeltPoolColumnNames.WIDTH]
     )
-    assert df2.loc[0, ps.ColumnNames.MELT_POOL_REFERENCE_DEPTH] == mp_median[MeltPoolColumnNames.REFERENCE_DEPTH]
-    assert df2.loc[0, ps.ColumnNames.MELT_POOL_REFERENCE_WIDTH] == mp_median[MeltPoolColumnNames.REFERENCE_WIDTH]
-    assert df2.loc[0, ps.ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] == (
-        mp_median[MeltPoolColumnNames.REFERENCE_DEPTH] / mp_median[MeltPoolColumnNames.REFERENCE_WIDTH]
+    assert (
+        df2.loc[0, ps.ColumnNames.MELT_POOL_REFERENCE_DEPTH]
+        == mp_median[MeltPoolColumnNames.REFERENCE_DEPTH]
     )
+    assert (
+        df2.loc[0, ps.ColumnNames.MELT_POOL_REFERENCE_WIDTH]
+        == mp_median[MeltPoolColumnNames.REFERENCE_WIDTH]
+    )
+    assert df2.loc[0, ps.ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] == (
+        mp_median[MeltPoolColumnNames.REFERENCE_DEPTH]
+        / mp_median[MeltPoolColumnNames.REFERENCE_WIDTH]
+    )
+
 
 def test_update_updates_porosity_permutation():
     # arrange
@@ -798,6 +807,7 @@ def test_update_updates_porosity_permutation():
     assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.PENDING
     assert df2.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
     assert df2.loc[0, ps.ColumnNames.RELATIVE_DENSITY] == 12
+
 
 def test_update_updates_microstructure_permutation():
     # arrange
@@ -834,6 +844,3 @@ def test_update_updates_microstructure_permutation():
     assert df2.loc[0, ps.ColumnNames.XY_AVERAGE_GRAIN_SIZE] == 6
     assert df2.loc[0, ps.ColumnNames.XZ_AVERAGE_GRAIN_SIZE] == 42
     assert df2.loc[0, ps.ColumnNames.YZ_AVERAGE_GRAIN_SIZE] == 110
-
-
-

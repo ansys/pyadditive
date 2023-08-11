@@ -22,6 +22,7 @@ from ansys.additive import (
     SingleBeadSummary,
 )
 
+
 class ColumnNames:
     """Column names for the parametric study data frame.
 
@@ -1041,7 +1042,9 @@ class ParametricStudy:
 
         self.update(summaries)
 
-    def update(self, summaries: List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary]]):
+    def update(
+        self, summaries: List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary]]
+    ):
         """Update the results of simulations in the parametric study.
 
         This method updates values for existing rows in the parametric study data frame. To add new rows
@@ -1070,21 +1073,36 @@ class ParametricStudy:
     def _update_single_bead(self, summary: SingleBeadSummary):
         """Update the results of a single bead simulation in the parametric study data frame."""
         median_df = summary.melt_pool.data_frame().median()
-        idx = self._data_frame[(self._data_frame[ColumnNames.ID] == summary.input.id)
-            & (self._data_frame[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD)].index
+        idx = self._data_frame[
+            (self._data_frame[ColumnNames.ID] == summary.input.id)
+            & (self._data_frame[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD)
+        ].index
         self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_WIDTH] = median_df[MeltPoolColumnNames.WIDTH]
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_DEPTH] = median_df[MeltPoolColumnNames.DEPTH]
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH] = median_df[MeltPoolColumnNames.LENGTH]
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_WIDTH] = median_df[
+            MeltPoolColumnNames.WIDTH
+        ]
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_DEPTH] = median_df[
+            MeltPoolColumnNames.DEPTH
+        ]
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH] = median_df[
+            MeltPoolColumnNames.LENGTH
+        ]
         self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] = (
             median_df[MeltPoolColumnNames.LENGTH] / median_df[MeltPoolColumnNames.WIDTH]
-            if median_df[MeltPoolColumnNames.WIDTH] > 0 else np.nan
+            if median_df[MeltPoolColumnNames.WIDTH] > 0
+            else np.nan
         )
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH] = median_df[MeltPoolColumnNames.REFERENCE_DEPTH]
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_WIDTH] = median_df[MeltPoolColumnNames.REFERENCE_WIDTH]
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH] = median_df[
+            MeltPoolColumnNames.REFERENCE_DEPTH
+        ]
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_WIDTH] = median_df[
+            MeltPoolColumnNames.REFERENCE_WIDTH
+        ]
         self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] = (
-            median_df[MeltPoolColumnNames.REFERENCE_DEPTH] / median_df[MeltPoolColumnNames.REFERENCE_WIDTH]
-            if median_df[MeltPoolColumnNames.REFERENCE_WIDTH] > 0 else np.nan
+            median_df[MeltPoolColumnNames.REFERENCE_DEPTH]
+            / median_df[MeltPoolColumnNames.REFERENCE_WIDTH]
+            if median_df[MeltPoolColumnNames.REFERENCE_WIDTH] > 0
+            else np.nan
         )
 
     def _update_porosity(self, summary: PorositySummary):
@@ -1108,7 +1126,3 @@ class ParametricStudy:
         self._data_frame.loc[idx, ColumnNames.XY_AVERAGE_GRAIN_SIZE] = summary.xy_average_grain_size
         self._data_frame.loc[idx, ColumnNames.XZ_AVERAGE_GRAIN_SIZE] = summary.xz_average_grain_size
         self._data_frame.loc[idx, ColumnNames.YZ_AVERAGE_GRAIN_SIZE] = summary.yz_average_grain_size
-
-
-
-
