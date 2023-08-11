@@ -47,3 +47,4 @@ class SimulationError:
         """Simulation error message."""
         return self._message
 
+
