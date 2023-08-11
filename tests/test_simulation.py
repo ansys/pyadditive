@@ -1,6 +1,8 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-from ansys.additive import SimulationError, SingleBeadInput
-
+from ansys.additive import (
+    SimulationError,
+    SingleBeadInput,
+)
 
 def test_SimulationError_init_assigns_values():
     # arrange
