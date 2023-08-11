@@ -6,6 +6,7 @@ from ansys.additive.porosity import PorosityInput
 from ansys.additive.single_bead import SingleBeadInput
 from ansys.additive.thermal_history import ThermalHistoryInput
 
+
 class SimulationType:
     """Simulation types for a parametric study."""
 
@@ -33,12 +34,18 @@ class SimulationStatus:
 class SimulationError:
     """Container for simulation errors."""
 
-    def __init__(self, input: Union[SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput], message: str):
+    def __init__(
+        self,
+        input: Union[SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput],
+        message: str,
+    ):
         self._input = input
         self._message = message
 
     @property
-    def input(self) -> Union[SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput]:
+    def input(
+        self,
+    ) -> Union[SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput]:
         """Simulation input."""
         return self._input
 
@@ -46,5 +53,3 @@ class SimulationError:
     def message(self) -> str:
         """Simulation error message."""
         return self._message
-
-
