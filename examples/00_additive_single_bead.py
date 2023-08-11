@@ -82,7 +82,7 @@ summary = additive.simulate(input)
 # :meth:`plot() <pandas.DataFrame.plot>` method can be used to plot the melt
 # pool dimensions as a function of bead length.
 
-df = summary.melt_pool.data_frame.multiply(1e6)  # convert from meters to microns
+df = summary.melt_pool.data_frame().multiply(1e6)  # convert from meters to microns
 df.index *= 1e3  # convert bead length from meters to millimeters
 
 df.plot(

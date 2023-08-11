@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from ansys.additive import (
+    Additive,
     AdditiveMachine,
     AdditiveMaterial,
     MachineConstants,
@@ -14,34 +15,12 @@ from ansys.additive import (
     MicrostructureSummary,
     PorosityInput,
     PorositySummary,
+    SimulationError,
+    SimulationStatus,
+    SimulationType,
     SingleBeadInput,
     SingleBeadSummary,
 )
-
-
-class SimulationType:
-    """Simulation types for a parametric study."""
-
-    #: Single bead simulation.
-    SINGLE_BEAD = "single_bead"
-    #: Porosity simulation.
-    POROSITY = "porosity"
-    #: Microstructure simulation.
-    MICROSTRUCTURE = "microstructure"
-
-
-class SimulationStatus:
-    """Simulation status values for a parametric study."""
-
-    #: Simulation is awaiting execution.
-    PENDING = "pending"
-    #: Simulation was executed.
-    COMPLETED = "completed"
-    #: Simulation failed.
-    FAILED = "failed"
-    #: Do not execute this simulation.
-    SKIP = "skip"
-
 
 class ColumnNames:
     """Column names for the parametric study data frame.
@@ -54,6 +33,8 @@ class ColumnNames:
     PROJECT = "project"
     #: Iteration number, useful for tracking the sequence of simulation groups.
     ITERATION = "iteration"
+    #: Priority value used to determine execution order.
+    PRIORITY = "priority"
     #: Type of simulation, e.g. single bead, porosity, microstructure.
     TYPE = "type"
     #: Identifier for the simulation.
@@ -140,10 +121,15 @@ class ColumnNames:
     XZ_AVERAGE_GRAIN_SIZE = "xz_average_grain_size"
     #: Average microstructure grain size in the YY plane (microns).
     YZ_AVERAGE_GRAIN_SIZE = "yz_average_grain_size"
+    #: Error message if simulation failed.
+    ERROR_MESSAGE = "error_message"
 
 
 class ParametricStudy:
     """Data storage and utility methods for a parametric study."""
+
+    DEFAULT_ITERATION = 0
+    DEFAULT_PRIORITY = 1
 
     def __init__(self, project_name: str):
         self._project_name = project_name
@@ -190,10 +176,11 @@ class ParametricStudy:
             other._data_frame
         )
 
-    def data_frame(self):
-        """Return the parametric study data as a Pandas DataFrame.
-        See :class:`ColumnNames` for the column names."""
-        return self._data_frame
+    def data_frame(self) -> pd.DataFrame:
+        """Return a copy of the internal parametric study :class:`DataFrame <pandas.DataFrame>`.
+        See :class:`ColumnNames` for the column names used in the returned ``DataFrame``.
+        .. note:: Updating the returned ``DataFrame`` will not update the internal ``DataFrame``."""
+        return self._data_frame.copy()
 
     def status(self):
         """Print the current status of the parametric study."""
@@ -201,31 +188,36 @@ class ParametricStudy:
         print(f"Parametric study: {name}")
         print(self._data_frame)
 
-    def add_results(
+    def add_summaries(
         self,
-        results: List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary]],
-        iteration: int = 0,
+        summaries: List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary]],
+        iteration: int = DEFAULT_ITERATION,
     ):
-        """Add simulation results to the parametric study.
+        """Add summaries of previously executed simulations to the parametric study.
+
+        This function adds new rows to the parametric study data frame. To update existing rows,
+        use :meth:`update`.
 
         Parameters
         ----------
-        results : list[SingleBeadSummary | PorositySummary | MicrostructureSummary]
+        summaries : list[SingleBeadSummary | PorositySummary | MicrostructureSummary]
             List of simulation result summaries to add to the parametric study.
 
         """
-        for result in results:
-            if isinstance(result, SingleBeadSummary):
-                self._add_single_bead_result(result, iteration)
-            elif isinstance(result, PorositySummary):
-                self._add_porosity_result(result, iteration)
-            elif isinstance(result, MicrostructureSummary):
-                self._add_microstructure_result(result, iteration)
+        for summary in summaries:
+            if isinstance(summary, SingleBeadSummary):
+                self._add_single_bead_summary(summary, iteration)
+            elif isinstance(summary, PorositySummary):
+                self._add_porosity_summary(summary, iteration)
+            elif isinstance(summary, MicrostructureSummary):
+                self._add_microstructure_summary(summary, iteration)
             else:
-                raise TypeError(f"Unknown result type: {type(result)}")
+                raise TypeError(f"Unknown summary type: {type(summary)}")
 
-    def _add_single_bead_result(self, summary: SingleBeadSummary, iteration: int = 0):
-        median_mp = summary.melt_pool.data_frame.median()
+    def _add_single_bead_summary(
+        self, summary: SingleBeadSummary, iteration: int = DEFAULT_ITERATION
+    ):
+        median_mp = summary.melt_pool.data_frame().median()
         dw = (
             median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]
             / median_mp[MeltPoolColumnNames.REFERENCE_WIDTH]
@@ -267,7 +259,7 @@ class ParametricStudy:
         )
         self._data_frame = pd.concat([self._data_frame, row.to_frame().T], ignore_index=True)
 
-    def _add_porosity_result(self, summary: PorositySummary, iteration: int = 0):
+    def _add_porosity_summary(self, summary: PorositySummary, iteration: int = DEFAULT_ITERATION):
         br = ParametricStudy.build_rate(
             summary.input.machine.scan_speed,
             summary.input.machine.layer_thickness,
@@ -293,7 +285,9 @@ class ParametricStudy:
         )
         self._data_frame = pd.concat([self._data_frame, row.to_frame().T], ignore_index=True)
 
-    def _add_microstructure_result(self, summary: MicrostructureSummary, iteration: int = 0):
+    def _add_microstructure_summary(
+        self, summary: MicrostructureSummary, iteration: int = DEFAULT_ITERATION
+    ):
         br = ParametricStudy.build_rate(
             summary.input.machine.scan_speed,
             summary.input.machine.layer_thickness,
@@ -406,7 +400,7 @@ class ParametricStudy:
     def __common_param_to_dict(
         self,
         summary: Union[SingleBeadSummary, PorositySummary, MicrostructureSummary],
-        iteration: int = 0,
+        iteration: int = DEFAULT_ITERATION,
     ) -> Dict[str, Any]:
         """Convert common simulation parameters to a dictionary.
 
@@ -452,7 +446,8 @@ class ParametricStudy:
         beam_diameters: Optional[List[float]] = None,
         min_area_energy_density: Optional[float] = None,
         max_area_energy_density: Optional[float] = None,
-        iteration: int = 0,
+        iteration: int = DEFAULT_ITERATION,
+        priority: int = DEFAULT_PRIORITY,
     ):
         """Add single bead permutations to the parametric study.
 
@@ -490,6 +485,8 @@ class ParametricStudy:
             Area energy density is defined as laser power / (layer thickness * scan speed).
         iteration : int, optional
             The iteration number for this set of simulations.
+        priority : int, optional
+            The priority for this set of simulations.
         """
         lt = layer_thicknesses or [MachineConstants.DEFAULT_LAYER_THICKNESS]
         bd = beam_diameters or [MachineConstants.DEFAULT_BEAM_DIAMETER]
@@ -528,6 +525,7 @@ class ParametricStudy:
                                 {
                                     ColumnNames.PROJECT: self.project_name,
                                     ColumnNames.ITERATION: iteration,
+                                    ColumnNames.PRIORITY: priority,
                                     ColumnNames.TYPE: SimulationType.SINGLE_BEAD,
                                     ColumnNames.ID: f"sb_{iteration}_{sb_input.id}",
                                     ColumnNames.STATUS: SimulationStatus.PENDING,
@@ -565,7 +563,8 @@ class ParametricStudy:
         max_energy_density: Optional[float] = None,
         min_build_rate: Optional[float] = None,
         max_build_rate: Optional[float] = None,
-        iteration: int = 0,
+        iteration: int = DEFAULT_ITERATION,
+        priority: int = DEFAULT_PRIORITY,
     ):
         """Add porosity permutations to the parametric study.
 
@@ -637,7 +636,8 @@ class ParametricStudy:
             Build rate is defined as layer thickness * scan speed * hatch spacing.
         iteration : int, optional
             The iteration number for this set of simulations.
-
+        priority : int, optional
+            The priority for this set of simulations.
         """
         lt = layer_thicknesses or [MachineConstants.DEFAULT_LAYER_THICKNESS]
         bd = beam_diameters or [MachineConstants.DEFAULT_BEAM_DIAMETER]
@@ -693,6 +693,7 @@ class ParametricStudy:
                                                 {
                                                     ColumnNames.PROJECT: self.project_name,
                                                     ColumnNames.ITERATION: iteration,
+                                                    ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.POROSITY,
                                                     ColumnNames.ID: f"por_{iteration}_{input.id}",
                                                     ColumnNames.STATUS: SimulationStatus.PENDING,
@@ -746,7 +747,8 @@ class ParametricStudy:
         melt_pool_width: Optional[float] = None,
         melt_pool_depth: Optional[float] = None,
         random_seed: Optional[int] = None,
-        iteration: int = 0,
+        iteration: int = DEFAULT_ITERATION,
+        priority: int = DEFAULT_PRIORITY,
     ):
         """Add microstructure permutations to the parametric study.
 
@@ -858,6 +860,8 @@ class ParametricStudy:
         iteration : int, optional
             The iteration number for this set of simulations.
 
+        priority : int, optional
+            The priority for this set of simulations.
         """
         lt = layer_thicknesses or [MachineConstants.DEFAULT_LAYER_THICKNESS]
         bd = beam_diameters or [MachineConstants.DEFAULT_BEAM_DIAMETER]
@@ -942,6 +946,7 @@ class ParametricStudy:
                                                 {
                                                     ColumnNames.PROJECT: self.project_name,
                                                     ColumnNames.ITERATION: iteration,
+                                                    ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.MICROSTRUCTURE,
                                                     ColumnNames.ID: f"micro_{iteration}_{input.id}",
                                                     ColumnNames.STATUS: SimulationStatus.PENDING,
@@ -975,3 +980,135 @@ class ParametricStudy:
                                                 [self._data_frame, row.to_frame().T],
                                                 ignore_index=True,
                                             )
+
+    def run_simulations(
+        self,
+        additive: Additive,
+        type: Optional[List[SimulationType]] = None,
+        priority: Optional[int] = None,
+        workers: int = 1,
+        threads: int = 4,
+    ):
+        """Run the simulations in the parametric study with ``SimulationStatus.PENDING`` in the
+        ``ColumnNames.STATUS`` column.
+
+        Execution order is determined by the values in the ``ColumnNames.PRIORITY`` column.
+        Lower values are interpreted as having higher priority and will be run first.
+
+        Parameters
+        ----------
+        additive: Additive
+            The :class:`Additive <ansys.additive.additive.Additive>` service to use for running simulations.
+        type : Optional[List[SimulationType]], optional
+            The type of simulations to run, ``None`` indicates all types.
+        priority : Optional[int]
+            The priority of simulations to run, ``None`` indicates all priorities.
+        workers : int, optional
+            The number of workers to use for multiprocessing. Each worker
+            will need to be able to check out an Additive license.
+        threads : int, optional
+            The number of threads to use for each worker. Each thread will
+            check out an HPC license.
+        """
+        if type is None:
+            type = [
+                SimulationType.SINGLE_BEAD,
+                SimulationType.POROSITY,
+                SimulationType.MICROSTRUCTURE,
+            ]
+
+        df = self._data_frame
+        view = df[
+            df[ColumnNames.STATUS] == SimulationStatus.PENDING and df[ColumnNames.TYPE].isin(type)
+        ]
+        if priority is not None:
+            view = view[view[ColumnNames.PRIORITY] == priority]
+        view = view.sort_values(by=ColumnNames.PRIORITY, ascending=True)
+
+        inputs = []
+        for row in view.itertuples():
+            material = additive.get_material(row[ColumnNames.MATERIAL])
+            if row[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
+                inputs.append(self._create_single_bead_input(additive, row))
+            elif row[ColumnNames.TYPE] == SimulationType.POROSITY:
+                inputs.append(self._create_porosity_input(additive, row))
+            elif row[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE:
+                inputs.append(self._create_microstructure_input(additive, row))
+            else:
+                raise ValueError(f"Invalid simulation type: {row[ColumnNames.TYPE]}")
+
+        summaries = additive.simulate(inputs, workers=workers, threads=threads)
+
+        self.update(summaries)
+
+    def update(self, summaries: List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary]]):
+        """Update the results of simulations in the parametric study.
+
+        This method updates values for existing rows in the parametric study data frame. To add new rows
+        for completed simulations, use :meth:`add_summaries` instead.
+
+        Parameters
+        ----------
+        summaries : List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary, SimulationError]]
+            The list of simulation summaries to use for updating parametric study data frame.
+
+        """
+        for summary in summaries:
+            if isinstance(summary, SingleBeadSummary):
+                self._update_single_bead(summary)
+            elif isinstance(summary, PorositySummary):
+                self._update_porosity(summary)
+            elif isinstance(summary, MicrostructureSummary):
+                self._update_microstructure(summary)
+            elif isinstance(summary, SimulationError):
+                idx = self._data_frame[self._data_frame[ColumnNames.ID] == summary.input.id].index
+                self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.ERROR
+                self._data_frame.loc[idx, ColumnNames.ERROR_MESSAGE] = summary.message
+            else:
+                raise ValueError(f"Invalid simulation summary type: {type(summary)}")
+
+    def _update_single_bead(self, summary: SingleBeadSummary):
+        """Update the results of a single bead simulation in the parametric study data frame."""
+        median_df = summary.melt_pool.data_frame().median()
+        idx = self._data_frame[(self._data_frame[ColumnNames.ID] == summary.input.id)
+            & (self._data_frame[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD)].index
+        self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_WIDTH] = median_df[MeltPoolColumnNames.WIDTH]
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_DEPTH] = median_df[MeltPoolColumnNames.DEPTH]
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH] = median_df[MeltPoolColumnNames.LENGTH]
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] = (
+            median_df[MeltPoolColumnNames.LENGTH] / median_df[MeltPoolColumnNames.WIDTH]
+            if median_df[MeltPoolColumnNames.WIDTH] > 0 else np.nan
+        )
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH] = median_df[MeltPoolColumnNames.REFERENCE_DEPTH]
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_WIDTH] = median_df[MeltPoolColumnNames.REFERENCE_WIDTH]
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] = (
+            median_df[MeltPoolColumnNames.REFERENCE_DEPTH] / median_df[MeltPoolColumnNames.REFERENCE_WIDTH]
+            if median_df[MeltPoolColumnNames.REFERENCE_WIDTH] > 0 else np.nan
+        )
+
+    def _update_porosity(self, summary: PorositySummary):
+        """Update the results of a porosity simulation in the parametric study data frame."""
+        idx = self._data_frame[
+            (self._data_frame[ColumnNames.ID] == summary.input.id)
+            & (self._data_frame[ColumnNames.TYPE] == SimulationType.POROSITY)
+        ].index
+
+        self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
+        self._data_frame.loc[idx, ColumnNames.RELATIVE_DENSITY] = summary.relative_density
+
+    def _update_microstructure(self, summary: MicrostructureSummary):
+        """Update the results of a microstructure simulation in the parametric study data frame."""
+        idx = self._data_frame[
+            (self._data_frame[ColumnNames.ID] == summary.input.id)
+            & (self._data_frame[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE)
+        ].index
+
+        self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
+        self._data_frame.loc[idx, ColumnNames.XY_AVERAGE_GRAIN_SIZE] = summary.xy_average_grain_size
+        self._data_frame.loc[idx, ColumnNames.XZ_AVERAGE_GRAIN_SIZE] = summary.xz_average_grain_size
+        self._data_frame.loc[idx, ColumnNames.YZ_AVERAGE_GRAIN_SIZE] = summary.yz_average_grain_size
+
+
+
+

@@ -1,6 +1,7 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 import math
 import os
+import pandas as pd
 import shutil
 import tempfile
 
@@ -14,11 +15,14 @@ import numpy as np
 from ansys.additive import (
     AdditiveMachine,
     MachineConstants,
+    MeltPool,
     MeltPoolColumnNames,
     MicrostructureInput,
     MicrostructureSummary,
     PorosityInput,
     PorositySummary,
+    SimulationError,
+    SimulationStatus,
     SingleBeadInput,
     SingleBeadSummary,
 )
@@ -62,13 +66,9 @@ def test_eq_returns_false_for_different_data():
     # arrange
     study = ps.ParametricStudy(project_name="test_study")
     study2 = ps.ParametricStudy(project_name="test_study")
-    df = study.data_frame()
+    study2.generate_single_bead_permutations("material", [100], [1])
 
-    # act
-    # add a column to one of the dataframes
-    df["test"] = 1
-
-    # assert
+    # act, assert
     assert study != study2
 
 
@@ -89,7 +89,7 @@ def test_energy_density_calulcates_correctly():
     assert math.isnan(ps.ParametricStudy.energy_density(6, 0, 3, 4))
 
 
-def test_add_results_with_porosity_summary_adds_row():
+def test_add_summaries_with_porosity_summary_adds_row():
     # arrange
     study = ps.ParametricStudy(project_name="test_study")
     machine = AdditiveMachine()
@@ -113,7 +113,7 @@ def test_add_results_with_porosity_summary_adds_row():
     )
 
     # act
-    study.add_results([summary], iteration=99)
+    study.add_summaries([summary], iteration=99)
 
     # assert
     assert len(study.data_frame()) == 1
@@ -141,7 +141,7 @@ def test_add_results_with_porosity_summary_adds_row():
     assert row[ps.ColumnNames.RELATIVE_DENSITY] == 12
 
 
-def test_add_results_with_single_bead_summary_adds_row():
+def test_add_summaries_with_single_bead_summary_adds_row():
     # arrange
     study = ps.ParametricStudy(project_name="test_study")
     machine = AdditiveMachine()
@@ -158,7 +158,7 @@ def test_add_results_with_single_bead_summary_adds_row():
         machine.scan_speed,
         machine.layer_thickness,
     )
-    median_mp = summary.melt_pool.data_frame.median()
+    median_mp = summary.melt_pool.data_frame().median()
     expected_dw = (
         median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]
         / median_mp[MeltPoolColumnNames.REFERENCE_WIDTH]
@@ -172,7 +172,7 @@ def test_add_results_with_single_bead_summary_adds_row():
     )
 
     # act
-    study.add_results([summary], iteration=98)
+    study.add_summaries([summary], iteration=98)
 
     # assert
     assert len(study.data_frame()) == 1
@@ -210,7 +210,7 @@ def test_add_results_with_single_bead_summary_adds_row():
     assert row[ps.ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] == expected_lw
 
 
-def test_add_results_with_microstructure_summary_adds_row():
+def test_add_summaries_with_microstructure_summary_adds_row():
     # arrange
     study = ps.ParametricStudy(project_name="test_study")
     machine = AdditiveMachine()
@@ -247,7 +247,7 @@ def test_add_results_with_microstructure_summary_adds_row():
     )
 
     # act
-    study.add_results([summary], iteration=99)
+    study.add_summaries([summary], iteration=99)
 
     # assert
     assert len(study.data_frame()) == 1
@@ -724,3 +724,116 @@ def test_generate_microstructure_permutations_only_adds_valid_permutations():
     assert len(df) == 1
     assert df.loc[0, ps.ColumnNames.LASER_POWER] == MachineConstants.DEFAULT_LASER_POWER
     assert df.loc[0, ps.ColumnNames.SCAN_SPEED] == MachineConstants.DEFAULT_SCAN_SPEED
+
+def test_update_updates_error_status():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    study.generate_single_bead_permutations("material", [50], [1])
+    df1 = study.data_frame()
+    id = df1.loc[0, ps.ColumnNames.ID]
+    input = SingleBeadInput(id=id)
+    error = SimulationError(input, "error message")
+
+    # act
+    study.update([error])
+
+    # assert
+    df2 = study.data_frame()
+    assert len(df2) == len(df1) == 1
+    assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.PENDING
+    assert df2.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.ERROR
+    assert df2.loc[0, ps.ColumnNames.ERROR_MESSAGE] == "error message"
+
+def test_update_updates_single_bead_permutation():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    study.generate_single_bead_permutations("material", [50], [1])
+    df1 = study.data_frame()
+    id = df1.loc[0, ps.ColumnNames.ID]
+    input = SingleBeadInput(id=id)
+    mp_msg = test_utils.get_test_melt_pool_message()
+    mp_median = MeltPool(mp_msg).data_frame().median()
+    summary = SingleBeadSummary(input, mp_msg)
+
+    # act
+    study.update([summary])
+
+    # assert
+    df2 = study.data_frame()
+    assert len(df2) == len(df1) == 1
+    assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.PENDING
+    assert df2.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
+    assert df2.loc[0, ps.ColumnNames.MELT_POOL_WIDTH] == mp_median[MeltPoolColumnNames.WIDTH]
+    assert df2.loc[0, ps.ColumnNames.MELT_POOL_DEPTH] == mp_median[MeltPoolColumnNames.DEPTH]
+    assert df2.loc[0, ps.ColumnNames.MELT_POOL_LENGTH] == mp_median[MeltPoolColumnNames.LENGTH]
+    assert df2.loc[0, ps.ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] == (
+        mp_median[MeltPoolColumnNames.LENGTH] / mp_median[MeltPoolColumnNames.WIDTH]
+    )
+    assert df2.loc[0, ps.ColumnNames.MELT_POOL_REFERENCE_DEPTH] == mp_median[MeltPoolColumnNames.REFERENCE_DEPTH]
+    assert df2.loc[0, ps.ColumnNames.MELT_POOL_REFERENCE_WIDTH] == mp_median[MeltPoolColumnNames.REFERENCE_WIDTH]
+    assert df2.loc[0, ps.ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] == (
+        mp_median[MeltPoolColumnNames.REFERENCE_DEPTH] / mp_median[MeltPoolColumnNames.REFERENCE_WIDTH]
+    )
+
+def test_update_updates_porosity_permutation():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    study.generate_porosity_permutations("material", [50], [1])
+    df1 = study.data_frame()
+    id = df1.loc[0, ps.ColumnNames.ID]
+    input = PorosityInput(id=id)
+    result = PorosityResult(
+        void_ratio=10,
+        powder_ratio=11,
+        solid_ratio=12,
+    )
+    summary = PorositySummary(input, result)
+
+    # act
+    study.update([summary])
+
+    # assert
+    df2 = study.data_frame()
+    assert len(df2) == len(df1) == 1
+    assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.PENDING
+    assert df2.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
+    assert df2.loc[0, ps.ColumnNames.RELATIVE_DENSITY] == 12
+
+def test_update_updates_microstructure_permutation():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    study.generate_microstructure_permutations("material", [50], [1])
+    df1 = study.data_frame()
+    id = df1.loc[0, ps.ColumnNames.ID]
+    user_data_path = os.path.join(tempfile.gettempdir(), "ps_microstructure_update_test")
+    if not os.path.exists(user_data_path):
+        os.makedirs(user_data_path)
+    input = MicrostructureInput(id=id)
+    xy_vtk_bytes = bytes(range(3))
+    xz_vtk_bytes = bytes(range(4, 6))
+    yz_vtk_bytes = bytes(range(7, 9))
+    xy_stats = GrainStatistics(grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4)
+    xz_stats = GrainStatistics(grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8)
+    yz_stats = GrainStatistics(
+        grain_number=9, area_fraction=10, diameter_um=11, orientation_angle=12
+    )
+    result = MicrostructureResult(xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes)
+    result.xy_circle_equivalence.append(xy_stats)
+    result.xz_circle_equivalence.append(xz_stats)
+    result.yz_circle_equivalence.append(yz_stats)
+    summary = MicrostructureSummary(input, result, user_data_path)
+
+    # act
+    study.update([summary])
+
+    # assert
+    df2 = study.data_frame()
+    assert len(df2) == len(df1) == 1
+    assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.PENDING
+    assert df2.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
+    assert df2.loc[0, ps.ColumnNames.XY_AVERAGE_GRAIN_SIZE] == 6
+    assert df2.loc[0, ps.ColumnNames.XZ_AVERAGE_GRAIN_SIZE] == 42
+    assert df2.loc[0, ps.ColumnNames.YZ_AVERAGE_GRAIN_SIZE] == 110
+
+
+
