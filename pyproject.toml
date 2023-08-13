@@ -49,7 +49,7 @@ dependencies = [
 tests = ["pytest==7.4.0", "pytest-cov==4.0.0", "callee==0.3.1"]
 
 doc = [
-    "ansys-sphinx-theme==0.9.9",
+    "ansys-sphinx-theme==0.10.3",
     "enum-tools==0.10.0",
     "jupyter_sphinx==0.4.0",
     "matplotlib==3.7.2",
