@@ -178,3 +178,4 @@ class PorositySummary:
         for k in self.__dict__:
             repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
         return repr
+
