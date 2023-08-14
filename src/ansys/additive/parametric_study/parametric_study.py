@@ -183,12 +183,6 @@ class ParametricStudy:
         .. note:: Updating the returned ``DataFrame`` will not update the internal ``DataFrame``."""
         return self._data_frame.copy()
 
-    def status(self):
-        """Print the current status of the parametric study."""
-        name = self.name if self.name else ""
-        print(f"Parametric study: {name}")
-        print(self._data_frame)
-
     def add_summaries(
         self,
         summaries: List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary]],
@@ -1020,27 +1014,97 @@ class ParametricStudy:
 
         df = self._data_frame
         view = df[
-            df[ColumnNames.STATUS] == SimulationStatus.PENDING and df[ColumnNames.TYPE].isin(type)
+            (df[ColumnNames.STATUS] == SimulationStatus.PENDING)
+            & df[ColumnNames.TYPE].isin(type)
         ]
         if priority is not None:
             view = view[view[ColumnNames.PRIORITY] == priority]
         view = view.sort_values(by=ColumnNames.PRIORITY, ascending=True)
 
         inputs = []
-        for row in view.itertuples():
-            material = additive.get_material(row[ColumnNames.MATERIAL])
-            if row[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
-                inputs.append(self._create_single_bead_input(additive, row))
-            elif row[ColumnNames.TYPE] == SimulationType.POROSITY:
-                inputs.append(self._create_porosity_input(additive, row))
-            elif row[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE:
-                inputs.append(self._create_microstructure_input(additive, row))
+        # NOTICE: We use iterrows() instead of itertuples() here in order to
+        # access values by column name
+        for _, row in view.iterrows():
+            try:
+                material = additive.get_material(row[ColumnNames.MATERIAL])
+            except Exception:
+                print(
+                    f"Material {row[ColumnNames.MATERIAL]} not found, skipping {row[ColumnNames.ID]}"
+                )
+                continue
+            machine = self.__create_machine(row)
+            sim_type = row[ColumnNames.TYPE]
+            if sim_type == SimulationType.SINGLE_BEAD:
+                inputs.append(self._create_single_bead_input(row, material, machine))
+            elif sim_type == SimulationType.POROSITY:
+                inputs.append(self._create_porosity_input(row, material, machine))
+            elif sim_type == SimulationType.MICROSTRUCTURE:
+                inputs.append(self._create_microstructure_input(row, material, machine))
             else:
-                raise ValueError(f"Invalid simulation type: {row[ColumnNames.TYPE]}")
+                print(f"Invalid simulation type: {row[ColumnNames.TYPE]} for {row[ColumnNames.ID]}, skipping")
+                continue
 
-        summaries = additive.simulate(inputs, workers=workers, threads=threads)
+        summaries = additive.simulate(inputs)
 
         self.update(summaries)
+
+    def __create_machine(self, row: pd.Series) -> AdditiveMachine:
+        return AdditiveMachine(
+            laser_power=row[ColumnNames.LASER_POWER],
+            scan_speed=row[ColumnNames.SCAN_SPEED],
+            layer_thickness=row[ColumnNames.LAYER_THICKNESS],
+            beam_diameter=row[ColumnNames.BEAM_DIAMETER],
+            heater_temperature=row[ColumnNames.HEATER_TEMPERATURE],
+            starting_layer_angle=row[ColumnNames.START_ANGLE] if not np.isnan(row[ColumnNames.START_ANGLE]) else MachineConstants.DEFAULT_STARTING_LAYER_ANGLE,
+            layer_rotation_angle=row[ColumnNames.ROTATION_ANGLE] if not np.isnan(row[ColumnNames.ROTATION_ANGLE]) else MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE,
+            hatch_spacing=row[ColumnNames.HATCH_SPACING] if not np.isnan(row[ColumnNames.HATCH_SPACING]) else MachineConstants.DEFAULT_HATCH_SPACING,
+            slicing_stripe_width=row[ColumnNames.STRIPE_WIDTH] if not np.isnan(row[ColumnNames.STRIPE_WIDTH]) else MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH,
+        )
+
+    def _create_single_bead_input(self, row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine) -> SingleBeadInput:
+        return SingleBeadInput(
+            id=row[ColumnNames.ID],
+            material=material,
+            machine=machine,
+            bead_length=row[ColumnNames.SINGLE_BEAD_LENGTH],
+        )
+
+    def _create_porosity_input(self, row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine) -> PorosityInput:
+        return PorosityInput(
+            id=row[ColumnNames.ID],
+            material=material,
+            machine=machine,
+            size_x=row[ColumnNames.POROSITY_SIZE_X],
+            size_y=row[ColumnNames.POROSITY_SIZE_Y],
+            size_z=row[ColumnNames.POROSITY_SIZE_Z],
+        )
+
+    def _create_microstructure_input(self, row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine) -> MicrostructureInput:
+        use_provided_thermal_param = (
+            not np.isnan(row[ColumnNames.COOLING_RATE])
+            or not np.isnan(row[ColumnNames.THERMAL_GRADIENT])
+            or not np.isnan(row[ColumnNames.MICRO_MELT_POOL_WIDTH])
+            or not np.isnan(row[ColumnNames.MICRO_MELT_POOL_DEPTH])
+        )
+
+        return MicrostructureInput(
+            id=row[ColumnNames.ID],
+            material=material,
+            machine=machine,
+            sample_size_x=row[ColumnNames.MICRO_SIZE_X],
+            sample_size_y=row[ColumnNames.MICRO_SIZE_Y],
+            sample_size_z=row[ColumnNames.MICRO_SIZE_Z],
+            sensor_dimension=row[ColumnNames.MICRO_SENSOR_DIM],
+            use_provided_thermal_parameters=use_provided_thermal_param,
+            sample_min_x=row[ColumnNames.MICRO_MIN_X] if not np.isnan(row[ColumnNames.MICRO_MIN_X]) else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
+            sample_min_y=row[ColumnNames.MICRO_MIN_Y] if not np.isnan(row[ColumnNames.MICRO_MIN_Y]) else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
+            sample_min_z=row[ColumnNames.MICRO_MIN_Z] if not np.isnan(row[ColumnNames.MICRO_MIN_Z]) else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
+            cooling_rate=row[ColumnNames.COOLING_RATE] if not np.isnan(row[ColumnNames.COOLING_RATE]) else MicrostructureInput.DEFAULT_COOLING_RATE,
+            thermal_gradient=row[ColumnNames.THERMAL_GRADIENT] if not np.isnan(row[ColumnNames.THERMAL_GRADIENT]) else MicrostructureInput.DEFAULT_THERMAL_GRADIENT,
+            melt_pool_width=row[ColumnNames.MICRO_MELT_POOL_WIDTH] if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_WIDTH]) else MicrostructureInput.DEFAULT_MELT_POOL_WIDTH,
+            melt_pool_depth=row[ColumnNames.MICRO_MELT_POOL_DEPTH] if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_DEPTH]) else MicrostructureInput.DEFAULT_MELT_POOL_DEPTH,
+            random_seed=row[ColumnNames.RANDOM_SEED] if not np.isnan(row[ColumnNames.RANDOM_SEED]) else MicrostructureInput.DEFAULT_RANDOM_SEED,
+        )
 
     def update(
         self, summaries: List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary]]
@@ -1068,7 +1132,7 @@ class ParametricStudy:
                 self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.ERROR
                 self._data_frame.loc[idx, ColumnNames.ERROR_MESSAGE] = summary.message
             else:
-                raise ValueError(f"Invalid simulation summary type: {type(summary)}")
+                raise TypeError(f"Invalid simulation summary type: {type(summary)}")
 
     def _update_single_bead(self, summary: SingleBeadSummary):
         """Update the results of a single bead simulation in the parametric study data frame."""
@@ -1126,3 +1190,89 @@ class ParametricStudy:
         self._data_frame.loc[idx, ColumnNames.XY_AVERAGE_GRAIN_SIZE] = summary.xy_average_grain_size
         self._data_frame.loc[idx, ColumnNames.XZ_AVERAGE_GRAIN_SIZE] = summary.xz_average_grain_size
         self._data_frame.loc[idx, ColumnNames.YZ_AVERAGE_GRAIN_SIZE] = summary.yz_average_grain_size
+
+    def add_inputs(self, inputs: List[Union[SingleBeadInput, PorosityInput, MicrostructureInput]], iteration: int = DEFAULT_ITERATION, priority: int = DEFAULT_PRIORITY, status: SimulationStatus = SimulationStatus.PENDING):
+        """Add new rows to the parametric study data frame for the specified simulation inputs.
+
+        Parameters
+        ----------
+        inputs : List[Union[SingleBeadInput, PorosityInput, MicrostructureInput]]
+            The list of simulation inputs to add to the parametric study data frame.
+
+        iteration : int
+            The iteration number for the simulation inputs.
+
+        priority : int
+            The priority for the simulations.
+
+        """
+        for input in inputs:
+            dict = {}
+            if isinstance(input, SingleBeadInput):
+                dict[ColumnNames.TYPE] = SimulationType.SINGLE_BEAD
+                dict[ColumnNames.SINGLE_BEAD_LENGTH] = input.bead_length
+            elif isinstance(input, PorosityInput):
+                dict[ColumnNames.TYPE] = SimulationType.POROSITY
+                dict[ColumnNames.POROSITY_SIZE_X] = input.size_x
+                dict[ColumnNames.POROSITY_SIZE_Y] = input.size_y
+                dict[ColumnNames.POROSITY_SIZE_Z] = input.size_z
+            elif isinstance(input, MicrostructureInput):
+                dict[ColumnNames.TYPE] = SimulationType.MICROSTRUCTURE
+                dict[ColumnNames.MICRO_MIN_X] = input.sample_min_x
+                dict[ColumnNames.MICRO_MIN_Y] = input.sample_min_y
+                dict[ColumnNames.MICRO_MIN_Z] = input.sample_min_z
+                dict[ColumnNames.MICRO_SIZE_X] = input.sample_size_x
+                dict[ColumnNames.MICRO_SIZE_Y] = input.sample_size_y
+                dict[ColumnNames.MICRO_SIZE_Z] = input.sample_size_z
+                dict[ColumnNames.MICRO_SENSOR_DIM] = input.sensor_dimension
+                if input.use_provided_thermal_parameters:
+                    dict[ColumnNames.COOLING_RATE] = input.cooling_rate
+                    dict[ColumnNames.THERMAL_GRADIENT] = input.thermal_gradient
+                    dict[ColumnNames.MICRO_MELT_POOL_WIDTH] = input.melt_pool_width
+                    dict[ColumnNames.MICRO_MELT_POOL_DEPTH] = input.melt_pool_depth
+                if input.random_seed != MicrostructureInput.DEFAULT_RANDOM_SEED:
+                    dict[ColumnNames.RANDOM_SEED] = input.random_seed
+            else:
+                print(f"Invalid simulation input type: {type(input)}")
+                continue
+
+            dict[ColumnNames.PROJECT] = self.project_name
+            dict[ColumnNames.ITERATION] = iteration
+            dict[ColumnNames.PRIORITY] = priority
+            dict[ColumnNames.ID] = input.id
+            dict[ColumnNames.STATUS] = status
+            dict[ColumnNames.MATERIAL] = input.material.name
+            dict[ColumnNames.LASER_POWER] = input.machine.laser_power
+            dict[ColumnNames.SCAN_SPEED] = input.machine.scan_speed
+            dict[ColumnNames.LAYER_THICKNESS] = input.machine.layer_thickness
+            dict[ColumnNames.BEAM_DIAMETER] = input.machine.beam_diameter
+            dict[ColumnNames.HEATER_TEMPERATURE] = input.machine.heater_temperature
+            dict[ColumnNames.START_ANGLE] = input.machine.starting_layer_angle
+            dict[ColumnNames.ROTATION_ANGLE] = input.machine.layer_rotation_angle
+            dict[ColumnNames.HATCH_SPACING] = input.machine.hatch_spacing
+            dict[ColumnNames.STRIPE_WIDTH] = input.machine.slicing_stripe_width
+
+            self._data_frame = pd.concat([self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True)
+
+    def remove(self, index: Union[int, List[int]]):
+        """Remove rows from the parametric study data frame.
+
+        Parameters
+        ----------
+        index : Union[int, List[int]]
+            The index or list of indices of the rows to remove.
+        """
+        self._data_frame.drop(index=index, inplace=True)
+
+    def set_status(self, index: Union[int, List[int]], status: SimulationStatus):
+        """Set the status of rows in the parametric study data frame.
+
+        Parameters
+        ----------
+        index : Union[int, List[int]]
+            The index or list of indices of the rows to remove.
+
+        status : SimulationStatus
+            The status to set for the rows.
+        """
+        self._data_frame.loc[index, ColumnNames.STATUS] = status
