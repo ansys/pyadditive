@@ -22,6 +22,8 @@ from ansys.additive import (
     SingleBeadSummary,
 )
 
+import ansys.additive.misc as misc
+
 
 class ColumnNames:
     """Column names for the parametric study data frame.
@@ -39,6 +41,7 @@ class ColumnNames:
     #: Type of simulation, e.g. single bead, porosity, microstructure.
     TYPE = "type"
     #: Identifier for the simulation.
+    #: NOTE: A unique ID for each permutation is enforced by the parametric study.
     ID = "id"
     #: Status of the simulation, e.g. pending, success, failure.
     STATUS = "status"
@@ -416,7 +419,7 @@ class ParametricStudy:
         return {
             ColumnNames.PROJECT: self._project_name,
             ColumnNames.ITERATION: iteration,
-            ColumnNames.ID: summary.input.id,
+            ColumnNames.ID: self.__create_unique_id(summary.input.id),
             ColumnNames.STATUS: SimulationStatus.COMPLETED,
             ColumnNames.MATERIAL: summary.input.material.name,
             ColumnNames.HEATER_TEMPERATURE: summary.input.machine.heater_temperature,
@@ -522,7 +525,7 @@ class ParametricStudy:
                                     ColumnNames.ITERATION: iteration,
                                     ColumnNames.PRIORITY: priority,
                                     ColumnNames.TYPE: SimulationType.SINGLE_BEAD,
-                                    ColumnNames.ID: f"sb_{iteration}_{sb_input.id}",
+                                    ColumnNames.ID: self.__create_unique_id(f"sb_{iteration}_{sb_input.id}"),
                                     ColumnNames.STATUS: SimulationStatus.PENDING,
                                     ColumnNames.MATERIAL: material_name,
                                     ColumnNames.HEATER_TEMPERATURE: t,
@@ -690,7 +693,7 @@ class ParametricStudy:
                                                     ColumnNames.ITERATION: iteration,
                                                     ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.POROSITY,
-                                                    ColumnNames.ID: f"por_{iteration}_{input.id}",
+                                                    ColumnNames.ID: self.__create_unique_id(f"por_{iteration}_{input.id}"),
                                                     ColumnNames.STATUS: SimulationStatus.PENDING,
                                                     ColumnNames.MATERIAL: material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
@@ -943,7 +946,7 @@ class ParametricStudy:
                                                     ColumnNames.ITERATION: iteration,
                                                     ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.MICROSTRUCTURE,
-                                                    ColumnNames.ID: f"micro_{iteration}_{input.id}",
+                                                    ColumnNames.ID: self.__create_unique_id(f"micro_{iteration}_{input.id}"),
                                                     ColumnNames.STATUS: SimulationStatus.PENDING,
                                                     ColumnNames.MATERIAL: material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
@@ -1044,6 +1047,9 @@ class ParametricStudy:
                 print(f"Invalid simulation type: {row[ColumnNames.TYPE]} for {row[ColumnNames.ID]}, skipping")
                 continue
 
+        # TODO: Add support for running multiple simulations in parallel
+        # once issue https://github.com/ansys-internal/pyadditive/issues/9
+        # is resolved
         summaries = additive.simulate(inputs)
 
         self.update(summaries)
@@ -1239,7 +1245,7 @@ class ParametricStudy:
             dict[ColumnNames.PROJECT] = self.project_name
             dict[ColumnNames.ITERATION] = iteration
             dict[ColumnNames.PRIORITY] = priority
-            dict[ColumnNames.ID] = input.id
+            dict[ColumnNames.ID] = self.__create_unique_id(input.id)
             dict[ColumnNames.STATUS] = status
             dict[ColumnNames.MATERIAL] = input.material.name
             dict[ColumnNames.LASER_POWER] = input.machine.laser_power
@@ -1276,3 +1282,23 @@ class ParametricStudy:
             The status to set for the rows.
         """
         self._data_frame.loc[index, ColumnNames.STATUS] = status
+
+    def __create_unique_id(self, prefix: Optional[str] = None) -> str:
+        """Create a unique simulation ID for a permutation.
+
+        Parameters
+        ----------
+        prefix : str
+            The prefix to use for the ID.
+
+        Returns
+        -------
+        str
+            The unique ID. The returned ID will be equal to ``prefix`` if ``prefix``
+            is unique.
+        """
+
+        id = prefix or ("sim_" + misc.short_uuid())
+        while self._data_frame[ColumnNames.ID].str.match(f"{id}").any():
+            id = (prefix or "sim") + "_" + misc.short_uuid()
+        return id
