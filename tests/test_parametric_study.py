@@ -877,47 +877,46 @@ def test_update_raises_error_for_unknown_summary_type():
     with pytest.raises(TypeError):
         study.update([summary])
 
-class TestCreateMachine(TestCase):
-    def test_create_machine_assigns_all_values(self):
-        # arrange
-        study = ps.ParametricStudy(project_name="test_study")
-        power = 50
-        speed = 1.2
-        layer_thickness = 40e-6
-        beam_diameter = 75e-6
-        heater_temperature = 120
-        start_angle = 15
-        rotation_angle = 22
-        hatch_spacing = 110e-6
-        stripe_width = 5e-3
-        series = pd.Series({
-            ps.ColumnNames.LASER_POWER: power,
-            ps.ColumnNames.SCAN_SPEED: speed,
-            ps.ColumnNames.LAYER_THICKNESS: layer_thickness,
-            ps.ColumnNames.BEAM_DIAMETER: beam_diameter,
-            ps.ColumnNames.HEATER_TEMPERATURE: heater_temperature,
-            ps.ColumnNames.START_ANGLE: start_angle,
-            ps.ColumnNames.ROTATION_ANGLE: rotation_angle,
-            ps.ColumnNames.HATCH_SPACING: hatch_spacing,
-            ps.ColumnNames.STRIPE_WIDTH: stripe_width,
-        })
+def test_create_machine_assigns_all_values():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    power = 50
+    speed = 1.2
+    layer_thickness = 40e-6
+    beam_diameter = 75e-6
+    heater_temperature = 120
+    start_angle = 15
+    rotation_angle = 22
+    hatch_spacing = 110e-6
+    stripe_width = 5e-3
+    series = pd.Series({
+        ps.ColumnNames.LASER_POWER: power,
+        ps.ColumnNames.SCAN_SPEED: speed,
+        ps.ColumnNames.LAYER_THICKNESS: layer_thickness,
+        ps.ColumnNames.BEAM_DIAMETER: beam_diameter,
+        ps.ColumnNames.HEATER_TEMPERATURE: heater_temperature,
+        ps.ColumnNames.START_ANGLE: start_angle,
+        ps.ColumnNames.ROTATION_ANGLE: rotation_angle,
+        ps.ColumnNames.HATCH_SPACING: hatch_spacing,
+        ps.ColumnNames.STRIPE_WIDTH: stripe_width,
+    })
 
-        # act
-        machine = study._ParametricStudy__create_machine(series)
+    # act
+    machine = study._ParametricStudy__create_machine(series)
 
-        # assert
-        assert isinstance(machine, AdditiveMachine)
-        assert machine.laser_power == power
-        assert machine.scan_speed == speed
-        assert machine.layer_thickness == layer_thickness
-        assert machine.beam_diameter == beam_diameter
-        assert machine.heater_temperature == heater_temperature
-        assert machine.starting_layer_angle == start_angle
-        assert machine.layer_rotation_angle == rotation_angle
-        assert machine.hatch_spacing == hatch_spacing
-        assert machine.slicing_stripe_width == stripe_width
+    # assert
+    assert isinstance(machine, AdditiveMachine)
+    assert machine.laser_power == power
+    assert machine.scan_speed == speed
+    assert machine.layer_thickness == layer_thickness
+    assert machine.beam_diameter == beam_diameter
+    assert machine.heater_temperature == heater_temperature
+    assert machine.starting_layer_angle == start_angle
+    assert machine.layer_rotation_angle == rotation_angle
+    assert machine.hatch_spacing == hatch_spacing
+    assert machine.slicing_stripe_width == stripe_width
 
-    def test_create_machine_assigns_default_values(self):
+    def test_create_machine_assigns_default_values():
         # arrange
         study = ps.ParametricStudy(project_name="test_study")
         power = 50
@@ -1351,3 +1350,18 @@ def test_set_status_changes_status():
             assert status1[i] != status2[i]
         else:
             assert status2[i] == status1[i]
+
+def test_create_unique_id_returns_unique_id():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    study.add_inputs([SingleBeadInput(id="test_id_1")])
+
+    # act
+    id = study._ParametricStudy__create_unique_id(prefix="test_id_1")
+    id2 = study._ParametricStudy__create_unique_id()
+
+    # assert
+    assert id.startswith("test_id_1")
+    assert id != "test_id_1"
+    assert id2.startswith("sim_")
+    assert len(id2) > len("sim_")

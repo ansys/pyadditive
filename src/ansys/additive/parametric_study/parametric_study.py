@@ -22,6 +22,8 @@ from ansys.additive import (
     SingleBeadSummary,
 )
 
+import ansys.additive.misc as misc
+
 
 class ColumnNames:
     """Column names for the parametric study data frame.
@@ -1052,6 +1054,9 @@ class ParametricStudy:
                 print(f"Invalid simulation type: {row[ColumnNames.TYPE]} for {row[ColumnNames.ID]}, skipping")
                 continue
 
+        # TODO: Add support for running multiple simulations in parallel
+        # once issue https://github.com/ansys-internal/pyadditive/issues/9
+        # is resolved
         summaries = additive.simulate(inputs)
 
         self.update(summaries)
@@ -1247,7 +1252,7 @@ class ParametricStudy:
             dict[ColumnNames.PROJECT] = self.project_name
             dict[ColumnNames.ITERATION] = iteration
             dict[ColumnNames.PRIORITY] = priority
-            dict[ColumnNames.ID] = input.id
+            dict[ColumnNames.ID] = self.__create_unique_id(input.id)
             dict[ColumnNames.STATUS] = status
             dict[ColumnNames.MATERIAL] = input.material.name
             dict[ColumnNames.LASER_POWER] = input.machine.laser_power
@@ -1284,3 +1289,23 @@ class ParametricStudy:
             The status to set for the rows.
         """
         self._data_frame.loc[index, ColumnNames.STATUS] = status
+
+    def __create_unique_id(self, prefix: Optional[str] = None) -> str:
+        """Create a unique simulation ID for a permutation.
+
+        Parameters
+        ----------
+        prefix : str
+            The prefix to use for the ID.
+
+        Returns
+        -------
+        str
+            The unique ID. The returned ID will be equal to ``prefix`` if ``prefix``
+            is unique.
+        """
+
+        id = prefix or ("sim_" + misc.short_uuid())
+        while self._data_frame[ColumnNames.ID].str.match(f"{id}").any():
+            id = (prefix or "sim") + "_" + misc.short_uuid()
+        return id
