@@ -1010,7 +1010,8 @@ class ParametricStudy:
             The number of workers to use for multiprocessing. Each worker
             will need to be able to check out an Additive license.
         threads : int, optional
-            The number of threads to use for each worker. Each thread will
+            The number of threads to use for each worker. Support for four threads
+            is included with the Additive license. Each additional thread will
             check out an HPC license.
         """
         if type is None:
