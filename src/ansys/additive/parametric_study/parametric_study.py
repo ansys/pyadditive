@@ -21,7 +21,6 @@ from ansys.additive import (
     SingleBeadInput,
     SingleBeadSummary,
 )
-
 import ansys.additive.misc as misc
 
 
@@ -525,7 +524,9 @@ class ParametricStudy:
                                     ColumnNames.ITERATION: iteration,
                                     ColumnNames.PRIORITY: priority,
                                     ColumnNames.TYPE: SimulationType.SINGLE_BEAD,
-                                    ColumnNames.ID: self.__create_unique_id(f"sb_{iteration}_{sb_input.id}"),
+                                    ColumnNames.ID: self.__create_unique_id(
+                                        f"sb_{iteration}_{sb_input.id}"
+                                    ),
                                     ColumnNames.STATUS: SimulationStatus.PENDING,
                                     ColumnNames.MATERIAL: material_name,
                                     ColumnNames.HEATER_TEMPERATURE: t,
@@ -693,7 +694,9 @@ class ParametricStudy:
                                                     ColumnNames.ITERATION: iteration,
                                                     ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.POROSITY,
-                                                    ColumnNames.ID: self.__create_unique_id(f"por_{iteration}_{input.id}"),
+                                                    ColumnNames.ID: self.__create_unique_id(
+                                                        f"por_{iteration}_{input.id}"
+                                                    ),
                                                     ColumnNames.STATUS: SimulationStatus.PENDING,
                                                     ColumnNames.MATERIAL: material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
@@ -946,7 +949,9 @@ class ParametricStudy:
                                                     ColumnNames.ITERATION: iteration,
                                                     ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.MICROSTRUCTURE,
-                                                    ColumnNames.ID: self.__create_unique_id(f"micro_{iteration}_{input.id}"),
+                                                    ColumnNames.ID: self.__create_unique_id(
+                                                        f"micro_{iteration}_{input.id}"
+                                                    ),
                                                     ColumnNames.STATUS: SimulationStatus.PENDING,
                                                     ColumnNames.MATERIAL: material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
@@ -1017,8 +1022,7 @@ class ParametricStudy:
 
         df = self._data_frame
         view = df[
-            (df[ColumnNames.STATUS] == SimulationStatus.PENDING)
-            & df[ColumnNames.TYPE].isin(type)
+            (df[ColumnNames.STATUS] == SimulationStatus.PENDING) & df[ColumnNames.TYPE].isin(type)
         ]
         if priority is not None:
             view = view[view[ColumnNames.PRIORITY] == priority]
@@ -1044,7 +1048,9 @@ class ParametricStudy:
             elif sim_type == SimulationType.MICROSTRUCTURE:
                 inputs.append(self._create_microstructure_input(row, material, machine))
             else:
-                print(f"Invalid simulation type: {row[ColumnNames.TYPE]} for {row[ColumnNames.ID]}, skipping")
+                print(
+                    f"Invalid simulation type: {row[ColumnNames.TYPE]} for {row[ColumnNames.ID]}, skipping"
+                )
                 continue
 
         # TODO: Add support for running multiple simulations in parallel
@@ -1061,13 +1067,23 @@ class ParametricStudy:
             layer_thickness=row[ColumnNames.LAYER_THICKNESS],
             beam_diameter=row[ColumnNames.BEAM_DIAMETER],
             heater_temperature=row[ColumnNames.HEATER_TEMPERATURE],
-            starting_layer_angle=row[ColumnNames.START_ANGLE] if not np.isnan(row[ColumnNames.START_ANGLE]) else MachineConstants.DEFAULT_STARTING_LAYER_ANGLE,
-            layer_rotation_angle=row[ColumnNames.ROTATION_ANGLE] if not np.isnan(row[ColumnNames.ROTATION_ANGLE]) else MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE,
-            hatch_spacing=row[ColumnNames.HATCH_SPACING] if not np.isnan(row[ColumnNames.HATCH_SPACING]) else MachineConstants.DEFAULT_HATCH_SPACING,
-            slicing_stripe_width=row[ColumnNames.STRIPE_WIDTH] if not np.isnan(row[ColumnNames.STRIPE_WIDTH]) else MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH,
+            starting_layer_angle=row[ColumnNames.START_ANGLE]
+            if not np.isnan(row[ColumnNames.START_ANGLE])
+            else MachineConstants.DEFAULT_STARTING_LAYER_ANGLE,
+            layer_rotation_angle=row[ColumnNames.ROTATION_ANGLE]
+            if not np.isnan(row[ColumnNames.ROTATION_ANGLE])
+            else MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE,
+            hatch_spacing=row[ColumnNames.HATCH_SPACING]
+            if not np.isnan(row[ColumnNames.HATCH_SPACING])
+            else MachineConstants.DEFAULT_HATCH_SPACING,
+            slicing_stripe_width=row[ColumnNames.STRIPE_WIDTH]
+            if not np.isnan(row[ColumnNames.STRIPE_WIDTH])
+            else MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH,
         )
 
-    def _create_single_bead_input(self, row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine) -> SingleBeadInput:
+    def _create_single_bead_input(
+        self, row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine
+    ) -> SingleBeadInput:
         return SingleBeadInput(
             id=row[ColumnNames.ID],
             material=material,
@@ -1075,7 +1091,9 @@ class ParametricStudy:
             bead_length=row[ColumnNames.SINGLE_BEAD_LENGTH],
         )
 
-    def _create_porosity_input(self, row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine) -> PorosityInput:
+    def _create_porosity_input(
+        self, row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine
+    ) -> PorosityInput:
         return PorosityInput(
             id=row[ColumnNames.ID],
             material=material,
@@ -1085,7 +1103,9 @@ class ParametricStudy:
             size_z=row[ColumnNames.POROSITY_SIZE_Z],
         )
 
-    def _create_microstructure_input(self, row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine) -> MicrostructureInput:
+    def _create_microstructure_input(
+        self, row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine
+    ) -> MicrostructureInput:
         use_provided_thermal_param = (
             not np.isnan(row[ColumnNames.COOLING_RATE])
             or not np.isnan(row[ColumnNames.THERMAL_GRADIENT])
@@ -1102,14 +1122,30 @@ class ParametricStudy:
             sample_size_z=row[ColumnNames.MICRO_SIZE_Z],
             sensor_dimension=row[ColumnNames.MICRO_SENSOR_DIM],
             use_provided_thermal_parameters=use_provided_thermal_param,
-            sample_min_x=row[ColumnNames.MICRO_MIN_X] if not np.isnan(row[ColumnNames.MICRO_MIN_X]) else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
-            sample_min_y=row[ColumnNames.MICRO_MIN_Y] if not np.isnan(row[ColumnNames.MICRO_MIN_Y]) else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
-            sample_min_z=row[ColumnNames.MICRO_MIN_Z] if not np.isnan(row[ColumnNames.MICRO_MIN_Z]) else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
-            cooling_rate=row[ColumnNames.COOLING_RATE] if not np.isnan(row[ColumnNames.COOLING_RATE]) else MicrostructureInput.DEFAULT_COOLING_RATE,
-            thermal_gradient=row[ColumnNames.THERMAL_GRADIENT] if not np.isnan(row[ColumnNames.THERMAL_GRADIENT]) else MicrostructureInput.DEFAULT_THERMAL_GRADIENT,
-            melt_pool_width=row[ColumnNames.MICRO_MELT_POOL_WIDTH] if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_WIDTH]) else MicrostructureInput.DEFAULT_MELT_POOL_WIDTH,
-            melt_pool_depth=row[ColumnNames.MICRO_MELT_POOL_DEPTH] if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_DEPTH]) else MicrostructureInput.DEFAULT_MELT_POOL_DEPTH,
-            random_seed=row[ColumnNames.RANDOM_SEED] if not np.isnan(row[ColumnNames.RANDOM_SEED]) else MicrostructureInput.DEFAULT_RANDOM_SEED,
+            sample_min_x=row[ColumnNames.MICRO_MIN_X]
+            if not np.isnan(row[ColumnNames.MICRO_MIN_X])
+            else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
+            sample_min_y=row[ColumnNames.MICRO_MIN_Y]
+            if not np.isnan(row[ColumnNames.MICRO_MIN_Y])
+            else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
+            sample_min_z=row[ColumnNames.MICRO_MIN_Z]
+            if not np.isnan(row[ColumnNames.MICRO_MIN_Z])
+            else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
+            cooling_rate=row[ColumnNames.COOLING_RATE]
+            if not np.isnan(row[ColumnNames.COOLING_RATE])
+            else MicrostructureInput.DEFAULT_COOLING_RATE,
+            thermal_gradient=row[ColumnNames.THERMAL_GRADIENT]
+            if not np.isnan(row[ColumnNames.THERMAL_GRADIENT])
+            else MicrostructureInput.DEFAULT_THERMAL_GRADIENT,
+            melt_pool_width=row[ColumnNames.MICRO_MELT_POOL_WIDTH]
+            if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_WIDTH])
+            else MicrostructureInput.DEFAULT_MELT_POOL_WIDTH,
+            melt_pool_depth=row[ColumnNames.MICRO_MELT_POOL_DEPTH]
+            if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_DEPTH])
+            else MicrostructureInput.DEFAULT_MELT_POOL_DEPTH,
+            random_seed=row[ColumnNames.RANDOM_SEED]
+            if not np.isnan(row[ColumnNames.RANDOM_SEED])
+            else MicrostructureInput.DEFAULT_RANDOM_SEED,
         )
 
     def update(
@@ -1197,7 +1233,13 @@ class ParametricStudy:
         self._data_frame.loc[idx, ColumnNames.XZ_AVERAGE_GRAIN_SIZE] = summary.xz_average_grain_size
         self._data_frame.loc[idx, ColumnNames.YZ_AVERAGE_GRAIN_SIZE] = summary.yz_average_grain_size
 
-    def add_inputs(self, inputs: List[Union[SingleBeadInput, PorosityInput, MicrostructureInput]], iteration: int = DEFAULT_ITERATION, priority: int = DEFAULT_PRIORITY, status: SimulationStatus = SimulationStatus.PENDING):
+    def add_inputs(
+        self,
+        inputs: List[Union[SingleBeadInput, PorosityInput, MicrostructureInput]],
+        iteration: int = DEFAULT_ITERATION,
+        priority: int = DEFAULT_PRIORITY,
+        status: SimulationStatus = SimulationStatus.PENDING,
+    ):
         """Add new rows to the parametric study data frame for the specified simulation inputs.
 
         Parameters
@@ -1258,7 +1300,9 @@ class ParametricStudy:
             dict[ColumnNames.HATCH_SPACING] = input.machine.hatch_spacing
             dict[ColumnNames.STRIPE_WIDTH] = input.machine.slicing_stripe_width
 
-            self._data_frame = pd.concat([self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True)
+            self._data_frame = pd.concat(
+                [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
+            )
 
     def remove(self, index: Union[int, List[int]]):
         """Remove rows from the parametric study data frame.
