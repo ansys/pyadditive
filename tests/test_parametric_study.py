@@ -740,6 +740,7 @@ def test_generate_microstructure_permutations_only_adds_valid_permutations():
     assert df.loc[0, ps.ColumnNames.LASER_POWER] == MachineConstants.DEFAULT_LASER_POWER
     assert df.loc[0, ps.ColumnNames.SCAN_SPEED] == MachineConstants.DEFAULT_SCAN_SPEED
 
+
 def test_update_updates_error_status():
     # arrange
     study = ps.ParametricStudy(project_name="test_study")
@@ -758,6 +759,7 @@ def test_update_updates_error_status():
     assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.PENDING
     assert df2.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.ERROR
     assert df2.loc[0, ps.ColumnNames.ERROR_MESSAGE] == "error message"
+
 
 def test_update_updates_single_bead_permutation():
     # arrange
