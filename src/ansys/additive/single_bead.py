@@ -37,6 +37,16 @@ class SingleBeadInput:
                 repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
         return repr
 
+    def __eq__(self, __o: object) -> bool:
+        if not isinstance(__o, SingleBeadInput):
+            return False
+        return (
+            self.id == __o.id
+            and self.bead_length == __o.bead_length
+            and self.machine == __o.machine
+            and self.material == __o.material
+        )
+
     def __validate_range(self, value, min, max, name):
         if value < min or value > max:
             raise ValueError("{} must be between {} and {}.".format(name, min, max))
@@ -130,9 +140,8 @@ class MeltPool:
         )
         self._df.index.name = "bead_length"
 
-    @property
     def data_frame(self) -> DataFrame:
-        """:class:`Pandas DataFrame <pandas.DataFrame>` containing melt pool data.
+        """Return :class:`Pandas DataFrame <pandas.DataFrame>` containing melt pool data.
 
         Values are in meters.
 
@@ -150,7 +159,7 @@ class MeltPool:
               Reference depth is the depth of the entire melt pool minus the powder
               layer thickness, or, the depth of penetration into the substrate.
         """
-        return self._df
+        return self._df.copy()
 
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, MeltPool):

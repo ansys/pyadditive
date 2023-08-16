@@ -32,6 +32,7 @@ import ansys.additive.misc as misc
 from ansys.additive.porosity import PorositySummary
 from ansys.additive.progress_logger import ProgressLogger, ProgressState
 from ansys.additive.server_utils import find_open_port, launch_server
+from ansys.additive.simulation import SimulationError
 from ansys.additive.single_bead import SingleBeadSummary
 from ansys.additive.thermal_history import ThermalHistoryInput, ThermalHistorySummary
 
@@ -219,7 +220,8 @@ class Additive:
         -------
         A :class:`SingleBeadSummary`, :class:`PorositySummary`,
         :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`,
-        or, if a list of inputs was provided, a list of these summary types.
+        :class:`SimulationError`, or, if a list of inputs was provided,
+        a list of these types.
 
         """
         if type(inputs) is not list:
@@ -257,7 +259,8 @@ class Additive:
         -------
         One of the follow summary objects.
         :class:`SingleBeadSummary`, :class:`PorositySummary`,
-        :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`
+        :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`,
+        :class:`SimulationError`
 
         """
         logger = None
@@ -267,26 +270,30 @@ class Additive:
         if input.material == AdditiveMaterial():
             raise ValueError("Material must be specified")
 
-        request = None
-        if isinstance(input, ThermalHistoryInput):
-            return self._simulate_thermal_history(input, USER_DATA_PATH, logger)
-        else:
-            request = input._to_simulation_request()
+        try:
+            request = None
+            if isinstance(input, ThermalHistoryInput):
+                return self._simulate_thermal_history(input, USER_DATA_PATH, logger)
+            else:
+                request = input._to_simulation_request()
 
-        for response in self._simulation_stub.Simulate(request):
-            if response.HasField("progress"):
-                if logger:
-                    logger.log_progress(response.progress)
-                if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
-                    raise Exception(response.progress.message)
-            if response.HasField("melt_pool"):
-                return SingleBeadSummary(input, response.melt_pool)
-            if response.HasField("porosity_result"):
-                return PorositySummary(input, response.porosity_result)
-            if response.HasField("microstructure_result"):
-                return MicrostructureSummary(
-                    input, response.microstructure_result, self._user_data_path
-                )
+            for response in self._simulation_stub.Simulate(request):
+                if response.HasField("progress"):
+                    if logger:
+                        logger.log_progress(response.progress)
+                    if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
+                        raise Exception(response.progress.message)
+                if response.HasField("melt_pool"):
+                    return SingleBeadSummary(input, response.melt_pool)
+                if response.HasField("porosity_result"):
+                    return PorositySummary(input, response.porosity_result)
+                if response.HasField("microstructure_result"):
+                    return MicrostructureSummary(
+                        input, response.microstructure_result, self._user_data_path
+                    )
+        except Exception as e:
+            print(f"Error: {e}")
+            return SimulationError(input, str(e))
 
     def get_materials_list(self) -> list[str]:
         """Retrieve a list of material names used in additive simulations.

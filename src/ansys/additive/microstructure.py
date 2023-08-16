@@ -128,6 +128,28 @@ class MicrostructureInput:
                 repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
         return repr
 
+    def __eq__(self, __o: object) -> bool:
+        if not isinstance(__o, MicrostructureInput):
+            return False
+        return (
+            self.id == __o.id
+            and self.sample_min_x == __o.sample_min_x
+            and self.sample_min_y == __o.sample_min_y
+            and self.sample_min_z == __o.sample_min_z
+            and self.sample_size_x == __o.sample_size_x
+            and self.sample_size_y == __o.sample_size_y
+            and self.sample_size_z == __o.sample_size_z
+            and self.sensor_dimension == __o.sensor_dimension
+            and self.use_provided_thermal_parameters == __o.use_provided_thermal_parameters
+            and self.cooling_rate == __o.cooling_rate
+            and self.thermal_gradient == __o.thermal_gradient
+            and self.melt_pool_width == __o.melt_pool_width
+            and self.melt_pool_depth == __o.melt_pool_depth
+            and self.random_seed == __o.random_seed
+            and self.machine == __o.machine
+            and self.material == __o.material
+        )
+
     @staticmethod
     def __validate_range(value, min, max, name):
         if value < min or value > max:

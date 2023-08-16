@@ -15,7 +15,7 @@ def test_MeltPool_init_converts_MeltPoolMessage():
     melt_pool = MeltPool(test_utils.get_test_melt_pool_message())
 
     # assert
-    df = melt_pool.data_frame
+    df = melt_pool.data_frame()
     assert df is not None
     assert len(df.index) == 1
     assert df.index[0] == 1
