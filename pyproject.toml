@@ -56,7 +56,7 @@ doc = [
     "numpydoc==1.5.0",
     "pypandoc==1.8.1",
     "pyvista==0.37.0",
-    "Sphinx==7.1.2",
+    "Sphinx==7.2.0",
     "sphinx-autoapi==2.1.1",
     "sphinx-autodoc-typehints==1.24.0",
     "sphinx-copybutton==0.5.1",
