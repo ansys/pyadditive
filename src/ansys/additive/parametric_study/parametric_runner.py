@@ -66,6 +66,8 @@ class ParametricRunner:
                 SimulationType.POROSITY,
                 SimulationType.MICROSTRUCTURE,
             ]
+        elif not isinstance(type, list):
+            type = [type]
 
         view = df[
             (df[ColumnNames.STATUS] == SimulationStatus.PENDING) & df[ColumnNames.TYPE].isin(type)
@@ -93,7 +95,7 @@ class ParametricRunner:
                 inputs.append(ParametricRunner._create_porosity_input(row, material, machine))
             elif sim_type == SimulationType.MICROSTRUCTURE:
                 inputs.append(ParametricRunner._create_microstructure_input(row, material, machine))
-            else:
+            else:  # pragma: no cover
                 print(
                     f"Invalid simulation type: {row[ColumnNames.TYPE]} for {row[ColumnNames.ID]}, skipping"
                 )

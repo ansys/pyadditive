@@ -9,6 +9,7 @@ from ansys.additive import (
     MachineConstants,
     MicrostructureInput,
     PorosityInput,
+    SimulationType,
     SingleBeadInput,
 )
 from ansys.additive.additive import Additive
@@ -257,7 +258,7 @@ def test_create_microstructure_input_assigns_defaults_for_nans():
     assert input.material == material
 
 
-def test_simulate_calls_additive_simulate_correctly():
+def test_simulate_sorts_by_priority():
     # arrange
     study = ps.ParametricStudy(project_name="test_study")
     material = AdditiveMaterial(name="test_material")
@@ -273,6 +274,73 @@ def test_simulate_calls_additive_simulate_correctly():
 
     # act
     pr.simulate(study.data_frame(), mock_additive)
+
+    # assert
+    mock_additive.simulate.assert_called_once_with(inputs)
+
+
+def test_simulate_filters_by_priority():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    material = AdditiveMaterial(name="test_material")
+    sb = SingleBeadInput(id="test_1", material=material)
+    p = PorosityInput(id="test_2", material=material)
+    ms = MicrostructureInput(id="test_3", material=material)
+    study.add_inputs([sb], priority=1)
+    study.add_inputs([p], priority=2)
+    study.add_inputs([ms], priority=3)
+    inputs = [sb]
+    mock_additive = create_autospec(Additive)
+    mock_additive.get_material.return_value = material
+
+    # act
+    pr.simulate(study.data_frame(), mock_additive, priority=1)
+
+    # assert
+    mock_additive.simulate.assert_called_once_with(inputs)
+
+
+def test_simulate_filters_by_single_simulation_type():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    material = AdditiveMaterial(name="test_material")
+    sb = SingleBeadInput(id="test_1", material=material)
+    p = PorosityInput(id="test_2", material=material)
+    ms = MicrostructureInput(id="test_3", material=material)
+    study.add_inputs([sb], priority=1)
+    study.add_inputs([p], priority=2)
+    study.add_inputs([ms], priority=3)
+    inputs = [p]
+    mock_additive = create_autospec(Additive)
+    mock_additive.get_material.return_value = material
+
+    # act
+    pr.simulate(study.data_frame(), mock_additive, type=SimulationType.POROSITY)
+
+    # assert
+    mock_additive.simulate.assert_called_once_with(inputs)
+
+
+def test_simulate_filters_by_simulation_type_list():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    material = AdditiveMaterial(name="test_material")
+    sb = SingleBeadInput(id="test_1", material=material)
+    p = PorosityInput(id="test_2", material=material)
+    ms = MicrostructureInput(id="test_3", material=material)
+    study.add_inputs([sb], priority=1)
+    study.add_inputs([p], priority=2)
+    study.add_inputs([ms], priority=3)
+    inputs = [p, ms]
+    mock_additive = create_autospec(Additive)
+    mock_additive.get_material.return_value = material
+
+    # act
+    pr.simulate(
+        study.data_frame(),
+        mock_additive,
+        type=[SimulationType.POROSITY, SimulationType.MICROSTRUCTURE],
+    )
 
     # assert
     mock_additive.simulate.assert_called_once_with(inputs)
