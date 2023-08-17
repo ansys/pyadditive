@@ -23,121 +23,74 @@ from ansys.additive import (
 )
 import ansys.additive.misc as misc
 
-
-class ColumnNames:
-    """Column names for the parametric study data frame.
-
-    Values are stored internally as a :class:`Pandas DataFrame <pandas.DataFrame>`.
-    The column names are defined here.
-    """
-
-    #: Name of the parametric summary project.
-    PROJECT = "project"
-    #: Iteration number, useful for tracking the sequence of simulation groups.
-    ITERATION = "iteration"
-    #: Priority value used to determine execution order.
-    PRIORITY = "priority"
-    #: Type of simulation, e.g. single bead, porosity, microstructure.
-    TYPE = "type"
-    #: Identifier for the simulation.
-    #: NOTE: A unique ID for each permutation is enforced by the parametric study.
-    ID = "id"
-    #: Status of the simulation, e.g. pending, success, failure.
-    STATUS = "status"
-    #: Name of material used during simulation.
-    #: See :class:`AdditiveMaterial <ansys.additive.material.AdditiveMaterial>` for more information.
-    MATERIAL = "material"
-    #: Heater temperature (°C).
-    HEATER_TEMPERATURE = "heater_temperature"
-    #: Powder deposition layer thickness (m).
-    LAYER_THICKNESS = "layer_thickness"
-    #: Laser beam diameter (m).
-    BEAM_DIAMETER = "beam_diameter"
-    #: Laser power (W).
-    LASER_POWER = "laser_power"
-    #: Laser scan speed (m/s).
-    SCAN_SPEED = "scan_speed"
-    #: Hatch scan angle for first layer (°).
-    START_ANGLE = "start_angle"
-    #: Hatch rotation angle for subsequent layers (°).
-    ROTATION_ANGLE = "rotation_angle"
-    #: Hatch spacing (m).
-    HATCH_SPACING = "hatch_spacing"
-    #: Stripe width (m).
-    STRIPE_WIDTH = "stripe_width"
-    #: Energy density calculated as laser power divided by build rate (J/m^2 or J/m^3).
-    ENERGY_DENSITY = "energy_density"
-    #: Build rate, calculated as layer thickness * scan speed (m^2/s) for single bead simulations,
-    #: or as layer thickness * scan speed * hatch spacing (m^3/s) for porosity and microstructure.
-    BUILD_RATE = "build_rate"
-    #: Length of single bead to simulate (m).
-    SINGLE_BEAD_LENGTH = "single_bead_length"
-    #: Median melt pool width measured at the top of the powder layer (m).
-    MELT_POOL_WIDTH = "melt_pool_width"
-    #: Median melt pool depth measured from the top of the powder layer (m).
-    MELT_POOL_DEPTH = "melt_pool_depth"
-    #: Median melt pool length measured at the top of the powder layer (m).
-    MELT_POOL_LENGTH = "melt_pool_length"
-    #: Ratio of MELT_POOL_LENGTH to the median melt pool width at the top of the powder layer.
-    MELT_POOL_LENGTH_OVER_WIDTH = "melt_pool_length_over_width"
-    #: Median melt pool width measured at the top of the base plate (m).
-    MELT_POOL_REFERENCE_WIDTH = "melt_pool_ref_width"
-    #: Median melt pool depth measured from the top of the base plate (m).
-    MELT_POOL_REFERENCE_DEPTH = "melt_pool_ref_depth"
-    #: Ratio of MELT_POOL_REFERENCE_DEPTH to MELT_POOL_REFERENCE_WIDTH.
-    MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH = "melt_pool_ref_depth_over_width"
-    #: X dimension size of porosity sample to simulate (m).
-    POROSITY_SIZE_X = "porosity_size_x"
-    #: Y dimension size of porosity sample to simulate (m).
-    POROSITY_SIZE_Y = "porosity_size_y"
-    #: Z dimension size of porosity sample to simulate (m).
-    POROSITY_SIZE_Z = "porosity_size_z"
-    #: Relative density of simulated porosity sample.
-    RELATIVE_DENSITY = "relative_density"
-    #: Minimum X dimension position of microstructure sample (m).
-    MICRO_MIN_X = "micro_min_x"
-    #: Minimum Y dimension position of microstructure sample (m).
-    MICRO_MIN_Y = "micro_min_y"
-    #: Minimum Z dimension position of microstructure sample (m).
-    MICRO_MIN_Z = "micro_min_z"
-    #: X dimension size of microstructure sample to simulate (m).
-    MICRO_SIZE_X = "micro_size_x"
-    #: Y dimension size of microstructure sample to simulate (m).
-    MICRO_SIZE_Y = "micro_size_y"
-    #: Z dimension size of microstructure sample to simulate (m).
-    MICRO_SIZE_Z = "micro_size_z"
-    #: Sensor dimension used in microstructure simulations (m).
-    MICRO_SENSOR_DIM = "micro_sensor_dim"
-    #: User provided cooling rate used in microstructure simulations (°K/s).
-    COOLING_RATE = "cooling_rate"
-    #: User provided thermal gradient used in microstructure simulations (°K/m).
-    THERMAL_GRADIENT = "thermal_gradient"
-    #: User provided melt pool width used in microstructure simulation (m).
-    MICRO_MELT_POOL_WIDTH = "micro_melt_pool_width"
-    #: User provided melt pool depth used in microstructure simulation (m).
-    MICRO_MELT_POOL_DEPTH = "micro_melt_pool_depth"
-    #: User provided random seed used in microstructure simulation.
-    RANDOM_SEED = "random_seed"
-    #: Average microstructure grain size in the XY plane (microns).
-    XY_AVERAGE_GRAIN_SIZE = "xy_average_grain_size"
-    #: Average microstructure grain size in the XZ plane (microns).
-    XZ_AVERAGE_GRAIN_SIZE = "xz_average_grain_size"
-    #: Average microstructure grain size in the YY plane (microns).
-    YZ_AVERAGE_GRAIN_SIZE = "yz_average_grain_size"
-    #: Error message if simulation failed.
-    ERROR_MESSAGE = "error_message"
+from .constants import DEFAULT_ITERATION, DEFAULT_PRIORITY, ColumnNames
+from .parametric_runner import ParametricRunner
+from .parametric_utils import build_rate, energy_density
 
 
 class ParametricStudy:
     """Data storage and utility methods for a parametric study."""
 
-    DEFAULT_ITERATION = 0
-    DEFAULT_PRIORITY = 1
-
     def __init__(self, project_name: str):
         self._project_name = project_name
         columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
         self._data_frame = pd.DataFrame(columns=columns)
+
+    @property
+    def project_name(self):
+        """Name of the parametric study."""
+        return self._project_name
+
+    def __eq__(self, other):
+        return self.project_name == other.project_name and self._data_frame.equals(
+            other._data_frame
+        )
+
+    def data_frame(self) -> pd.DataFrame:
+        """Return a copy of the internal parametric study :class:`DataFrame <pandas.DataFrame>`.
+        See :class:`ColumnNames` for the column names used in the returned ``DataFrame``.
+        .. note:: Updating the returned ``DataFrame`` will not update the internal ``DataFrame``."""
+        return self._data_frame.copy()
+
+    def run_simulations(
+        self,
+        additive: Additive,
+        type: Optional[List[SimulationType]] = None,
+        priority: Optional[int] = None,
+        # workers: int = 1,
+        # threads: int = 4,
+    ):
+        """Run the simulations in the parametric study with ``SimulationStatus.PENDING`` in the
+        ``ColumnNames.STATUS`` column.
+        Execution order is determined by the values in the ``ColumnNames.PRIORITY`` column.
+        Lower values are interpreted as having higher priority and will be run first.
+        Parameters
+        ----------
+        additive: Additive
+            The :class:`Additive <ansys.additive.additive.Additive>` service to use for running simulations.
+        type : Optional[List[SimulationType]], optional
+            The type of simulations to run, ``None`` indicates all types.
+        priority : Optional[int]
+            The priority of simulations to run, ``None`` indicates all priorities.
+        """
+        # TODO: Add support for running multiple simulations in parallel
+        # once issue https://github.com/ansys-internal/pyadditive/issues/9
+        # is resolved
+        # workers : int, optional
+        #     The number of workers to use for multiprocessing. Each worker
+        #     will need to be able to check out an Additive license.
+        # threads : int, optional
+        #     The number of threads to use for each worker. Each thread will
+        #     check out an HPC license.
+        summaries = ParametricRunner.simulate(
+            self.data_frame(),
+            additive,
+            type=type,
+            priority=priority,
+            # workers=workers,
+            # threads=threads,
+        )
+        self.update(summaries)
 
     def save(self, filename):
         """Save the parametric study to a file.
@@ -168,22 +121,6 @@ class ParametricStudy:
         """
         with open(filename, "rb") as f:
             return dill.load(f)
-
-    @property
-    def project_name(self):
-        """Name of the parametric study."""
-        return self._project_name
-
-    def __eq__(self, other):
-        return self.project_name == other.project_name and self._data_frame.equals(
-            other._data_frame
-        )
-
-    def data_frame(self) -> pd.DataFrame:
-        """Return a copy of the internal parametric study :class:`DataFrame <pandas.DataFrame>`.
-        See :class:`ColumnNames` for the column names used in the returned ``DataFrame``.
-        .. note:: Updating the returned ``DataFrame`` will not update the internal ``DataFrame``."""
-        return self._data_frame.copy()
 
     def add_summaries(
         self,
@@ -226,17 +163,15 @@ class ParametricStudy:
             if median_mp[MeltPoolColumnNames.WIDTH]
             else np.nan
         )
-        br = ParametricStudy.build_rate(
-            summary.input.machine.scan_speed, summary.input.machine.layer_thickness
-        )
-        ed = ParametricStudy.energy_density(
+        br = build_rate(summary.input.machine.scan_speed, summary.input.machine.layer_thickness)
+        ed = energy_density(
             summary.input.machine.laser_power,
             summary.input.machine.scan_speed,
             summary.input.machine.layer_thickness,
         )
         row = pd.Series(
             {
-                **self.__common_param_to_dict(summary, iteration),
+                **self._common_param_to_dict(summary, iteration),
                 ColumnNames.TYPE: SimulationType.SINGLE_BEAD,
                 ColumnNames.BUILD_RATE: br,
                 ColumnNames.ENERGY_DENSITY: ed,
@@ -257,12 +192,12 @@ class ParametricStudy:
         self._data_frame = pd.concat([self._data_frame, row.to_frame().T], ignore_index=True)
 
     def _add_porosity_summary(self, summary: PorositySummary, iteration: int = DEFAULT_ITERATION):
-        br = ParametricStudy.build_rate(
+        br = build_rate(
             summary.input.machine.scan_speed,
             summary.input.machine.layer_thickness,
             summary.input.machine.hatch_spacing,
         )
-        ed = ParametricStudy.energy_density(
+        ed = energy_density(
             summary.input.machine.laser_power,
             summary.input.machine.scan_speed,
             summary.input.machine.layer_thickness,
@@ -270,7 +205,7 @@ class ParametricStudy:
         )
         row = pd.Series(
             {
-                **self.__common_param_to_dict(summary, iteration),
+                **self._common_param_to_dict(summary, iteration),
                 ColumnNames.TYPE: SimulationType.POROSITY,
                 ColumnNames.BUILD_RATE: br,
                 ColumnNames.ENERGY_DENSITY: ed,
@@ -285,12 +220,12 @@ class ParametricStudy:
     def _add_microstructure_summary(
         self, summary: MicrostructureSummary, iteration: int = DEFAULT_ITERATION
     ):
-        br = ParametricStudy.build_rate(
+        br = build_rate(
             summary.input.machine.scan_speed,
             summary.input.machine.layer_thickness,
             summary.input.machine.hatch_spacing,
         )
-        ed = ParametricStudy.energy_density(
+        ed = energy_density(
             summary.input.machine.laser_power,
             summary.input.machine.scan_speed,
             summary.input.machine.layer_thickness,
@@ -306,7 +241,7 @@ class ParametricStudy:
 
         row = pd.Series(
             {
-                **self.__common_param_to_dict(summary, iteration),
+                **self._common_param_to_dict(summary, iteration),
                 ColumnNames.TYPE: SimulationType.MICROSTRUCTURE,
                 ColumnNames.BUILD_RATE: br,
                 ColumnNames.ENERGY_DENSITY: ed,
@@ -329,72 +264,7 @@ class ParametricStudy:
         )
         self._data_frame = pd.concat([self._data_frame, row.to_frame().T], ignore_index=True)
 
-    @staticmethod
-    def build_rate(
-        scan_speed: float, layer_thickness: float, hatch_spacing: Optional[float] = None
-    ) -> float:
-        """Calculate the build rate.
-
-        This is an approximate value useful for comparison but not for an accurate prediction
-        of build time. The returned value is simply the product of the scan speed, layer thickness,
-        and hatch spacing (if provided).
-
-        Parameters
-        ----------
-        scan_speed : float
-            Laser scan speed.
-        layer_thickness : float
-            Powder deposit layer thickness.
-        hatch_spacing : float, optional
-            Distance between hatch scan lines.
-
-        Returns
-        -------
-        float
-            The volumetric build rate if hatch spacing is provided,
-            otherwise an area build rate. If input units are m/s, m, m,
-            the output units are m^3/s or m^2/s.
-
-        """
-        if hatch_spacing is None:
-            return scan_speed * layer_thickness
-        return scan_speed * layer_thickness * hatch_spacing
-
-    @staticmethod
-    def energy_density(
-        laser_power: float,
-        scan_speed: float,
-        layer_thickness: float,
-        hatch_spacing: Optional[float] = None,
-    ) -> float:
-        """Calculate the energy density.
-
-        This is an approximate value useful for comparison. The returned value is simply
-        the laser power divided by the build rate. See :method:`build_rate`.
-
-        Parameters
-        ----------
-        laser_power : float
-            Laser power.
-        scan_speed : float
-            Laser scan speed.
-        layer_thickness : float
-            Powder deposit layer thickness.
-        hatch_spacing : float, optional
-            Distance between hatch scan lines.
-
-        Returns
-        -------
-        float
-            The volumetric energy density if hatch spacing is provided,
-            otherwise an area energy density. If input units are W, m/s, m, m,
-            the output units are J/m^3 or J/m^2.
-
-        """
-        br = ParametricStudy.build_rate(scan_speed, layer_thickness, hatch_spacing)
-        return laser_power / br if br else float("nan")
-
-    def __common_param_to_dict(
+    def _common_param_to_dict(
         self,
         summary: Union[SingleBeadSummary, PorositySummary, MicrostructureSummary],
         iteration: int = DEFAULT_ITERATION,
@@ -418,7 +288,7 @@ class ParametricStudy:
         return {
             ColumnNames.PROJECT: self._project_name,
             ColumnNames.ITERATION: iteration,
-            ColumnNames.ID: self.__create_unique_id(summary.input.id),
+            ColumnNames.ID: self._create_unique_id(summary.input.id),
             ColumnNames.STATUS: SimulationStatus.COMPLETED,
             ColumnNames.MATERIAL: summary.input.material.name,
             ColumnNames.HEATER_TEMPERATURE: summary.input.machine.heater_temperature,
@@ -493,7 +363,7 @@ class ParametricStudy:
         for p in laser_powers:
             for v in scan_speeds:
                 for l in lt:
-                    aed = ParametricStudy.energy_density(p, v, l)
+                    aed = energy_density(p, v, l)
                     if aed < min_aed or aed > max_aed:
                         continue
 
@@ -524,7 +394,7 @@ class ParametricStudy:
                                     ColumnNames.ITERATION: iteration,
                                     ColumnNames.PRIORITY: priority,
                                     ColumnNames.TYPE: SimulationType.SINGLE_BEAD,
-                                    ColumnNames.ID: self.__create_unique_id(
+                                    ColumnNames.ID: self._create_unique_id(
                                         f"sb_{iteration}_{sb_input.id}"
                                     ),
                                     ColumnNames.STATUS: SimulationStatus.PENDING,
@@ -535,7 +405,7 @@ class ParametricStudy:
                                     ColumnNames.LASER_POWER: p,
                                     ColumnNames.SCAN_SPEED: v,
                                     ColumnNames.ENERGY_DENSITY: aed,
-                                    ColumnNames.BUILD_RATE: ParametricStudy.build_rate(v, l),
+                                    ColumnNames.BUILD_RATE: build_rate(v, l),
                                     ColumnNames.SINGLE_BEAD_LENGTH: bead_length,
                                 }
                             )
@@ -653,8 +523,8 @@ class ParametricStudy:
             for v in scan_speeds:
                 for l in lt:
                     for h in hs:
-                        br = ParametricStudy.build_rate(v, l, h)
-                        ed = ParametricStudy.energy_density(p, v, l, h)
+                        br = build_rate(v, l, h)
+                        ed = energy_density(p, v, l, h)
                         if br < min_br or br > max_br or ed < min_ed or ed > max_ed:
                             continue
 
@@ -694,7 +564,7 @@ class ParametricStudy:
                                                     ColumnNames.ITERATION: iteration,
                                                     ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.POROSITY,
-                                                    ColumnNames.ID: self.__create_unique_id(
+                                                    ColumnNames.ID: self._create_unique_id(
                                                         f"por_{iteration}_{input.id}"
                                                     ),
                                                     ColumnNames.STATUS: SimulationStatus.PENDING,
@@ -893,8 +763,8 @@ class ParametricStudy:
             for v in scan_speeds:
                 for l in lt:
                     for h in hs:
-                        br = ParametricStudy.build_rate(v, l, h)
-                        ed = ParametricStudy.energy_density(p, v, l, h)
+                        br = build_rate(v, l, h)
+                        ed = energy_density(p, v, l, h)
                         if br < min_br or br > max_br or ed < min_ed or ed > max_ed:
                             continue
 
@@ -949,7 +819,7 @@ class ParametricStudy:
                                                     ColumnNames.ITERATION: iteration,
                                                     ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.MICROSTRUCTURE,
-                                                    ColumnNames.ID: self.__create_unique_id(
+                                                    ColumnNames.ID: self._create_unique_id(
                                                         f"micro_{iteration}_{input.id}"
                                                     ),
                                                     ColumnNames.STATUS: SimulationStatus.PENDING,
@@ -983,171 +853,6 @@ class ParametricStudy:
                                                 [self._data_frame, row.to_frame().T],
                                                 ignore_index=True,
                                             )
-
-    def run_simulations(
-        self,
-        additive: Additive,
-        type: Optional[List[SimulationType]] = None,
-        priority: Optional[int] = None,
-        workers: int = 1,
-        threads: int = 4,
-    ):
-        """Run the simulations in the parametric study with ``SimulationStatus.PENDING`` in the
-        ``ColumnNames.STATUS`` column.
-
-        Execution order is determined by the values in the ``ColumnNames.PRIORITY`` column.
-        Lower values are interpreted as having higher priority and will be run first.
-
-        Parameters
-        ----------
-        additive: Additive
-            The :class:`Additive <ansys.additive.additive.Additive>` service to use for running simulations.
-        type : Optional[List[SimulationType]], optional
-            The type of simulations to run, ``None`` indicates all types.
-        priority : Optional[int]
-            The priority of simulations to run, ``None`` indicates all priorities.
-        workers : int, optional
-            The number of workers to use for multiprocessing. Each worker
-            will need to be able to check out an Additive license.
-        threads : int, optional
-            The number of threads to use for each worker. Support for four threads
-            is included with the Additive license. Each additional thread will
-            check out an HPC license.
-        """
-        if type is None:
-            type = [
-                SimulationType.SINGLE_BEAD,
-                SimulationType.POROSITY,
-                SimulationType.MICROSTRUCTURE,
-            ]
-
-        df = self._data_frame
-        view = df[
-            (df[ColumnNames.STATUS] == SimulationStatus.PENDING) & df[ColumnNames.TYPE].isin(type)
-        ]
-        if priority is not None:
-            view = view[view[ColumnNames.PRIORITY] == priority]
-        view = view.sort_values(by=ColumnNames.PRIORITY, ascending=True)
-
-        inputs = []
-        # NOTICE: We use iterrows() instead of itertuples() here in order to
-        # access values by column name
-        for _, row in view.iterrows():
-            try:
-                material = additive.get_material(row[ColumnNames.MATERIAL])
-            except Exception:
-                print(
-                    f"Material {row[ColumnNames.MATERIAL]} not found, skipping {row[ColumnNames.ID]}"
-                )
-                continue
-            machine = self.__create_machine(row)
-            sim_type = row[ColumnNames.TYPE]
-            if sim_type == SimulationType.SINGLE_BEAD:
-                inputs.append(self._create_single_bead_input(row, material, machine))
-            elif sim_type == SimulationType.POROSITY:
-                inputs.append(self._create_porosity_input(row, material, machine))
-            elif sim_type == SimulationType.MICROSTRUCTURE:
-                inputs.append(self._create_microstructure_input(row, material, machine))
-            else:
-                print(
-                    f"Invalid simulation type: {row[ColumnNames.TYPE]} for {row[ColumnNames.ID]}, skipping"
-                )
-                continue
-
-        # TODO: Add support for running multiple simulations in parallel
-        # once issue https://github.com/ansys-internal/pyadditive/issues/9
-        # is resolved
-        summaries = additive.simulate(inputs)
-
-        self.update(summaries)
-
-    def __create_machine(self, row: pd.Series) -> AdditiveMachine:
-        return AdditiveMachine(
-            laser_power=row[ColumnNames.LASER_POWER],
-            scan_speed=row[ColumnNames.SCAN_SPEED],
-            layer_thickness=row[ColumnNames.LAYER_THICKNESS],
-            beam_diameter=row[ColumnNames.BEAM_DIAMETER],
-            heater_temperature=row[ColumnNames.HEATER_TEMPERATURE],
-            starting_layer_angle=row[ColumnNames.START_ANGLE]
-            if not np.isnan(row[ColumnNames.START_ANGLE])
-            else MachineConstants.DEFAULT_STARTING_LAYER_ANGLE,
-            layer_rotation_angle=row[ColumnNames.ROTATION_ANGLE]
-            if not np.isnan(row[ColumnNames.ROTATION_ANGLE])
-            else MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE,
-            hatch_spacing=row[ColumnNames.HATCH_SPACING]
-            if not np.isnan(row[ColumnNames.HATCH_SPACING])
-            else MachineConstants.DEFAULT_HATCH_SPACING,
-            slicing_stripe_width=row[ColumnNames.STRIPE_WIDTH]
-            if not np.isnan(row[ColumnNames.STRIPE_WIDTH])
-            else MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH,
-        )
-
-    def _create_single_bead_input(
-        self, row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine
-    ) -> SingleBeadInput:
-        return SingleBeadInput(
-            id=row[ColumnNames.ID],
-            material=material,
-            machine=machine,
-            bead_length=row[ColumnNames.SINGLE_BEAD_LENGTH],
-        )
-
-    def _create_porosity_input(
-        self, row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine
-    ) -> PorosityInput:
-        return PorosityInput(
-            id=row[ColumnNames.ID],
-            material=material,
-            machine=machine,
-            size_x=row[ColumnNames.POROSITY_SIZE_X],
-            size_y=row[ColumnNames.POROSITY_SIZE_Y],
-            size_z=row[ColumnNames.POROSITY_SIZE_Z],
-        )
-
-    def _create_microstructure_input(
-        self, row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine
-    ) -> MicrostructureInput:
-        use_provided_thermal_param = (
-            not np.isnan(row[ColumnNames.COOLING_RATE])
-            or not np.isnan(row[ColumnNames.THERMAL_GRADIENT])
-            or not np.isnan(row[ColumnNames.MICRO_MELT_POOL_WIDTH])
-            or not np.isnan(row[ColumnNames.MICRO_MELT_POOL_DEPTH])
-        )
-
-        return MicrostructureInput(
-            id=row[ColumnNames.ID],
-            material=material,
-            machine=machine,
-            sample_size_x=row[ColumnNames.MICRO_SIZE_X],
-            sample_size_y=row[ColumnNames.MICRO_SIZE_Y],
-            sample_size_z=row[ColumnNames.MICRO_SIZE_Z],
-            sensor_dimension=row[ColumnNames.MICRO_SENSOR_DIM],
-            use_provided_thermal_parameters=use_provided_thermal_param,
-            sample_min_x=row[ColumnNames.MICRO_MIN_X]
-            if not np.isnan(row[ColumnNames.MICRO_MIN_X])
-            else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
-            sample_min_y=row[ColumnNames.MICRO_MIN_Y]
-            if not np.isnan(row[ColumnNames.MICRO_MIN_Y])
-            else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
-            sample_min_z=row[ColumnNames.MICRO_MIN_Z]
-            if not np.isnan(row[ColumnNames.MICRO_MIN_Z])
-            else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
-            cooling_rate=row[ColumnNames.COOLING_RATE]
-            if not np.isnan(row[ColumnNames.COOLING_RATE])
-            else MicrostructureInput.DEFAULT_COOLING_RATE,
-            thermal_gradient=row[ColumnNames.THERMAL_GRADIENT]
-            if not np.isnan(row[ColumnNames.THERMAL_GRADIENT])
-            else MicrostructureInput.DEFAULT_THERMAL_GRADIENT,
-            melt_pool_width=row[ColumnNames.MICRO_MELT_POOL_WIDTH]
-            if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_WIDTH])
-            else MicrostructureInput.DEFAULT_MELT_POOL_WIDTH,
-            melt_pool_depth=row[ColumnNames.MICRO_MELT_POOL_DEPTH]
-            if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_DEPTH])
-            else MicrostructureInput.DEFAULT_MELT_POOL_DEPTH,
-            random_seed=row[ColumnNames.RANDOM_SEED]
-            if not np.isnan(row[ColumnNames.RANDOM_SEED])
-            else MicrostructureInput.DEFAULT_RANDOM_SEED,
-        )
 
     def update(
         self, summaries: List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary]]
@@ -1288,7 +993,7 @@ class ParametricStudy:
             dict[ColumnNames.PROJECT] = self.project_name
             dict[ColumnNames.ITERATION] = iteration
             dict[ColumnNames.PRIORITY] = priority
-            dict[ColumnNames.ID] = self.__create_unique_id(input.id)
+            dict[ColumnNames.ID] = self._create_unique_id(input.id)
             dict[ColumnNames.STATUS] = status
             dict[ColumnNames.MATERIAL] = input.material.name
             dict[ColumnNames.LASER_POWER] = input.machine.laser_power
@@ -1305,30 +1010,36 @@ class ParametricStudy:
                 [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
             )
 
-    def remove(self, index: Union[int, List[int]]):
+    def remove(self, ids: Union[str, List[str]]):
         """Remove rows from the parametric study data frame.
 
         Parameters
         ----------
-        index : Union[int, List[int]]
-            The index or list of indices of the rows to remove.
+        ids : Union[str, List[str]]
+            Single or list of the ID field values for the rows to remove.
         """
-        self._data_frame.drop(index=index, inplace=True)
+        if isinstance(ids, str):
+            ids = [ids]
+        idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)].tolist()
+        self._data_frame.drop(index=idx, inplace=True)
 
-    def set_status(self, index: Union[int, List[int]], status: SimulationStatus):
+    def set_status(self, ids: Union[str, List[str]], status: SimulationStatus):
         """Set the status of rows in the parametric study data frame.
 
         Parameters
         ----------
         index : Union[int, List[int]]
-            The index or list of indices of the rows to remove.
+            The ID or list of IDs of the simulations to update.
 
         status : SimulationStatus
-            The status to set for the rows.
+            The status to use for the simulations.
         """
-        self._data_frame.loc[index, ColumnNames.STATUS] = status
+        if isinstance(ids, str):
+            ids = [ids]
+        idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)]
+        self._data_frame.loc[idx, ColumnNames.STATUS] = status
 
-    def __create_unique_id(self, prefix: Optional[str] = None) -> str:
+    def _create_unique_id(self, prefix: Optional[str] = None) -> str:
         """Create a unique simulation ID for a permutation.
 
         Parameters
