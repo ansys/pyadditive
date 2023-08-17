@@ -57,8 +57,8 @@ class ParametricStudy:
         additive: Additive,
         type: Optional[List[SimulationType]] = None,
         priority: Optional[int] = None,
-        workers: int = 1,
-        threads: int = 4,
+        # workers: int = 1,
+        # threads: int = 4,
     ):
         """Run the simulations in the parametric study with ``SimulationStatus.PENDING`` in the
         ``ColumnNames.STATUS`` column.
@@ -72,20 +72,23 @@ class ParametricStudy:
             The type of simulations to run, ``None`` indicates all types.
         priority : Optional[int]
             The priority of simulations to run, ``None`` indicates all priorities.
-        workers : int, optional
-            The number of workers to use for multiprocessing. Each worker
-            will need to be able to check out an Additive license.
-        threads : int, optional
-            The number of threads to use for each worker. Each thread will
-            check out an HPC license.
         """
+        # TODO: Add support for running multiple simulations in parallel
+        # once issue https://github.com/ansys-internal/pyadditive/issues/9
+        # is resolved
+        # workers : int, optional
+        #     The number of workers to use for multiprocessing. Each worker
+        #     will need to be able to check out an Additive license.
+        # threads : int, optional
+        #     The number of threads to use for each worker. Each thread will
+        #     check out an HPC license.
         summaries = ParametricRunner.simulate(
             self.data_frame(),
             additive,
             type=type,
             priority=priority,
-            workers=workers,
-            threads=threads,
+            # workers=workers,
+            # threads=threads,
         )
         self.update(summaries)
 

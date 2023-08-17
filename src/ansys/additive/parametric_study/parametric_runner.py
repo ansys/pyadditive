@@ -28,8 +28,6 @@ class ParametricRunner:
         additive: Additive,
         type: Optional[List[SimulationType]] = None,
         priority: Optional[int] = None,
-        workers: int = 1,
-        threads: int = 4,
     ) -> List[Union[MicrostructureSummary, PorositySummary, SingleBeadSummary]]:
         """Run the simulations in the parametric study with ``SimulationStatus.PENDING`` in the
         ``ColumnNames.STATUS`` column.
@@ -47,12 +45,6 @@ class ParametricRunner:
             The type of simulations to run, ``None`` indicates all types.
         priority : Optional[int]
             The priority of simulations to run, ``None`` indicates all priorities.
-        workers : int, optional
-            The number of workers to use for multiprocessing. Each worker
-            will need to be able to check out an Additive license.
-        threads : int, optional
-            The number of threads to use for each worker. Each thread will
-            check out an HPC license.
 
         Returns
         -------
@@ -101,9 +93,6 @@ class ParametricRunner:
                 )
                 continue
 
-        # TODO: Add support for running multiple simulations in parallel
-        # once issue https://github.com/ansys-internal/pyadditive/issues/9
-        # is resolved
         summaries = additive.simulate(inputs)
 
         # TODO: Return the summaries one at a time, possibly as an iterator,
