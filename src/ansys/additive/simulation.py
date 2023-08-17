@@ -8,27 +8,27 @@ from ansys.additive.thermal_history import ThermalHistoryInput
 
 
 class SimulationType:
-    """Simulation types for a parametric study."""
+    """Simulation types."""
 
     #: Single bead simulation.
-    SINGLE_BEAD = "single_bead"
+    SINGLE_BEAD = "SingleBead"
     #: Porosity simulation.
-    POROSITY = "porosity"
+    POROSITY = "Porosity"
     #: Microstructure simulation.
-    MICROSTRUCTURE = "microstructure"
+    MICROSTRUCTURE = "Microstructure"
 
 
 class SimulationStatus:
     """Simulation status values."""
 
     #: Simulation is awaiting execution.
-    PENDING = "pending"
+    PENDING = "Pending"
     #: Simulation was executed.
-    COMPLETED = "completed"
+    COMPLETED = "Completed"
     #: Simulation errored.
-    ERROR = "error"
+    ERROR = "Error"
     #: Do not execute this simulation. Only applies to parametric studies.
-    SKIP = "skip"
+    SKIP = "Skip"
 
 
 class SimulationError:
