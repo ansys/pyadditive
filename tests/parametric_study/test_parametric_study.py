@@ -1180,7 +1180,8 @@ def test_table():
     study.add_inputs([SingleBeadInput(id="test_id_1")])
 
     # act
-    table = study.table()
+    table = study.table(max_height=500)
 
     # assert
     assert isinstance(table, pn.pane.DataFrame)
+    assert table.max_height == 500
