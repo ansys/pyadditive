@@ -6,100 +6,100 @@ class ColumnNames:
     """
 
     #: Name of the parametric summary project.
-    PROJECT = "project"
+    PROJECT = "Project"
     #: Iteration number, useful for tracking the sequence of simulation groups.
-    ITERATION = "iteration"
+    ITERATION = "Iteration"
     #: Priority value used to determine execution order.
-    PRIORITY = "priority"
+    PRIORITY = "Priority"
     #: Type of simulation, e.g. single bead, porosity, microstructure.
-    TYPE = "type"
+    TYPE = "Type"
     #: Identifier for the simulation.
     #: NOTE: A unique ID for each permutation is enforced by the parametric study.
-    ID = "id"
+    ID = "ID"
     #: Status of the simulation, e.g. pending, success, failure.
-    STATUS = "status"
+    STATUS = "Status"
     #: Name of material used during simulation.
     #: See :class:`AdditiveMaterial <ansys.additive.material.AdditiveMaterial>` for more information.
-    MATERIAL = "material"
+    MATERIAL = "Material"
     #: Heater temperature (°C).
-    HEATER_TEMPERATURE = "heater_temperature"
+    HEATER_TEMPERATURE = "Heater Temp (°C)"
     #: Powder deposition layer thickness (m).
-    LAYER_THICKNESS = "layer_thickness"
+    LAYER_THICKNESS = "Layer Thickness (m)"
     #: Laser beam diameter (m).
-    BEAM_DIAMETER = "beam_diameter"
+    BEAM_DIAMETER = "Beam Diameter (m)"
     #: Laser power (W).
-    LASER_POWER = "laser_power"
+    LASER_POWER = "Laser Power (W)"
     #: Laser scan speed (m/s).
-    SCAN_SPEED = "scan_speed"
+    SCAN_SPEED = "Scan Speed (m/s)"
     #: Hatch scan angle for first layer (°).
-    START_ANGLE = "start_angle"
+    START_ANGLE = "Start Angle (°)"
     #: Hatch rotation angle for subsequent layers (°).
-    ROTATION_ANGLE = "rotation_angle"
+    ROTATION_ANGLE = "Rotation Angle (°)"
     #: Hatch spacing (m).
-    HATCH_SPACING = "hatch_spacing"
+    HATCH_SPACING = "Hatch Spacing (m)"
     #: Stripe width (m).
-    STRIPE_WIDTH = "stripe_width"
-    #: Energy density calculated as laser power divided by build rate (J/m^2 or J/m^3).
-    ENERGY_DENSITY = "energy_density"
-    #: Build rate, calculated as layer thickness * scan speed (m^2/s) for single bead simulations,
-    #: or as layer thickness * scan speed * hatch spacing (m^3/s) for porosity and microstructure.
-    BUILD_RATE = "build_rate"
+    STRIPE_WIDTH = "Stripe Width (m)"
+    #: Energy density calculated as laser power divided by build rate (J/m^3).
+    ENERGY_DENSITY = "Energy Density (J/m^3)"
+    #: Build rate, calculated as layer thickness * scan speed * hatch spacing (m^3/s).
+    #: For single bead simulations, hatch spacing is 1 m.
+    BUILD_RATE = "Build Rate (m^3/s)"
     #: Length of single bead to simulate (m).
-    SINGLE_BEAD_LENGTH = "single_bead_length"
+    SINGLE_BEAD_LENGTH = "Single Bead Length (m)"
     #: Median melt pool width measured at the top of the powder layer (m).
-    MELT_POOL_WIDTH = "melt_pool_width"
+    MELT_POOL_WIDTH = "Melt Pool Width (m)"
     #: Median melt pool depth measured from the top of the powder layer (m).
-    MELT_POOL_DEPTH = "melt_pool_depth"
+    MELT_POOL_DEPTH = "Melt Pool Depth (m)"
     #: Median melt pool length measured at the top of the powder layer (m).
-    MELT_POOL_LENGTH = "melt_pool_length"
+    MELT_POOL_LENGTH = "Melt Pool Length (m)"
     #: Ratio of MELT_POOL_LENGTH to the median melt pool width at the top of the powder layer.
-    MELT_POOL_LENGTH_OVER_WIDTH = "melt_pool_length_over_width"
+    MELT_POOL_LENGTH_OVER_WIDTH = "Melt Pool Length/Width (m)"
     #: Median melt pool width measured at the top of the base plate (m).
-    MELT_POOL_REFERENCE_WIDTH = "melt_pool_ref_width"
+    MELT_POOL_REFERENCE_WIDTH = "Melt Pool Ref Width (m)"
     #: Median melt pool depth measured from the top of the base plate (m).
-    MELT_POOL_REFERENCE_DEPTH = "melt_pool_ref_depth"
+    MELT_POOL_REFERENCE_DEPTH = "Melt Pool Ref Depth (m)"
     #: Ratio of MELT_POOL_REFERENCE_DEPTH to MELT_POOL_REFERENCE_WIDTH.
-    MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH = "melt_pool_ref_depth_over_width"
+    MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH = "Melt Pool Ref Depth/Width (m)"
     #: X dimension size of porosity sample to simulate (m).
-    POROSITY_SIZE_X = "porosity_size_x"
-    #: Y dimension size of porosity sample to simulate (m).
-    POROSITY_SIZE_Y = "porosity_size_y"
-    #: Z dimension size of porosity sample to simulate (m).
-    POROSITY_SIZE_Z = "porosity_size_z"
+    POROSITY_SIZE_X = "Porosity Size X (m)"
+    #: Y dimension size of Porosity sample to simulate (m).
+    POROSITY_SIZE_Y = "Porosity Size Y (m)"
+    #: Z dimension size of Porosity sample to simulate (m).
+    POROSITY_SIZE_Z = "Porosity Size Z (m)"
     #: Relative density of simulated porosity sample.
-    RELATIVE_DENSITY = "relative_density"
+    RELATIVE_DENSITY = "Relative Density"
     #: Minimum X dimension position of microstructure sample (m).
-    MICRO_MIN_X = "micro_min_x"
+    MICRO_MIN_X = "Micro Min X (m)"
     #: Minimum Y dimension position of microstructure sample (m).
-    MICRO_MIN_Y = "micro_min_y"
+    MICRO_MIN_Y = "Micro Min Y (m)"
     #: Minimum Z dimension position of microstructure sample (m).
-    MICRO_MIN_Z = "micro_min_z"
+    MICRO_MIN_Z = "Micro Min Z (m)"
     #: X dimension size of microstructure sample to simulate (m).
-    MICRO_SIZE_X = "micro_size_x"
+    MICRO_SIZE_X = "Micro Size X (m)"
     #: Y dimension size of microstructure sample to simulate (m).
-    MICRO_SIZE_Y = "micro_size_y"
+    MICRO_SIZE_Y = "Micro Size Y (m)"
     #: Z dimension size of microstructure sample to simulate (m).
-    MICRO_SIZE_Z = "micro_size_z"
+    MICRO_SIZE_Z = "Micro Size Z (m)"
     #: Sensor dimension used in microstructure simulations (m).
-    MICRO_SENSOR_DIM = "micro_sensor_dim"
+    MICRO_SENSOR_DIM = "Micro Sensor Dim (m)"
     #: User provided cooling rate used in microstructure simulations (°K/s).
-    COOLING_RATE = "cooling_rate"
+    COOLING_RATE = "Cooling Rate (°K/s)"
     #: User provided thermal gradient used in microstructure simulations (°K/m).
-    THERMAL_GRADIENT = "thermal_gradient"
+    THERMAL_GRADIENT = "Thermal Gradient (°K/m)"
     #: User provided melt pool width used in microstructure simulation (m).
-    MICRO_MELT_POOL_WIDTH = "micro_melt_pool_width"
+    MICRO_MELT_POOL_WIDTH = "Micro Melt Pool Width (m)"
     #: User provided melt pool depth used in microstructure simulation (m).
-    MICRO_MELT_POOL_DEPTH = "micro_melt_pool_depth"
+    MICRO_MELT_POOL_DEPTH = "Micro Melt Pool Depth (m)"
     #: User provided random seed used in microstructure simulation.
-    RANDOM_SEED = "random_seed"
-    #: Average microstructure grain size in the XY plane (microns).
-    XY_AVERAGE_GRAIN_SIZE = "xy_average_grain_size"
-    #: Average microstructure grain size in the XZ plane (microns).
-    XZ_AVERAGE_GRAIN_SIZE = "xz_average_grain_size"
-    #: Average microstructure grain size in the YY plane (microns).
-    YZ_AVERAGE_GRAIN_SIZE = "yz_average_grain_size"
+    RANDOM_SEED = "Random Seed"
+    #: Average microstructure grain size in the XY plane (µm).
+    XY_AVERAGE_GRAIN_SIZE = "XY Average Grain Size (µm)"
+    #: Average microstructure grain size in the XZ plane (µm).
+    XZ_AVERAGE_GRAIN_SIZE = "XZ Average Grain Size (µm)"
+    #: Average microstructure grain size in the YZ plane (µm).
+    YZ_AVERAGE_GRAIN_SIZE = "YZ Average Grain Size (µm)"
     #: Error message if simulation failed.
-    ERROR_MESSAGE = "error_message"
+    ERROR_MESSAGE = "Error Message"
 
 
 DEFAULT_ITERATION = 0

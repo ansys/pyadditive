@@ -11,6 +11,7 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 )
 import numpy as np
 import pandas as pd
+import panel as pn
 import pytest
 
 from ansys.additive import (
@@ -1154,3 +1155,32 @@ def test_create_unique_id_returns_unique_id():
     assert id != "test_id_1"
     assert id2.startswith("sim_")
     assert len(id2) > len("sim_")
+
+
+def test_clear_removes_all_rows_but_not_columns():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    study.add_inputs([SingleBeadInput(id="test_id_1")])
+    df1 = study.data_frame()
+
+    # act
+    study.clear()
+
+    # assert
+    df2 = study.data_frame()
+    assert len(df1) == 1
+    assert len(df2) == 0
+    assert len(df1.columns) == len(df2.columns)
+    assert len(df2.columns) > 0
+
+
+def test_table():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    study.add_inputs([SingleBeadInput(id="test_id_1")])
+
+    # act
+    table = study.table()
+
+    # assert
+    assert isinstance(table, pn.pane.DataFrame)
