@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 import dill
 import numpy as np
 import pandas as pd
+import panel as pn
 
 from ansys.additive import (
     Additive,
@@ -32,6 +33,7 @@ class ParametricStudy:
     """Data storage and utility methods for a parametric study."""
 
     def __init__(self, project_name: str):
+        pn.extension()
         self._project_name = project_name
         columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
         self._data_frame = pd.DataFrame(columns=columns)
@@ -1058,3 +1060,24 @@ class ParametricStudy:
         while self._data_frame[ColumnNames.ID].str.match(f"{id}").any():
             id = (prefix or "sim") + "_" + misc.short_uuid()
         return id
+
+    def clear(self):
+        """Remove all permutations from the parametric study."""
+        self._data_frame = self._data_frame[0:0]
+
+    def table(self, max_height: int = 300) -> pn.pane.DataFrame:
+        """Show the parametric study as a table.
+
+        Parameters
+        ----------
+        max_height : int
+            Maximum height of the table in pixels.
+
+        Returns
+        -------
+        :class:`panel.pane.DataFrame <panel.pane.DataFrame>`
+
+        """
+        return pn.pane.DataFrame(
+            self._data_frame, sizing_mode="stretch_both", max_height=max_height
+        )
