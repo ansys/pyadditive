@@ -97,7 +97,7 @@ class CommonSelections:
 
     @property
     def layer_thickness(self) -> float:
-        return float(self._lt_select.value)
+        return float(self._lt_select.value) if self._lt_select else float("nan")
 
     @property
     def layer_thickness_select(self) -> Select:
@@ -105,7 +105,7 @@ class CommonSelections:
 
     @property
     def heater_temperature(self) -> float:
-        return float(self._ht_select.value)
+        return float(self._ht_select.value) if self._ht_select else float("nan")
 
     @property
     def heater_temperature_select(self) -> Select:
@@ -113,7 +113,7 @@ class CommonSelections:
 
     @property
     def beam_diameter(self) -> float:
-        return float(self._bd_select.value)
+        return float(self._bd_select.value) if self._bd_select else float("nan")
 
     @property
     def beam_diameter_select(self) -> Select:
@@ -121,7 +121,7 @@ class CommonSelections:
 
     @property
     def start_angle(self) -> float:
-        return float(self._sa_select.value)
+        return float(self._sa_select.value) if self._sa_select else float("nan")
 
     @property
     def start_angle_select(self) -> Select:
@@ -129,7 +129,7 @@ class CommonSelections:
 
     @property
     def rotation_angle(self) -> float:
-        return float(self._ra_select.value)
+        return float(self._ra_select.value) if self._ra_select else float("nan")
 
     @property
     def rotation_angle_select(self) -> Select:
@@ -137,7 +137,7 @@ class CommonSelections:
 
     @property
     def hatch_spacing(self) -> float:
-        return float(self._hs_select.value)
+        return float(self._hs_select.value) if self._hs_select else float("nan")
 
     @property
     def hatch_spacing_select(self) -> Select:
@@ -145,7 +145,7 @@ class CommonSelections:
 
     @property
     def stripe_width(self) -> float:
-        return float(self._sw_select.value)
+        return float(self._sw_select.value) if self._sw_select else float("nan")
 
     @property
     def stripe_width_select(self) -> Select:
