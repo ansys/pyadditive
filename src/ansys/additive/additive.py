@@ -240,8 +240,11 @@ class Additive:
             for input in inputs:
                 futures.append(executor.submit(self._simulate, input=input, show_progress=False))
             for future in concurrent.futures.as_completed(futures):
-                summaries.append(future.result())
-                print(f"Completed {len(summaries)} of {len(inputs)} simulations")
+                summary = future.result()
+                if isinstance(summary, SimulationError):
+                    print(f"\nError: {summary.message}")
+                summaries.append(summary)
+                print(f"\rCompleted {len(summaries)} of {len(inputs)} simulations", end="")
         return summaries
 
     def _simulate(self, input, show_progress: bool = False):
@@ -292,7 +295,6 @@ class Additive:
                         input, response.microstructure_result, self._user_data_path
                     )
         except Exception as e:
-            print(f"Error: {e}")
             return SimulationError(input, str(e))
 
     def get_materials_list(self) -> list[str]:
