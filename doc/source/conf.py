@@ -242,7 +242,7 @@ jinja_contexts = {
 
 linkcheck_ignore = [
     r"https://pypi.org/project/ansys-additive.*",  # TODO: remove once pyadditive is published
-    r"https://github.com/ansys-internal/.*",
-    r"https://ansyshelp.ansys.com/.*",  # TODO: remove once pyadditive docs are updated
-    r"https://ansysproducthelpqa.win.ansys.com/.*",  # TODO: remove once pyadditive docs are updated
+    r"https://github.com/ansys-internal/.*", # TODO: remove once pyadditive is published
+    r"https://ansyshelp.ansys.com/.*",
+    r"https://ansysproducthelpqa.win.ansys.com/.*",
 ]
