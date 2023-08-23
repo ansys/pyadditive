@@ -1,13 +1,15 @@
-# (c) 2022 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
+# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 import argparse
 import codecs
 from datetime import date
 import glob
 import os
+import shutil
 import tempfile
 
-copyright_substr = "ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited."
+REPO_ROOT = os.path.dirname(os.path.dirname(__file__))
 
+copyright_substr = "ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited."
 
 def get_args():
     parser = argparse.ArgumentParser(
@@ -18,9 +20,9 @@ def get_args():
 
 if __name__ == "__main__":
     _ = get_args()
-    dirs = ["src", "tests"]
+    dirs = ["src", "tests", "scripts", "examples"]
     for d in dirs:
-        source_files = glob.glob(os.path.join(d, "**", "*.py"), recursive=True)
+        source_files = glob.glob(os.path.join(REPO_ROOT, d, "**", "*.py"), recursive=True)
         for f in source_files:
             lines = []
             with open(f, "r") as file:
@@ -37,4 +39,4 @@ if __name__ == "__main__":
                 tmp.writelines(lines)
                 tmp_name = tmp.name
 
-            os.replace(tmp_name, f)
+            shutil.move(tmp_name, f)
