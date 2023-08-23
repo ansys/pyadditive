@@ -34,7 +34,7 @@ PyAdditive
    :alt: Black
 
 
-A Python client library for the Ansys additive service.
+A Python client library for the Ansys Additive service.
 
 Installation
 ============

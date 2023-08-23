@@ -6,7 +6,7 @@
 Getting started
 ###############
 
-PyAdditive is a Python client library for the Ansys additive service.
+PyAdditive is a Python client library for the Ansys Additive service.
 
 .. note::
 

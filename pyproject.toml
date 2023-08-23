@@ -6,7 +6,7 @@ build-backend = "flit_core.buildapi"
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-additive"
 version = "0.14.0.dev4"
-description = "A python client for the Ansys additive service"
+description = "A python client for the Ansys Additive service"
 readme = "README.rst"
 requires-python = ">=3.8"
 license = { file = "LICENSE" }

@@ -1,5 +1,5 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-"""PyAdditive is a Python client for the Ansys additive service."""
+"""PyAdditive is a Python client for the Ansys Additive service."""
 import os
 
 import platformdirs
