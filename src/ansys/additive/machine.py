@@ -57,15 +57,15 @@ class AdditiveMachine:
     def __init__(
         self,
         *,
-        laser_power: float = MachineConstants.DEFAULT_LASER_POWER,
-        scan_speed: float = MachineConstants.DEFAULT_SCAN_SPEED,
-        heater_temperature: float = MachineConstants.DEFAULT_HEATER_TEMP,
-        layer_thickness: float = MachineConstants.DEFAULT_LAYER_THICKNESS,
-        beam_diameter: float = MachineConstants.DEFAULT_BEAM_DIAMETER,
-        starting_layer_angle: float = MachineConstants.DEFAULT_STARTING_LAYER_ANGLE,
-        layer_rotation_angle: float = MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE,
-        hatch_spacing: float = MachineConstants.DEFAULT_HATCH_SPACING,
-        slicing_stripe_width: float = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH,
+        laser_power: float = MachineConstants.DEFAULT_LASER_POWER.value,
+        scan_speed: float = MachineConstants.DEFAULT_SCAN_SPEED.value,
+        heater_temperature: float = MachineConstants.DEFAULT_HEATER_TEMP.value,
+        layer_thickness: float = MachineConstants.DEFAULT_LAYER_THICKNESS.value,
+        beam_diameter: float = MachineConstants.DEFAULT_BEAM_DIAMETER.value,
+        starting_layer_angle: float = MachineConstants.DEFAULT_STARTING_LAYER_ANGLE.value,
+        layer_rotation_angle: float = MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE.value,
+        hatch_spacing: float = MachineConstants.DEFAULT_HATCH_SPACING.value,
+        slicing_stripe_width: float = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH.value,
     ):
         self.laser_power = laser_power
         self.scan_speed = scan_speed
