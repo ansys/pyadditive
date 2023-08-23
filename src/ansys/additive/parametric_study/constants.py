@@ -1,5 +1,8 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-class ColumnNames:
+from enum import Enum
+
+
+class ColumnNames(Enum):
     """Column names for the parametric study data frame.
 
     Values are stored internally as a :class:`Pandas DataFrame

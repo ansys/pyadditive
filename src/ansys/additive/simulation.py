@@ -1,4 +1,5 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
+from enum import Enum
 from typing import Union
 
 from ansys.additive.microstructure import MicrostructureInput
@@ -7,7 +8,7 @@ from ansys.additive.single_bead import SingleBeadInput
 from ansys.additive.thermal_history import ThermalHistoryInput
 
 
-class SimulationType:
+class SimulationType(Enum):
     """Simulation types."""
 
     #: Single bead simulation.
@@ -18,7 +19,7 @@ class SimulationType:
     MICROSTRUCTURE = "Microstructure"
 
 
-class SimulationStatus:
+class SimulationStatus(Enum):
     """Simulation status values."""
 
     #: Simulation is awaiting execution.

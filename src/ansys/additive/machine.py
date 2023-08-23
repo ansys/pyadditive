@@ -1,4 +1,5 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
+from enum import Enum
 import math
 
 from ansys.api.additive.v0.additive_domain_pb2 import MachineSettings as MachineMessage
@@ -6,7 +7,7 @@ from ansys.api.additive.v0.additive_domain_pb2 import MachineSettings as Machine
 import ansys.additive.conversions as conversions
 
 
-class MachineConstants:
+class MachineConstants(Enum):
     #: Default laser power in Watts.
     DEFAULT_LASER_POWER = 195
     MIN_LASER_POWER = 50
