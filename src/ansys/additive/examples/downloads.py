@@ -1,3 +1,4 @@
+# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 """Functions to download sample datasets from the pyansys data repository.
 """
 from http.client import HTTPMessage

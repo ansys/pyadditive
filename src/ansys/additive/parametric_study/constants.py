@@ -1,3 +1,4 @@
+# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 class ColumnNames:
     """Column names for the parametric study data frame.
 
