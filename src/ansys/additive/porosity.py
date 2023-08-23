@@ -10,17 +10,19 @@ from ansys.additive.material import AdditiveMaterial
 class PorosityInput:
     """Input parameters for porosity simulation.
 
-    ``id: string``
+    Parameters
+    ----------
+    id: string
         User provided identifier for this simulation.
-    ``size_x: float``
+    size_x: float
         Size of simulated sample in x dimension (m), valid values: 0.001 to 0.01.
-    ``size_y: float``
+    size_y: float
         Size of simulated sample in y dimension (m), valid values: 0.001 to 0.01.
-    ``size_z: float``
+    size_z: float
         Size of simulated sample in z dimension (m), valid values: 0.001 to 0.01.
-    ``machine: AdditiveMachine``
+    machine: AdditiveMachine
         Machine related parameters.
-    ``material: AdditiveMaterial``
+    material: AdditiveMaterial
         Material used during simulation.
     """
 

@@ -15,10 +15,8 @@ def launch_server(port: int, cwd: str = USER_DATA_PATH) -> subprocess.Popen:
 
     Parameters
     ----------
-
     port: int
         Port number to use for gRPC connections.
-
     cwd: str
         Current working directory to use for the server process.
 
