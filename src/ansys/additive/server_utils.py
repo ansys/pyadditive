@@ -26,7 +26,6 @@ def launch_server(port: int, cwd: str = USER_DATA_PATH) -> subprocess.Popen:
     -------
     process: subprocess.Popen
         Server process. To stop the server, call ``kill()`` on the returned object.
-
     """
     ver = DEFAULT_ANSYS_VERSION
     server_exe = ""
@@ -81,7 +80,6 @@ def find_open_port() -> int:
     -------
     port: int
         Open port number. *Note:* this port may be taken by the time you try to use it.
-
     """
     import socket
 

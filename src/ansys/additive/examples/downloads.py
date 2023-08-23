@@ -1,6 +1,5 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-"""Functions to download sample datasets from the pyansys data repository.
-"""
+"""Functions to download sample datasets from the pyansys data repository."""
 from http.client import HTTPMessage
 import os
 import shutil
@@ -17,20 +16,21 @@ CUSTOM_MATERIAL_FOLDER = "pyadditive/custom_material_data"
 
 
 def get_ext(filename):
-    """Extract the extension of the filename"""
+    """Extract the extension of the filename."""
     ext = os.path.splitext(filename)[1].lower()
     return ext
 
 
 def delete_downloads():
-    """Delete all downloaded examples to free space or update the files"""
+    """Delete all downloaded examples to free space or update the files."""
     shutil.rmtree(EXAMPLES_PATH)
     os.makedirs(EXAMPLES_PATH)
     return True
 
 
 def decompress(filename, subdir=None) -> str:
-    """Decompress a zip file into the examples directory and return the path"""
+    """Decompress a zip file into the examples directory and return the
+    path."""
     outdir = EXAMPLES_PATH
     zip_ref = zipfile.ZipFile(filename, "r")
     if subdir:
@@ -48,15 +48,13 @@ def _get_file_url(filename, directory=None):
 
 
 def _retrieve_file(url, filename) -> tuple[str, HTTPMessage]:
-    """
-    Retrieve an example data file either from local storage or
-    from the given url.
+    """Retrieve an example data file either from local storage or from the
+    given url.
 
     Returns
     -------
     str: local file path
     HttpMessage: http status message if any
-
     """
     # First check if file has already been downloaded
     local_path = os.path.join(EXAMPLES_PATH, os.path.basename(filename))

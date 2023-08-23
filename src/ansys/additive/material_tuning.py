@@ -21,7 +21,6 @@ class MaterialTuningInput:
         Material used during simulation.
     ``bead_length: float``
         Length of bead to simulate (m).
-
     """
 
     def __init__(
@@ -36,8 +35,7 @@ class MaterialTuningInput:
         max_iterations: int = 15,
         base_plate_temperature: float = 353.15,
     ):
-        """
-        Initialize a ``MaterialTuningInput`` object.
+        """Initialize a ``MaterialTuningInput`` object.
 
         Parameters
         ----------
@@ -95,7 +93,7 @@ class MaterialTuningInput:
         self.base_plate_temperature = base_plate_temperature
 
     def _to_request(self) -> TuneMaterialRequest:
-        """Convert this object into a material tuning request message"""
+        """Convert this object into a material tuning request message."""
         input = MaterialTuningInputMessage(
             allowable_error=self.allowable_error,
             max_iterations=self.max_iterations,

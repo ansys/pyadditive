@@ -16,13 +16,12 @@ from ansys.api.additive.v0.additive_domain_pb2 import AdditiveMaterial as Materi
 class CharacteristicWidthDataPoint:
     """Container for a characteristic width data point.
 
-    Additive material definitions include a file containing a characteristic width
-    lookup table which allows a given laser speed and power to be correlated to a
-    characteristic melt pool width. This class represents a single row in the
-    lookup table.
+    Additive material definitions include a file containing a
+    characteristic width lookup table which allows a given laser speed
+    and power to be correlated to a characteristic melt pool width. This
+    class represents a single row in the lookup table.
 
     Units are SI (m, kg, s, K) unless otherwise noted.
-
     """
 
     def __init__(
@@ -49,7 +48,8 @@ class CharacteristicWidthDataPoint:
 
     @property
     def characteristic_width(self) -> float:
-        """Characteristic melt pool width for a given laser power and scan speed (m)."""
+        """Characteristic melt pool width for a given laser power and scan
+        speed (m)."""
         return self._characteristic_width
 
     @characteristic_width.setter
@@ -85,8 +85,8 @@ class CharacteristicWidthDataPoint:
 
     @staticmethod
     def _from_characteristic_width_data_point_message(msg: CharacteristicWidthDataPointMessage):
-        """Create a ``CharacteristicWidthDataPoint`` from a characteristic data point message
-        received from Additive service"""
+        """Create a ``CharacteristicWidthDataPoint`` from a characteristic data
+        point message received from Additive service."""
         if not isinstance(msg, CharacteristicWidthDataPointMessage):
             raise ValueError(
                 "Invalid message object passed to from_characteristic_width_data_point_message()"
@@ -100,7 +100,7 @@ class CharacteristicWidthDataPoint:
         self,
     ) -> CharacteristicWidthDataPointMessage:
         """Create a characteristic width data point message from this
-        ``CharacteristicWidthDataPoint`` to send to the Additive service"""
+        ``CharacteristicWidthDataPoint`` to send to the Additive service."""
         msg = CharacteristicWidthDataPointMessage()
         for p in self.__dict__:
             setattr(msg, p.replace("_", "", 1), getattr(self, p))
@@ -108,15 +108,14 @@ class CharacteristicWidthDataPoint:
 
 
 class ThermalPropertiesDataPoint:
-    """
-    Container for a temperature dependent properties.
+    """Container for a temperature dependent properties.
 
-    Additive material definitions include a file containing a lookup table
-    which describes the material's thermal properties at different temperatures.
-    This class represents a single row in the lookup table.
+    Additive material definitions include a file containing a lookup
+    table which describes the material's thermal properties at different
+    temperatures. This class represents a single row in the lookup
+    table.
 
     Units are SI (m, kg, s, K) unless otherwise noted.
-
     """
 
     def __init__(
@@ -128,7 +127,7 @@ class ThermalPropertiesDataPoint:
         specific_heat_ratio: float = 0,
         temperature: float = 0,
         thermal_conductivity: float = 0,
-        thermal_conductivity_ratio: float = 0
+        thermal_conductivity_ratio: float = 0,
     ):
         """Create a ``ThermalPropertiesDataPoint``."""
         self._density = density
@@ -231,8 +230,8 @@ class ThermalPropertiesDataPoint:
 
     @staticmethod
     def _from_thermal_properties_data_point_message(msg: ThermalPropertiesDataPointMessage):
-        """Create a ``ThermalPropertiesDataPoint`` from a thermal characteristic
-        data point message received from the Additive service.
+        """Create a ``ThermalPropertiesDataPoint`` from a thermal
+        characteristic data point message received from the Additive service.
 
         :meta private:
         """
@@ -248,8 +247,8 @@ class ThermalPropertiesDataPoint:
     def _to_thermal_properties_data_point_message(
         self,
     ) -> ThermalPropertiesDataPointMessage:
-        """Create a thermal characteristic data point message from this ``ThermalPropertiesDataPoint``
-        object to send to the Additive service.
+        """Create a thermal characteristic data point message from this
+        ``ThermalPropertiesDataPoint`` object to send to the Additive service.
 
         :meta private:
         """
@@ -260,7 +259,8 @@ class ThermalPropertiesDataPoint:
 
 
 class AdditiveMaterial:
-    """Container for material properties used during additive manufacturing simulation."""
+    """Container for material properties used during additive manufacturing
+    simulation."""
 
     def __init__(
         self,
@@ -299,7 +299,7 @@ class AdditiveMaterial:
         thermal_expansion_coefficient: float = 0,
         vaporization_temperature: float = 0,
         characteristic_width_data: list[CharacteristicWidthDataPoint] = None,
-        thermal_properties_data: list[ThermalPropertiesDataPoint] = None
+        thermal_properties_data: list[ThermalPropertiesDataPoint] = None,
     ):
         """Create an ``AdditiveMaterial``."""
         self._absorptivity_maximum = absorptivity_maximum
@@ -474,7 +474,8 @@ class AdditiveMaterial:
     @property
     def hardening_factor(self) -> float:
         """Factor relating the elastic modulus to the tangent modulus for
-        plasticity simulations (tangent modulus = elastic modulus * hardening factor )."""
+        plasticity simulations (tangent modulus = elastic modulus * hardening
+        factor )."""
         return self._hardening_factor
 
     @hardening_factor.setter
@@ -484,7 +485,8 @@ class AdditiveMaterial:
 
     @property
     def liquidus_temperature(self) -> float:
-        """Minimum temperature at which the material is completely liquid (K)."""
+        """Minimum temperature at which the material is completely liquid
+        (K)."""
         return self._liquidus_temperature
 
     @liquidus_temperature.setter
@@ -514,8 +516,8 @@ class AdditiveMaterial:
 
     @property
     def nucleation_constant_bulk(self) -> float:
-        """Controls the homogeneous nucleation rate (in bulk of the microstructure
-        simulation domain) during solidification (1/m^2/K^2)."""
+        """Controls the homogeneous nucleation rate (in bulk of the
+        microstructure simulation domain) during solidification (1/m^2/K^2)."""
         return self._nucleation_constant_bulk
 
     @nucleation_constant_bulk.setter
@@ -525,8 +527,8 @@ class AdditiveMaterial:
 
     @property
     def nucleation_constant_interface(self) -> float:
-        """Controls the heterogeneous nucleation rate (on existing solid interfaces)
-        during solidification (1/m/K^2)."""
+        """Controls the heterogeneous nucleation rate (on existing solid
+        interfaces) during solidification (1/m/K^2)."""
         return self._nucleation_constant_interface
 
     @nucleation_constant_interface.setter
@@ -616,7 +618,8 @@ class AdditiveMaterial:
 
     @property
     def purging_gas_convection_coefficient(self) -> float:
-        """Convection coefficient between the solid and gas during processing."""
+        """Convection coefficient between the solid and gas during
+        processing."""
         return self._purging_gas_convection_coefficient
 
     @purging_gas_convection_coefficient.setter
@@ -636,7 +639,8 @@ class AdditiveMaterial:
 
     @property
     def solid_specific_heat_at_room_temperature(self) -> float:
-        """Specific heat of bulk material at room temperature, 298 K (J/kg/K)."""
+        """Specific heat of bulk material at room temperature, 298 K
+        (J/kg/K)."""
         return self._solid_specific_heat_at_room_temperature
 
     @solid_specific_heat_at_room_temperature.setter
@@ -646,7 +650,8 @@ class AdditiveMaterial:
 
     @property
     def solid_thermal_conductivity_at_room_temperature(self) -> float:
-        """Thermal conductivity of bulk material at room temperature, 298 K (W/m/K)."""
+        """Thermal conductivity of bulk material at room temperature, 298 K
+        (W/m/K)."""
         return self._solid_thermal_conductivity_at_room_temperature
 
     @solid_thermal_conductivity_at_room_temperature.setter
@@ -656,7 +661,8 @@ class AdditiveMaterial:
 
     @property
     def solidus_temperature(self) -> float:
-        """Maximum temperature at which the material is completely solid (K)."""
+        """Maximum temperature at which the material is completely solid
+        (K)."""
         return self._solidus_temperature
 
     @solidus_temperature.setter
@@ -676,7 +682,8 @@ class AdditiveMaterial:
 
     @property
     def support_yield_strength_ratio(self) -> float:
-        """Factor to reduce the yield strength and elastic modulus of support material."""
+        """Factor to reduce the yield strength and elastic modulus of support
+        material."""
         return self._support_yield_strength_ratio
 
     @support_yield_strength_ratio.setter
@@ -696,7 +703,8 @@ class AdditiveMaterial:
 
     @property
     def vaporization_temperature(self) -> float:
-        """Temperature at which material has completely changed from liquid to vapor (K)."""
+        """Temperature at which material has completely changed from liquid to
+        vapor (K)."""
         return self._vaporization_temperature
 
     @vaporization_temperature.setter
@@ -734,8 +742,8 @@ class AdditiveMaterial:
 
     @staticmethod
     def _from_material_message(msg: MaterialMessage):
-        """Create an ``AdditiveMaterial`` object from a material message received from
-        the Additive service."""
+        """Create an ``AdditiveMaterial`` object from a material message
+        received from the Additive service."""
         if not isinstance(msg, MaterialMessage):
             raise ValueError("Invalid message object passed to from_material_message()")
         material = AdditiveMaterial()
@@ -753,7 +761,8 @@ class AdditiveMaterial:
         return material
 
     def _to_material_message(self) -> MaterialMessage:
-        """Create a material message from this ``AdditiveMaterial`` to send to the Additive service."""
+        """Create a material message from this ``AdditiveMaterial`` to send to
+        the Additive service."""
         msg = MaterialMessage()
         for p in self.__dict__:
             if p != "_characteristic_width_data" and p != "_thermal_properties_data":

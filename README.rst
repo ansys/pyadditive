@@ -59,13 +59,14 @@ Basic Usage
 .. code:: python
 
    import ansys.additive as pyadditive
+
    additive = pyadditive.Additive()
 
    input = pyadditive.SingleBeadInput(
-      machine=pyadditive.AdditiveMachine(),
-      material=additive.get_material("Ti64"),
-      id="bead1",
-      bead_length=0.001, # meters
+       machine=pyadditive.AdditiveMachine(),
+       material=additive.get_material("Ti64"),
+       id="bead1",
+       bead_length=0.001,  # meters
    )
 
    summary = additive.simulate(input)

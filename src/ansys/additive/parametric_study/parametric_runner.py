@@ -29,8 +29,8 @@ class ParametricRunner:
         type: Optional[List[SimulationType]] = None,
         priority: Optional[int] = None,
     ) -> List[Union[MicrostructureSummary, PorositySummary, SingleBeadSummary]]:
-        """Run the simulations in the parametric study with ``SimulationStatus.PENDING`` in the
-        ``ColumnNames.STATUS`` column.
+        """Run the simulations in the parametric study with
+        ``SimulationStatus.PENDING`` in the ``ColumnNames.STATUS`` column.
 
         Execution order is determined by the values in the ``ColumnNames.PRIORITY`` column.
         Lower values are interpreted as having higher priority and will be run first.
@@ -50,7 +50,6 @@ class ParametricRunner:
         -------
         List[Union[MicrostructureSummary, PorositySummary, SingleBeadSummary]]
             A list of simulation summaries.
-
         """
         if type is None:
             type = [

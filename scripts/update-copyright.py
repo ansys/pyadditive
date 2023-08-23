@@ -11,6 +11,7 @@ REPO_ROOT = os.path.dirname(os.path.dirname(__file__))
 
 copyright_substr = "ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited."
 
+
 def get_args():
     parser = argparse.ArgumentParser(
         description="Update copyright in python files or add copyright if it is missing."

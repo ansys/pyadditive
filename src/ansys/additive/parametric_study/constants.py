@@ -2,8 +2,8 @@
 class ColumnNames:
     """Column names for the parametric study data frame.
 
-    Values are stored internally as a :class:`Pandas DataFrame <pandas.DataFrame>`.
-    The column names are defined here.
+    Values are stored internally as a :class:`Pandas DataFrame
+    <pandas.DataFrame>`. The column names are defined here.
     """
 
     #: Name of the parametric summary project.

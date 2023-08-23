@@ -42,8 +42,9 @@ LOCALHOST = "127.0.0.1"
 
 
 class Additive:
-    """
-    Client interface to Additive service. The method :meth:`simulate` is
+    """Client interface to Additive service.
+
+    The method :meth:`simulate` is
     used to execute simulations.
     """
 
@@ -89,7 +90,7 @@ class Additive:
             self._server_process.kill()
 
     def _create_logger(self, log_file, loglevel) -> logging.Logger:
-        """Create the logger for this module"""
+        """Create the logger for this module."""
         numeric_level = getattr(logging, loglevel.upper(), None)
         if not isinstance(numeric_level, int):
             raise ValueError("Invalid log level: %s" % loglevel)
@@ -111,8 +112,7 @@ class Additive:
         port: typing.Optional[int] = None,
         product_version: typing.Optional[str] = None,
     ):
-        """
-        Create an insecure grpc channel.
+        """Create an insecure grpc channel.
 
         A channel connection will be established using one of the following methods.
         The methods are listed in order of precedence.
@@ -139,7 +139,6 @@ class Additive:
         -------
         channel: grpc.Channel
             Insecure grpc channel.
-
         """
         if port:
             misc.check_valid_port(port)
@@ -179,7 +178,6 @@ class Additive:
         """Return the target string.
 
         Generally of the form of "ip:port", like "127.0.0.1:50052".
-
         """
         if self._channel is not None:
             return self._channel._channel.target().decode()
@@ -222,7 +220,6 @@ class Additive:
         :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`,
         :class:`SimulationError`, or, if a list of inputs was provided,
         a list of these types.
-
         """
         if type(inputs) is not list:
             result = self._simulate(inputs, show_progress=True)
@@ -261,7 +258,6 @@ class Additive:
         :class:`SingleBeadSummary`, :class:`PorositySummary`,
         :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`,
         :class:`SimulationError`
-
         """
         logger = None
         if show_progress:
@@ -302,7 +298,6 @@ class Additive:
         -------
         list[str]
             Names of available additive materials.
-
         """
         return self._materials_stub.GetMaterialsList(Empty())
 
@@ -318,7 +313,6 @@ class Additive:
         Returns
         -------
         AdditiveMaterial
-
         """
         request = GetMaterialRequest()
         request.name = name
@@ -329,8 +323,7 @@ class Additive:
     def load_material(
         parameters_file: str, thermal_lookup_file: str, characteristic_width_lookup_file: str
     ) -> AdditiveMaterial:
-        """
-        Load a user provided material definition.
+        """Load a user provided material definition.
 
         Parameters
         ----------
@@ -346,7 +339,6 @@ class Additive:
         characteristic_width_lookup_file: str
             Name of `CSV file containing a lookup table for characteristic melt pool width
             <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/add_beta/add_print_udm_tool_find_cw.html>`_
-
         """
         material = AdditiveMaterial()
         material._load_parameters(parameters_file)
@@ -357,8 +349,7 @@ class Additive:
     def tune_material(
         self, input: MaterialTuningInput, out_dir: str = USER_DATA_PATH
     ) -> MaterialTuningSummary:
-        """
-        Tune a custom material for use with additive simulations.
+        """Tune a custom material for use with additive simulations.
 
         Parameters
         ----------
@@ -371,7 +362,6 @@ class Additive:
 
         MaterialTuningSummary
             Summary of material tuning.
-
         """
         if input.id == "":
             input.id = misc.short_uuid()
@@ -404,7 +394,7 @@ class Additive:
     def __file_upload_reader(
         self, file_name: str, chunk_size=2 * 1024 * 1024
     ) -> typing.Iterator[UploadFileRequest]:
-        """Read a file and return an iterator of UploadFileRequests"""
+        """Read a file and return an iterator of UploadFileRequests."""
         file_size = os.path.getsize(file_name)
         short_name = os.path.basename(file_name)
         with open(file_name, mode="rb") as f:
@@ -425,8 +415,7 @@ class Additive:
         out_dir: str,
         logger: typing.Optional[ProgressLogger] = None,
     ) -> typing.Optional[ThermalHistorySummary]:
-        """
-        Execute a thermal history simulation.
+        """Execute a thermal history simulation.
 
         Parameters
         ----------
@@ -444,7 +433,6 @@ class Additive:
         -------
 
         :class:`ThermalHistorySummary`
-
         """
         if input.geometry == None or input.geometry.path == "":
             raise ValueError("Geometry path not defined")

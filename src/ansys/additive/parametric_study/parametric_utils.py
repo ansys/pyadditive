@@ -26,7 +26,6 @@ def build_rate(
         The volumetric build rate if hatch spacing is provided,
         otherwise an area build rate. If input units are m/s, m, m,
         the output units are m^3/s or m^2/s.
-
     """
     if hatch_spacing is None:
         return scan_speed * layer_thickness
@@ -61,7 +60,6 @@ def energy_density(
         The volumetric energy density if hatch spacing is provided,
         otherwise an area energy density. If input units are W, m/s, m, m,
         the output units are J/m^3 or J/m^2.
-
     """
     br = build_rate(scan_speed, layer_thickness, hatch_spacing)
     return laser_power / br if br else float("nan")

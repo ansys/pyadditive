@@ -12,7 +12,6 @@ from ansys.additive.single_bead import MeltPoolMessage
 
 
 def get_test_material() -> AdditiveMaterial:
-
     return AdditiveMaterial(
         absorptivity_maximum=101,
         absorptivity_minimum=102,

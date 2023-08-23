@@ -58,8 +58,8 @@ class BuildFile:
 
     @property
     def path(self) -> str:
-        """Path of zip archive containing build instruction file, geometry stl file and
-        optional support stl files."""
+        """Path of zip archive containing build instruction file, geometry stl
+        file and optional support stl files."""
         return self._path
 
     @path.setter
