@@ -359,6 +359,9 @@ class MicrostructureInput:
     def melt_pool_width(self) -> float:
         """Melt pool width (m).
 
+        This is the width of the melt pool measured at the top of the powder layer 
+        which corresponds to the ``WIDTH``value in 
+        :class:`MeltPoolColumnNames <ansys.additive.single_bead.MeltPoolColumnNames>`.
         Valid values are 7.5e-5 to 8e-4.
         """
         return self._melt_pool_width
@@ -374,6 +377,9 @@ class MicrostructureInput:
     def melt_pool_depth(self) -> float:
         """Melt pool depth (m).
 
+        This is the depth of the melt pool as measured from the top of the powder layer
+        which corresponds to the ``DEPTH``value in 
+        :class:`MeltPoolColumnNames <ansys.additive.single_bead.MeltPoolColumnNames>`.
         Valid values are 1.5e-5 to 8e-4.
         """
         return self._melt_pool_depth
