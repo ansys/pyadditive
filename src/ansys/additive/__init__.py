@@ -24,14 +24,37 @@ EXAMPLES_PATH = os.path.join(USER_DATA_PATH, "examples")
 if not os.path.exists(EXAMPLES_PATH):  # pragma: no cover
     os.makedirs(EXAMPLES_PATH)
 
-from .additive import *
-from .geometry_file import *
-from .machine import *
-from .material import *
-from .material_tuning import *
-from .microstructure import *
-from .porosity import *
-from .server_utils import *
-from .simulation import *
-from .single_bead import *
-from .thermal_history import *
+from ansys.additive.additive import (
+    DEFAULT_ADDITIVE_SERVICE_PORT,
+    LOCALHOST,
+    MAX_MESSAGE_LENGTH,
+    Additive,
+)
+from ansys.additive.geometry_file import BuildFile, MachineType, StlFile
+from ansys.additive.machine import AdditiveMachine, MachineConstants
+from ansys.additive.material import (
+    AdditiveMaterial,
+    CharacteristicWidthDataPoint,
+    ThermalPropertiesDataPoint,
+)
+from ansys.additive.material_tuning import MaterialTuningInput, MaterialTuningSummary
+from ansys.additive.microstructure import (
+    CircleEquivalenceColumnNames,
+    MicrostructureInput,
+    MicrostructureSummary,
+)
+from ansys.additive.porosity import PorosityInput, PorositySummary
+from ansys.additive.server_utils import find_open_port, launch_server
+from ansys.additive.simulation import SimulationError, SimulationStatus, SimulationType
+from ansys.additive.single_bead import (
+    MeltPool,
+    MeltPoolColumnNames,
+    SingleBeadInput,
+    SingleBeadSummary,
+)
+from ansys.additive.thermal_history import (
+    CoaxialAverageSensorInputs,
+    Range,
+    ThermalHistoryInput,
+    ThermalHistorySummary,
+)
