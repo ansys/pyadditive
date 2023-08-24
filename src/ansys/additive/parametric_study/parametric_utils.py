@@ -41,7 +41,7 @@ def energy_density(
     """Calculate the energy density.
 
     This is an approximate value useful for comparison. The returned value is simply
-    the laser power divided by the build rate. See :method:`build_rate`.
+    the laser power divided by the build rate. See :meth:`build_rate`.
 
     Parameters
     ----------

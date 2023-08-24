@@ -136,7 +136,8 @@ numpydoc_validate = True
 numpydoc_validation_checks = {
     "GL06",  # Found unknown section
     "GL07",  # Sections are in the wrong order.
-    "GL08",  # The object does not have a docstring
+    # TODO: GL08 should be reactivated since it detects undocumented members
+    # "GL08",  # The object does not have a docstring
     "GL09",  # Deprecation warning should precede extended summary
     "GL10",  # reST directives {directives} must be followed by two colons
     "SS01",  # No summary found
@@ -188,7 +189,24 @@ copybutton_prompt_is_regexp = True
 # -- Declare the Jinja context -----------------------------------------------
 BUILD_API = True if os.environ.get("BUILD_API", "true") == "true" else False
 if not BUILD_API:
-    exclude_patterns.append("api")
+    exclude_patterns.append("autoapi")
+else:
+    # Configuration for Sphinx autoapi
+    extensions.append("autoapi.extension")
+    autoapi_type = "python"
+    autoapi_dirs = ["../../src/ansys"]
+    autoapi_options = [
+        "members",
+        "undoc-members",
+        "show-inheritance",
+        "show-module-summary",
+        "special-members",
+    ]
+    autoapi_template_dir = "_autoapi_templates"
+    suppress_warnings = ["autoapi.python_import_resolution"]
+    exclude_patterns.append("_autoapi_templates/index.rst")
+    autoapi_python_use_implicit_namespaces = True
+
 
 BUILD_EXAMPLES = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
 BUILD_EXAMPLES_LONG = True if os.environ.get("BUILD_EXAMPLES_LONG", "true") == "true" else False

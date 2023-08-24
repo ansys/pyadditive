@@ -1,10 +1,6 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-"""
-    additive.py
-    -----------
-
-    This module contains the Additive class which interacts with the Additive service.
-"""
+"""This module contains the Additive class which interacts with the Additive
+service."""
 import concurrent.futures
 import hashlib
 import logging
