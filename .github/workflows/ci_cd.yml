@@ -122,6 +122,7 @@ jobs:
         uses: ansys/actions/doc-build@v4
         with:
           checkout: false
+          sphinxopts: "-j auto"
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
