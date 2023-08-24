@@ -1,5 +1,4 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-from enum import Enum
 import math
 
 from ansys.api.additive.v0.additive_domain_pb2 import MachineSettings as MachineMessage
@@ -7,7 +6,7 @@ from ansys.api.additive.v0.additive_domain_pb2 import MachineSettings as Machine
 import ansys.additive.conversions as conversions
 
 
-class MachineConstants(Enum):
+class MachineConstants:
     #: Default laser power in Watts.
     DEFAULT_LASER_POWER = 195
     MIN_LASER_POWER = 50
@@ -57,15 +56,15 @@ class AdditiveMachine:
     def __init__(
         self,
         *,
-        laser_power: float = MachineConstants.DEFAULT_LASER_POWER.value,
-        scan_speed: float = MachineConstants.DEFAULT_SCAN_SPEED.value,
-        heater_temperature: float = MachineConstants.DEFAULT_HEATER_TEMP.value,
-        layer_thickness: float = MachineConstants.DEFAULT_LAYER_THICKNESS.value,
-        beam_diameter: float = MachineConstants.DEFAULT_BEAM_DIAMETER.value,
-        starting_layer_angle: float = MachineConstants.DEFAULT_STARTING_LAYER_ANGLE.value,
-        layer_rotation_angle: float = MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE.value,
-        hatch_spacing: float = MachineConstants.DEFAULT_HATCH_SPACING.value,
-        slicing_stripe_width: float = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH.value,
+        laser_power: float = MachineConstants.DEFAULT_LASER_POWER,
+        scan_speed: float = MachineConstants.DEFAULT_SCAN_SPEED,
+        heater_temperature: float = MachineConstants.DEFAULT_HEATER_TEMP,
+        layer_thickness: float = MachineConstants.DEFAULT_LAYER_THICKNESS,
+        beam_diameter: float = MachineConstants.DEFAULT_BEAM_DIAMETER,
+        starting_layer_angle: float = MachineConstants.DEFAULT_STARTING_LAYER_ANGLE,
+        layer_rotation_angle: float = MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE,
+        hatch_spacing: float = MachineConstants.DEFAULT_HATCH_SPACING,
+        slicing_stripe_width: float = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH,
     ):
         self.laser_power = laser_power
         self.scan_speed = scan_speed
@@ -113,10 +112,7 @@ class AdditiveMachine:
     @laser_power.setter
     def laser_power(self, value: float):
         self.__validate_range(
-            value,
-            MachineConstants.MIN_LASER_POWER.value,
-            MachineConstants.MAX_LASER_POWER.value,
-            "laser_power",
+            value, MachineConstants.MIN_LASER_POWER, MachineConstants.MAX_LASER_POWER, "laser_power"
         )
         self._laser_power = value
 
@@ -131,10 +127,7 @@ class AdditiveMachine:
     @scan_speed.setter
     def scan_speed(self, value: float):
         self.__validate_range(
-            value,
-            MachineConstants.MIN_SCAN_SPEED.value,
-            MachineConstants.MAX_SCAN_SPEED.value,
-            "scan_speed",
+            value, MachineConstants.MIN_SCAN_SPEED, MachineConstants.MAX_SCAN_SPEED, "scan_speed"
         )
         self._scan_speed = value
 
@@ -150,8 +143,8 @@ class AdditiveMachine:
     def heater_temperature(self, value: float):
         self.__validate_range(
             value,
-            MachineConstants.MIN_HEATER_TEMP.value,
-            MachineConstants.MAX_HEATER_TEMP.value,
+            MachineConstants.MIN_HEATER_TEMP,
+            MachineConstants.MAX_HEATER_TEMP,
             "heater_temperature",
         )
         self._heater_temperature = value
@@ -169,8 +162,8 @@ class AdditiveMachine:
     def layer_thickness(self, value: float):
         self.__validate_range(
             value,
-            MachineConstants.MIN_LAYER_THICKNESS.value,
-            MachineConstants.MAX_LAYER_THICKNESS.value,
+            MachineConstants.MIN_LAYER_THICKNESS,
+            MachineConstants.MAX_LAYER_THICKNESS,
             "layer_thickness",
         )
         self._layer_thickness = value
@@ -190,8 +183,8 @@ class AdditiveMachine:
     def beam_diameter(self, value: float):
         self.__validate_range(
             value,
-            MachineConstants.MIN_BEAM_DIAMETER.value,
-            MachineConstants.MAX_BEAM_DIAMETER.value,
+            MachineConstants.MIN_BEAM_DIAMETER,
+            MachineConstants.MAX_BEAM_DIAMETER,
             "beam_diameter",
         )
         self._beam_diameter = value
@@ -210,8 +203,8 @@ class AdditiveMachine:
     def starting_layer_angle(self, value: float):
         self.__validate_range(
             value,
-            MachineConstants.MIN_STARTING_LAYER_ANGLE.value,
-            MachineConstants.MAX_STARTING_LAYER_ANGLE.value,
+            MachineConstants.MIN_STARTING_LAYER_ANGLE,
+            MachineConstants.MAX_STARTING_LAYER_ANGLE,
             "starting_layer_angle",
         )
         self._starting_layer_angle = value
@@ -229,8 +222,8 @@ class AdditiveMachine:
     def layer_rotation_angle(self, value: float):
         self.__validate_range(
             value,
-            MachineConstants.MIN_LAYER_ROTATION_ANGLE.value,
-            MachineConstants.MAX_LAYER_ROTATION_ANGLE.value,
+            MachineConstants.MIN_LAYER_ROTATION_ANGLE,
+            MachineConstants.MAX_LAYER_ROTATION_ANGLE,
             "layer_rotation_angle",
         )
         self._layer_rotation_angle = value
@@ -251,8 +244,8 @@ class AdditiveMachine:
     def hatch_spacing(self, value: float):
         self.__validate_range(
             value,
-            MachineConstants.MIN_HATCH_SPACING.value,
-            MachineConstants.MAX_HATCH_SPACING.value,
+            MachineConstants.MIN_HATCH_SPACING,
+            MachineConstants.MAX_HATCH_SPACING,
             "hatch_spacing",
         )
         self._hatch_spacing = value
@@ -270,8 +263,8 @@ class AdditiveMachine:
     def slicing_stripe_width(self, value: float):
         self.__validate_range(
             value,
-            MachineConstants.MIN_SLICING_STRIPE_WIDTH.value,
-            MachineConstants.MAX_SLICING_STRIPE_WIDTH.value,
+            MachineConstants.MIN_SLICING_STRIPE_WIDTH,
+            MachineConstants.MAX_SLICING_STRIPE_WIDTH,
             "slicing_stripe_width",
         )
         self._slicing_stripe_width = value

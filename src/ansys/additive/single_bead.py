@@ -1,6 +1,4 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-from enum import Enum
-
 from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
 from ansys.api.additive.v0.additive_domain_pb2 import SingleBeadInput as SingleBeadInputMessage
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
@@ -103,7 +101,7 @@ class SingleBeadInput:
         return SimulationRequest(id=self.id, single_bead_input=input)
 
 
-class MeltPoolColumnNames(Enum):
+class MeltPoolColumnNames:
     """Column names for melt pool data frame."""
 
     #: Width of melt pool (m).
