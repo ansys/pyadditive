@@ -86,7 +86,7 @@ class Additive:
             self._server_process.kill()
 
     def _create_logger(self, log_file, loglevel) -> logging.Logger:
-        """Create the logger for this module."""
+        """Instantiate the logger."""
         numeric_level = getattr(logging, loglevel.upper(), None)
         if not isinstance(numeric_level, int):
             raise ValueError("Invalid log level: %s" % loglevel)
