@@ -79,6 +79,6 @@ Refer to the `PyAdditive Documentation`_ for more information.
 
 .. LINKS AND REFERENCES
 .. _Getting Started: https://additive.docs.pyansys.com/version/stable/getting_started/index.html
-.. _Examples: https://additive.docs.pyansys.com/version/stable/examples/index.html
+.. _Examples: https://additive.docs.pyansys.com/version/stable/examples/gallery_examples/index.html
 .. _PyAdditive Documentation: https://additive.docs.pyansys.com/version/stable/index.html
 
