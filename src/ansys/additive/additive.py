@@ -108,7 +108,7 @@ class Additive:
         port: typing.Optional[int] = None,
         product_version: typing.Optional[str] = None,
     ):
-        """Create an insecure grpc channel.
+        """Create an insecure gRPC channel.
 
         A channel connection will be established using one of the following methods.
         The methods are listed in order of precedence.
