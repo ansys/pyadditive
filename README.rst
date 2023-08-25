@@ -52,7 +52,7 @@ To install the latest development version, use the following commands.
 
 .. code:: bash
 
-   git clone https://github.com/ansys-internal/pyadditive
+   git clone https://github.com/ansys/pyadditive
    cd pyadditive
    pip install -e .
 
