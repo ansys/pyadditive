@@ -154,7 +154,7 @@ class AdditiveMachine:
         """The thickness of the powder layer deposited with each pass of the
         recoater blade (m).
 
-        Valid values are from 1e-5 to 1e-4 m (10 and 100 µm).
+        Valid values are from 1e-5 to 1e-4 m (10 to 100 µm).
         """
         return self._layer_thickness
 
