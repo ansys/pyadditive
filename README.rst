@@ -78,7 +78,7 @@ Documentation
 Refer to the `PyAdditive Documentation`_ for more information.
 
 .. LINKS AND REFERENCES
-.. _Ansys additive: https://www.ansys.com/products/additive
+.. _Ansys Additive: https://www.ansys.com/products/additive
 .. _Getting Started: https://additive.docs.pyansys.com/version/stable/getting_started/index.html
 .. _Examples: https://additive.docs.pyansys.com/version/stable/examples/gallery_examples/index.html
 .. _PyAdditive Documentation: https://additive.docs.pyansys.com/version/stable/index.html
