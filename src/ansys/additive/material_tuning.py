@@ -13,15 +13,16 @@ from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialRequest
 class MaterialTuningInput:
     """Input parameters for tuning a custom material.
 
-    ``id: string``
+    Parameters
+    ----------
+    id: string
         User provided identifier for this simulation.
-    ``machine: AdditiveMachine``
+    machine: AdditiveMachine
         Machine related parameters.
-    ``material: AdditiveMaterial``
+    material: AdditiveMaterial
         Material used during simulation.
-    ``bead_length: float``
+    bead_length: float
         Length of bead to simulate (m).
-
     """
 
     def __init__(
@@ -36,39 +37,30 @@ class MaterialTuningInput:
         max_iterations: int = 15,
         base_plate_temperature: float = 353.15,
     ):
-        """
-        Initialize a ``MaterialTuningInput`` object.
+        """Initialize a ``MaterialTuningInput`` object.
 
         Parameters
         ----------
-
         id: str
             Identifier for this set of tuning simulations.
-
         experiment_data_file: str
             Name of CSV file containing experimental results data.
-
         material_parameters_file: str
             Name of JSON file containing material parameters.
-
         thermal_properties_lookup_file: str
             Name of CSV file containing a lookup table for thermal dependent properties.
-
         characteristic_width_lookup_file: str
             Optional: Name of CSV file containing a lookup table for the characteristic melt pool
             width at a given temperature. If not provided, the characteristic width will be
             calculated and ``base_plate_temperature`` must be provided.
             Default is None.
-
         allowable_error: float
             Maximum allowable error between experimental and simulated results.
             Default is 0.05 (5%).
-
         max_iterations: int
             Maximum number of iterations to perform when trying to match
             simulation results to an experiment if the allowable error is not met.
             Default is 15.
-
         base_plate_temperature: float
             Temperature of the base plate in Kelvin. This is only required if
             ``characteristic_width_lookup_file`` is ``None``. It is ignored otherwise.
@@ -95,7 +87,7 @@ class MaterialTuningInput:
         self.base_plate_temperature = base_plate_temperature
 
     def _to_request(self) -> TuneMaterialRequest:
-        """Convert this object into a material tuning request message"""
+        """Convert this object into a material tuning request message."""
         input = MaterialTuningInputMessage(
             allowable_error=self.allowable_error,
             max_iterations=self.max_iterations,

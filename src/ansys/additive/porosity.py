@@ -10,19 +10,20 @@ from ansys.additive.material import AdditiveMaterial
 class PorosityInput:
     """Input parameters for porosity simulation.
 
-    ``id: string``
+    Parameters
+    ----------
+    id: string
         User provided identifier for this simulation.
-    ``size_x: float``
+    size_x: float
         Size of simulated sample in x dimension (m), valid values: 0.001 to 0.01.
-    ``size_y: float``
+    size_y: float
         Size of simulated sample in y dimension (m), valid values: 0.001 to 0.01.
-    ``size_z: float``
+    size_z: float
         Size of simulated sample in z dimension (m), valid values: 0.001 to 0.01.
-    ``machine: AdditiveMachine``
+    machine: AdditiveMachine
         Machine related parameters.
-    ``material: AdditiveMaterial``
+    material: AdditiveMaterial
         Material used during simulation.
-
     """
 
     #: Default sample size (m) in each dimension.
@@ -102,7 +103,9 @@ class PorosityInput:
     @property
     def size_x(self):
         """Size of simulated sample in x dimension (m).
-        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm)."""
+
+        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
+        """
         return self._size_x
 
     @size_x.setter
@@ -113,7 +116,9 @@ class PorosityInput:
     @property
     def size_y(self):
         """Size of simulated sample in y dimension (m).
-        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm)."""
+
+        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
+        """
         return self._size_y
 
     @size_y.setter
@@ -124,7 +129,9 @@ class PorosityInput:
     @property
     def size_z(self):
         """Size of simulated sample in z dimension (m).
-        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm)."""
+
+        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
+        """
         return self._size_z
 
     @size_z.setter
@@ -133,7 +140,7 @@ class PorosityInput:
         self._size_z = value
 
     def _to_simulation_request(self) -> SimulationRequest:
-        """Convert this object into a simulation request message"""
+        """Convert this object into a simulation request message."""
         input = PorosityInputMessage(
             machine=self.machine._to_machine_message(),
             material=self.material._to_material_message(),
@@ -148,7 +155,6 @@ class PorositySummary:
     """Summary of a porosity simulation.
 
     Units are SI unless otherwise noted.
-
     """
 
     def __init__(
@@ -170,7 +176,8 @@ class PorositySummary:
 
     @property
     def relative_density(self) -> float:
-        """Ratio of the density of the simulated sample to a completely solid sample."""
+        """Ratio of the density of the simulated sample to a completely solid
+        sample."""
         return self._relative_density
 
     def __repr__(self):

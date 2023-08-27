@@ -22,7 +22,6 @@ class Range:
         Minimum value.
     max: float
         Maximum value.
-
     """
 
     def __init__(self, **kwargs):
@@ -49,7 +48,8 @@ class Range:
         return True
 
     def _to_range_message(self) -> RangeMessage:
-        """Create a range message to send to the server based upon this object."""
+        """Create a range message to send to the server based upon this
+        object."""
         return RangeMessage(min=self.min, max=self.max)
 
 
@@ -62,7 +62,6 @@ class CoaxialAverageSensorInputs:
     z_heights: Range[] (meters)
         Array of ranges along the z axis of the geometry. The simulated sensor will
         follow the scan path for each deposit layer within each range.
-
     """
 
     def __init__(self, **kwargs):
@@ -91,7 +90,8 @@ class CoaxialAverageSensorInputs:
         return True
 
     def _to_coaxial_average_sensor_inputs_message(self) -> CoaxialAverageSensorInputsMessage:
-        """Create a coaxial average sensor input message to send to the server based upon this object."""
+        """Create a coaxial average sensor input message to send to the server
+        based upon this object."""
         msg = CoaxialAverageSensorInputsMessage(sensor_radius=self.radius)
         for z in self.z_heights:
             msg.z_heights.append(z._to_range_message())
@@ -111,7 +111,6 @@ class ThermalHistoryInput:
         Geometry to use in simulation.
     coax_ave_sensor_inputs: CoaxialAverageSensorInputs
         Coaxial average sensor definition.
-
     """
 
     def __init__(self, **kwargs):
@@ -159,7 +158,7 @@ class ThermalHistoryInput:
         self._geometry = value
 
     def _to_simulation_request(self, remote_geometry_path: str) -> SimulationRequest:
-        """Convert this object into a simulation request message"""
+        """Convert this object into a simulation request message."""
 
         if not self.geometry:
             raise ValueError("Attempted to create simulation request without defining geometry")
