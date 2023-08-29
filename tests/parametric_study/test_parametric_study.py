@@ -11,7 +11,6 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 )
 import numpy as np
 import pandas as pd
-import panel as pn
 import pytest
 
 from ansys.additive import (
@@ -1085,7 +1084,7 @@ def test_run_simulations_calls_simulate_correctly(monkeypatch):
     assert patched_simulate.call_args[0][1] == mock_additive
 
 
-def test_remove_deletes_rows_from_dataframe():
+def test_remove_deletes_multiple_rows_from_dataframe():
     # arrange
     study = ps.ParametricStudy(project_name="test_study")
     for i in range(4):
@@ -1191,16 +1190,3 @@ def test_clear_removes_all_rows_but_not_columns():
     assert len(df2) == 0
     assert len(df1.columns) == len(df2.columns)
     assert len(df2.columns) > 0
-
-
-def test_table():
-    # arrange
-    study = ps.ParametricStudy(project_name="test_study")
-    study.add_inputs([SingleBeadInput(id="test_id_1")])
-
-    # act
-    table = study.table(max_height=500)
-
-    # assert
-    assert isinstance(table, pn.pane.DataFrame)
-    assert table.max_height == 500

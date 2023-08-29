@@ -294,7 +294,7 @@ class ParametricStudy:
         return {
             ColumnNames.PROJECT: self._project_name,
             ColumnNames.ITERATION: iteration,
-            ColumnNames.ID: self._create_unique_id(summary.input.id),
+            ColumnNames.ID: self._create_unique_id(id=summary.input.id),
             ColumnNames.STATUS: SimulationStatus.COMPLETED,
             ColumnNames.MATERIAL: summary.input.material.name,
             ColumnNames.HEATER_TEMPERATURE: summary.input.machine.heater_temperature,
@@ -413,7 +413,7 @@ class ParametricStudy:
                                     ColumnNames.PRIORITY: priority,
                                     ColumnNames.TYPE: SimulationType.SINGLE_BEAD,
                                     ColumnNames.ID: self._create_unique_id(
-                                        f"sb_{iteration}_{sb_input.id}"
+                                        prefix=f"sb_{iteration}"
                                     ),
                                     ColumnNames.STATUS: SimulationStatus.PENDING,
                                     ColumnNames.MATERIAL: material_name,
@@ -611,7 +611,7 @@ class ParametricStudy:
                                                     ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.POROSITY,
                                                     ColumnNames.ID: self._create_unique_id(
-                                                        f"por_{iteration}_{input.id}"
+                                                        prefix=f"por_{iteration}"
                                                     ),
                                                     ColumnNames.STATUS: SimulationStatus.PENDING,
                                                     ColumnNames.MATERIAL: material_name,
@@ -898,7 +898,7 @@ class ParametricStudy:
                                                     ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.MICROSTRUCTURE,
                                                     ColumnNames.ID: self._create_unique_id(
-                                                        f"micro_{iteration}_{input.id}"
+                                                        prefix=f"micro_{iteration}"
                                                     ),
                                                     ColumnNames.STATUS: SimulationStatus.PENDING,
                                                     ColumnNames.MATERIAL: material_name,
@@ -1082,7 +1082,7 @@ class ParametricStudy:
             dict[ColumnNames.PROJECT] = self.project_name
             dict[ColumnNames.ITERATION] = iteration
             dict[ColumnNames.PRIORITY] = priority
-            dict[ColumnNames.ID] = self._create_unique_id(input.id)
+            dict[ColumnNames.ID] = self._create_unique_id(id=input.id)
             dict[ColumnNames.STATUS] = status
             dict[ColumnNames.MATERIAL] = input.material.name
             dict[ColumnNames.LASER_POWER] = input.machine.laser_power
@@ -1188,16 +1188,3 @@ class ParametricStudy:
     def clear(self):
         """Remove all permutations from the parametric study."""
         self._data_frame = self._data_frame[0:0]
-
-    # TODO: Add support for filtering by sim status and type.
-    def table(self) -> pn.pane.DataFrame:
-        """Show the parametric study as a table.
-
-        Returns
-        -------
-        :class:`panel.pane.DataFrame <panel.pane.DataFrame>`
-        """
-        return pn.widgets.Tabulator(
-            self._data_frame,
-            sizing_mode="stretch_both",
-        )
