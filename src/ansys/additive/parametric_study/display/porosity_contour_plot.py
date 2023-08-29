@@ -11,10 +11,11 @@ from ansys.additive.parametric_study import ColumnNames, ParametricStudy
 
 from ._common_controls import _common_controls
 
+pn.extension("plotly")
+
 
 def porosity_contour_plot(ps: ParametricStudy):
-    """
-    Provides a contour plot of build rate and relative density.
+    """Provides a contour plot of build rate and relative density.
 
     Parameters
     ----------
@@ -23,10 +24,10 @@ def porosity_contour_plot(ps: ParametricStudy):
 
     Returns
     -------
-    :class: `pn.pane.Bokeh <panel.pane.Bokeh>`
-        A Panel pane object containing the plot and controls.
+    :class: `panel.Row <panel.Row>`
+        A ``Panel Row`` object containing the plot and controls.
     """
-    df = __get_data_frame(ps)
+    df = __data_frame(ps)
     (
         ht_select,
         lt_select,
@@ -71,7 +72,7 @@ def porosity_contour_plot(ps: ParametricStudy):
     return plot
 
 
-def __get_data_frame(ps: ParametricStudy) -> pd.DataFrame:
+def __data_frame(ps: ParametricStudy) -> pd.DataFrame:
     df = ps.data_frame()
     df = df[
         (df[ColumnNames.TYPE] == SimulationType.POROSITY)
@@ -128,7 +129,7 @@ def __update_plot(
 ) -> dict:
     fig = go.Figure()
 
-    x, y, br, rd = __get_contour_data(df, ht, lt, bd, sa, ra, hs, sw)
+    x, y, br, rd = __contour_data(df, ht, lt, bd, sa, ra, hs, sw)
     br_contour = go.Contour(
         x=x,
         y=y,
@@ -174,7 +175,7 @@ def __update_plot(
     )
     fig.add_trace(rd_contour)
 
-    scatter_x, scatter_y, rd_scatter = __get_scatter_data(df, ht, lt, bd, sa, ra, hs, sw)
+    scatter_x, scatter_y, rd_scatter = __scatter_data(df, ht, lt, bd, sa, ra, hs, sw)
     scatter = go.Scatter(
         x=scatter_x,
         y=scatter_y,
@@ -211,10 +212,11 @@ def __update_plot(
     return fig
 
 
-def __get_contour_data(
+def __contour_data(
     df: pd.DataFrame, ht: float, lt: float, bd: float, sa: float, ra: float, hs: float, sw: float
 ) -> Tuple[list, list, list, list]:
-    """Returns lists of scan speed, laser power, build rate, and relative density values."""
+    """Returns lists of scan speed, laser power, build rate, and relative
+    density values."""
 
     idx = df[
         (df[ColumnNames.LAYER_THICKNESS] == lt)
@@ -286,7 +288,7 @@ def __get_contour_data(
     return (speeds, powers, build_rate_z, relative_density_z)
 
 
-def __get_scatter_data(
+def __scatter_data(
     df: pd.DataFrame, ht: float, lt: float, bd: float, sa: float, ra: float, hs: float, sw: float
 ) -> Tuple[list, list, list]:
     idx = df[

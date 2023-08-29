@@ -16,8 +16,7 @@ pn.extension("plotly")
 
 
 def ave_grain_size_plot(ps: ParametricStudy):
-    """
-    Provides a contour plot of build rate and relative density.
+    """Provides a contour plot of build rate and relative density.
 
     Parameters
     ----------
@@ -26,10 +25,10 @@ def ave_grain_size_plot(ps: ParametricStudy):
 
     Returns
     -------
-    :class: `pn.pane.Bokeh <panel.pane.Bokeh>`
-        A Panel pane object containing the plot and controls.
+    :class: `panel.Row <panel.Row>`
+        A ``Panel Row`` object containing the plot and controls.
     """
-    df = __get_data_frame(ps)
+    df = __data_frame(ps)
     (
         ht_select,
         lt_select,
@@ -68,7 +67,7 @@ def ave_grain_size_plot(ps: ParametricStudy):
     return plot
 
 
-def __get_data_frame(ps: ParametricStudy) -> pd.DataFrame:
+def __data_frame(ps: ParametricStudy) -> pd.DataFrame:
     df = ps.data_frame()
     df = df[
         (df[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE)
@@ -101,7 +100,7 @@ def __update_plot(
         vertical_spacing=0.11,
     )
 
-    x, y, xy, xz, yz = __get_scatter_data(df, ht, lt, bd, sa, ra, hs, sw)
+    x, y, xy, xz, yz = __scatter_data(df, ht, lt, bd, sa, ra, hs, sw)
     np_xy = np.array(xy)
     xy_norm = np_xy / np.linalg.norm(np_xy)
     xy_scatter = go.Scatter(
@@ -165,7 +164,7 @@ def __normalize(x: list, t_min: float = 5, t_max: float = 18) -> list:
     return norm_arr
 
 
-def __get_scatter_data(
+def __scatter_data(
     df: pd.DataFrame, ht: float, lt: float, bd: float, sa: float, ra: float, hs: float, sw: float
 ) -> Tuple[list, list, list, list, list]:
     idx = df[

@@ -7,6 +7,7 @@ import panel as pn
 from ansys.additive import SimulationStatus, SimulationType
 from ansys.additive.parametric_study import ColumnNames, ParametricStudy
 
+# global variables
 _df = None
 _ps = None
 _iter_select = None
@@ -16,8 +17,7 @@ pn.extension("tabulator")
 
 
 def show_table(ps: ParametricStudy, page_size: int = 10):
-    """
-    Provides an interactive display of the parametric study table.
+    """Provides an interactive display of the parametric study table.
 
     Parameters
     ----------
@@ -28,8 +28,8 @@ def show_table(ps: ParametricStudy, page_size: int = 10):
 
     Returns
     -------
-    :class:`panel.Row`
-        A Panel pane object containing the plot and controls.
+    :class:`panel.Column <panel.Column>`
+        A ``Panel Column`` object containing the table and controls.
     """
     global _df, _ps, _iter_select, _pri_select
 
@@ -45,7 +45,7 @@ def show_table(ps: ParametricStudy, page_size: int = 10):
     ) = __init_controls(_df)
 
     table = pn.widgets.Tabulator(
-        _df, page_size=page_size, layout="fit_data_stretch", editors=__get_editors(_df)
+        _df, page_size=page_size, layout="fit_data_stretch", editors=__editors(_df)
     ).servable()
     table.add_filter(proj_select, ColumnNames.PROJECT)
     table.add_filter(_iter_select, ColumnNames.ITERATION)
@@ -106,7 +106,7 @@ def __init_controls(df: pd.DataFrame) -> Tuple[pn.widgets.MultiSelect, ...]:
     return proj_select, iter_select, pri_select, type_select, status_select
 
 
-def __get_editors(df: pd.DataFrame):
+def __editors(df: pd.DataFrame):
     editors = {}
     for col in df.columns:
         if col == ColumnNames.STATUS:

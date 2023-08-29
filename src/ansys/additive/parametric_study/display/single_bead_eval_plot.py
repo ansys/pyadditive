@@ -11,6 +11,7 @@ from ansys.additive.parametric_study import ColumnNames, ParametricStudy
 
 from ._common_controls import _common_controls
 
+# global variables
 _range_slider = None
 _poi_select = None
 _last_poi = None
@@ -19,8 +20,7 @@ pn.extension("plotly")
 
 
 def single_bead_eval_plot(ps: ParametricStudy):
-    """
-    Provides a contour plot of single bead results useful for determining
+    """Provides a contour plot of single bead results useful for determining
     desirable melt pool statistics.
 
     Parameters
@@ -33,7 +33,7 @@ def single_bead_eval_plot(ps: ParametricStudy):
     :class: `panel.Row <panel.Row>`
         A Panel Row object containing the plot and controls.
     """
-    df = __get_data_frame(ps)
+    df = __data_frame(ps)
     (
         ht_select,
         lt_select,
@@ -67,7 +67,7 @@ def single_bead_eval_plot(ps: ParametricStudy):
     return plot
 
 
-def __get_data_frame(ps: ParametricStudy) -> pd.DataFrame:
+def __data_frame(ps: ParametricStudy) -> pd.DataFrame:
     df = ps.data_frame()
     df = df[
         (df[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD)
@@ -114,7 +114,7 @@ def __init_controls(df: pd.DataFrame):
     )
 
 
-def __get_contour_colorscale() -> list:
+def __contour_colorscale() -> list:
     return [
         [0.0, "rgb(26, 150, 65)"],
         [0.1, "rgb(26, 150, 65)"],
@@ -145,7 +145,7 @@ def __update_plot(
 
     fig = go.Figure()
 
-    x, y, z = __get_contour_data(df, ht, lt, bd, poi, range)
+    x, y, z = __contour_data(df, ht, lt, bd, poi, range)
     contour = go.Contour(
         x=x,
         y=y,
@@ -153,7 +153,7 @@ def __update_plot(
         contours=dict(showlabels=False, start=0, end=1, size=0.1),
         # contours_coloring="heatmap",
         line=dict(color="darkblue"),  # dash="dot", width=2),
-        colorscale=__get_contour_colorscale(),
+        colorscale=__contour_colorscale(),
         colorbar=dict(
             # showticklabels=False doesn't work so we use a white font
             tickfont=dict(color="white"),
@@ -164,7 +164,7 @@ def __update_plot(
     )
     fig.add_trace(contour)
 
-    scatter_x, scatter_y, z_scatter = __get_scatter_data(df, ht, lt, bd, poi)
+    scatter_x, scatter_y, z_scatter = __scatter_data(df, ht, lt, bd, poi)
     scatter = go.Scatter(
         x=scatter_x,
         y=scatter_y,
@@ -201,10 +201,11 @@ def __update_plot(
     return fig
 
 
-def __get_contour_data(
+def __contour_data(
     df: pd.DataFrame, ht: float, lt: float, bd: float, poi: str, range: Tuple[float, float]
 ) -> Tuple[list, list, list, list]:
-    """Returns lists of scan speed, laser power, and parameter of interest values."""
+    """Returns lists of scan speed, laser power, and parameter of interest
+    values."""
 
     idx = df[
         (df[ColumnNames.LAYER_THICKNESS] == lt)
@@ -256,7 +257,7 @@ def __get_contour_data(
     return (speeds, powers, z_vals)
 
 
-def __get_scatter_data(
+def __scatter_data(
     df: pd.DataFrame, ht: float, lt: float, bd: float, poi: str
 ) -> Tuple[list, list, list]:
     idx = df[
