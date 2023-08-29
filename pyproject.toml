@@ -57,7 +57,7 @@ tests = [
     "pandas==2.0.3",
     "panel==1.2.1",
     "platformdirs==3.10.0",
-    "protobuf==4.24.1",
+    "protobuf~=3.20.2",
     "six==1.16.0",
     "tqdm==4.66.1",
     # Test specific dependencies
@@ -113,6 +113,6 @@ show_missing = true
 
 [tool.pytest.ini_options]
 minversion = "7.1"
-addopts = "-ra --cov=ansys.additive --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv"
+addopts = "-ra --cov=ansys.additive --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --cov-fail-under 90"
 testpaths = ["tests"]
 filterwarnings = ["ignore:::.*protoc_gen_swagger*"]
