@@ -114,7 +114,6 @@ def __init_controls(df: pd.DataFrame):
     )
 
 
-# @pn.cache
 def __update_plot(
     df: pd.DataFrame,
     ht: float,
@@ -208,7 +207,6 @@ def __update_plot(
         range=[min(y) - 20, max(y) + 70],
     )
 
-    # return fig.to_dict()
     return fig
 
 
