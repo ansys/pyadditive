@@ -645,6 +645,25 @@ def test_generate_microstructure_permutations_creates_permutations():
                                         )
 
 
+def test_generate_microstructure_permutations_converts_Nones_to_NANs_in_dataframe():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    powers = [50]
+    scan_speeds = [1]
+
+    # act
+    study.generate_microstructure_permutations("material", powers, scan_speeds)
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+    assert np.isnan(df.loc[0, ps.ColumnNames.COOLING_RATE])
+    assert np.isnan(df.loc[0, ps.ColumnNames.THERMAL_GRADIENT])
+    assert np.isnan(df.loc[0, ps.ColumnNames.MICRO_MELT_POOL_WIDTH])
+    assert np.isnan(df.loc[0, ps.ColumnNames.MICRO_MELT_POOL_DEPTH])
+    assert np.isnan(df.loc[0, ps.ColumnNames.RANDOM_SEED])
+
+
 def test_generate_microstructure_permutations_filters_by_energy_density():
     # arrange
     study = ps.ParametricStudy(project_name="test_study")

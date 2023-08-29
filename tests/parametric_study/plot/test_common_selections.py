@@ -4,7 +4,7 @@ import numpy as np
 
 from ansys.additive import MachineConstants
 from ansys.additive.parametric_study import ParametricStudy
-from ansys.additive.parametric_study.plot.common_selections import CommonSelections
+from ansys.additive.parametric_study.display.common_selections import CommonSelections
 
 
 def test_init_with_all_none_param_creates_expected_object():

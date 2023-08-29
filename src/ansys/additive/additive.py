@@ -6,6 +6,7 @@
     This module contains the Additive class which interacts with the Additive service.
 """
 import concurrent.futures
+from datetime import datetime
 import hashlib
 import logging
 import os
@@ -234,7 +235,7 @@ class Additive:
         nthreads = self._nproc
         if nproc:
             nthreads = nproc
-        print(f"Executing {len(inputs)} simulations")
+        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Executing {len(inputs)} simulations")
         with concurrent.futures.ThreadPoolExecutor(nthreads) as executor:
             futures = []
             for input in inputs:
@@ -244,7 +245,11 @@ class Additive:
                 if isinstance(summary, SimulationError):
                     print(f"\nError: {summary.message}")
                 summaries.append(summary)
-                print(f"\rCompleted {len(summaries)} of {len(inputs)} simulations", end="")
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                print(
+                    f"\r{timestamp} Completed {len(summaries)} of {len(inputs)} simulations",
+                    end="",
+                )
         return summaries
 
     def _simulate(self, input, show_progress: bool = False):
