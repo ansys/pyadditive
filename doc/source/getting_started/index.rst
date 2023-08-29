@@ -6,7 +6,7 @@
 Getting started
 ###############
 
-PyAdditive is a Python client library for the Ansys additive service.
+PyAdditive is a Python client library for the Ansys Additive service.
 
 .. note::
 
@@ -38,7 +38,7 @@ cloud environment.
 
 Once logged in to Ansys Lab, create a new jupyter notebook and connect to the additive service using:
 
-.. code:: python
+.. code:: pycon
 
    >>> import ansys.additive as pyadditive
    >>> additive = pyadditive.Additive()
@@ -65,7 +65,7 @@ you can start the additive service locally using ``docker`` with:
 
 Next, connect to the service with:
 
-.. code:: python
+.. code:: pycon
 
    >>> import ansys.additive as pyadditive
    >>> additive = pyadditive.Additive()

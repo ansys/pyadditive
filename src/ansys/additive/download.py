@@ -15,7 +15,7 @@ def download_file(
     local_folder: str,
     logger: ProgressLogger = None,
 ):
-    """Download a file from the server to the local host
+    """Download a file from the server to the local host.
 
     Parameters
     ----------
@@ -28,7 +28,6 @@ def download_file(
 
     logger: ProgressLogger
         Log message handler
-
     """
 
     if not os.path.isdir(local_folder):

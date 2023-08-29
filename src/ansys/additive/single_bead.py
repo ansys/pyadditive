@@ -81,7 +81,9 @@ class SingleBeadInput:
     @property
     def bead_length(self):
         """Length of bead to simulate (m).
-        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm)."""
+
+        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
+        """
         return self._bead_length
 
     @bead_length.setter
@@ -90,7 +92,7 @@ class SingleBeadInput:
         self._bead_length = value
 
     def _to_simulation_request(self) -> SimulationRequest:
-        """Convert this object into a simulation request message"""
+        """Convert this object into a simulation request message."""
         input = SingleBeadInputMessage(
             machine=self.machine._to_machine_message(),
             material=self.material._to_material_message(),
@@ -118,7 +120,6 @@ class MeltPool:
     """Container for the melt pool evolution during a single bead simulation.
 
     Units are SI unless otherwise noted.
-
     """
 
     def __init__(self, msg: MeltPoolMessage):
@@ -141,7 +142,8 @@ class MeltPool:
         self._df.index.name = "bead_length"
 
     def data_frame(self) -> DataFrame:
-        """Return :class:`Pandas DataFrame <pandas.DataFrame>` containing melt pool data.
+        """Return :class:`Pandas DataFrame <pandas.DataFrame>` containing melt
+        pool data.
 
         Values are in meters.
 

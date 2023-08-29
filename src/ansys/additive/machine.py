@@ -51,7 +51,6 @@ class AdditiveMachine:
     Units are SI (m, kg, s, K) unless otherwise noted. Exceptions include
     angles, which are in degrees, and ``heater_temperature``, which is in
     degrees Celsius.
-
     """
 
     def __init__(
@@ -105,7 +104,9 @@ class AdditiveMachine:
     @property
     def laser_power(self) -> float:
         """Scanning laser power (W).
-        Valid values are from 50 to 700 Watts."""
+
+        Valid values are from 50 to 700 Watts.
+        """
         return self._laser_power
 
     @laser_power.setter
@@ -118,7 +119,9 @@ class AdditiveMachine:
     @property
     def scan_speed(self) -> float:
         """Laser scanning speed in (m/s).
-        Valid values are from 0.35 to 2.5 m/s."""
+
+        Valid values are from 0.35 to 2.5 m/s.
+        """
         return self._scan_speed
 
     @scan_speed.setter
@@ -131,7 +134,9 @@ class AdditiveMachine:
     @property
     def heater_temperature(self) -> float:
         """Temperature of machine build chamber heater (°C).
-        Valid values are from 20 to 500 °C."""
+
+        Valid values are from 20 to 500 °C.
+        """
         return self._heater_temperature
 
     @heater_temperature.setter
@@ -146,8 +151,11 @@ class AdditiveMachine:
 
     @property
     def layer_thickness(self) -> float:
-        """The thickness of the powder layer deposited with each pass of the recoater blade (m).
-        Valid values are from 1e-5 to 1e-4 m (10 and 100 µm)."""
+        """The thickness of the powder layer deposited with each pass of the
+        recoater blade (m).
+
+        Valid values are from 1e-5 to 1e-4 m (10 to 100 µm).
+        """
         return self._layer_thickness
 
     @layer_thickness.setter
@@ -163,9 +171,12 @@ class AdditiveMachine:
     @property
     def beam_diameter(self) -> float:
         """The width of the laser on the powder or substrate surface defined
-        using the D4σ beam diameter definition (m). Usually this value is provided by the
-        machine manufacturer. Sometimes called laser spot diameter.
-        Valid values are from 2e-5 to 1.4e-4 m (20 and 140 µm)."""
+        using the D4σ beam diameter definition (m).
+
+        Usually this value is provided by the machine manufacturer.
+        Sometimes called laser spot diameter. Valid values are from 2e-5
+        to 1.4e-4 m (20 and 140 µm).
+        """
         return self._beam_diameter
 
     @beam_diameter.setter
@@ -180,10 +191,12 @@ class AdditiveMachine:
 
     @property
     def starting_layer_angle(self) -> float:
-        """The angle at which the first layer will be scanned (°). It is measured
-        counter clockwise from the X axis, such that a value of 90° results in scan lines
-        parallel to the Y axis.
-        Valid values are from 0 to 180°."""
+        """The angle at which the first layer will be scanned (°).
+
+        It is measured counter clockwise from the X axis, such that a
+        value of 90° results in scan lines parallel to the Y axis. Valid
+        values are from 0 to 180°.
+        """
         return self._starting_layer_angle
 
     @starting_layer_angle.setter
@@ -200,7 +213,9 @@ class AdditiveMachine:
     def layer_rotation_angle(self) -> float:
         """The angle, in degrees, at which scan vector orientation changes from
         layer to layer (°).
-        Valid values are from 0 to 180°."""
+
+        Valid values are from 0 to 180°.
+        """
         return self._layer_rotation_angle
 
     @layer_rotation_angle.setter
@@ -215,11 +230,14 @@ class AdditiveMachine:
 
     @property
     def hatch_spacing(self) -> float:
-        """The distance between adjacent scan vectors, or hatches when rastering
-        back and forth with the laser (m). Hatch spacing should allow for a slight overlap of
-        scan vector tracks such that some of the material re-melts to ensure full coverage
-        of solid material.
-        Valid values are from 6e-5 to 2e-4 m (0.06 and 0.2 mm)."""
+        """The distance between adjacent scan vectors, or hatches when
+        rastering back and forth with the laser (m).
+
+        Hatch spacing should allow for a slight overlap of scan vector
+        tracks such that some of the material re-melts to ensure full
+        coverage of solid material. Valid values are from 6e-5 to 2e-4 m
+        (0.06 and 0.2 mm).
+        """
         return self._hatch_spacing
 
     @hatch_spacing.setter
@@ -234,8 +252,11 @@ class AdditiveMachine:
 
     @property
     def slicing_stripe_width(self) -> float:
-        """The width of a stripe (m). A stripe is a section of scan lines within a layer.
-        Valid values must be between 0.001 and 0.1 m (1 and 100 mm)."""
+        """The width of a stripe (m).
+
+        A stripe is a section of scan lines within a layer. Valid values
+        must be between 0.001 and 0.1 m (1 and 100 mm).
+        """
         return self._slicing_stripe_width
 
     @slicing_stripe_width.setter
@@ -250,7 +271,8 @@ class AdditiveMachine:
 
     @staticmethod
     def _from_machine_message(msg: MachineMessage):
-        """Create an ``AdditiveMachine`` from a machine message received from the Additive service."""
+        """Create an ``AdditiveMachine`` from a machine message received from
+        the Additive service."""
         if isinstance(msg, MachineMessage):
             return AdditiveMachine(
                 laser_power=msg.laser_power,
@@ -267,7 +289,8 @@ class AdditiveMachine:
             raise ValueError("Invalid message type passed to _from_machine_message()")
 
     def _to_machine_message(self) -> MachineMessage:
-        """Create a machine message from this ``AdditiveMachine`` to send to the Additive service."""
+        """Create a machine message from this ``AdditiveMachine`` to send to
+        the Additive service."""
         return MachineMessage(
             laser_power=self.laser_power,
             scan_speed=self.scan_speed,

@@ -51,9 +51,12 @@ class ParametricStudy:
         )
 
     def data_frame(self) -> pd.DataFrame:
-        """Return a copy of the internal parametric study :class:`DataFrame <pandas.DataFrame>`.
+        """Return a copy of the internal parametric study :class:`DataFrame
+        <pandas.DataFrame>`.
+
         See :class:`ColumnNames` for the column names used in the returned ``DataFrame``.
-        .. note:: Updating the returned ``DataFrame`` will not update the internal ``DataFrame``."""
+        .. note:: Updating the returned ``DataFrame`` will not update the internal ``DataFrame``.
+        """
         return self._data_frame.copy()
 
     def run_simulations(
@@ -64,10 +67,12 @@ class ParametricStudy:
         # workers: int = 1,
         # threads: int = 4,
     ):
-        """Run the simulations in the parametric study with ``SimulationStatus.PENDING`` in the
-        ``ColumnNames.STATUS`` column.
-        Execution order is determined by the values in the ``ColumnNames.PRIORITY`` column.
-        Lower values are interpreted as having higher priority and will be run first.
+        """Run the simulations in the parametric study with
+        ``SimulationStatus.PENDING`` in the ``ColumnNames.STATUS`` column.
+        Execution order is determined by the values in the
+        ``ColumnNames.PRIORITY`` column. Lower values are interpreted as having
+        higher priority and will be run first.
+
         Parameters
         ----------
         additive: Additive
@@ -103,7 +108,6 @@ class ParametricStudy:
         ----------
         filename : str
             Name of file to save the parametric study to.
-
         """
         with open(filename, "wb") as f:
             dill.dump(self, f)
@@ -121,7 +125,6 @@ class ParametricStudy:
         -------
         ParametricStudy
             The loaded parametric study.
-
         """
         with open(filename, "rb") as f:
             return dill.load(f)
@@ -131,7 +134,8 @@ class ParametricStudy:
         summaries: List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary]],
         iteration: int = DEFAULT_ITERATION,
     ):
-        """Add summaries of previously executed simulations to the parametric study.
+        """Add summaries of previously executed simulations to the parametric
+        study.
 
         This function adds new simulations to the parametric study. To update existing
         simulations, use :meth:`update`.
@@ -140,7 +144,6 @@ class ParametricStudy:
         ----------
         summaries : list[SingleBeadSummary | PorositySummary | MicrostructureSummary]
             List of simulation result summaries to add to the parametric study.
-
         """
         for summary in summaries:
             if isinstance(summary, SingleBeadSummary):
@@ -287,7 +290,6 @@ class ParametricStudy:
         -------
         Dict[str, Any]
             The dictionary of common parameters.
-
         """
         return {
             ColumnNames.PROJECT: self._project_name,
@@ -952,7 +954,6 @@ class ParametricStudy:
         ----------
         summaries : List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary, SimulationError]]
             The list of simulation summaries to use for updating the parametric study.
-
         """
         for summary in summaries:
             if isinstance(summary, SingleBeadSummary):
@@ -969,7 +970,8 @@ class ParametricStudy:
                 raise TypeError(f"Invalid simulation summary type: {type(summary)}")
 
     def _update_single_bead(self, summary: SingleBeadSummary):
-        """Update the results of a single bead simulation in the parametric study data frame."""
+        """Update the results of a single bead simulation in the parametric
+        study data frame."""
         median_df = summary.melt_pool.data_frame().median()
         idx = self._data_frame[
             (self._data_frame[ColumnNames.ID] == summary.input.id)
@@ -1004,7 +1006,8 @@ class ParametricStudy:
         )
 
     def _update_porosity(self, summary: PorositySummary):
-        """Update the results of a porosity simulation in the parametric study data frame."""
+        """Update the results of a porosity simulation in the parametric study
+        data frame."""
         idx = self._data_frame[
             (self._data_frame[ColumnNames.ID] == summary.input.id)
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.POROSITY)
@@ -1014,7 +1017,8 @@ class ParametricStudy:
         self._data_frame.loc[idx, ColumnNames.RELATIVE_DENSITY] = summary.relative_density
 
     def _update_microstructure(self, summary: MicrostructureSummary):
-        """Update the results of a microstructure simulation in the parametric study data frame."""
+        """Update the results of a microstructure simulation in the parametric
+        study data frame."""
         idx = self._data_frame[
             (self._data_frame[ColumnNames.ID] == summary.input.id)
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE)
@@ -1044,7 +1048,6 @@ class ParametricStudy:
 
         priority : int
             The priority for the simulations.
-
         """
         for input in inputs:
             dict = {}
@@ -1193,7 +1196,6 @@ class ParametricStudy:
         Returns
         -------
         :class:`panel.pane.DataFrame <panel.pane.DataFrame>`
-
         """
         return pn.widgets.Tabulator(
             self._data_frame,

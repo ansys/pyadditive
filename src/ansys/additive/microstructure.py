@@ -19,7 +19,6 @@ class MicrostructureInput:
     """Input parameters for microstructure simulation.
 
     Units are SI (m, kg, s, K) unless otherwise noted.
-
     """
 
     #: Default minimum x, y, z, position coordinate (m).
@@ -228,7 +227,9 @@ class MicrostructureInput:
     @property
     def sample_size_x(self) -> float:
         """Size of the geometry sample in the x direction (m).
-        Valid values are 0.001 to 0.01."""
+
+        Valid values are 0.001 to 0.01.
+        """
         return self._sample_size_x
 
     @sample_size_x.setter
@@ -244,7 +245,9 @@ class MicrostructureInput:
     @property
     def sample_size_y(self) -> float:
         """Size of the geometry sample in the y direction (m).
-        Valid values are 0.001 to 0.01."""
+
+        Valid values are 0.001 to 0.01.
+        """
         return self._sample_size_y
 
     @sample_size_y.setter
@@ -260,7 +263,9 @@ class MicrostructureInput:
     @property
     def sample_size_z(self) -> float:
         """Size of the geometry sample in the z direction (m).
-        Valid values are 0.001 to 0.01."""
+
+        Valid values are 0.001 to 0.01.
+        """
         return self._sample_size_z
 
     @sample_size_z.setter
@@ -276,7 +281,9 @@ class MicrostructureInput:
     @property
     def sensor_dimension(self) -> float:
         """Dimension of the sensor (m).
-        Valid values are 0.0001 to 0.001."""
+
+        Valid values are 0.0001 to 0.001.
+        """
         return self._sensor_dimension
 
     @sensor_dimension.setter
@@ -310,8 +317,8 @@ class MicrostructureInput:
 
     @property
     def use_provided_thermal_parameters(self) -> bool:
-        """If ``True``, indicates that cooling_rate, thermal_gradient, melt_pool_depth and
-        melt_pool_width have been provided by the user."""
+        """If ``True``, indicates that cooling_rate, thermal_gradient,
+        melt_pool_depth and melt_pool_width have been provided by the user."""
         return self._use_provided_thermal_parameters
 
     @use_provided_thermal_parameters.setter
@@ -321,7 +328,9 @@ class MicrostructureInput:
     @property
     def cooling_rate(self) -> float:
         """Material cooling rate (K/s).
-        Valid values are 1e5 to 1e7."""
+
+        Valid values are 1e5 to 1e7.
+        """
         return self._cooling_rate
 
     @cooling_rate.setter
@@ -334,7 +343,9 @@ class MicrostructureInput:
     @property
     def thermal_gradient(self) -> float:
         """Material thermal gradient (K/m).
-        Valid values are 1e5 to 1e8."""
+
+        Valid values are 1e5 to 1e8.
+        """
         return self._thermal_gradient
 
     @thermal_gradient.setter
@@ -347,7 +358,12 @@ class MicrostructureInput:
     @property
     def melt_pool_width(self) -> float:
         """Melt pool width (m).
-        Valid values are 7.5e-5 to 8e-4."""
+
+        This is the width of the melt pool measured at the top of the powder layer
+        which corresponds to the ``WIDTH``value in
+        :class:`MeltPoolColumnNames <ansys.additive.single_bead.MeltPoolColumnNames>`.
+        Valid values are 7.5e-5 to 8e-4.
+        """
         return self._melt_pool_width
 
     @melt_pool_width.setter
@@ -360,7 +376,12 @@ class MicrostructureInput:
     @property
     def melt_pool_depth(self) -> float:
         """Melt pool depth (m).
-        Valid values are 1.5e-5 to 8e-4."""
+
+        This is the depth of the melt pool as measured from the top of the powder layer
+        which corresponds to the ``DEPTH``value in
+        :class:`MeltPoolColumnNames <ansys.additive.single_bead.MeltPoolColumnNames>`.
+        Valid values are 1.5e-5 to 8e-4.
+        """
         return self._melt_pool_depth
 
     @melt_pool_depth.setter
@@ -373,7 +394,9 @@ class MicrostructureInput:
     @property
     def random_seed(self) -> int:
         """Random seed for the simulation.
-        Valid values are 1 to 4294967295."""
+
+        Valid values are 1 to 4294967295.
+        """
         return self._random_seed
 
     @random_seed.setter
@@ -382,7 +405,7 @@ class MicrostructureInput:
         self._random_seed = value
 
     def _to_simulation_request(self) -> SimulationRequest:
-        """Convert this object into a simulation request message"""
+        """Convert this object into a simulation request message."""
         input = MicrostructureInputMessage(
             machine=self.machine._to_machine_message(),
             material=self.material._to_material_message(),
@@ -420,9 +443,8 @@ class CircleEquivalenceColumnNames:
 class MicrostructureSummary:
     """Summary of a microstructure simulation.
 
-    Units are typically SI (m, kg, s, K), however, some of the values listed
-    below do not use SI units. See descriptions for details.
-
+    Units are typically SI (m, kg, s, K), however, some of the values
+    listed below do not use SI units. See descriptions for details.
     """
 
     def __init__(
@@ -489,8 +511,7 @@ class MicrostructureSummary:
 
     @property
     def xy_circle_equivalence(self) -> pd.DataFrame:
-        """
-        Circle equivalence data for XY plane.
+        """Circle equivalence data for XY plane.
 
         See :class:`CircleEquivalenceColumnNames` for data frame column names.
         """
@@ -498,8 +519,7 @@ class MicrostructureSummary:
 
     @property
     def xz_circle_equivalence(self) -> pd.DataFrame:
-        """
-        Circle equivalence data for XZ plane.
+        """Circle equivalence data for XZ plane.
 
         See :class:`CircleEquivalenceColumnNames` for data frame column names.
         """
@@ -507,8 +527,7 @@ class MicrostructureSummary:
 
     @property
     def yz_circle_equivalence(self) -> pd.DataFrame:
-        """
-        Circle equivalence data for YZ plane.
+        """Circle equivalence data for YZ plane.
 
         See :class:`CircleEquivalenceColumnNames` for data frame column names.
         """
