@@ -107,6 +107,9 @@ src_paths = ["doc", "src", "tests"]
 
 [tool.coverage.run]
 source = ["ansys.additive"]
+omit = [
+    "*/parametric_study/display/*",
+] # TODO: Remove this once unit tests are added for these files
 
 [tool.coverage.report]
 show_missing = true
