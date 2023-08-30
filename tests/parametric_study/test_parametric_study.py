@@ -11,7 +11,6 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 )
 import numpy as np
 import pandas as pd
-import panel as pn
 import pytest
 
 from ansys.additive import (
@@ -645,6 +644,25 @@ def test_generate_microstructure_permutations_creates_permutations():
                                         )
 
 
+def test_generate_microstructure_permutations_converts_Nones_to_NANs_in_dataframe():
+    # arrange
+    study = ps.ParametricStudy(project_name="test_study")
+    powers = [50]
+    scan_speeds = [1]
+
+    # act
+    study.generate_microstructure_permutations("material", powers, scan_speeds)
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+    assert np.isnan(df.loc[0, ps.ColumnNames.COOLING_RATE])
+    assert np.isnan(df.loc[0, ps.ColumnNames.THERMAL_GRADIENT])
+    assert np.isnan(df.loc[0, ps.ColumnNames.MICRO_MELT_POOL_WIDTH])
+    assert np.isnan(df.loc[0, ps.ColumnNames.MICRO_MELT_POOL_DEPTH])
+    assert np.isnan(df.loc[0, ps.ColumnNames.RANDOM_SEED])
+
+
 def test_generate_microstructure_permutations_filters_by_energy_density():
     # arrange
     study = ps.ParametricStudy(project_name="test_study")
@@ -1066,7 +1084,7 @@ def test_run_simulations_calls_simulate_correctly(monkeypatch):
     assert patched_simulate.call_args[0][1] == mock_additive
 
 
-def test_remove_deletes_rows_from_dataframe():
+def test_remove_deletes_multiple_rows_from_dataframe():
     # arrange
     study = ps.ParametricStudy(project_name="test_study")
     for i in range(4):
@@ -1172,16 +1190,3 @@ def test_clear_removes_all_rows_but_not_columns():
     assert len(df2) == 0
     assert len(df1.columns) == len(df2.columns)
     assert len(df2.columns) > 0
-
-
-def test_table():
-    # arrange
-    study = ps.ParametricStudy(project_name="test_study")
-    study.add_inputs([SingleBeadInput(id="test_id_1")])
-
-    # act
-    table = study.table(max_height=500)
-
-    # assert
-    assert isinstance(table, pn.pane.DataFrame)
-    assert table.max_height == 500

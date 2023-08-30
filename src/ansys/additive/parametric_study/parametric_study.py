@@ -28,6 +28,8 @@ from .constants import DEFAULT_ITERATION, DEFAULT_PRIORITY, ColumnNames
 from .parametric_runner import ParametricRunner
 from .parametric_utils import build_rate, energy_density
 
+pn.extension("tabulator")
+
 
 class ParametricStudy:
     """Data storage and utility methods for a parametric study."""
@@ -135,8 +137,8 @@ class ParametricStudy:
         """Add summaries of previously executed simulations to the parametric
         study.
 
-        This function adds new rows to the parametric study data frame. To update existing rows,
-        use :meth:`update`.
+        This function adds new simulations to the parametric study. To update existing
+        simulations, use :meth:`update`.
 
         Parameters
         ----------
@@ -292,7 +294,7 @@ class ParametricStudy:
         return {
             ColumnNames.PROJECT: self._project_name,
             ColumnNames.ITERATION: iteration,
-            ColumnNames.ID: self._create_unique_id(summary.input.id),
+            ColumnNames.ID: self._create_unique_id(id=summary.input.id),
             ColumnNames.STATUS: SimulationStatus.COMPLETED,
             ColumnNames.MATERIAL: summary.input.material.name,
             ColumnNames.HEATER_TEMPERATURE: summary.input.machine.heater_temperature,
@@ -359,9 +361,21 @@ class ParametricStudy:
         priority : int, optional
             The priority for this set of simulations.
         """
-        lt = layer_thicknesses or [MachineConstants.DEFAULT_LAYER_THICKNESS]
-        bd = beam_diameters or [MachineConstants.DEFAULT_BEAM_DIAMETER]
-        ht = heater_temperatures or [MachineConstants.DEFAULT_HEATER_TEMP]
+        lt = (
+            layer_thicknesses
+            if layer_thicknesses is not None
+            else [MachineConstants.DEFAULT_LAYER_THICKNESS]
+        )
+        bd = (
+            beam_diameters
+            if beam_diameters is not None
+            else [MachineConstants.DEFAULT_BEAM_DIAMETER]
+        )
+        ht = (
+            heater_temperatures
+            if heater_temperatures is not None
+            else [MachineConstants.DEFAULT_HEATER_TEMP]
+        )
         min_aed = min_area_energy_density or 0.0
         max_aed = max_area_energy_density or float("inf")
         for p in laser_powers:
@@ -399,7 +413,7 @@ class ParametricStudy:
                                     ColumnNames.PRIORITY: priority,
                                     ColumnNames.TYPE: SimulationType.SINGLE_BEAD,
                                     ColumnNames.ID: self._create_unique_id(
-                                        f"sb_{iteration}_{sb_input.id}"
+                                        prefix=f"sb_{iteration}"
                                     ),
                                     ColumnNames.STATUS: SimulationStatus.PENDING,
                                     ColumnNames.MATERIAL: material_name,
@@ -512,13 +526,41 @@ class ParametricStudy:
         priority : int, optional
             The priority for this set of simulations.
         """
-        lt = layer_thicknesses or [MachineConstants.DEFAULT_LAYER_THICKNESS]
-        bd = beam_diameters or [MachineConstants.DEFAULT_BEAM_DIAMETER]
-        ht = heater_temperatures or [MachineConstants.DEFAULT_HEATER_TEMP]
-        sa = start_angles or [MachineConstants.DEFAULT_STARTING_LAYER_ANGLE]
-        ra = rotation_angles or [MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE]
-        hs = hatch_spacings or [MachineConstants.DEFAULT_HATCH_SPACING]
-        sw = stripe_widths or [MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH]
+        lt = (
+            layer_thicknesses
+            if layer_thicknesses is not None
+            else [MachineConstants.DEFAULT_LAYER_THICKNESS]
+        )
+        bd = (
+            beam_diameters
+            if beam_diameters is not None
+            else [MachineConstants.DEFAULT_BEAM_DIAMETER]
+        )
+        ht = (
+            heater_temperatures
+            if heater_temperatures is not None
+            else [MachineConstants.DEFAULT_HEATER_TEMP]
+        )
+        sa = (
+            start_angles
+            if start_angles is not None
+            else [MachineConstants.DEFAULT_STARTING_LAYER_ANGLE]
+        )
+        ra = (
+            rotation_angles
+            if rotation_angles is not None
+            else [MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE]
+        )
+        hs = (
+            hatch_spacings
+            if hatch_spacings is not None
+            else [MachineConstants.DEFAULT_HATCH_SPACING]
+        )
+        sw = (
+            stripe_widths
+            if stripe_widths is not None
+            else [MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH]
+        )
         min_ed = min_energy_density or 0.0
         max_ed = max_energy_density or float("inf")
         min_br = min_build_rate or 0.0
@@ -569,7 +611,7 @@ class ParametricStudy:
                                                     ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.POROSITY,
                                                     ColumnNames.ID: self._create_unique_id(
-                                                        f"por_{iteration}_{input.id}"
+                                                        prefix=f"por_{iteration}"
                                                     ),
                                                     ColumnNames.STATUS: SimulationStatus.PENDING,
                                                     ColumnNames.MATERIAL: material_name,
@@ -708,26 +750,26 @@ class ParametricStudy:
             The cooling rate (K/s) to use for microstructure simulations.
             If None, and ``thermal_gradient``, ``melt_pool_width``, and ``melt_pool_depth``
             are None, it will be calculated. If None and any of the other three parameters
-            are not None, it will be set to ``MachineConstants.DEFAULT_COOLING_RATE``.
-            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+            are not None, it will be set to ``MicrostructureInput.DEFAULT_COOLING_RATE``.
+            See :class:`MicrostructureInput <ansys.additive.machine.MicrostructureInput>`.
         thermal_gradient : Optional[float]
             The thermal gradient (K/m) to use for microstructure simulations.
             If None, and ``cooling_rate``, ``melt_pool_width``, and ``melt_pool_depth``
             are None, it will be calculated. If None and any of the other three parameters
-            are not None, it will be set to ``MachineConstants.DEFAULT_THERMAL_GRADIENT``.
-            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+            are not None, it will be set to ``MicrostructureInput.DEFAULT_THERMAL_GRADIENT``.
+            See :class:`MicrostructureInput <ansys.additive.machine.MicrostructureInput>`.
         melt_pool_width : Optional[float]
             The melt pool width (m) to use for microstructure simulations.
             If None, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_depth``
             are None, it will be calculated. If None and any of the other three parameters
-            are not None, it will be set to ``MachineConstants.DEFAULT_MELT_POOL_WIDTH``.
-            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+            are not None, it will be set to ``MicrostructureInput.DEFAULT_MELT_POOL_WIDTH``.
+            See :class:`MicrostructureInput <ansys.additive.machine.MicrostructureInput>`.
         melt_pool_depth : Optional[float]
             The melt pool depth (m) to use for microstructure simulations.
             If None, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_width``
             are None, it will be calculated. If None and any of the other three parameters
-            are not None, it will be set to ``MachineConstants.DEFAULT_MELT_POOL_DEPTH``.
-            See :class:`MachineConstants <ansys.additive.machine.MachineConstants>`.
+            are not None, it will be set to ``MicrostructureInput.DEFAULT_MELT_POOL_DEPTH``.
+            See :class:`MicrostructureInput <ansys.additive.machine.MicrostructureInput>`.
         random_seed : Optional[int]
             The random seed to use for microstructure simulations. If None,
             an automatically generated random seed will be used.
@@ -738,13 +780,41 @@ class ParametricStudy:
         priority : int, optional
             The priority for this set of simulations.
         """
-        lt = layer_thicknesses or [MachineConstants.DEFAULT_LAYER_THICKNESS]
-        bd = beam_diameters or [MachineConstants.DEFAULT_BEAM_DIAMETER]
-        ht = heater_temperatures or [MachineConstants.DEFAULT_HEATER_TEMP]
-        sa = start_angles or [MachineConstants.DEFAULT_STARTING_LAYER_ANGLE]
-        ra = rotation_angles or [MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE]
-        hs = hatch_spacings or [MachineConstants.DEFAULT_HATCH_SPACING]
-        sw = stripe_widths or [MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH]
+        lt = (
+            layer_thicknesses
+            if layer_thicknesses is not None
+            else [MachineConstants.DEFAULT_LAYER_THICKNESS]
+        )
+        bd = (
+            beam_diameters
+            if beam_diameters is not None
+            else [MachineConstants.DEFAULT_BEAM_DIAMETER]
+        )
+        ht = (
+            heater_temperatures
+            if heater_temperatures is not None
+            else [MachineConstants.DEFAULT_HEATER_TEMP]
+        )
+        sa = (
+            start_angles
+            if start_angles is not None
+            else [MachineConstants.DEFAULT_STARTING_LAYER_ANGLE]
+        )
+        ra = (
+            rotation_angles
+            if rotation_angles is not None
+            else [MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE]
+        )
+        hs = (
+            hatch_spacings
+            if hatch_spacings is not None
+            else [MachineConstants.DEFAULT_HATCH_SPACING]
+        )
+        sw = (
+            stripe_widths
+            if stripe_widths is not None
+            else [MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH]
+        )
         min_ed = min_energy_density or 0.0
         max_ed = max_energy_density or float("inf")
         min_br = min_build_rate or 0.0
@@ -758,10 +828,10 @@ class ParametricStudy:
         )
         if use_thermal_params:
             # set any uninitialized thermal parameters to default values
-            cooling_rate = cooling_rate or MachineConstants.DEFAULT_COOLING_RATE
-            thermal_gradient = thermal_gradient or MachineConstants.DEFAULT_THERMAL_GRADIENT
-            melt_pool_width = melt_pool_width or MachineConstants.DEFAULT_MELT_POOL_WIDTH
-            melt_pool_depth = melt_pool_depth or MachineConstants.DEFAULT_MELT_POOL_DEPTH
+            cooling_rate = cooling_rate or MicrostructureInput.DEFAULT_COOLING_RATE
+            thermal_gradient = thermal_gradient or MicrostructureInput.DEFAULT_THERMAL_GRADIENT
+            melt_pool_width = melt_pool_width or MicrostructureInput.DEFAULT_MELT_POOL_WIDTH
+            melt_pool_depth = melt_pool_depth or MicrostructureInput.DEFAULT_MELT_POOL_DEPTH
 
         for p in laser_powers:
             for v in scan_speeds:
@@ -799,14 +869,18 @@ class ParametricStudy:
                                                     sample_size_z=size_z,
                                                     sensor_dimension=sensor_dimension,
                                                     use_provided_thermal_parameters=use_thermal_params,
-                                                    cooling_rate=cooling_rate
-                                                    or MicrostructureInput.DEFAULT_COOLING_RATE,
-                                                    thermal_gradient=thermal_gradient
-                                                    or MicrostructureInput.DEFAULT_THERMAL_GRADIENT,
-                                                    melt_pool_width=melt_pool_width
-                                                    or MicrostructureInput.DEFAULT_MELT_POOL_WIDTH,
-                                                    melt_pool_depth=melt_pool_depth
-                                                    or MicrostructureInput.DEFAULT_MELT_POOL_DEPTH,
+                                                    cooling_rate=MicrostructureInput.DEFAULT_COOLING_RATE
+                                                    if cooling_rate is None
+                                                    else cooling_rate,
+                                                    thermal_gradient=MicrostructureInput.DEFAULT_THERMAL_GRADIENT  # noqa: E501, line too long
+                                                    if thermal_gradient is None
+                                                    else thermal_gradient,
+                                                    melt_pool_width=MicrostructureInput.DEFAULT_MELT_POOL_WIDTH  # noqa: E501, line too long
+                                                    if melt_pool_width is None
+                                                    else melt_pool_width,
+                                                    melt_pool_depth=MicrostructureInput.DEFAULT_MELT_POOL_DEPTH  # noqa: E501, line too long
+                                                    if melt_pool_depth is None
+                                                    else melt_pool_depth,
                                                     random_seed=random_seed
                                                     or MicrostructureInput.DEFAULT_RANDOM_SEED,
                                                     machine=machine,
@@ -824,7 +898,7 @@ class ParametricStudy:
                                                     ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.MICROSTRUCTURE,
                                                     ColumnNames.ID: self._create_unique_id(
-                                                        f"micro_{iteration}_{input.id}"
+                                                        prefix=f"micro_{iteration}"
                                                     ),
                                                     ColumnNames.STATUS: SimulationStatus.PENDING,
                                                     ColumnNames.MATERIAL: material_name,
@@ -846,11 +920,21 @@ class ParametricStudy:
                                                     ColumnNames.MICRO_SIZE_Y: size_y,
                                                     ColumnNames.MICRO_SIZE_Z: size_z,
                                                     ColumnNames.MICRO_SENSOR_DIM: sensor_dimension,
-                                                    ColumnNames.COOLING_RATE: cooling_rate,
-                                                    ColumnNames.THERMAL_GRADIENT: thermal_gradient,
-                                                    ColumnNames.MICRO_MELT_POOL_WIDTH: melt_pool_width,
-                                                    ColumnNames.MICRO_MELT_POOL_DEPTH: melt_pool_depth,
-                                                    ColumnNames.RANDOM_SEED: random_seed,
+                                                    ColumnNames.COOLING_RATE: float("nan")
+                                                    if cooling_rate is None
+                                                    else cooling_rate,
+                                                    ColumnNames.THERMAL_GRADIENT: float("nan")
+                                                    if thermal_gradient is None
+                                                    else thermal_gradient,
+                                                    ColumnNames.MICRO_MELT_POOL_WIDTH: float("nan")
+                                                    if melt_pool_width is None
+                                                    else melt_pool_width,
+                                                    ColumnNames.MICRO_MELT_POOL_DEPTH: float("nan")
+                                                    if melt_pool_depth is None
+                                                    else melt_pool_depth,
+                                                    ColumnNames.RANDOM_SEED: float("nan")
+                                                    if random_seed is None
+                                                    else random_seed,
                                                 }
                                             )
                                             self._data_frame = pd.concat(
@@ -863,13 +947,13 @@ class ParametricStudy:
     ):
         """Update the results of simulations in the parametric study.
 
-        This method updates values for existing rows in the parametric study data frame. To add new rows
-        for completed simulations, use :meth:`add_summaries` instead.
+        This method updates values for existing simulations in the parametric study. To add
+        completed simulations, use :meth:`add_summaries` instead.
 
         Parameters
         ----------
         summaries : List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary, SimulationError]]
-            The list of simulation summaries to use for updating parametric study data frame.
+            The list of simulation summaries to use for updating the parametric study.
         """
         for summary in summaries:
             if isinstance(summary, SingleBeadSummary):
@@ -952,13 +1036,12 @@ class ParametricStudy:
         priority: int = DEFAULT_PRIORITY,
         status: SimulationStatus = SimulationStatus.PENDING,
     ):
-        """Add new rows to the parametric study data frame for the specified
-        simulation inputs.
+        """Add new simulations to the parametric study.
 
         Parameters
         ----------
         inputs : List[Union[SingleBeadInput, PorosityInput, MicrostructureInput]]
-            The list of simulation inputs to add to the parametric study data frame.
+            The list of simulation inputs to add to the parametric study.
 
         iteration : int
             The iteration number for the simulation inputs.
@@ -999,7 +1082,7 @@ class ParametricStudy:
             dict[ColumnNames.PROJECT] = self.project_name
             dict[ColumnNames.ITERATION] = iteration
             dict[ColumnNames.PRIORITY] = priority
-            dict[ColumnNames.ID] = self._create_unique_id(input.id)
+            dict[ColumnNames.ID] = self._create_unique_id(id=input.id)
             dict[ColumnNames.STATUS] = status
             dict[ColumnNames.MATERIAL] = input.material.name
             dict[ColumnNames.LASER_POWER] = input.machine.laser_power
@@ -1017,7 +1100,7 @@ class ParametricStudy:
             )
 
     def remove(self, ids: Union[str, List[str]]):
-        """Remove rows from the parametric study data frame.
+        """Remove simulations from the parametric study.
 
         Parameters
         ----------
@@ -1030,7 +1113,7 @@ class ParametricStudy:
         self._data_frame.drop(index=idx, inplace=True)
 
     def set_status(self, ids: Union[str, List[str]], status: SimulationStatus):
-        """Set the status of rows in the parametric study data frame.
+        """Set the status of simulations in the parametric study.
 
         Parameters
         ----------
@@ -1045,42 +1128,63 @@ class ParametricStudy:
         idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)]
         self._data_frame.loc[idx, ColumnNames.STATUS] = status
 
-    def _create_unique_id(self, prefix: Optional[str] = None) -> str:
+    def set_priority(self, ids: Union[str, List[str]], priority: int):
+        """Set the priority of simulations in the parametric study.
+
+        Parameters
+        ----------
+        index : Union[int, List[int]]
+            The ID or list of IDs of the simulations to update.
+
+        priority : int
+            The priority to use for the simulations.
+        """
+        if isinstance(ids, str):
+            ids = [ids]
+        idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)]
+        self._data_frame.loc[idx, ColumnNames.PRIORITY] = priority
+
+    def set_iteration(self, ids: Union[str, List[str]], iteration: int):
+        """Set the iteration of simulations in the parametric study.
+
+        Parameters
+        ----------
+        index : Union[int, List[int]]
+            The ID or list of IDs of the simulations to update.
+
+        iteration : int
+            The iteration to use for the simulations.
+        """
+        if isinstance(ids, str):
+            ids = [ids]
+        idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)]
+        self._data_frame.loc[idx, ColumnNames.ITERATION] = iteration
+
+    def _create_unique_id(self, prefix: Optional[str] = None, id: Optional[str] = None) -> str:
         """Create a unique simulation ID for a permutation.
 
         Parameters
         ----------
         prefix : str
             The prefix to use for the ID.
+        id: str
+            The ID to use if it is unique. ``id`` will be used as a prefix if
+            it is not unique.
 
         Returns
         -------
         str
-            The unique ID. The returned ID will be equal to ``prefix`` if ``prefix``
-            is unique.
+            A unique ID. If ``id`` is unique, it will be returned. Otherwise,
         """
 
-        id = prefix or ("sim_" + misc.short_uuid())
-        while self._data_frame[ColumnNames.ID].str.match(f"{id}").any():
-            id = (prefix or "sim") + "_" + misc.short_uuid()
-        return id
+        if id is not None and not self._data_frame[ColumnNames.ID].str.match(f"{id}").any():
+            return id
+        _prefix = id or prefix or "sim"
+        uid = f"{_prefix}_{misc.short_uuid()}"
+        while self._data_frame[ColumnNames.ID].str.match(f"{uid}").any():
+            uid = f"{_prefix}_{misc.short_uuid()}"
+        return uid
 
     def clear(self):
         """Remove all permutations from the parametric study."""
         self._data_frame = self._data_frame[0:0]
-
-    def table(self, max_height: int = 300) -> pn.pane.DataFrame:
-        """Show the parametric study as a table.
-
-        Parameters
-        ----------
-        max_height : int
-            Maximum height of the table in pixels.
-
-        Returns
-        -------
-        :class:`panel.pane.DataFrame <panel.pane.DataFrame>`
-        """
-        return pn.pane.DataFrame(
-            self._data_frame, sizing_mode="stretch_both", max_height=max_height
-        )
