@@ -33,23 +33,25 @@ class ParametricRunner:
         ``SimulationStatus.PENDING`` in the ``ColumnNames.STATUS`` column.
 
         Execution order is determined by the values in the ``ColumnNames.PRIORITY`` column.
-        Lower values are interpreted as having higher priority and will be run first.
+        Lower values are interpreted as having higher priority and are run first.
 
         Parameters
         ----------
         df : pd.DataFrame
-            The parametric study data frame.
-        additive: Additive
-            The :class:`Additive <ansys.additive.additive.Additive>` service to use for running simulations.
-        type : Optional[List[SimulationType]], optional
-            The type of simulations to run, ``None`` indicates all types.
-        priority : Optional[int]
-            The priority of simulations to run, ``None`` indicates all priorities.
+            Parametric study data frame.
+        additive: :class:`Additive <ansys.additive.additive.Additive>`
+            Additive service to use for running simulations.
+        type : list, None
+            List of the simulation types to run. The default is ``None``, in which case all
+            simulation types are run.
+        priority : int, None
+            Priority of simulations to run. The default is ``None``, in which case
+            all priorities are run.
 
         Returns
         -------
         List[Union[MicrostructureSummary, PorositySummary, SingleBeadSummary]]
-            A list of simulation summaries.
+            List of simulation summaries.
         """
         if type is None:
             type = [
@@ -68,7 +70,7 @@ class ParametricRunner:
         view = view.sort_values(by=ColumnNames.PRIORITY, ascending=True)
 
         inputs = []
-        # NOTICE: We use iterrows() instead of itertuples() here in order to
+        # NOTICE: We use iterrows() instead of itertuples() here to
         # access values by column name
         for _, row in view.iterrows():
             try:

@@ -11,18 +11,18 @@ from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialRequest
 
 
 class MaterialTuningInput:
-    """Input parameters for tuning a custom material.
+    """Provides input parameters for tuning a custom material.
 
     Parameters
     ----------
     id: string
-        User provided identifier for this simulation.
+        User-provided ID for this simulation.
     machine: AdditiveMachine
-        Machine related parameters.
+        Machine-related parameters.
     material: AdditiveMaterial
         Material used during simulation.
     bead_length: float
-        Length of bead to simulate (m).
+        Length (m) of bead to simulate.
     """
 
     def __init__(
@@ -42,29 +42,28 @@ class MaterialTuningInput:
         Parameters
         ----------
         id: str
-            Identifier for this set of tuning simulations.
+            ID for this set of tuning simulations.
         experiment_data_file: str
-            Name of CSV file containing experimental results data.
+            Name of the CSV file containing the experimental results data.
         material_parameters_file: str
-            Name of JSON file containing material parameters.
+            Name of the JSON file containing the material parameters.
         thermal_properties_lookup_file: str
-            Name of CSV file containing a lookup table for thermal dependent properties.
-        characteristic_width_lookup_file: str
-            Optional: Name of CSV file containing a lookup table for the characteristic melt pool
-            width at a given temperature. If not provided, the characteristic width will be
-            calculated and ``base_plate_temperature`` must be provided.
-            Default is None.
-        allowable_error: float
+            Name of the CSV file containing a lookup table for thermal-dependent properties.
+        characteristic_width_lookup_file: str, None
+            Name of the CSV file containing a lookup table for the characteristic melt pool
+            width at a given temperature. The default is ``None``, in which case the characteristic
+            width is calculated. However, a value must be provided for the ``base_plate_temperature``
+            parameter.
+        allowable_error: float, 0.05
             Maximum allowable error between experimental and simulated results.
-            Default is 0.05 (5%).
-        max_iterations: int
+            The default is ``0.05``, which is 5 percent.
+        max_iterations: int, 15
             Maximum number of iterations to perform when trying to match
             simulation results to an experiment if the allowable error is not met.
-            Default is 15.
-        base_plate_temperature: float
-            Temperature of the base plate in Kelvin. This is only required if
-            ``characteristic_width_lookup_file`` is ``None``. It is ignored otherwise.
-            Default is 353.15 K (80 C).
+        base_plate_temperature: float, 353.15
+            Temperature of the base plate in Kelvin. This is only required if the
+            value for the ``characteristic_width_lookup_file`` parameter is ``None``.
+            This value is ignored otherwise. The default is ``353.15`` K, which is 80 C.
         """
 
         if not os.path.isfile(experiment_data_file):
@@ -120,7 +119,7 @@ class MaterialTuningInput:
 
 
 class MaterialTuningSummary:
-    """Summary of a material tuning simulations."""
+    """Provides a summary of material tuning simulations."""
 
     def __init__(self, input: MaterialTuningInput, msg: MaterialTuningResultMessage, out_dir: str):
         """Initialize a ``MaterialTuningSummary`` object."""
@@ -159,17 +158,17 @@ class MaterialTuningSummary:
 
     @property
     def optimized_parameters_file(self) -> str:
-        """Path to optimization parameters file."""
+        """Path to the optimization parameters file."""
         return self._optimized_parameters_file
 
     @property
     def characteristic_width_file(self) -> str:
-        """Path to characteristic width file or ``None``."""
+        """Path to the characteristic width file or ``None``."""
         return self._characteristic_width_file
 
     @property
     def log_file(self) -> str:
-        """Path to tuning log file or ``None``."""
+        """Path to the tuning log file or ``None``."""
         return self._log_file
 
     def __repr__(self):

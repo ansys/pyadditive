@@ -17,7 +17,7 @@ class MachineType(IntEnum):
 
 
 class BuildFile:
-    """Build file description."""
+    """Provides the build file description."""
 
     def __init__(self, type: MachineType, path: str):
         if not isinstance(type, MachineType):
@@ -58,8 +58,8 @@ class BuildFile:
 
     @property
     def path(self) -> str:
-        """Path of zip archive containing build instruction file, geometry stl
-        file and optional support stl files."""
+        """Path of the ZIP file containing the build instruction file, geometry
+        STL file, and optional support STL files."""
         return self._path
 
     @path.setter
@@ -73,7 +73,7 @@ class BuildFile:
 
 
 class StlFile:
-    """Container for stl file definition."""
+    """Container for the STL file definition."""
 
     def __init__(self, path: str):
         if not exists(path):
@@ -96,7 +96,7 @@ class StlFile:
 
     @property
     def path(self) -> str:
-        """Path of stl file."""
+        """Path of the STL file."""
         return self._path
 
     @path.setter

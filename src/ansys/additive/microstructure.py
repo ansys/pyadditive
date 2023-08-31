@@ -16,9 +16,9 @@ from ansys.additive.material import AdditiveMaterial
 
 
 class MicrostructureInput:
-    """Input parameters for microstructure simulation.
+    """Provides input parameters for microstructure simulation.
 
-    Units are SI (m, kg, s, K) unless otherwise noted.
+    Units are SI (m, kg, s, and K) unless otherwise noted.
     """
 
     #: Default minimum x, y, z, position coordinate (m).
@@ -163,7 +163,7 @@ class MicrostructureInput:
 
     @property
     def id(self) -> str:
-        """User provided identifier for this simulation."""
+        """User-provided ID for this simulation."""
         return self._id
 
     @id.setter
@@ -172,7 +172,7 @@ class MicrostructureInput:
 
     @property
     def machine(self):
-        """Machine related parameters."""
+        """Machine-related parameters."""
         return self._machine
 
     @machine.setter
@@ -190,7 +190,7 @@ class MicrostructureInput:
 
     @property
     def sample_min_x(self) -> float:
-        """Minimum x coordinate of the geometry sample (m)."""
+        """Minimum x coordinate (m) of the geometry sample."""
         return self._sample_min_x
 
     @sample_min_x.setter
@@ -202,7 +202,7 @@ class MicrostructureInput:
 
     @property
     def sample_min_y(self) -> float:
-        """Minimum y coordinate of the geometry sample (m)."""
+        """Minimum y coordinate (m) of the geometry sample."""
         return self._sample_min_y
 
     @sample_min_y.setter
@@ -214,7 +214,7 @@ class MicrostructureInput:
 
     @property
     def sample_min_z(self) -> float:
-        """Minimum z coordinate of the geometry sample (m)."""
+        """Minimum z coordinate (m) of the geometry sample."""
         return self._sample_min_z
 
     @sample_min_z.setter
@@ -228,7 +228,7 @@ class MicrostructureInput:
     def sample_size_x(self) -> float:
         """Size of the geometry sample in the x direction (m).
 
-        Valid values are 0.001 to 0.01.
+        Valid values are from 0.001 to 0.01.
         """
         return self._sample_size_x
 
@@ -246,7 +246,7 @@ class MicrostructureInput:
     def sample_size_y(self) -> float:
         """Size of the geometry sample in the y direction (m).
 
-        Valid values are 0.001 to 0.01.
+        Valid values are from 0.001 to 0.01.
         """
         return self._sample_size_y
 
@@ -264,7 +264,7 @@ class MicrostructureInput:
     def sample_size_z(self) -> float:
         """Size of the geometry sample in the z direction (m).
 
-        Valid values are 0.001 to 0.01.
+        Valid values are from 0.001 to 0.01.
         """
         return self._sample_size_z
 
@@ -282,7 +282,7 @@ class MicrostructureInput:
     def sensor_dimension(self) -> float:
         """Dimension of the sensor (m).
 
-        Valid values are 0.0001 to 0.001.
+        Valid values are from 0.0001 to 0.001.
         """
         return self._sensor_dimension
 
@@ -317,8 +317,9 @@ class MicrostructureInput:
 
     @property
     def use_provided_thermal_parameters(self) -> bool:
-        """If ``True``, indicates that cooling_rate, thermal_gradient,
-        melt_pool_depth and melt_pool_width have been provided by the user."""
+        """Check to see if the ``cooling_rate``, ``thermal_gradient``,
+        ``melt_pool_depth``, and ``melt_pool_width`` parameters have been
+        provided by the user."""
         return self._use_provided_thermal_parameters
 
     @use_provided_thermal_parameters.setter
@@ -329,7 +330,7 @@ class MicrostructureInput:
     def cooling_rate(self) -> float:
         """Material cooling rate (K/s).
 
-        Valid values are 1e5 to 1e7.
+        Valid values are from 1e5 to 1e7.
         """
         return self._cooling_rate
 
@@ -344,7 +345,7 @@ class MicrostructureInput:
     def thermal_gradient(self) -> float:
         """Material thermal gradient (K/m).
 
-        Valid values are 1e5 to 1e8.
+        Valid values are from 1e5 to 1e8.
         """
         return self._thermal_gradient
 
@@ -359,10 +360,12 @@ class MicrostructureInput:
     def melt_pool_width(self) -> float:
         """Melt pool width (m).
 
-        This is the width of the melt pool measured at the top of the powder layer
-        which corresponds to the ``WIDTH``value in
-        :class:`MeltPoolColumnNames <ansys.additive.single_bead.MeltPoolColumnNames>`.
-        Valid values are 7.5e-5 to 8e-4.
+        This is the width of the melt pool measured at the top of the powder layer,
+        which corresponds to the ``WIDTH`` value in
+        :class:`MeltPoolColumnNames <ansys.additive.single_bead.MeltPoolColumnNames>`
+        class.
+
+        Valid values are from 7.5e-5 to 8e-4.
         """
         return self._melt_pool_width
 
@@ -377,10 +380,12 @@ class MicrostructureInput:
     def melt_pool_depth(self) -> float:
         """Melt pool depth (m).
 
-        This is the depth of the melt pool as measured from the top of the powder layer
-        which corresponds to the ``DEPTH``value in
-        :class:`MeltPoolColumnNames <ansys.additive.single_bead.MeltPoolColumnNames>`.
-        Valid values are 1.5e-5 to 8e-4.
+        This is the depth of the melt pool as measured from the top of the powder layer,
+        which corresponds to the ``DEPTH``value in the
+        :class:`MeltPoolColumnNames <ansys.additive.single_bead.MeltPoolColumnNames>`
+        class.
+
+        Valid values are from 1.5e-5 to 8e-4.
         """
         return self._melt_pool_depth
 
@@ -395,7 +400,7 @@ class MicrostructureInput:
     def random_seed(self) -> int:
         """Random seed for the simulation.
 
-        Valid values are 1 to 4294967295.
+        Valid values are from 1 to 4294967295.
         """
         return self._random_seed
 
@@ -428,7 +433,7 @@ class MicrostructureInput:
 
 
 class CircleEquivalenceColumnNames:
-    """Column names for the circle equivalence data frame."""
+    """Provides column names for the circle equivalence data frame."""
 
     #: Grain number
     GRAIN_NUMBER = "grain_number"
@@ -441,10 +446,11 @@ class CircleEquivalenceColumnNames:
 
 
 class MicrostructureSummary:
-    """Summary of a microstructure simulation.
+    """Provides the summary of a microstructure simulation.
 
-    Units are typically SI (m, kg, s, K), however, some of the values
-    listed below do not use SI units. See descriptions for details.
+    Units are typically SI (m, kg, s, and K). However, some of the
+    following values do not use SI units. For more information, see the
+    descriptions.
     """
 
     def __init__(
@@ -491,61 +497,67 @@ class MicrostructureSummary:
 
     @property
     def input(self):
-        """Simulation input, see :class:`MicrostructureInput`."""
+        """Simulation input.
+
+        For more information, see the :class:`MicrostructureInput` class.
+        """
         return self._input
 
     @property
     def xy_vtk(self) -> str:
-        """Path to VTK file containing 2-D grain structure data in XY plane."""
+        """Path to the VTK file containing the 2-D grain structure data in the
+        XY plane."""
         return self._xy_vtk
 
     @property
     def xz_vtk(self) -> str:
-        """Path to VTK file containing 2-D grain structure data in XZ plane."""
+        """Path to the VTK file containing the 2-D grain structure data in the
+        XZ plane."""
         return self._xz_vtk
 
     @property
     def yz_vtk(self) -> str:
-        """Path to VTK file containing 2-D grain structure data in YZ plane."""
+        """Path to the VTK file containing the 2-D grain structure data in the
+        YZ plane."""
         return self._yz_vtk
 
     @property
     def xy_circle_equivalence(self) -> pd.DataFrame:
-        """Circle equivalence data for XY plane.
+        """Circle equivalence data for the XY plane.
 
-        See :class:`CircleEquivalenceColumnNames` for data frame column names.
+        For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
         """
         return self._xy_circle_equivalence
 
     @property
     def xz_circle_equivalence(self) -> pd.DataFrame:
-        """Circle equivalence data for XZ plane.
+        """Circle equivalence data forthe  XZ plane.
 
-        See :class:`CircleEquivalenceColumnNames` for data frame column names.
+        For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
         """
         return self._xz_circle_equivalence
 
     @property
     def yz_circle_equivalence(self) -> pd.DataFrame:
-        """Circle equivalence data for YZ plane.
+        """Circle equivalence data for the YZ plane.
 
-        See :class:`CircleEquivalenceColumnNames` for data frame column names.
+        For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
         """
         return self._yz_circle_equivalence
 
     @property
     def xy_average_grain_size(self) -> float:
-        """Average grain size (µm) for XY plane."""
+        """Average grain size (µm) for the XY plane."""
         return self._xy_average_grain_size
 
     @property
     def xz_average_grain_size(self) -> float:
-        """Average grain size (µm) for XZ plane."""
+        """Average grain size (µm) for the XZ plane."""
         return self._xz_average_grain_size
 
     @property
     def yz_average_grain_size(self) -> float:
-        """Average grain size (µm) for YZ plane."""
+        """Average grain size (µm) for the YZ plane."""
         return self._yz_average_grain_size
 
     @staticmethod

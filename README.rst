@@ -37,18 +37,18 @@ PyAdditive
    :alt: Black
 
 
-A Python client library for the Ansys Additive service.
+PyAdditive is a Python client library for the Ansys Additive service.
 
 Installation
 ============
-PyAdditive can be installed using ``pip``. Until PyAdditive is made public,
-a private PyPI repository must be used. See `Getting Started`_ for more information.
+You can use `pip <https://pypi.org/project/pip/>`_ to install PyAdditive. Until PyAdditive
+is made public, you must use a private PyPI repository. For more information, see `Getting Started`_.
 
 .. code:: bash
 
     pip install ansys-additive --index-url=https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
 
-To install the latest development version, use the following commands.
+To install the latest development version, use these commands:
 
 .. code:: bash
 
@@ -56,8 +56,10 @@ To install the latest development version, use the following commands.
    cd pyadditive
    pip install -e .
 
-Basic Usage
+Basic usage
 ===========
+
+This code shows how to import PyAdditive and use some basic capabilities:
 
 .. code:: python
 
@@ -74,15 +76,25 @@ Basic Usage
 
    summary = additive.simulate(input)
 
-For more detailed usage information, see the `Examples`_ in the `PyAdditive Documentation`_.
+For more detailed usage information, see `Examples`_ in the `PyAdditive Documentation`_.
 
-Documentation
-=============
+Documentation and issues
+========================
+Documentation for the latest stable release of PyMechanical is hosted at `PyAdditive documentation`_.
 
-Refer to the `PyAdditive Documentation`_ for more information.
+In the upper right corner of the documentation's title bar, there is an option for switching from
+viewing the documentation for the latest stable release to viewing the documentation for the
+development version or previously released versions.
+
+On the `PyAdditive Issues <https://github.com/ansys-internal/pyadditive/issues>`_ page,
+you can create issues to report bugs and request new features. On the `PyAdditive Discussions
+<https://github.com/ansys-internal/pyadditive/discussions>`_ page or the `Discussions <https://discuss.ansys.com/>`_
+page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback.
+
+To reach the project support team, email `pyansys.core@ansys.com <mailto:pyansys.core@ansys.com>`_.
+
 
 .. LINKS AND REFERENCES
 .. _Getting Started: https://additive.docs.pyansys.com/version/stable/getting_started/index.html
-.. _Examples: https://additive.docs.pyansys.com/version/stable/examples/index.html
-.. _PyAdditive Documentation: https://additive.docs.pyansys.com/version/stable/index.html
-
+.. _Examples: https://additive.docs.pyansys.com/version/dev/examples/gallery_examples/index.html
+.. _PyAdditive documentation: https://additive.docs.pyansys.com/version/stable/index.html

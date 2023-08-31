@@ -15,19 +15,16 @@ def download_file(
     local_folder: str,
     logger: ProgressLogger = None,
 ):
-    """Download a file from the server to the local host.
+    """Download a file from the server to the localhost.
 
     Parameters
     ----------
-
     remote_file_name: str
-        Path to file on the server
-
+        Path to file on the server.
     local_folder: str
-        Folder on local host to write file to
-
+        Folder on yjr localhost to write yjr file to.
     logger: ProgressLogger
-        Log message handler
+        Log message handler.
     """
 
     if not os.path.isdir(local_folder):

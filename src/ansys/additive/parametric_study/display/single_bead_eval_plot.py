@@ -20,18 +20,18 @@ pn.extension("plotly")
 
 
 def single_bead_eval_plot(ps: ParametricStudy):
-    """Provides a contour plot of single bead results useful for determining
-    desirable melt pool statistics.
+    """Generate a contour plot of single bead results to determine desirable
+    melt pool statistics.
 
     Parameters
     ----------
     ps : :class:`ParametricStudy <ansys.additive.parametric_study.ParametricStudy>`
-        Parametric study to be plotted.
+        Parametric study to plot.
 
     Returns
     -------
     :class: `panel.Row <panel.Row>`
-        A Panel Row object containing the plot and controls.
+        Panel row containing the plot and controls.
     """
     df = __data_frame(ps)
     (
@@ -204,7 +204,7 @@ def __update_plot(
 def __contour_data(
     df: pd.DataFrame, ht: float, lt: float, bd: float, poi: str, range: Tuple[float, float]
 ) -> Tuple[list, list, list, list]:
-    """Returns lists of scan speed, laser power, and parameter of interest
+    """Get lists of scan speed, laser power, and parameter of interest
     values."""
 
     idx = df[

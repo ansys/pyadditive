@@ -1,26 +1,26 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 class ColumnNames:
-    """Column names for the parametric study data frame.
+    """Provides column names for the parametric study data frame.
 
     Values are stored internally as a :class:`Pandas DataFrame
-    <pandas.DataFrame>`. The column names are defined here.
+    <pandas.DataFrame>`. Column name definitions follow.
     """
 
     #: Name of the parametric summary project.
     PROJECT = "Project"
-    #: Iteration number, useful for tracking the sequence of simulation groups.
+    #: Iteration number, which is useful for tracking the sequence of simulation groups.
     ITERATION = "Iteration"
     #: Priority value used to determine execution order.
     PRIORITY = "Priority"
-    #: Type of simulation, e.g. single bead, porosity, microstructure.
+    #: Type of simulation. For example, single bead, porosity, or microstructure.
     TYPE = "Type"
     #: Identifier for the simulation.
     #: NOTE: A unique ID for each permutation is enforced by the parametric study.
     ID = "ID"
-    #: Status of the simulation, e.g. pending, success, failure.
+    #: Status of the simulation. For example, pending, success, or failure.
     STATUS = "Status"
     #: Name of material used during simulation.
-    #: See :class:`AdditiveMaterial <ansys.additive.material.AdditiveMaterial>` for more information.
+    #: For more information, see :class:`AdditiveMaterial <ansys.additive.material.AdditiveMaterial>`.
     MATERIAL = "Material"
     #: Heater temperature (°C).
     HEATER_TEMPERATURE = "Heater Temp (°C)"
@@ -83,15 +83,15 @@ class ColumnNames:
     MICRO_SIZE_Z = "Micro Size Z (m)"
     #: Sensor dimension used in microstructure simulations (m).
     MICRO_SENSOR_DIM = "Micro Sensor Dim (m)"
-    #: User provided cooling rate used in microstructure simulations (°K/s).
+    #: User-provided cooling rate used in microstructure simulations (°K/s).
     COOLING_RATE = "Cooling Rate (°K/s)"
-    #: User provided thermal gradient used in microstructure simulations (°K/m).
+    #: User-provided thermal gradient used in microstructure simulations (°K/m).
     THERMAL_GRADIENT = "Thermal Gradient (°K/m)"
-    #: User provided melt pool width used in microstructure simulation (m).
+    #: User-provided melt pool width used in microstructure simulation (m).
     MICRO_MELT_POOL_WIDTH = "Micro Melt Pool Width (m)"
-    #: User provided melt pool depth used in microstructure simulation (m).
+    #: User-provided melt pool depth used in microstructure simulation (m).
     MICRO_MELT_POOL_DEPTH = "Micro Melt Pool Depth (m)"
-    #: User provided random seed used in microstructure simulation.
+    #: User-provided random seed used in microstructure simulation.
     RANDOM_SEED = "Random Seed"
     #: Average microstructure grain size in the XY plane (µm).
     XY_AVERAGE_GRAIN_SIZE = "XY Average Grain Size (µm)"
