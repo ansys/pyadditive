@@ -805,7 +805,7 @@ class ParametricStudy:
             Random seed to use for microstructure simulations. The default is ``None``,
             in which case a random seed is automatically generated. Valid values are between
             1 and 2^31 - 1.
-        iteration : int, optiDEFAULT_ITERATION
+        iteration : int, DEFAULT_ITERATION
             Iteration number for this set of simulations.
         priority : int, DEFAULT_PRIORITY
             Priority for this set of simulations.
@@ -1205,6 +1205,7 @@ class ParametricStudy:
         -------
         str
             Unique ID. If ``id`` is unique, it is returned. Otherwise,
+            it is used as a prefix for a unique ID.
         """
 
         if id is not None and not self._data_frame[ColumnNames.ID].str.match(f"{id}").any():
