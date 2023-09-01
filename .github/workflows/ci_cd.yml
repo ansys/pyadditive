@@ -15,8 +15,6 @@ env:
   LIBRARY_NAME: "ansys-additive"
   ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys/additive:latest"
   ANSYS_PRODUCT_CONTAINER: "ansys-additive-container"
-  PYANSYS_PYPI_PRIVATE_PAT: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
-  PIP_INDEX_URL: "https://${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

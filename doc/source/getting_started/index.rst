@@ -196,11 +196,6 @@ To install PyAdditive in developer mode, perform these steps:
 
        tox
 
-    .. warning::
-
-       The ``PYANSYS_PYPI_PRIVATE_PAT`` environment variable must be defined
-       for ``tox`` to run to completion. For more information, see the preceding note.
-
 #. Optionally, install the project in editable mode:
 
     .. code:: bash
