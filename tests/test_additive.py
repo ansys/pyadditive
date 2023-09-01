@@ -174,7 +174,7 @@ def test_simulate_list_of_inputs_with_duplicate_ids_raises_exception():
     ]
 
     # act, assert
-    with pytest.raises(ValueError, match='Duplicate simulation id "id" in input list'):
+    with pytest.raises(ValueError, match='Duplicate simulation ID "id" in input list'):
         additive.simulate(inputs)
 
 
