@@ -317,9 +317,10 @@ class MicrostructureInput:
 
     @property
     def use_provided_thermal_parameters(self) -> bool:
-        """Check to see if the ``cooling_rate``, ``thermal_gradient``,
+        """Flag indicating if the ``cooling_rate``, ``thermal_gradient``,
         ``melt_pool_depth``, and ``melt_pool_width`` parameters have been
-        provided by the user."""
+        provided by the user. If the value is ``False``, these values
+        will be calculated. Default is ``False``."""
         return self._use_provided_thermal_parameters
 
     @use_provided_thermal_parameters.setter
