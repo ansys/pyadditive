@@ -172,11 +172,6 @@ in the *PyAnsys Developer's Guide*, then, follow these steps:
 
        tox
 
-    .. warning::
-
-       ``PYANSYS_PYPI_PRIVATE_PAT`` must be defined for ``tox`` to run to completion.
-       See preceding note for more information.
-
 #. Optionally, install the project in editable mode:
 
     .. code:: bash
