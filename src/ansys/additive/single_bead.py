@@ -117,8 +117,8 @@ class MeltPoolColumnNames:
 
 
 class MeltPool:
-    """Provides the container for the melt pool evolution during a single bead
-    simulation.
+    """Contains the melt pool size dimensions for each time step during a
+    single bead simulation.
 
     Units are SI unless otherwise noted.
     """
@@ -151,13 +151,13 @@ class MeltPool:
             - ``bead_length``: Length of the bead at each time step.
 
         Columns:
-            - ``MeltPoolColumnNames.LENGTH``: Length of the melt pool at each time step.
-            - ``MeltPoolColumnNames.WIDTH``: Width of the melt pool at each time step.
-            - ``MeltPoolColumnNames.DEPTH``: Depth of the melt pool at each time step.
-            - ``MeltPoolColumnNames.REFERENCE_WIDTH``: Reference width of the melt pool at each time step.
+            - ``MeltPoolColumnNames.LENGTH``: Length of the melt pool.
+            - ``MeltPoolColumnNames.WIDTH``: Width of the melt pool.
+            - ``MeltPoolColumnNames.DEPTH``: Depth of the melt pool.
+            - ``MeltPoolColumnNames.REFERENCE_WIDTH``: Reference width of the melt pool.
               Reference width is the melt pool width at the bottom of the powder layer
               or the width at the top of the substrate.
-            - ``MeltPoolColumnNames.REFERENCE_DEPTH``: Reference depth of the melt pool at each time step.
+            - ``MeltPoolColumnNames.REFERENCE_DEPTH``: Reference depth of the melt pool.
               Reference depth is the depth of the entire melt pool minus the powder
               layer thickness or the depth of penetration into the substrate.
         """
