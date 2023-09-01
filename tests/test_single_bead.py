@@ -3,9 +3,14 @@ from ansys.api.additive.v0.additive_domain_pb2 import MeltPoolTimeStep
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import pytest
 
-from ansys.additive.machine import AdditiveMachine
-from ansys.additive.material import AdditiveMaterial
-from ansys.additive.single_bead import MeltPool, MeltPoolMessage, SingleBeadInput, SingleBeadSummary
+from ansys.additive.core.machine import AdditiveMachine
+from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.single_bead import (
+    MeltPool,
+    MeltPoolMessage,
+    SingleBeadInput,
+    SingleBeadSummary,
+)
 
 from . import test_utils
 

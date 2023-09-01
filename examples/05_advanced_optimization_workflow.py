@@ -17,7 +17,7 @@ First, connect to the Additive service.
 # import numpy as np
 # import pyvista as pv
 
-# import ansys.additive as pyadditive
+# import ansys.additive.core as pyadditive
 
 # additive = pyadditive.Additive()
 

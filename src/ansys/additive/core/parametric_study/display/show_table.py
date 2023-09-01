@@ -4,8 +4,8 @@ from typing import Tuple
 import pandas as pd
 import panel as pn
 
-from ansys.additive import SimulationStatus, SimulationType
-from ansys.additive.parametric_study import ColumnNames, ParametricStudy
+from ansys.additive.core import SimulationStatus, SimulationType
+from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
 
 # global variables
 _df = None
@@ -21,7 +21,7 @@ def show_table(ps: ParametricStudy, page_size: int = 10):
 
     Parameters
     ----------
-    ps : :class:`ParametricStudy <ansys.additive.parametric_study.ParametricStudy>`
+    ps : :class:`ParametricStudy <from ansys.additive.core.parametric_study.ParametricStudy>`
         Parametric study to be displayed.
     page_size : int, optional
         Number of rows to display per page. The default is 10.

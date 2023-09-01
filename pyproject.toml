@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
-name = "ansys-additive"
+name = "ansys-additive-core"
 version = "0.14.dev6"
 description = "A python client for the Ansys Additive service"
 readme = "README.rst"
@@ -72,6 +72,7 @@ doc = [
     "jupyter_sphinx==0.4.0",
     "matplotlib==3.7.2",
     "numpydoc==1.5.0",
+    "panel==1.2.1",
     "pypandoc==1.8.1",
     "pyvista==0.37.0",
     "Sphinx==7.1.2",
@@ -93,7 +94,7 @@ Discussions = "https://github.com/ansys-internal/pyadditive/discussions"
 Releases = "https://github.com/ansys-internal/pyadditive/releases"
 
 [tool.flit.module]
-name = "ansys.additive"
+name = "ansys.additive.core"
 
 [tool.black]
 line-length = 100
@@ -106,7 +107,7 @@ default_section = "THIRDPARTY"
 src_paths = ["doc", "src", "tests"]
 
 [tool.coverage.run]
-source = ["ansys.additive"]
+source = ["ansys.additive.core"]
 omit = [
     "*/parametric_study/display/*",
 ] # TODO: Remove this once unit tests are added for these files
@@ -116,6 +117,6 @@ show_missing = true
 
 [tool.pytest.ini_options]
 minversion = "7.1"
-addopts = "-ra --cov=ansys.additive --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --cov-fail-under 90"
+addopts = "-ra --cov=ansys.additive.core --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --cov-fail-under 90"
 testpaths = ["tests"]
 filterwarnings = ["ignore:::.*protoc_gen_swagger*"]

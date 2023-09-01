@@ -10,7 +10,7 @@ Background information and file formats can be found in `the Additive documentat
 Units are SI (m, kg, s, K) unless otherwise noted.
 
 """
-import ansys.additive as pyadditive
+import ansys.additive.core as pyadditive
 
 additive = pyadditive.Additive()
 
@@ -19,7 +19,7 @@ additive = pyadditive.Additive()
 # -----------------------
 # Here we download an example custom material. Typically a user would have the
 # files defining their custom material stored locally.
-import ansys.additive.examples as examples
+import ansys.additive.core.examples as examples
 
 material_files = examples.download_custom_material()
 

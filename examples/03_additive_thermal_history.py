@@ -11,7 +11,7 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 
 First, connect to the Additive service.
 """
-import ansys.additive as pyadditive
+import ansys.additive.core as pyadditive
 
 additive = pyadditive.Additive()
 
@@ -27,7 +27,7 @@ additive = pyadditive.Additive()
 # Example build and STL files can be downloaded by importing the examples
 # module as shown below.
 
-import ansys.additive.examples as examples
+import ansys.additive.core.examples as examples
 
 # Creating an ``StlFile`` object
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

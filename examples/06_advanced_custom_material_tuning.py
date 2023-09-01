@@ -12,7 +12,7 @@ reviewed carefully before executing the tuning process below.
 Units are SI (m, kg, s, K) unless otherwise noted.
 
 """
-import ansys.additive as pyadditive
+import ansys.additive.core as pyadditive
 
 additive = pyadditive.Additive()
 
@@ -31,7 +31,7 @@ additive = pyadditive.Additive()
 #
 # Example input files can be downloaded as shown below.
 
-import ansys.additive.examples as examples
+import ansys.additive.core.examples as examples
 
 input_files = examples.download_material_tuning_input()
 

@@ -3,7 +3,7 @@ from os import path
 
 import pytest
 
-from ansys.additive.material import (
+from ansys.additive.core.material import (
     AdditiveMaterial,
     CharacteristicWidthDataPoint,
     CharacteristicWidthDataPointMessage,

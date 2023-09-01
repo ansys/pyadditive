@@ -40,7 +40,7 @@ Once logged in to Ansys Lab, create a new jupyter notebook and connect to the ad
 
 .. code:: pycon
 
-   >>> import ansys.additive as pyadditive
+   >>> import ansys.additive.core as pyadditive
    >>> additive = pyadditive.Additive()
 
 Example notebooks can found in the `Examples <https://additive.docs.pyansys.com/dev/examples/index.html>`_
@@ -67,7 +67,7 @@ Next, connect to the service with:
 
 .. code:: pycon
 
-   >>> import ansys.additive as pyadditive
+   >>> import ansys.additive.core as pyadditive
    >>> additive = pyadditive.Additive()
 
 Installation
@@ -109,7 +109,7 @@ Then, you can simply execute:
 
 .. code:: bash
 
-   python -m pip install ansys-additive
+   python -m pip install ansys-additive-core
 
 .. warning::
 
@@ -121,10 +121,10 @@ Then, you can simply execute:
     .. code:: bash
 
         # On linux
-        pip install ansys-additive --index-url=https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
+        pip install ansys-additive-core --index-url=https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
 
         # On Windows
-        pip install ansys-additive --index-url=https://%PYANSYS_PYPI_PRIVATE_PAT%@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
+        pip install ansys-additive-core --index-url=https://%PYANSYS_PYPI_PRIVATE_PAT%@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
 
     See preceding note for how to get the access token to use for ``PYANSYS_PYPI_PRIVATE_PAT``.
 
@@ -200,8 +200,8 @@ For example, on Linux with Python 3.8, unzip the wheelhouse archive and install 
 
 .. code:: bash
 
-    unzip ansys-additive-v0.1.dev0-wheelhouse-Linux-3.8.zip wheelhouse
-    pip install ansys-additive -f wheelhouse --no-index --upgrade --ignore-installed
+    unzip ansys-additive-core-v0.1.dev0-wheelhouse-Linux-3.8.zip wheelhouse
+    pip install ansys-additive-core -f wheelhouse --no-index --upgrade --ignore-installed
 
 If you're on Windows with Python 3.9, unzip to a wheelhouse directory and install using the preceding command.
 

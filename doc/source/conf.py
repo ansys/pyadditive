@@ -9,7 +9,7 @@ import numpy as np
 import pyvista
 from sphinx_gallery.sorting import FileNameSortKey
 
-from ansys.additive import __version__
+from ansys.additive.core import __version__
 
 # Manage errors
 pyvista.set_error_output_file("errors.txt")
@@ -243,7 +243,7 @@ if BUILD_EXAMPLES is True:
         # directory where function granular galleries are stored
         "backreferences_dir": None,
         # Modules for which function level galleries are created.
-        "doc_module": "ansys-additive",
+        "doc_module": "ansys-additive-core",
         "image_scrapers": ("pyvista", "matplotlib"),
         "ignore_pattern": r"\b(" + "|".join(map(re.escape, ignore_patterns)) + r")\b",
         "thumbnail_size": (350, 350),
@@ -259,7 +259,7 @@ jinja_contexts = {
 }
 
 linkcheck_ignore = [
-    r"https://pypi.org/project/ansys-additive.*",  # TODO: remove once pyadditive is published
+    r"https://pypi.org/project/ansys-additive-core.*",  # TODO: remove once pyadditive is published
     r"https://github.com/ansys-internal/.*",  # TODO: remove once pyadditive is published
     r"https://ansyshelp.ansys.com/.*",
     r"https://ansysproducthelpqa.win.ansys.com/.*",

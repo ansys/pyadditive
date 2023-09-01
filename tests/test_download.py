@@ -9,7 +9,7 @@ from ansys.api.additive.v0.additive_simulation_pb2 import DownloadFileRequest, D
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 import pytest
 
-from ansys.additive.download import download_file
+from ansys.additive.core.download import download_file
 
 
 def test_download_file_calls_service_with_expected_params():

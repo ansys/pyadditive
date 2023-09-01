@@ -3,7 +3,7 @@
 import pandas as pd
 import panel as pn
 
-from ansys.additive.parametric_study import ColumnNames
+from ansys.additive.core.parametric_study import ColumnNames
 
 
 def _common_controls(df: pd.DataFrame):
