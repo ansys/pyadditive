@@ -37,13 +37,13 @@ def decompress(filename, subdir=None) -> str:
     filename : str
         Name of the file.
     subdir : str, None
-        Name of the subdirectory where the file resides. The
-        default is ``None``.
+        Name of the subdirectory of the ``examples`` directory
+        to extract the ZIP file contents to. The default is ``None``.
 
     Returns
     -------
     str
-       Path to the decompressed ZIP file.
+       Path to the decompressed contents of the ZIP file.
     """
     outdir = EXAMPLES_PATH
     zip_ref = zipfile.ZipFile(filename, "r")
@@ -73,8 +73,8 @@ def _retrieve_file(url, filename) -> tuple[str, HTTPMessage]:
 
     Returns
     -------
-    str: Local file path
-    HttpMessage: HTTP status message if any
+    str: Local path file was downloaded to.
+    HttpMessage: HTTP status message, if any.
     """
     # First check if file has already been downloaded
     local_path = os.path.join(EXAMPLES_PATH, os.path.basename(filename))
