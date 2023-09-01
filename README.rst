@@ -48,7 +48,7 @@ is made public, you must use a private PyPI repository. For more information, se
 
     pip install ansys-additive --index-url=https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
 
-To install the latest development version, use these commands:
+To install the latest development version, run these commands:
 
 .. code:: bash
 
@@ -76,7 +76,7 @@ This code shows how to import PyAdditive and use some basic capabilities:
 
    summary = additive.simulate(input)
 
-For more detailed usage information, see `Examples`_ in the `PyAdditive Documentation`_.
+For comprehensive usage information, see `Examples`_ in the `PyAdditive Documentation`_.
 
 Documentation and issues
 ========================
