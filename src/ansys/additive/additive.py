@@ -335,18 +335,18 @@ class Additive:
         parameters_file: str
             Name of the JSON file containing material parameters. For more information, see
             `Create Material Parameters File (.json)
-            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/add_beta/add_print_udm_tool_create_tables.html>`_
+            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_create_tables.html>`_
             in the *Additiivate Manufacturing Beta Features* documentation.
         thermal_lookup_file: str
             Name of the CSV file containing the lookup table for thermal dependent properties.
             For more information, see `Create Material Lookup File (.csv)
-            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/add_beta/add_print_udm_create_mat_lookup.html>`_
+            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_create_mat_lookup.html>`_
             in the *Additiivate Manufacturing Beta Features* documentation.
         characteristic_width_lookup_file: str
             Name of the CSV file containing the lookup table for characteristic melt pool width. For
             more information, see
             `Find Characteristic Width Values and Generate Characteristic Width File (.csv)
-            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/add_beta/add_print_udm_tool_find_cw.html>`_
+            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_find_cw.html>`_
             in the *Additiivate Manufacturing Beta Features* documentation.
         """
         material = AdditiveMaterial()
