@@ -24,7 +24,7 @@ def build_rate(
     -------
     float
         Volumetric build rate is returned if hatch spacing is provided.
-        Otherwise, an area build rate is returned. If input units are m/s, m, or m,
+        Otherwise, an area build rate is returned. If input units are m/s and m,
         the output units are m^3/s or m^2/s.
     """
     if hatch_spacing is None:
