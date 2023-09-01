@@ -22,7 +22,7 @@ def download_file(
     remote_file_name: str
         Path to file on the server.
     local_folder: str
-        Folder on yjr localhost to write yjr file to.
+        Folder on your localhost to write your file to.
     logger: ProgressLogger
         Log message handler.
     """
