@@ -210,7 +210,7 @@ class Additive:
         nproc: int, None
             Number of processors to use for simulation. This corresponds
             to the maximum number of licenses to check out at one time.
-            If no value is specified, the value of the ``npoc`` parameter
+            If no value is specified, the value of the ``nproc`` parameter
             provided in the Additive service constructor is used.
 
         Returns
