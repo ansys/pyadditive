@@ -531,7 +531,7 @@ class MicrostructureSummary:
 
     @property
     def xz_circle_equivalence(self) -> pd.DataFrame:
-        """Circle equivalence data for the  XZ plane.
+        """Circle equivalence data for the XZ plane.
 
         For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
         """
