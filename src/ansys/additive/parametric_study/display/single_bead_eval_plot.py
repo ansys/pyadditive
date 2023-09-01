@@ -20,8 +20,8 @@ pn.extension("plotly")
 
 
 def single_bead_eval_plot(ps: ParametricStudy):
-    """Generate a contour plot of single bead results to determine desirable
-    melt pool statistics.
+    """Generate a contour plot of single bead results to determine parametric
+    regions with desirable melt pool statistics.
 
     Parameters
     ----------
@@ -203,7 +203,7 @@ def __update_plot(
 
 def __contour_data(
     df: pd.DataFrame, ht: float, lt: float, bd: float, poi: str, range: Tuple[float, float]
-) -> Tuple[list, list, list, list]:
+) -> Tuple[list, list, list]:
     """Get lists of scan speed, laser power, and parameter of interest
     values."""
 
