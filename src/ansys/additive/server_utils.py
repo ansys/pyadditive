@@ -23,7 +23,7 @@ def launch_server(port: int, cwd: str = USER_DATA_PATH) -> subprocess.Popen:
     Returns
     -------
     process: subprocess.Popen
-        Server process. To stop the server, call the ``kill()`` function on the returned object.
+        Server process. To stop the server, call the ``kill()`` method on the returned object.
     """
     ver = DEFAULT_ANSYS_VERSION
     server_exe = ""
