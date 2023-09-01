@@ -36,7 +36,7 @@ material = additive.get_material("316L")
 
 ###############################################################################
 # Specify machine parameters
-# ----------------------
+# --------------------------
 # Specify machine parameters by first creating an
 # :class:`AdditiveMachine <ansys.additive.machine.AdditiveMachine>` object
 # and then assigning the desired values. All values are in SI units
