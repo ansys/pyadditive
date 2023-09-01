@@ -2,6 +2,7 @@
 """This module contains the Additive class which interacts with the Additive
 service."""
 import concurrent.futures
+from datetime import datetime
 import hashlib
 import logging
 import os
@@ -227,14 +228,21 @@ class Additive:
         nthreads = self._nproc
         if nproc:
             nthreads = nproc
-        print(f"Executing {len(inputs)} simulations")
+        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Executing {len(inputs)} simulations")
         with concurrent.futures.ThreadPoolExecutor(nthreads) as executor:
             futures = []
             for input in inputs:
                 futures.append(executor.submit(self._simulate, input=input, show_progress=False))
             for future in concurrent.futures.as_completed(futures):
-                summaries.append(future.result())
-                print(f"Completed {len(summaries)} of {len(inputs)} simulations")
+                summary = future.result()
+                if isinstance(summary, SimulationError):
+                    print(f"\nError: {summary.message}")
+                summaries.append(summary)
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                print(
+                    f"\r{timestamp} Completed {len(summaries)} of {len(inputs)} simulations",
+                    end="",
+                )
         return summaries
 
     def _simulate(self, input, show_progress: bool = False):
@@ -284,7 +292,6 @@ class Additive:
                         input, response.microstructure_result, self._user_data_path
                     )
         except Exception as e:
-            print(f"Error: {e}")
             return SimulationError(input, str(e))
 
     def get_materials_list(self) -> list[str]:
