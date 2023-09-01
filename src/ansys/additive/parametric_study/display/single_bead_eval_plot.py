@@ -31,7 +31,7 @@ def single_bead_eval_plot(ps: ParametricStudy):
     Returns
     -------
     :class: `panel.Row <panel.Row>`
-        Panel row containing the plot and controls.
+        Interactive plot.
     """
     df = __data_frame(ps)
     (

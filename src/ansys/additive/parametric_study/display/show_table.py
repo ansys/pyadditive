@@ -24,12 +24,12 @@ def show_table(ps: ParametricStudy, page_size: int = 10):
     ps : :class:`ParametricStudy <ansys.additive.parametric_study.ParametricStudy>`
         Parametric study to display.
     page_size : int, 10
-        Number of rows to display per page.
+        Number of table rows to display per page.
 
     Returns
     -------
     :class:`panel.Column <panel.Column>`
-        Panel column containing the table and controls.
+        Interactive table.
     """
     global _df, _ps, _iter_select, _pri_select
 
