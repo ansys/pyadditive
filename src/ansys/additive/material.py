@@ -714,7 +714,7 @@ class AdditiveMaterial:
 
     @property
     def characteristic_width_data(self) -> list[CharacteristicWidthDataPoint]:
-        """List of the :class:`CharacteristicWidthDataPoint` class."""
+        """List of characteristic width data points."""
         return self._characteristic_width_data
 
     @characteristic_width_data.setter
@@ -728,7 +728,7 @@ class AdditiveMaterial:
 
     @property
     def thermal_properties_data(self) -> list[ThermalPropertiesDataPoint]:
-        """List of the :class:`ThermalPropertiesDataPoint` class."""
+        """List of thermal properties data points."""
         return self._thermal_properties_data
 
     @thermal_properties_data.setter
@@ -742,7 +742,7 @@ class AdditiveMaterial:
 
     @staticmethod
     def _from_material_message(msg: MaterialMessage):
-        """Create an additive mMaterial from a material message received from
+        """Create an additive material from a material message received from
         the Additive service."""
         if not isinstance(msg, MaterialMessage):
             raise ValueError("Invalid message object passed to from_material_message()")
