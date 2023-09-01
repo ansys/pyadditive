@@ -9,7 +9,7 @@ from ansys.additive.material import AdditiveMaterial
 
 
 class SingleBeadInput:
-    """Input parameters for single bead simulation."""
+    """Provides input parameters for single bead simulation."""
 
     #: Default bead length (m).
     DEFAULT_BEAD_LENGTH = 3e-3
@@ -53,7 +53,7 @@ class SingleBeadInput:
 
     @property
     def id(self):
-        """User provided identifier for this simulation."""
+        """User-provided ID for the simulation."""
         return self._id
 
     @id.setter
@@ -62,7 +62,7 @@ class SingleBeadInput:
 
     @property
     def machine(self):
-        """Machine related parameters."""
+        """Machine-related parameters."""
         return self._machine
 
     @machine.setter
@@ -80,7 +80,7 @@ class SingleBeadInput:
 
     @property
     def bead_length(self):
-        """Length of bead to simulate (m).
+        """Length (m) of bead to simulate.
 
         Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
         """
@@ -102,7 +102,7 @@ class SingleBeadInput:
 
 
 class MeltPoolColumnNames:
-    """Column names for melt pool data frame."""
+    """Provides column names for the melt pool data frame."""
 
     #: Width of melt pool (m).
     WIDTH = "width"
@@ -117,7 +117,8 @@ class MeltPoolColumnNames:
 
 
 class MeltPool:
-    """Container for the melt pool evolution during a single bead simulation.
+    """Provides the container for the melt pool evolution during a single bead
+    simulation.
 
     Units are SI unless otherwise noted.
     """
@@ -142,24 +143,23 @@ class MeltPool:
         self._df.index.name = "bead_length"
 
     def data_frame(self) -> DataFrame:
-        """Return :class:`Pandas DataFrame <pandas.DataFrame>` containing melt
-        pool data.
+        """Get the data frame containing the melt pool data.
 
         Values are in meters.
 
         Indices:
-            - bead_length: Length of bead at each time step.
+            - ``bead_length``: Length of the bead at each time step.
 
         Columns:
-            - ``MeltPoolColumnNames.LENGTH``: length of melt pool at each time step.
-            - ``MeltPoolColumnNames.WIDTH``: width of melt pool at each time step.
-            - ``MeltPoolColumnNames.DEPTH``: depth of melt pool at each time step.
-            - ``MeltPoolColumnNames.REFERENCE_WIDTH``: reference width of melt pool at each time step.
-              Reference width is the melt pool width at the bottom of the powder layer,
-              or, the width at the top of the substrate.
-            - ``MeltPoolColumnNames.REFERENCE_DEPTH``: reference depth of melt pool at each time step.
+            - ``MeltPoolColumnNames.LENGTH``: Length of the melt pool at each time step.
+            - ``MeltPoolColumnNames.WIDTH``: Width of the melt pool at each time step.
+            - ``MeltPoolColumnNames.DEPTH``: Depth of the melt pool at each time step.
+            - ``MeltPoolColumnNames.REFERENCE_WIDTH``: Reference width of the melt pool at each time step.
+              Reference width is the melt pool width at the bottom of the powder layer
+              or the width at the top of the substrate.
+            - ``MeltPoolColumnNames.REFERENCE_DEPTH``: Reference depth of the melt pool at each time step.
               Reference depth is the depth of the entire melt pool minus the powder
-              layer thickness, or, the depth of penetration into the substrate.
+              layer thickness or the depth of penetration into the substrate.
         """
         return self._df.copy()
 
@@ -175,7 +175,7 @@ class MeltPool:
 
 
 class SingleBeadSummary:
-    """Summary of a single bead simulation."""
+    """Provides a summary of a single bead simulation."""
 
     def __init__(
         self,
@@ -191,12 +191,18 @@ class SingleBeadSummary:
 
     @property
     def input(self) -> SingleBeadInput:
-        """Simulation input, see :class:`SingleBeadInput`."""
+        """Simulation input.
+
+        For more information, see the :class:`SingleBeadInput` class.
+        """
         return self._input
 
     @property
     def melt_pool(self) -> MeltPool:
-        """Resulting melt pool, see :class:`MeltPool`."""
+        """Resulting melt pool.
+
+        For more information, see the :class:`MeltPool` class.
+        """
         return self._melt_pool
 
     def __repr__(self):

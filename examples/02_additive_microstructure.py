@@ -1,41 +1,45 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 """
-Microstructure Analysis
+Microstructure analysis
 #######################
 
-This tutorial shows how you can use PyAdditive to determine
+This example shows how you can use PyAdditive to determine
 the microstructure for a sample coupon with given material
 and machine parameters.
 
 Units are SI (m, kg, s, K) unless otherwise noted.
-
-First, connect to the Additive service.
 """
+###############################################################################
+# Perform required import and connect
+# -----------------------------------
+# Perform the required import and connect to the Additive service.
+
 import ansys.additive as pyadditive
 
 additive = pyadditive.Additive()
 
 ###############################################################################
-# Select Material
+# Select material
 # ---------------
-# The next step is a to choose a material. A list of available materials can
-# be obtained using the
+# Select a material. You can use the
 # :meth:`get_materials_list() <ansys.additive.additive.Additive.get_materials_list>`
-# command.
+# method to obtain a list of available materials.
 
 print(additive.get_materials_list())
 
 ###############################################################################
-# Obtain the parameters for a single material by passing one of the names
-# from the materials list to
-# :meth:`get_material() <ansys.additive.additive.Additive.get_material>`.
+# You can obtain the parameters for a single material by passing a name
+# from the materials list to the
+# :meth:`get_material() <ansys.additive.additive.Additive.get_material>`
+# method.
+
 material = additive.get_material("17-4PH")
 
 ###############################################################################
-# Set Machine Parameters
-# ----------------------
+# Specify machine parameters
+# --------------------------
 # Specify machine parameters by first creating an ``AdditiveMachine`` object
-# then assigning the desired values. All values are in SI units (m, kg, s, K)
+# and then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
 machine = pyadditive.AdditiveMachine()
@@ -45,19 +49,22 @@ print(machine)
 
 ###############################################################################
 # Set laser power and scan speed
+# ------------------------------
+# Set the laser power and scan speed.
+
 machine.scan_speed = 1  # m/s
 machine.laser_power = 500  # W
 
 ###############################################################################
-# Specify Microstructure Simulation Inputs
-# ----------------------------------------
-# Microstructure simulation inputs can either include thermal parameters or not.
+# Specify inputs for microstructure simulation
+# ---------------------------------------------
+# Microstructure simulation inputs can include thermal parameters.
 # Thermal parameters consist of ``cooling_rate``, ``thermal_gradient``,
-# ``melt_pool_width`` and ``melt_pool_depth``. If thermal parameters are not
-# specified, the thermal solver will be used to obtain the parameters prior
+# ``melt_pool_width``, and ``melt_pool_depth``. If thermal parameters are not
+# specified, the thermal solver is used to obtain the parameters prior
 # to running the microstructure solver.
 
-# Specifying microstructure inputs with thermal parameters
+# Specify microstructure inputs with thermal parameters
 input_with_thermal = pyadditive.MicrostructureInput(
     machine=machine,
     material=material,
@@ -73,7 +80,7 @@ input_with_thermal = pyadditive.MicrostructureInput(
     melt_pool_depth=1.1e-4,  # meters (110 microns)
 )
 
-# Specifying microstructure inputs without thermal parameters
+# Specify microstructure inputs without thermal parameters
 input_without_thermal = pyadditive.MicrostructureInput(
     machine=machine,
     material=material,
@@ -86,20 +93,19 @@ input_without_thermal = pyadditive.MicrostructureInput(
 )
 
 ###############################################################################
-# Run Simulation
+# Run simulation
 # --------------
 # Use the ``simulate`` method of the ``additive`` object to run the simulation.
-
 
 summary = additive.simulate(input_with_thermal)
 
 ###############################################################################
-# Plot Results
+# Plot results
 # ------------
 # The microstructure simulation results include three VTK files, one for each
-# of the XY, XZ and YZ planes. Each of the files contains data sets for grain
-# orientation, boundaries and number. In addition, the results include grain
-# statistics. See :class:`MicrostructureSummary`.
+# of the XY, XZ, and YZ planes. Each file contains data sets for grain
+# orientation, boundaries, and number. In addition, the results include grain
+# statistics. For more information, see the :class:`MicrostructureSummary` class.
 
 from matplotlib import colors
 from matplotlib.colors import LinearSegmentedColormap as colorMap
@@ -111,8 +117,10 @@ import pyvista as pv
 from ansys.additive import CircleEquivalenceColumnNames
 
 ###############################################################################
-# Plot Grain 2D Visualizations
+# Plot grain 2D visualizations
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# Plot the planar data, read VTK data in data set objects, and create a color
+# map to use with the boundary map.
 
 
 # Function to plot the planar data
@@ -148,7 +156,7 @@ xy = pv.read(summary.xy_vtk)
 xz = pv.read(summary.xz_vtk)
 yz = pv.read(summary.yz_vtk)
 
-# Create colormap to use with boundary plot
+# Create a color map to use with the boundary plot
 white_black_cmap = colorMap.from_list("whiteblack", ["white", "black"])
 
 plot_microstructure(xy, xz, yz, "GrainBoundaries", white_black_cmap).show(title="Grain Boundaries")
@@ -158,6 +166,8 @@ plot_microstructure(xy, xz, yz, "GrainNumber", None).show(title="Grain Number")
 ###############################################################################
 # Plot Grain Statistics
 # ^^^^^^^^^^^^^^^^^^^^^
+# Add grain statistic plots to a figure, create a figure for grain statistics,
+# and then plot the figure.
 
 
 # Function to simplify plotting grain statistics

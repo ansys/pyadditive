@@ -17,13 +17,13 @@ def launch_server(port: int, cwd: str = USER_DATA_PATH) -> subprocess.Popen:
     ----------
     port: int
         Port number to use for gRPC connections.
-    cwd: str
+    cwd: str, USER_DATA_PATH
         Current working directory to use for the server process.
 
     Returns
     -------
     process: subprocess.Popen
-        Server process. To stop the server, call ``kill()`` on the returned object.
+        Server process. To stop the server, call the ``kill()`` function on the returned object.
     """
     ver = DEFAULT_ANSYS_VERSION
     server_exe = ""
@@ -77,7 +77,10 @@ def find_open_port() -> int:
     Returns
     -------
     port: int
-        Open port number. *Note:* this port may be taken by the time you try to use it.
+        Open port number.
+
+        .. note::
+           This port may be taken by the time you try to use it.
     """
     import socket
 

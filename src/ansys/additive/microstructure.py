@@ -18,7 +18,7 @@ from ansys.additive.material import AdditiveMaterial
 class MicrostructureInput:
     """Provides input parameters for microstructure simulation.
 
-    Units are SI (m, kg, s, and K) unless otherwise noted.
+    Units are SI (m, kg, s, K) unless otherwise noted.
     """
 
     #: Default minimum x, y, z, position coordinate (m).
@@ -448,8 +448,8 @@ class CircleEquivalenceColumnNames:
 class MicrostructureSummary:
     """Provides the summary of a microstructure simulation.
 
-    Units are typically SI (m, kg, s, and K). However, some of the
-    following values do not use SI units. For more information, see the
+    Units are typically SI (m, kg, s, K). However, some of the following
+    values do not use SI units. For more information, see the
     descriptions.
     """
 

@@ -8,22 +8,25 @@ from ansys.additive.material import AdditiveMaterial
 
 
 class PorosityInput:
-    """Input parameters for porosity simulation.
+    """Provides input parameters for porosity simulation.
 
     Parameters
     ----------
     id: string
-        User provided identifier for this simulation.
-    size_x: float
-        Size of simulated sample in x dimension (m), valid values: 0.001 to 0.01.
-    size_y: float
-        Size of simulated sample in y dimension (m), valid values: 0.001 to 0.01.
-    size_z: float
-        Size of simulated sample in z dimension (m), valid values: 0.001 to 0.01.
+        User-provided ID for the simulation.
+    size_x: float, DEFAULT_SAMPLE_SIZE
+        Size of the simulated sample in the x dimension (m). Valid values are from
+        0.001 to 0.01.
+    size_y: float, DEFAULT_SAMPLE_SIZE
+        Size of the simulated sample in the y dimension (m). Valid values from 0.001
+        to 0.01.
+    size_z: float, DEFAULT_SAMPLE_SIZE
+        Size of the simulated sample in the z dimension (m). Valid values are from
+        0.001 to 0.01.
     machine: AdditiveMachine
-        Machine related parameters.
+        Machine-related parameters.
     material: AdditiveMaterial
-        Material used during simulation.
+        Material used during the simulation.
     """
 
     #: Default sample size (m) in each dimension.
@@ -75,7 +78,7 @@ class PorosityInput:
 
     @property
     def id(self):
-        """User provided identifier for this simulation."""
+        """User-provided ID for the simulation."""
         return self._id
 
     @id.setter
@@ -84,7 +87,7 @@ class PorosityInput:
 
     @property
     def machine(self):
-        """Machine related parameters."""
+        """Machine-related parameters."""
         return self._machine
 
     @machine.setter
@@ -93,7 +96,7 @@ class PorosityInput:
 
     @property
     def material(self):
-        """Material used during simulation."""
+        """Material used during the simulation."""
         return self._material
 
     @material.setter
@@ -102,7 +105,7 @@ class PorosityInput:
 
     @property
     def size_x(self):
-        """Size of simulated sample in x dimension (m).
+        """Size (m) of the simulated sample in the x dimension.
 
         Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
         """
@@ -115,7 +118,7 @@ class PorosityInput:
 
     @property
     def size_y(self):
-        """Size of simulated sample in y dimension (m).
+        """Size (m) of the simulated sample in the y dimension.
 
         Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
         """
@@ -128,7 +131,7 @@ class PorosityInput:
 
     @property
     def size_z(self):
-        """Size of simulated sample in z dimension (m).
+        """Size (m) of the simulated sample in the z dimension.
 
         Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
         """
@@ -152,7 +155,7 @@ class PorosityInput:
 
 
 class PorositySummary:
-    """Summary of a porosity simulation.
+    """Provides a summary of a porosity simulation.
 
     Units are SI unless otherwise noted.
     """
@@ -171,7 +174,10 @@ class PorositySummary:
 
     @property
     def input(self) -> PorosityInput:
-        """Simulation input, see :class:`PorosityInput`."""
+        """Simulation input.
+
+        For more information, see the :class:`PorosityInput` class.
+        """
         return self._input
 
     @property

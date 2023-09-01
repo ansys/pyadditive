@@ -21,7 +21,7 @@ class CharacteristicWidthDataPoint:
     power to be correlated to a characteristic melt pool width. This
     class represents a single row in the lookup table.
 
-    Units are SI (m, kg, s, and K) unless otherwise noted.
+    Units are SI (m, kg, s, K) unless otherwise noted.
     """
 
     def __init__(
@@ -115,7 +115,7 @@ class ThermalPropertiesDataPoint:
     temperatures. This class represents a single row in the lookup
     table.
 
-    Units are SI (m, kg, s, and K) unless otherwise noted.
+    Units are SI (m, kg, s, K) unless otherwise noted.
     """
 
     def __init__(

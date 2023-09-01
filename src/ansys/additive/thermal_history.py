@@ -54,14 +54,14 @@ class Range:
 
 
 class CoaxialAverageSensorInputs:
-    """Coaxial average sensor descriptions.
+    """Provides descriptions for coaxial average sensors.
 
-    radius: float (meters)
-        Radius for circular field of view of sensor. Validated values
-        are 5e-5 to 1.5e-2 (0.05 - 15 mm).
-    z_heights: Range[] (meters)
-        Array of ranges along the z axis of the geometry. The simulated sensor will
-        follow the scan path for each deposit layer within each range.
+    radius: float
+        Radius in meters for the circular field of the view of sensor. Valid values
+        are from 5e-5 to 1.5e-2 m (0.05 - 15 mm).
+    z_heights: Range[]
+        Array of ranges in meters along the z axis of the geometry. The simulated
+        sensor follows the scan path for each deposit layer within each range.
     """
 
     def __init__(self, **kwargs):
@@ -99,17 +99,17 @@ class CoaxialAverageSensorInputs:
 
 
 class ThermalHistoryInput:
-    """Input parameters for microstructure simulation.
+    """Provides input parameters for microstructure simulation.
 
     id: string
-        Simulation identifier.
+        Simulation ID.
     machine: AdditiveMachine
-        Machine related parameters.
+        Machine-related parameters.
     material: AdditiveMaterial
         Material used during simulation.
     geometry: StlFile or BuildFile
-        Geometry to use in simulation.
-    coax_ave_sensor_inputs: CoaxialAverageSensorInputs
+        Geometry to use in the simulation.
+    coax_ave_sensor_inputs: :class:`CoaxialAverageSensorInputs`
         Coaxial average sensor definition.
     """
 
@@ -147,7 +147,11 @@ class ThermalHistoryInput:
 
     @property
     def geometry(self):
-        """Part geometry, either :class:`StlFile` or :class:`BuildFile`."""
+        """Part geometry.
+
+        For more information, see the :class:`StlFile`
+        class or the :class:`BuildFile` class.
+        """
         return self._geometry
 
     @geometry.setter
@@ -194,10 +198,13 @@ class ThermalHistorySummary:
 
     @property
     def input(self):
-        """Simulation input, :class:`ThermalHistoryInput`."""
+        """Simulation input.
+
+        For more information, see the :class:`ThermalHistoryInput` class.
+        """
         return self._input
 
     @property
     def coax_ave_output_folder(self):
-        """Path to folder containing coaxial average sensor results."""
+        """Path to the folder containing the coaxial average sensor results."""
         return self._coax_ave_output_folder
