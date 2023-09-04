@@ -6,7 +6,7 @@ import shutil
 import urllib.request
 import zipfile
 
-from ansys.additive import EXAMPLES_PATH
+from ansys.additive.core import EXAMPLES_PATH
 
 EXAMPLES_URI = "https://github.com/ansys/example-data/raw/master"
 PARTS_FOLDER = "pyadditive/part-only"

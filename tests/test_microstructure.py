@@ -8,9 +8,9 @@ from ansys.api.additive.v0.additive_domain_pb2 import GrainStatistics, Microstru
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import pytest
 
-from ansys.additive.machine import AdditiveMachine
-from ansys.additive.material import AdditiveMaterial
-from ansys.additive.microstructure import MicrostructureInput, MicrostructureSummary
+from ansys.additive.core.machine import AdditiveMachine
+from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
 
 
 def test_MicrostructureSummary_init_returns_expected_value():

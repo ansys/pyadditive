@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from ansys.additive import (
+from ansys.additive.core import (
     Additive,
     AdditiveMachine,
     AdditiveMaterial,
@@ -30,9 +30,9 @@ from ansys.additive import (
     SingleBeadInput,
     SingleBeadSummary,
 )
-import ansys.additive.parametric_study as ps
-from ansys.additive.parametric_study.parametric_runner import ParametricRunner
-from ansys.additive.parametric_study.parametric_utils import build_rate
+import ansys.additive.core.parametric_study as ps
+from ansys.additive.core.parametric_study.parametric_runner import ParametricRunner
+from ansys.additive.core.parametric_study.parametric_utils import build_rate
 from tests import test_utils
 
 

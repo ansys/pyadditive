@@ -4,7 +4,7 @@ from typing import List, Optional, Union
 import numpy as np
 import pandas as pd
 
-from ansys.additive import (
+from ansys.additive.core import (
     Additive,
     AdditiveMachine,
     AdditiveMaterial,
@@ -18,7 +18,7 @@ from ansys.additive import (
     SingleBeadInput,
     SingleBeadSummary,
 )
-from ansys.additive.parametric_study.constants import ColumnNames
+from ansys.additive.core.parametric_study.constants import ColumnNames
 
 
 class ParametricRunner:
@@ -40,7 +40,8 @@ class ParametricRunner:
         df : pd.DataFrame
             The parametric study data frame.
         additive: Additive
-            The :class:`Additive <ansys.additive.additive.Additive>` service to use for running simulations.
+            The :class:`Additive <ansys.additive.core.additive.Additive>` service connection to
+            use for running simulations.
         type : Optional[List[SimulationType]], optional
             The type of simulations to run, ``None`` indicates all types.
         priority : Optional[int]

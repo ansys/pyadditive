@@ -7,10 +7,10 @@ from ansys.api.additive.v0.additive_domain_pb2 import ThermalHistoryResult
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import pytest
 
-from ansys.additive.geometry_file import BuildFile, MachineType, StlFile
-from ansys.additive.machine import AdditiveMachine
-from ansys.additive.material import AdditiveMaterial
-from ansys.additive.thermal_history import (
+from ansys.additive.core.geometry_file import BuildFile, MachineType, StlFile
+from ansys.additive.core.machine import AdditiveMachine
+from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.thermal_history import (
     CoaxialAverageSensorInputs,
     CoaxialAverageSensorInputsMessage,
     Range,

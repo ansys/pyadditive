@@ -5,7 +5,7 @@ from ansys.api.additive.v0.additive_domain_pb2 import BuildFile as BuildFileMess
 from ansys.api.additive.v0.additive_domain_pb2 import BuildFileMachineType
 from ansys.api.additive.v0.additive_domain_pb2 import StlFile as StlFileMessage
 
-from ansys.additive.geometry_file import BuildFile, MachineType, StlFile
+from ansys.additive.core.geometry_file import BuildFile, MachineType, StlFile
 
 from . import test_utils
 

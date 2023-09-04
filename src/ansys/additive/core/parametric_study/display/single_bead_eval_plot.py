@@ -6,8 +6,8 @@ import pandas as pd
 import panel as pn
 import plotly.graph_objects as go
 
-from ansys.additive import SimulationStatus, SimulationType
-from ansys.additive.parametric_study import ColumnNames, ParametricStudy
+from ansys.additive.core import SimulationStatus, SimulationType
+from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
 
 from ._common_controls import _common_controls
 
@@ -25,7 +25,7 @@ def single_bead_eval_plot(ps: ParametricStudy):
 
     Parameters
     ----------
-    ps : :class:`ParametricStudy <ansys.additive.parametric_study.ParametricStudy>`
+    ps : :class:`ParametricStudy <from ansys.additive.core.parametric_study.ParametricStudy>`
         Parametric study to be plotted.
 
     Returns

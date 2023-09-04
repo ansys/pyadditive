@@ -3,7 +3,7 @@ import math
 
 import pytest
 
-from ansys.additive.machine import AdditiveMachine, MachineMessage
+from ansys.additive.core.machine import AdditiveMachine, MachineMessage
 
 
 def test_AdditiveMachine_init_returns_default():
