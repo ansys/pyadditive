@@ -15,17 +15,17 @@ pn.extension("plotly")
 
 
 def porosity_contour_plot(ps: ParametricStudy):
-    """Provides a contour plot of build rate and relative density.
+    """Generates a contour plot of build rate and relative density.
 
     Parameters
     ----------
     ps : :class:`ParametricStudy <from ansys.additive.core.parametric_study.ParametricStudy>`
-        Parametric study to be plotted.
+        Parametric study to plot.
 
     Returns
     -------
     :class: `panel.Row <panel.Row>`
-        A ``Panel Row`` object containing the plot and controls.
+        Interactive plot.
     """
     df = __data_frame(ps)
     (

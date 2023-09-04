@@ -1,16 +1,19 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 """
-Design Of Experiments
+Design of experiments
 =====================
 
-This tutorial shows how you can use PyAdditive to run a design of experiments (DOE).
-For this DOE we will vary laser power and scan speed over multiple single bead
-simulations and plot the results.
+This example shows how you can use PyAdditive to run a design of experiments (DOE).
+For this DOE, laser power and scan speed are varied over multiple single bead
+simulations and results are plotted.
 
 Units are SI (m, kg, s, K) unless otherwise noted.
-
-First, connect to the Additive service.
 """
+###############################################################################
+# Perform required import and connect
+# -----------------------------------
+# Perform the required import and connect to the Additive service.
+
 # from matplotlib.colors import LinearSegmentedColormap as colorMap
 # import matplotlib.pyplot as plt
 # import numpy as np
@@ -20,9 +23,9 @@ First, connect to the Additive service.
 # additive = pyadditive.Additive()
 
 ###############################################################################
-# Specify Parameters
-# ---------------------------------
-# Here we create a list of ``SingleBeadInput`` objects with various laser power
+# Specify parameters
+# -------------------
+# Create a list of ``SingleBeadInput`` objects with various laser power
 # and scan speed combinations.
 
 # bead_length = 0.001
@@ -47,16 +50,17 @@ First, connect to the Additive service.
 #     )
 
 # ###############################################################################
-# # Run Simulations
-# # ---------------
-# # The ``simulate`` method returns a list of summaries. In this case they are of
-# # type :class:`SingleBeadSummary`.
+# Run simulation
+# --------------
+# Use the ``simulate`` method of the ``additive`` object to run the simulation.
+# The list of summaries returned here are of the :class:`SingleBeadSummary` type.
 
 # summaries = additive.simulate(inputs)
 
 ###############################################################################
-# Plot Individual Meltpool Statistics
-# -----------------------------------
+# Plot melt pool statistics
+# -------------------------
+# Plot the indidivual melt pool statistics.
 
 # import plotly.graph_objects as go
 # summaries.sort(key=lambda s: (s.input.machine.laser_power, s.input.machine.scan_speed))
@@ -128,10 +132,10 @@ First, connect to the Additive service.
 
 
 # ###############################################################################
-# # Plot Meltpool Average Depth Over Width Verses Laser Power And Scan Speed
-# # ------------------------------------------------------------------------
-# # Here we create a "watermelon" plot to visualize the optimal laser power
-# # and scan speed combinations.
+# Plot melt pool average depth over width verses laser power and scan speed
+# -------------------------------------------------------------------------
+# Create a "watermelon" plot to visualize the optimal laser power
+# and scan speed combinations.
 
 # # Gather plot values
 # powers = []

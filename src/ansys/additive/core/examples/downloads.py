@@ -1,5 +1,6 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-"""Functions to download sample datasets from the pyansys data repository."""
+"""Provides functions for downloading sample datasets from the PyAdditive
+repository."""
 from http.client import HTTPMessage
 import os
 import shutil
@@ -29,8 +30,21 @@ def delete_downloads():
 
 
 def decompress(filename, subdir=None) -> str:
-    """Decompress a zip file into the examples directory and return the
-    path."""
+    """Decompress a ZIP file to the ``examples`` directory.
+
+    Parameters
+    ----------
+    filename : str
+        Name of the file.
+    subdir : str, None
+        Name of the subdirectory of the ``examples`` directory
+        to extract the ZIP file contents to. The default is ``None``.
+
+    Returns
+    -------
+    str
+       Path to the decompressed contents of the ZIP file.
+    """
     outdir = EXAMPLES_PATH
     zip_ref = zipfile.ZipFile(filename, "r")
     if subdir:
@@ -48,13 +62,19 @@ def _get_file_url(filename, directory=None):
 
 
 def _retrieve_file(url, filename) -> tuple[str, HTTPMessage]:
-    """Retrieve an example data file either from local storage or from the
-    given url.
+    """Retrieve an example data file from either a URL or local storage.
+
+    Parameters
+    ----------
+    url : str
+       URL for the example data file.
+    filename : str
+       Name for the example data file.
 
     Returns
     -------
-    str: local file path
-    HttpMessage: http status message if any
+    str: Local path file was downloaded to.
+    HttpMessage: HTTP status message, if any.
     """
     # First check if file has already been downloaded
     local_path = os.path.join(EXAMPLES_PATH, os.path.basename(filename))
@@ -76,7 +96,7 @@ def _download_file(filename, directory=None) -> tuple[str, HTTPMessage]:
 
 
 def download_10mm_cube():
-    """Download an STL file describing a 10 millimeter cube."""
+    """Download an STL file describing a 10-millimeter cube."""
     return _download_file("10mm_cube.stl", PARTS_FOLDER)[0]
 
 
@@ -86,7 +106,7 @@ def download_small_wedge_slm_build_file():
 
 
 class MaterialTuningExampleInputFiles:
-    """Class to hold the example inputs for the material tuning process."""
+    """Holds the example inputs for the material tuning process."""
 
     def __init__(
         self,
@@ -95,7 +115,7 @@ class MaterialTuningExampleInputFiles:
         thermal_properties_lookup_file: str,
         characteristic_width_lookup_file: str,
     ):
-        """Initialize the MaterialTuningInputs class.
+        """Initialize the ``MaterialTuningInputs`` class.
 
         Parameters
         ----------
@@ -155,7 +175,7 @@ def download_material_tuning_input() -> MaterialTuningExampleInputFiles:
 
 
 class CustomMaterialExampleFiles:
-    """Class to hold the files associated with a custom material definition."""
+    """Holds the files associated with a custom material definition."""
 
     def __init__(
         self,
@@ -163,7 +183,7 @@ class CustomMaterialExampleFiles:
         thermal_properties_lookup_file: str,
         characteristic_width_lookup_file: str,
     ):
-        """Initialize the CustomMaterialExampleFiles class.
+        """Initialize the ``CustomMaterialExampleFiles`` class.
 
         Parameters
         ----------
@@ -180,17 +200,17 @@ class CustomMaterialExampleFiles:
 
     @property
     def material_parameters_file(self):
-        """Material parameters file path."""
+        """Path to the material parameters file."""
         return self._material_parameters_file
 
     @property
     def thermal_properties_lookup_file(self):
-        """Thermal properties lookup file path."""
+        """Path to the thermal properties lookup file."""
         return self._thermal_properties_lookup_file
 
     @property
     def characteristic_width_lookup_file(self):
-        """Characteristic width lookup file path."""
+        """Path to the characteristic width lookup file."""
         return self._characteristic_width_lookup_file
 
 

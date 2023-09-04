@@ -17,19 +17,19 @@ pn.extension("tabulator")
 
 
 def show_table(ps: ParametricStudy, page_size: int = 10):
-    """Provides an interactive display of the parametric study table.
+    """Generate an interactive display of the parametric study table.
 
     Parameters
     ----------
     ps : :class:`ParametricStudy <from ansys.additive.core.parametric_study.ParametricStudy>`
-        Parametric study to be displayed.
-    page_size : int, optional
-        Number of rows to display per page. The default is 10.
+        Parametric study to display.
+    page_size : int, 10
+        Number of table rows to display per page.
 
     Returns
     -------
     :class:`panel.Column <panel.Column>`
-        A ``Panel Column`` object containing the table and controls.
+        Interactive table.
     """
     global _df, _ps, _iter_select, _pri_select
 

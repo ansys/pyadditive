@@ -1,5 +1,5 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-"""Utilities for use with PyAdditive examples."""
+"""Provides utilities for use with PyAdditive examples."""
 
 from ansys.additive.core.examples.downloads import (
     decompress,

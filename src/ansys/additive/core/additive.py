@@ -1,6 +1,5 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-"""This module contains the Additive class which interacts with the Additive
-service."""
+"""Provides for interacting with the Additive service."""
 import concurrent.futures
 from datetime import datetime
 import hashlib
@@ -39,10 +38,9 @@ LOCALHOST = "127.0.0.1"
 
 
 class Additive:
-    """Client interface to Additive service.
+    """Provides the client interface to the Additive service.
 
-    The method :meth:`simulate` is
-    used to execute simulations.
+    The :meth:`simulate` method is used to execute simulations.
     """
 
     def __init__(
@@ -54,7 +52,7 @@ class Additive:
         log_file: typing.Optional[str] = "",
         channel: typing.Optional[grpc.Channel] = None,
     ) -> None:  # PEP 484
-        """Initialize connection to the server."""
+        """Initialize a connection to the server."""
         if channel is not None and (ip is not None or port is not None):
             raise ValueError("If 'channel' is specified, neither 'port' nor 'ip' can be specified.")
 
@@ -80,7 +78,7 @@ class Additive:
         print("user data path: " + self._user_data_path)
 
     def __del__(self):
-        """Destructor, used to clean up service connection."""
+        """Destructor for cleaning up the service connection."""
         if hasattr(self, "_server_instance") and self._server_instance:
             self._server_instance.delete()
         if hasattr(self, "_server_process") and self._server_process:
@@ -111,31 +109,30 @@ class Additive:
     ):
         """Create an insecure gRPC channel.
 
-        A channel connection will be established using one of the following methods.
+        A channel connection is established using one of the following methods.
         The methods are listed in order of precedence.
-            1. Using the user provided ip and port values, if any
-            2. Using PyPim if the client is running in a PyPim enabled environment
-                such as Ansys Lab
-            3. Using an ip and port definition string defined by the
-                ANSYS_ADDITIVE_ADDRESS environment variable
-            4. Using a default ip and port, `localhost:50052`
+
+        #. Use the user-provided IP address and port values, if any.
+        #. Use PyPIM if the client is running in a PyPIM-enabled environment
+           such as Ansys Lab.
+        #. Use an IP address and port definition string defined by the
+           ``ANSYS_ADDITIVE_ADDRESS`` environment variable.
+        #. Use the default IP address and port, ``localhost:50052``.
 
         Parameters
         ----------
-
-        ip: str
-            Internet protocol address of remote server host in IPv4 dotted-quad string format.
-
-        port: int
-            Port number on server to connect to.
-
-        product_version: str
-            Additive server product version. Only applies in PyPim environments.
+        ip: str, None
+            IP address of the remote server host in IPv4 dotted-quad string format.
+        port: int, None
+            Port number on the server to connect to.
+        product_version: str, None
+            Product version of the Additive server. This parameter is only applicable
+            in PyPIM environments.
 
         Returns
         -------
         channel: grpc.Channel
-            Insecure grpc channel.
+            Insecure gRPC channel.
         """
         if port:
             misc.check_valid_port(port)
@@ -165,16 +162,22 @@ class Additive:
             return self.__open_insecure_channel(f"{LOCALHOST}:{port}")
 
     def __open_insecure_channel(self, target: str) -> grpc.Channel:
-        """Open an insecure grpc channel to a given target."""
+        """Open an insecure gRPC channel to a given target.
+
+        Parameters
+        ----------
+        target : str
+            Target for the insecure gRPC channel.
+        """
         return grpc.insecure_channel(
             target, options=[("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH)]
         )
 
     @property
     def _channel_str(self):
-        """Return the target string.
+        """Target string.
 
-        Generally of the form of "ip:port", like "127.0.0.1:50052".
+        The form is generally ``"ip:port"``. For example, ``"127.0.0.1:50052"``.
         """
         if self._channel is not None:
             return self._channel._channel.target().decode()
@@ -202,18 +205,17 @@ class Additive:
         inputs: :class:`SingleBeadInput`, :class:`PorosityInput`,
         :class:`MicrostructureInput`, :class:`ThermalHistoryInput`
         or a list of these input types
-            Parameters to use for simulation(s).
+            Parameters to use for simulations.
 
-        nproc: int
+        nproc: int, None
             Number of processors to use for simulation. This corresponds
-            to the maximum number of licenses that will be checked out
-            at a time. If not specified, the value of ``npoc`` provided
-            in the Additive service constructor will be used.
-
+            to the maximum number of licenses to check out at one time.
+            If no value is specified, the value of the ``nproc`` parameter
+            provided in the Additive service constructor is used.
 
         Returns
         -------
-        A :class:`SingleBeadSummary`, :class:`PorositySummary`,
+        :class:`SingleBeadSummary`, :class:`PorositySummary`,
         :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`,
         :class:`SimulationError`, or, if a list of inputs was provided,
         a list of these types.
@@ -253,12 +255,12 @@ class Additive:
         input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput
             Parameters to use for simulation.
 
-        show_progress: bool
-            If ``True``, send progress updates to user interface.
+        show_progress: bool, False
+            Whether to send progress updates to the user interface.
 
         Returns
         -------
-        One of the follow summary objects.
+        One of the follow summary objects:
         :class:`SingleBeadSummary`, :class:`PorositySummary`,
         :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`,
         :class:`SimulationError`
@@ -295,7 +297,7 @@ class Additive:
             return SimulationError(input, str(e))
 
     def get_materials_list(self) -> list[str]:
-        """Retrieve a list of material names used in additive simulations.
+        """Get a list of material names used in additive simulations.
 
         Returns
         -------
@@ -305,7 +307,7 @@ class Additive:
         return self._materials_stub.GetMaterialsList(Empty())
 
     def get_material(self, name: str) -> AdditiveMaterial:
-        """Return a specified material for use in an additive simulation.
+        """Get a material for use in an additive simulation.
 
         Parameters
         ----------
@@ -326,22 +328,26 @@ class Additive:
     def load_material(
         parameters_file: str, thermal_lookup_file: str, characteristic_width_lookup_file: str
     ) -> AdditiveMaterial:
-        """Load a user provided material definition.
+        """Load a user-provided material definition.
 
         Parameters
         ----------
-
         parameters_file: str
-            Name of `json file containing material parameters
-            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/add_beta/add_print_udm_tool_create_tables.html>`_
-
+            Name of the JSON file containing material parameters. For more information, see
+            `Create Material Parameters File (.json)
+            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_create_tables.html>`_
+            in the *Additiivate Manufacturing Beta Features* documentation.
         thermal_lookup_file: str
-            Name of `CSV file containing a lookup table for thermal dependent properties
-            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/add_beta/add_print_udm_create_mat_lookup.html>`_
-
+            Name of the CSV file containing the lookup table for thermal dependent properties.
+            For more information, see `Create Material Lookup File (.csv)
+            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_create_mat_lookup.html>`_
+            in the *Additiivate Manufacturing Beta Features* documentation.
         characteristic_width_lookup_file: str
-            Name of `CSV file containing a lookup table for characteristic melt pool width
-            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/add_beta/add_print_udm_tool_find_cw.html>`_
+            Name of the CSV file containing the lookup table for characteristic melt pool width. For
+            more information, see
+            `Find Characteristic Width Values and Generate Characteristic Width File (.csv)
+            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_find_cw.html>`_
+            in the *Additiivate Manufacturing Beta Features* documentation.
         """
         material = AdditiveMaterial()
         material._load_parameters(parameters_file)
@@ -356,13 +362,11 @@ class Additive:
 
         Parameters
         ----------
-
         input: MaterialTuningInput
             Input parameters for material tuning.
 
         Returns
         -------
-
         MaterialTuningSummary
             Summary of material tuning.
         """
@@ -373,7 +377,7 @@ class Additive:
 
         if os.path.exists(out_dir):
             raise Exception(
-                f"Directory {out_dir} already exists. Please delete or choose a different output directory."
+                f"Directory {out_dir} already exists. Delete or choose a different output directory."
             )
 
         request = input._to_request()
@@ -422,19 +426,15 @@ class Additive:
 
         Parameters
         ----------
-
         input: ThermalHistoryInput
             Simulation input parameters.
-
         out_dir: str
             Folder path for output files.
-
         logger: ProgressLogger
             Log message handler.
 
         Returns
         -------
-
         :class:`ThermalHistorySummary`
         """
         if input.geometry == None or input.geometry.path == "":
@@ -478,5 +478,5 @@ class Additive:
             if input.id == "":
                 input.id = misc.short_uuid()
             if input.id in ids:
-                raise ValueError(f'Duplicate simulation id "{input.id}" in input list')
+                raise ValueError(f'Duplicate simulation ID "{input.id}" in input list')
             ids.append(input.id)

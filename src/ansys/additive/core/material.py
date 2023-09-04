@@ -14,11 +14,11 @@ from ansys.api.additive.v0.additive_domain_pb2 import AdditiveMaterial as Materi
 
 
 class CharacteristicWidthDataPoint:
-    """Container for a characteristic width data point.
+    """Provides the container for a characteristic width data point.
 
     Additive material definitions include a file containing a
-    characteristic width lookup table which allows a given laser speed
-    and power to be correlated to a characteristic melt pool width. This
+    characteristic width lookup table, allowing a given laser speed and
+    power to be correlated to a characteristic melt pool width. This
     class represents a single row in the lookup table.
 
     Units are SI (m, kg, s, K) unless otherwise noted.
@@ -27,7 +27,7 @@ class CharacteristicWidthDataPoint:
     def __init__(
         self, *, laser_power: float = 0, scan_speed: float = 0, characteristic_width: float = 0
     ):
-        """Create a ``CharacteristicWidthDataPoint``."""
+        """Create a characteristic width data point."""
         self._laser_power = laser_power
         self._scan_speed = scan_speed
         self._characteristic_width = characteristic_width
@@ -85,8 +85,8 @@ class CharacteristicWidthDataPoint:
 
     @staticmethod
     def _from_characteristic_width_data_point_message(msg: CharacteristicWidthDataPointMessage):
-        """Create a ``CharacteristicWidthDataPoint`` from a characteristic data
-        point message received from Additive service."""
+        """Create a characteristic width data point`` from a characteristic
+        data point message received from the Additive service."""
         if not isinstance(msg, CharacteristicWidthDataPointMessage):
             raise ValueError(
                 "Invalid message object passed to from_characteristic_width_data_point_message()"
@@ -100,7 +100,7 @@ class CharacteristicWidthDataPoint:
         self,
     ) -> CharacteristicWidthDataPointMessage:
         """Create a characteristic width data point message from this
-        ``CharacteristicWidthDataPoint`` to send to the Additive service."""
+        characteristic width data point to send to the Additive service."""
         msg = CharacteristicWidthDataPointMessage()
         for p in self.__dict__:
             setattr(msg, p.replace("_", "", 1), getattr(self, p))
@@ -108,10 +108,10 @@ class CharacteristicWidthDataPoint:
 
 
 class ThermalPropertiesDataPoint:
-    """Container for a temperature dependent properties.
+    """Provides the container for temperature-dependent properties.
 
     Additive material definitions include a file containing a lookup
-    table which describes the material's thermal properties at different
+    table describing the material's thermal properties at different
     temperatures. This class represents a single row in the lookup
     table.
 
@@ -129,7 +129,7 @@ class ThermalPropertiesDataPoint:
         thermal_conductivity: float = 0,
         thermal_conductivity_ratio: float = 0,
     ):
-        """Create a ``ThermalPropertiesDataPoint``."""
+        """Create a thermal properties data point."""
         self._density = density
         self._density_ratio = density_ratio
         self._specific_heat = specific_heat
@@ -171,7 +171,7 @@ class ThermalPropertiesDataPoint:
 
     @density_ratio.setter
     def density_ratio(self, value: float):
-        """Set density_ratio value."""
+        """Set density ratio value."""
         if value < 0:
             raise ValueError("Density ratio must not be negative.")
         self._density_ratio = value
@@ -230,8 +230,8 @@ class ThermalPropertiesDataPoint:
 
     @staticmethod
     def _from_thermal_properties_data_point_message(msg: ThermalPropertiesDataPointMessage):
-        """Create a ``ThermalPropertiesDataPoint`` from a thermal
-        characteristic data point message received from the Additive service.
+        """Create a thermal properties data point from a thermal characteristic
+        data point message received from the Additive service.
 
         :meta private:
         """
@@ -247,8 +247,8 @@ class ThermalPropertiesDataPoint:
     def _to_thermal_properties_data_point_message(
         self,
     ) -> ThermalPropertiesDataPointMessage:
-        """Create a thermal characteristic data point message from this
-        ``ThermalPropertiesDataPoint`` object to send to the Additive service.
+        """Create a thermal characteristic data point message from this thermal
+        properties data point to send to the Additive service.
 
         :meta private:
         """
@@ -259,8 +259,8 @@ class ThermalPropertiesDataPoint:
 
 
 class AdditiveMaterial:
-    """Container for material properties used during additive manufacturing
-    simulation."""
+    """Provides the container for material properties used during additive
+    manufacturing simulation."""
 
     def __init__(
         self,
@@ -301,7 +301,7 @@ class AdditiveMaterial:
         characteristic_width_data: list[CharacteristicWidthDataPoint] = None,
         thermal_properties_data: list[ThermalPropertiesDataPoint] = None,
     ):
-        """Create an ``AdditiveMaterial``."""
+        """Create an additive material."""
         self._absorptivity_maximum = absorptivity_maximum
         self._absorptivity_minimum = absorptivity_minimum
         self._absorptivity_powder_coefficient_a = absorptivity_powder_coefficient_a
@@ -375,7 +375,7 @@ class AdditiveMaterial:
 
     @absorptivity_maximum.setter
     def absorptivity_maximum(self, value: float):
-        """Set absorptivity_maximum."""
+        """Set absorptivity maximum."""
         self._absorptivity_maximum = value
 
     @property
@@ -385,7 +385,7 @@ class AdditiveMaterial:
 
     @absorptivity_minimum.setter
     def absorptivity_minimum(self, value: float):
-        """Set absorptivity_minimum."""
+        """Set absorptivity minimum."""
         self._absorptivity_minimum = value
 
     @property
@@ -395,7 +395,7 @@ class AdditiveMaterial:
 
     @absorptivity_powder_coefficient_a.setter
     def absorptivity_powder_coefficient_a(self, value: float):
-        """Set absorptivity_powder_coefficient_a."""
+        """Set absorptivity powder coefficient a."""
         self._absorptivity_powder_coefficient_a = value
 
     @property
@@ -405,7 +405,7 @@ class AdditiveMaterial:
 
     @absorptivity_powder_coefficient_b.setter
     def absorptivity_powder_coefficient_b(self, value: float):
-        """Set absorptivity_powder_coefficient_b."""
+        """Set absorptivity powder coefficient b."""
         self._absorptivity_powder_coefficient_b = value
 
     @property
@@ -415,7 +415,7 @@ class AdditiveMaterial:
 
     @absorptivity_solid_coefficient_a.setter
     def absorptivity_solid_coefficient_a(self, value: float):
-        """Set absorptivity_solid_coefficient_a."""
+        """Set absorptivity solid coefficient a."""
         self._absorptivity_solid_coefficient_a = value
 
     @property
@@ -425,7 +425,7 @@ class AdditiveMaterial:
 
     @absorptivity_solid_coefficient_b.setter
     def absorptivity_solid_coefficient_b(self, value: float):
-        """Set absorptivity_solid_coefficient_b."""
+        """Set absorptivity solid coefficient b."""
         self._absorptivity_solid_coefficient_b = value
 
     @property
@@ -436,7 +436,7 @@ class AdditiveMaterial:
 
     @anisotropic_strain_coefficient_parallel.setter
     def anisotropic_strain_coefficient_parallel(self, value: float):
-        """Set anisotropic_strain_coefficient_parallel."""
+        """Set anisotropic strain coefficient parallel."""
         self._anisotropic_strain_coefficient_parallel = value
 
     @property
@@ -448,7 +448,7 @@ class AdditiveMaterial:
 
     @anisotropic_strain_coefficient_perpendicular.setter
     def anisotropic_strain_coefficient_perpendicular(self, value: float):
-        """Set anisotropic_strain_coefficient_perpendicular."""
+        """Set anisotropic strain coefficient perpendicular."""
         self._anisotropic_strain_coefficient_perpendicular = value
 
     @property
@@ -458,7 +458,7 @@ class AdditiveMaterial:
 
     @anisotropic_strain_coefficient_z.setter
     def anisotropic_strain_coefficient_z(self, value: float):
-        """Set anisotropic_strain_coefficient_z."""
+        """Set anisotropic strain coefficient z."""
         self._anisotropic_strain_coefficient_z = value
 
     @property
@@ -468,30 +468,30 @@ class AdditiveMaterial:
 
     @elastic_modulus.setter
     def elastic_modulus(self, value: float):
-        """Set elastic_modulus."""
+        """Set elastic modulus."""
         self._elastic_modulus = value
 
     @property
     def hardening_factor(self) -> float:
         """Factor relating the elastic modulus to the tangent modulus for
         plasticity simulations (tangent modulus = elastic modulus * hardening
-        factor )."""
+        factor)."""
         return self._hardening_factor
 
     @hardening_factor.setter
     def hardening_factor(self, value: float):
-        """Set hardening_factor."""
+        """Set hardening factor."""
         self._hardening_factor = value
 
     @property
     def liquidus_temperature(self) -> float:
-        """Minimum temperature at which the material is completely liquid
-        (K)."""
+        """Minimum temperature (K) at which the material is completely
+        liquid."""
         return self._liquidus_temperature
 
     @liquidus_temperature.setter
     def liquidus_temperature(self, value: float):
-        """Set liquidus_temperature."""
+        """Set liquidus temperature."""
         self._liquidus_temperature = value
 
     @property
@@ -501,12 +501,12 @@ class AdditiveMaterial:
 
     @material_yield_strength.setter
     def material_yield_strength(self, value: float):
-        """Set material_yield_strength."""
+        """Set material yield strength."""
         self._material_yield_strength = value
 
     @property
     def name(self) -> str:
-        """Name of material."""
+        """Name of the material."""
         return self._name
 
     @name.setter
@@ -522,18 +522,18 @@ class AdditiveMaterial:
 
     @nucleation_constant_bulk.setter
     def nucleation_constant_bulk(self, value: float):
-        """Set nucleation_constant_bulk."""
+        """Set nucleation constant bulk."""
         self._nucleation_constant_bulk = value
 
     @property
     def nucleation_constant_interface(self) -> float:
-        """Controls the heterogeneous nucleation rate (on existing solid
-        interfaces) during solidification (1/m/K^2)."""
+        """Heterogeneous nucleation rate (on existing solid interfaces) during
+        solidification (1/m/K^2)."""
         return self._nucleation_constant_interface
 
     @nucleation_constant_interface.setter
     def nucleation_constant_interface(self, value: float):
-        """Set nucleation_constant_interface."""
+        """Set nucleation constant interface."""
         self._nucleation_constant_interface = value
 
     @property
@@ -543,7 +543,7 @@ class AdditiveMaterial:
 
     @penetration_depth_maximum.setter
     def penetration_depth_maximum(self, value: float):
-        """Set penetration_depth_maximum."""
+        """Set penetration depth maximum."""
         self._penetration_depth_maximum = value
 
     @property
@@ -553,7 +553,7 @@ class AdditiveMaterial:
 
     @penetration_depth_minimum.setter
     def penetration_depth_minimum(self, value: float):
-        """Set penetration_depth_minimum."""
+        """Set penetration depth minimum."""
         self._penetration_depth_minimum = value
 
     @property
@@ -563,7 +563,7 @@ class AdditiveMaterial:
 
     @penetration_depth_powder_coefficient_a.setter
     def penetration_depth_powder_coefficient_a(self, value: float):
-        """Set penetration_depth_powder_coefficient_a."""
+        """Set penetration depth powder coefficient a."""
         self._penetration_depth_powder_coefficient_a = value
 
     @property
@@ -573,7 +573,7 @@ class AdditiveMaterial:
 
     @penetration_depth_powder_coefficient_b.setter
     def penetration_depth_powder_coefficient_b(self, value: float):
-        """Set penetration_depth_powder_coefficient_b."""
+        """Set penetration depth powder coefficient b."""
         self._penetration_depth_powder_coefficient_b = value
 
     @property
@@ -583,7 +583,7 @@ class AdditiveMaterial:
 
     @penetration_depth_solid_coefficient_a.setter
     def penetration_depth_solid_coefficient_a(self, value: float):
-        """Set penetration_depth_solid_coefficient_a."""
+        """Set penetration depth solid coefficient a."""
         self._penetration_depth_solid_coefficient_a = value
 
     @property
@@ -593,7 +593,7 @@ class AdditiveMaterial:
 
     @penetration_depth_solid_coefficient_b.setter
     def penetration_depth_solid_coefficient_b(self, value: float):
-        """Set penetration_depth_solid_coefficient_b."""
+        """Set penetration_depth solid coefficient b."""
         self._penetration_depth_solid_coefficient_b = value
 
     @property
@@ -603,7 +603,7 @@ class AdditiveMaterial:
 
     @poisson_ratio.setter
     def poisson_ratio(self, value: float):
-        """Set poisson_ratio."""
+        """Set Poisson ratio."""
         self._poisson_ratio = value
 
     @property
@@ -613,7 +613,7 @@ class AdditiveMaterial:
 
     @powder_packing_density.setter
     def powder_packing_density(self, value: float):
-        """Set powder_packing_density."""
+        """Set powder packing density."""
         self._powder_packing_density = value
 
     @property
@@ -624,7 +624,7 @@ class AdditiveMaterial:
 
     @purging_gas_convection_coefficient.setter
     def purging_gas_convection_coefficient(self, value: float):
-        """Set purging_gas_convection_coefficient."""
+        """Set purging gas convection coefficient."""
         self._purging_gas_convection_coefficient = value
 
     @property
@@ -634,7 +634,7 @@ class AdditiveMaterial:
 
     @solid_density_at_room_temperature.setter
     def solid_density_at_room_temperature(self, value: float):
-        """Set solid_density_at_room_temperature."""
+        """Set solid density at room temperature."""
         self._solid_density_at_room_temperature = value
 
     @property
@@ -645,7 +645,7 @@ class AdditiveMaterial:
 
     @solid_specific_heat_at_room_temperature.setter
     def solid_specific_heat_at_room_temperature(self, value: float):
-        """Set solid_specific_heat_at_room_temperature."""
+        """Set solid specific heat at room temperature."""
         self._solid_specific_heat_at_room_temperature = value
 
     @property
@@ -656,18 +656,18 @@ class AdditiveMaterial:
 
     @solid_thermal_conductivity_at_room_temperature.setter
     def solid_thermal_conductivity_at_room_temperature(self, value: float):
-        """Set solid_thermal_conductivity_at_room_temperature."""
+        """Set solid thermal conductivity at_room temperature."""
         self._solid_thermal_conductivity_at_room_temperature = value
 
     @property
     def solidus_temperature(self) -> float:
-        """Maximum temperature at which the material is completely solid
-        (K)."""
+        """Maximum temperature (K) at which the material is completely
+        solid."""
         return self._solidus_temperature
 
     @solidus_temperature.setter
     def solidus_temperature(self, value: float):
-        """Set solidus_temperature."""
+        """Set solidus temperature."""
         self._solidus_temperature = value
 
     @property
@@ -677,18 +677,18 @@ class AdditiveMaterial:
 
     @strain_scaling_factor.setter
     def strain_scaling_factor(self, value: float):
-        """Set strain_scaling_factor."""
+        """Set strain scaling factor."""
         self._strain_scaling_factor = value
 
     @property
     def support_yield_strength_ratio(self) -> float:
-        """Factor to reduce the yield strength and elastic modulus of support
-        material."""
+        """Factor to reduce the yield strength and elastic modulus of the
+        support material."""
         return self._support_yield_strength_ratio
 
     @support_yield_strength_ratio.setter
     def support_yield_strength_ratio(self, value: float):
-        """Set support_yield_strength_ratio."""
+        """Set support yield strength ratio."""
         self._support_yield_strength_ratio = value
 
     @property
@@ -698,28 +698,28 @@ class AdditiveMaterial:
 
     @thermal_expansion_coefficient.setter
     def thermal_expansion_coefficient(self, value: float):
-        """Set thermal_expansion_coefficient."""
+        """Set thermal expansion coefficient."""
         self._thermal_expansion_coefficient = value
 
     @property
     def vaporization_temperature(self) -> float:
-        """Temperature at which material has completely changed from liquid to
-        vapor (K)."""
+        """Temperature (K) at which the material has completely changed from
+        liquid to vapor."""
         return self._vaporization_temperature
 
     @vaporization_temperature.setter
     def vaporization_temperature(self, value: float):
-        """Set vaporization_temperature (K)."""
+        """Set vaporization temperature (K)."""
         self._vaporization_temperature = value
 
     @property
     def characteristic_width_data(self) -> list[CharacteristicWidthDataPoint]:
-        """List of :class:`CharacteristicWidthDataPoint`."""
+        """List of characteristic width data points."""
         return self._characteristic_width_data
 
     @characteristic_width_data.setter
     def characteristic_width_data(self, value: list[CharacteristicWidthDataPoint]):
-        """Set characteristic_width_data."""
+        """Set characteristic width data."""
         if not isinstance(value, collections.abc.Sequence):
             raise TypeError(
                 "Invalid object type, {}, passed to characteristic_width_data()".format(type(value))
@@ -728,12 +728,12 @@ class AdditiveMaterial:
 
     @property
     def thermal_properties_data(self) -> list[ThermalPropertiesDataPoint]:
-        """List of :class:`ThermalPropertiesDataPoint`."""
+        """List of thermal properties data points."""
         return self._thermal_properties_data
 
     @thermal_properties_data.setter
     def thermal_properties_data(self, value: list[ThermalPropertiesDataPoint]):
-        """Set thermal_properties_data."""
+        """Set thermal properties data."""
         if not isinstance(value, collections.abc.Sequence):
             raise TypeError(
                 "Invalid object type, {}, passed to thermal_properties_data()".format(type(value))
@@ -742,8 +742,8 @@ class AdditiveMaterial:
 
     @staticmethod
     def _from_material_message(msg: MaterialMessage):
-        """Create an ``AdditiveMaterial`` object from a material message
-        received from the Additive service."""
+        """Create an additive material from a material message received from
+        the Additive service."""
         if not isinstance(msg, MaterialMessage):
             raise ValueError("Invalid message object passed to from_material_message()")
         material = AdditiveMaterial()
@@ -761,8 +761,8 @@ class AdditiveMaterial:
         return material
 
     def _to_material_message(self) -> MaterialMessage:
-        """Create a material message from this ``AdditiveMaterial`` to send to
-        the Additive service."""
+        """Create a material message from the additive material to send to the
+        Additive service."""
         msg = MaterialMessage()
         for p in self.__dict__:
             if p != "_characteristic_width_data" and p != "_thermal_properties_data":
@@ -776,7 +776,7 @@ class AdditiveMaterial:
         return msg
 
     def _load_parameters(self, parameters_file: str):
-        """Load material parameters from a json file."""
+        """Load material parameters from a JSON file."""
         with open(parameters_file, "r") as f:
             data = json.load(f)
         self.name = data["name"]
@@ -790,7 +790,7 @@ class AdditiveMaterial:
                 setattr(self, name, parameters[p])
 
     def _load_thermal_properties(self, thermal_lookup_file: str):
-        """Load thermal properties from a csv file."""
+        """Load thermal properties from a CSV file."""
         with open(thermal_lookup_file, "r") as f:
             reader = csv.reader(f)
             self.thermal_properties_data.clear()
@@ -809,7 +809,7 @@ class AdditiveMaterial:
                 )
 
     def _load_characteristic_width(self, cw_lookup_file: str):
-        """Load characteristic width values from a csv file."""
+        """Load characteristic width values from a CSV file."""
         with open(cw_lookup_file, "r") as f:
             reader = csv.reader(f)
             self.characteristic_width_data.clear()

@@ -7,6 +7,8 @@ from tqdm import tqdm
 
 
 class ProgressLogger:
+    """Provides for progress logging."""
+
     def __init__(self, name: str = None) -> None:
         self._log = logging.getLogger(name)
         self._last_percent_complete = 0

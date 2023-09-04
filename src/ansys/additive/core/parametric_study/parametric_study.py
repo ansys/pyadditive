@@ -32,7 +32,7 @@ pn.extension("tabulator")
 
 
 class ParametricStudy:
-    """Data storage and utility methods for a parametric study."""
+    """Provides data storage and utility methods for a parametric study."""
 
     def __init__(self, project_name: str):
         pn.extension()
@@ -51,11 +51,12 @@ class ParametricStudy:
         )
 
     def data_frame(self) -> pd.DataFrame:
-        """Return a copy of the internal parametric study :class:`DataFrame
-        <pandas.DataFrame>`.
+        """Return a copy of the internal data frame for the parametric study.
 
-        See :class:`ColumnNames` for the column names used in the returned ``DataFrame``.
-        .. note:: Updating the returned ``DataFrame`` will not update the internal ``DataFrame``.
+        For the column names used in the returned data frame, see the `:class:`ColumnNames` class.
+
+        .. note::
+           Updating the returned data frame does not update the internal data frame.
         """
         return self._data_frame.copy()
 
@@ -71,27 +72,28 @@ class ParametricStudy:
         ``SimulationStatus.PENDING`` in the ``ColumnNames.STATUS`` column.
         Execution order is determined by the values in the
         ``ColumnNames.PRIORITY`` column. Lower values are interpreted as having
-        higher priority and will be run first.
+        higher priority and are run first.
 
         Parameters
         ----------
-        additive: Additive
-            The :class:`Additive <ansys.additive.core.additive.Additive>` service connection
-            to use for running simulations.
-        type : Optional[List[SimulationType]], optional
-            The type of simulations to run, ``None`` indicates all types.
-        priority : Optional[int]
-            The priority of simulations to run, ``None`` indicates all priorities.
+        additive: :class:`Additive <ansys.additive.core.additive.Additive>`
+            Additive service connection to use for running simulations.
+        type : list[SimulationType], None
+            Type of simulations to run. The default is ``None``, in which case
+            all simulation types are run.
+        priority : int, None
+            Priority of simulations to run. The default is ``None``, in which
+            case all priorities are run.
         """
         # TODO: Add support for running multiple simulations in parallel
         # once issue https://github.com/ansys-internal/pyadditive/issues/9
         # is resolved
-        # workers : int, optional
-        #     The number of workers to use for multiprocessing. Each worker
-        #     will need to be able to check out an Additive license.
-        # threads : int, optional
-        #     The number of threads to use for each worker. Each thread will
-        #     check out an HPC license.
+        # workers : int, 1
+        #     Number of workers to use for multiprocessing. Each worker
+        #     must be able to check out an Additive license.
+        # threads : int, 4
+        #     Number of threads to use for each worker. Each thread must
+        #     be able to check out an HPC license.
         summaries = ParametricRunner.simulate(
             self.data_frame(),
             additive,
@@ -108,7 +110,7 @@ class ParametricStudy:
         Parameters
         ----------
         filename : str
-            Name of file to save the parametric study to.
+            Name of the file to save the parametric study to.
         """
         with open(filename, "wb") as f:
             dill.dump(self, f)
@@ -125,7 +127,7 @@ class ParametricStudy:
         Returns
         -------
         ParametricStudy
-            The loaded parametric study.
+            Loaded parametric study.
         """
         with open(filename, "rb") as f:
             return dill.load(f)
@@ -138,8 +140,8 @@ class ParametricStudy:
         """Add summaries of previously executed simulations to the parametric
         study.
 
-        This function adds new simulations to the parametric study. To update existing
-        simulations, use :meth:`update`.
+        This method adds new simulations to the parametric study. To update existing
+        simulations, use the :meth:`update` method.
 
         Parameters
         ----------
@@ -282,15 +284,15 @@ class ParametricStudy:
         Parameters
         ----------
         summary : Union[SingleBeadSummary, PorositySummary, MicrostructureSummary]
-            The summary to convert.
+            Summary of common simulation parameters to convert.
 
-        iteration : int, optional
-            The iteration number for this simulation.
+        iteration : int, DEFAULT_ITERATION
+            Iteration number for this simulation.
 
         Returns
         -------
         Dict[str, Any]
-            The dictionary of common parameters.
+            Dictionary of common simulation parameters.
         """
         return {
             ColumnNames.PROJECT: self._project_name,
@@ -328,39 +330,43 @@ class ParametricStudy:
         Parameters
         ----------
         material_name : str
-            The material name.
-        laser_powers : List[float]
+            Material name.
+        laser_powers : list[float]
             Laser powers (W) to use for single bead simulations.
-        scan_speeds : List[float]
+        scan_speeds : list[float]
             Scan speeds (m/s) to use for single bead simulations.
-        bead_length : float, optional
-            The length of the bead (m).
-        layer_thicknesses : Optional[List[float]]
+        bead_length : float, DEFAULT_BEAD_LENGTH
+            Length of the bead (m).
+        layer_thicknesses : list[float], None
             Layer thicknesses (m) to use for single bead simulations.
-            If None, ``MachineConstants.DEFAULT_LAYER_THICKNESS`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        heater_temperatures : Optional[List[float]]
+            The default is ``None``, in which case ``MachineConstants.DEFAULT_LAYER_THICKNESS``
+            is used. For more information, see the
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+            class.
+        heater_temperatures : List[float], None
             Heater temperatures (C) to use for single bead simulations.
-            If None, ``MachineConstants.DEFAULT_HEATER_TEMP`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        beam_diameters : Optional[List[float]]
+            The default is ``None``, in which case ``MachineConstants.DEFAULT_HEATER_TEMP``
+            is used. For more information, see the
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+            class.
+        beam_diameters : List[float], None
             Beam diameters (m) to use for single bead simulations.
-            If None, ``MachineConstants.DEFAULT_BEAM_DIAMETER`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        min_area_energy_density : Optional[float]
-            The minimum area energy density (J/m^2) to use for single bead simulations.
-            Parameter combinations with an area energy density below this value will
-            not be included.
-            Area energy density is defined as laser power / (layer thickness * scan speed).
-        max_area_energy_density : Optional[float]
-            The maximum area energy density (J/m^2) to use for single bead simulations.
-            Parameter combinations with an area energy density above this value will
-            not be included.
-            Area energy density is defined as laser power / (layer thickness * scan speed).
-        iteration : int, optional
-            The iteration number for this set of simulations.
-        priority : int, optional
-            The priority for this set of simulations.
+            The default is ``None``, in which case``MachineConstants.DEFAULT_BEAM_DIAMETER``
+            is used. For more information, see the
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+            class.
+        min_area_energy_density : float, None
+            Minimum area energy density (J/m^2) to use for single bead simulations.
+            Parameter combinations with an area energy density below this value are
+            not included. Area energy density is defined as laser power / (layer thickness * scan speed).
+        max_area_energy_density : float, None
+            Maximum area energy density (J/m^2) to use for single bead simulations.
+            Parameter combinations with an area energy density above this value are
+            not included. Area energy density is defined as laser power / (layer thickness * scan speed).
+        iteration : int, DEFAULT_ITERATION
+            Iteration number for this set of simulations.
+        priority : int, DEFAULT_PRIORITY
+            Priority for this set of simulations.
         """
         lt = (
             layer_thicknesses
@@ -459,73 +465,79 @@ class ParametricStudy:
         Parameters
         ----------
         material_name : str
-            The material name.
-        laser_powers : List[float]
+            Material name.
+        laser_powers : list[float]
             Laser powers (W) to use for porosity simulations.
-        scan_speeds : List[float]
+        scan_speeds : list[float]
             Scan speeds (m/s) to use for porosity simulations.
-        size_x : float, optional
-            The size (m) of the porosity sample in the x direction.
+        size_x : float, DEFAULT_SAMPLE_SIZE
+            Size (m) of the porosity sample in the x direction.
             Valid values are between 0.001 and 0.01.
-        size_y : float, optional
-            The size (m) of the porosity sample in the y direction.
+        size_y : float, DEFAULT_SAMPLE_SIZE
+            Size (m) of the porosity sample in the y direction.
             Valid values are between 0.001 and 0.01.
-        size_z : float, optional
-            The size (m) of the porosity sample in the z direction.
+        size_z : float, DEFAULT_SAMPLE_SIZE
+            Size (m) of the porosity sample in the z direction.
             Valid values are between 0.001 and 0.01.
-        layer_thicknesses : Optional[List[float]]
+        layer_thicknesses : list[float], None
             Layer thicknesses (m) to use for porosity simulations.
-            If None, ``MachineConstants.DEFAULT_LAYER_THICKNESS`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        heater_temperatures : Optional[List[float]]
+            The default is ``None``, in which case ``MachineConstants.DEFAULT_LAYER_THICKNESS``
+            is used. For more information, see the
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+            class.
+        heater_temperatures : list[float], None
             Heater temperatures (C) to use for porosity simulations.
-            If None, ``MachineConstants.DEFAULT_HEATER_TEMP`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        beam_diameters : Optional[List[float]]
+            The default is ``None``, in which case ``MachineConstants.DEFAULT_HEATER_TEMP``
+            is used. For more information, see the
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+            class.
+        beam_diameters : list[float], None
             Beam diameters (m) to use for porosity simulations.
-            If None, ``MachineConstants.DEFAULT_BEAM_DIAMETER`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        start_angles : Optional[List[float]]
+            The default is ``None``, in which case ``MachineConstants.DEFAULT_BEAM_DIAMETER``
+            is used. For more information, see the
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+            class.
+        start_angles : list[float], None
             Scan angles (deg) for the first layer to use for porosity simulations.
-            If None, ``MachineConstants.DEFAULT_STARTING_LAYER_ANGLE`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        rotation_angles : Optional[List[float]]
+            The default is ``None``, in which case ``MachineConstants.DEFAULT_STARTING_LAYER_ANGLE``
+            is used. For more information, see the
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
+        rotation_angles : list[float], None
             Angles (deg) by which the scan direction is rotated with each layer
-            to use for porosity simulations.
-            If None, ``MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        hatch_spacings : Optional[List[float]]
-            Hatch spacings (m) to use for porosity simulations.
-            If None, ``MachineConstants.DEFAULT_HATCH_SPACING`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        stripe_widths : Optional[List[float]]
-            Stripe widths (m) to use for porosity simulations.
-            If None, ``MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        min_energy_density : Optional[float]
-            The minimum energy density (J/m^3) to use for porosity simulations.
-            Parameter combinations with an area energy density below this value will
-            not be included.
-            Area energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
-        max_energy_density : Optional[float]
-            The maximum energy density (J/m^3) to use for porosity simulations.
-            Parameter combinations with an area energy density above this value will
-            not be included.
-            Energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
-        min_build_rate : Optional[float]
-            The minimum build rate (m^3/s) to use for porosity simulations.
-            Parameter combinations with a build rate below this value will
-            not be included.
-            Build rate is defined as layer thickness * scan speed * hatch spacing.
-        max_build_rate : Optional[float]
-            The maximum build rate (m^3/s) to use for porosity simulations.
-            Parameter combinations with a build rate above this value will
-            not be included.
-            Build rate is defined as layer thickness * scan speed * hatch spacing.
-        iteration : int, optional
-            The iteration number for this set of simulations.
-        priority : int, optional
-            The priority for this set of simulations.
+            to use for porosity simulations. The default is ``None``, in which
+            case ``MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE`` is used. For more
+            information, see the :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
+            class.
+        hatch_spacings : list[float], None
+            Hatch spacings (m) to use for porosity simulations. The default is ``None``,
+            in which case ``MachineConstants.DEFAULT_HATCH_SPACING`` is used. For more
+            information, see the :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
+            class.
+        stripe_widths : list[float], None
+            Stripe widths (m) to use for porosity simulations. The default is ``None``, in
+            which case ``MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH`` is used. For more
+            information, see the :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
+            class.
+        min_energy_density : float, None
+            Minimum energy density (J/m^3) to use for porosity simulations. Parameter combinations
+            with an area energy density below this value are not included. Area energy density is
+            defined as laser power / (layer thickness * scan speed * hatch spacing).
+        max_energy_density : float, None
+            Maximum energy density (J/m^3) to use for porosity simulations. Parameter combinations
+            with an area energy density above this value are not included. Energy density is defined
+            as laser power / (layer thickness * scan speed * hatch spacing).
+        min_build_rate : float, None
+            Minimum build rate (m^3/s) to use for porosity simulations. Parameter combinations
+            with a build rate below this value are not included. Build rate is defined as
+            layer thickness * scan speed * hatch spacing.
+        max_build_rate : float, None
+            Maximum build rate (m^3/s) to use for porosity simulations. Parameter combinations
+            with a build rate above this value are not included. Build rate is defined as
+            layer thickness * scan speed * hatch spacing.
+        iteration : int, DEFAULT_ITERATION
+            Iteration number for this set of simulations.
+        priority : int, DEFAULT_PRIORITY
+            Priority for this set of simulations.
         """
         lt = (
             layer_thicknesses
@@ -673,48 +685,57 @@ class ParametricStudy:
         Parameters
         ----------
         material_name : str
-            The material name.
-        laser_powers : List[float]
+            Material name.
+        laser_powers : list[float]
             Laser powers (W) to use for microstructure simulations.
-        scan_speeds : List[float]
+        scan_speeds : list[float]
             Scan speeds (m/s) to use for microstructure simulations.
-        min_x : float, optional
-            The minimum x coordinate (m) of the microstructure sample.
-        min_y : float, optional
-            The minimum y coordinate (m) of the microstructure sample.
-        min_z : float, optional
-            The minimum z coordinate (m) of the microstructure sample.
-        size_x : float, optional
-            The size (m) of the microstructure sample in the x direction.
+        min_x : float, DEFAULT_POSITION_COORDINATE
+            Minimum x coordinate (m) of the microstructure sample.
+        min_y : float, DEFAULT_POSITION_COORDINATE
+            Minimum y coordinate (m) of the microstructure sample.
+        min_z : float, DEFAULT_POSITION_COORDINATE
+            Minimum z coordinate (m) of the microstructure sample.
+        size_x : float, DEFAULT_SAMPLE_SIZE
+            Size (m) of the microstructure sample in the x direction.
             Valid values are between 0.001 and 0.01.
-        size_y : float, optional
-            The size (m) of the microstructure sample in the y direction.
+        size_y : float, DEFAULT_SAMPLE_SIZE
+            Size (m) of the microstructure sample in the y direction.
             Valid values are between 0.001 and 0.01.
-        size_z : float, optional
-            The size (m) of the microstructure sample in the z direction.
+        size_z : float, DEFAULT_SAMPLE_SIZE
+            Size (m) of the microstructure sample in the z direction.
             Valid values are between 0.001 and 0.01.
-        sensor_dimension : float, optional
-            The sensor dimension (m) to use for microstructure simulations.
-            Valid values are between 0.0001 and 0.001.
-            ``size_x`` and ``size_y`` must be greater than ``sensor_dimension`` by 0.0005.
-            ``size_z`` must be greater than ``sensor_dimension`` by 0.001.
-        layer_thicknesses : Optional[List[float]]
+        sensor_dimension : float, DEFAULT_SENSOR_DIMENSION
+            Sensor dimension (m) to use for microstructure simulations.
+            Valid values are between 0.0001 and 0.001. The values for the
+            ``size_x`` and ``size_y`` parameters must be greater than the
+            ``sensor_dimension`` parameter by 0.0005. The value for the
+            ``size_z`` parameter must be greater than ``sensor_dimension``
+            parameter by 0.001.
+        layer_thicknesses : list[float], None
             Layer thicknesses (m) to use for microstructure simulations.
-            If None, ``MachineConstants.DEFAULT_LAYER_THICKNESS`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        heater_temperatures : Optional[List[float]]
+            The default is ``None``, in which case
+            ``MachineConstants.DEFAULT_LAYER_THICKNESS`` is used.
+            For more information, see the
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+            class.
+        heater_temperatures : list[float], None
             Heater temperatures (C) to use for microstructure simulations.
-            If None, ``MachineConstants.DEFAULT_HEATER_TEMP`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        beam_diameters : Optional[List[float]]
-            Beam diameters (m) to use for microstructure simulations.
-            If None, ``MachineConstants.DEFAULT_BEAM_DIAMETER`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        start_angles : Optional[List[float]]
+            The default is ``None``, in which case
+            ``MachineConstants.DEFAULT_HEATER_TEMP`` is used.
+            For more information, see the
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
+        beam_diameters : list[float], None
+            Beam diameters (m) to use for microstructure simulations. The default is
+            ``None``, in which case ``MachineConstants.DEFAULT_BEAM_DIAMETER`` is used.
+            For more information, see the
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
+        start_angles : list[float], None
             Scan angles (deg) for the first layer to use for microstructure simulations.
-            If None, ``MachineConstants.DEFAULT_STARTING_LAYER_ANGLE`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        rotation_angles : Optional[List[float]]
+            The default is ``None``, in which case ``MachineConstants.DEFAULT_STARTING_LAYER_ANGLE``
+            is used. For more information, see the
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
+        rotation_angles : List[float], None
             Angles (deg) by which the scan direction is rotated with each layer
             to use for microstructure simulations.
             If None, ``MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE`` is used.
@@ -949,12 +970,12 @@ class ParametricStudy:
         """Update the results of simulations in the parametric study.
 
         This method updates values for existing simulations in the parametric study. To add
-        completed simulations, use :meth:`add_summaries` instead.
+        completed simulations, use the :meth:`add_summaries` method instead.
 
         Parameters
         ----------
-        summaries : List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary, SimulationError]]
-            The list of simulation summaries to use for updating the parametric study.
+        summaries : list[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary, SimulationError]]
+            List of simulation summaries to use for updating the parametric study.
         """
         for summary in summaries:
             if isinstance(summary, SingleBeadSummary):
@@ -1041,14 +1062,14 @@ class ParametricStudy:
 
         Parameters
         ----------
-        inputs : List[Union[SingleBeadInput, PorosityInput, MicrostructureInput]]
-            The list of simulation inputs to add to the parametric study.
+        inputs : list[Union[SingleBeadInput, PorosityInput, MicrostructureInput]]
+            List of simulation inputs to add to the parametric study.
 
-        iteration : int
-            The iteration number for the simulation inputs.
+        iteration : int, DEFAULT_ITERATION
+            Iteration number for the simulation inputs.
 
-        priority : int
-            The priority for the simulations.
+        priority : int, DEFAULT_PRIORITY
+            Priority for the simulations.
         """
         for input in inputs:
             dict = {}
@@ -1106,7 +1127,7 @@ class ParametricStudy:
         Parameters
         ----------
         ids : Union[str, List[str]]
-            Single or list of the ID field values for the rows to remove.
+            One or more ID field values for the rows to remove.
         """
         if isinstance(ids, str):
             ids = [ids]
@@ -1119,10 +1140,10 @@ class ParametricStudy:
         Parameters
         ----------
         index : Union[int, List[int]]
-            The ID or list of IDs of the simulations to update.
+            One or more IDs of the simulations to update.
 
         status : SimulationStatus
-            The status to use for the simulations.
+            Status for the simulations.
         """
         if isinstance(ids, str):
             ids = [ids]
@@ -1135,10 +1156,10 @@ class ParametricStudy:
         Parameters
         ----------
         index : Union[int, List[int]]
-            The ID or list of IDs of the simulations to update.
+            One or more IDs of the simulations to update.
 
         priority : int
-            The priority to use for the simulations.
+            Priority for the simulations.
         """
         if isinstance(ids, str):
             ids = [ids]
@@ -1151,10 +1172,10 @@ class ParametricStudy:
         Parameters
         ----------
         index : Union[int, List[int]]
-            The ID or list of IDs of the simulations to update.
+            One or more IDs of the simulations to update.
 
         iteration : int
-            The iteration to use for the simulations.
+            Iteration for the simulations.
         """
         if isinstance(ids, str):
             ids = [ids]
@@ -1167,15 +1188,16 @@ class ParametricStudy:
         Parameters
         ----------
         prefix : str
-            The prefix to use for the ID.
+            Prefix for the ID.
         id: str
-            The ID to use if it is unique. ``id`` will be used as a prefix if
-            it is not unique.
+            ID to use if it is unique. ``id`` is used as the prefix if
+            the ID is not unique.
 
         Returns
         -------
         str
-            A unique ID. If ``id`` is unique, it will be returned. Otherwise,
+            Unique ID. If ``id`` is unique, it is returned. Otherwise,
+            it is used as a prefix for a unique ID.
         """
 
         if id is not None and not self._data_frame[ColumnNames.ID].str.match(f"{id}").any():

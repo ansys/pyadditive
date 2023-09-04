@@ -8,7 +8,7 @@ from ansys.additive.core.thermal_history import ThermalHistoryInput
 
 
 class SimulationType:
-    """Simulation types."""
+    """Provides simulation types."""
 
     #: Single bead simulation.
     SINGLE_BEAD = "SingleBead"
@@ -32,7 +32,7 @@ class SimulationStatus:
 
 
 class SimulationError:
-    """Container for simulation errors."""
+    """Provides simulation errors."""
 
     def __init__(
         self,
@@ -51,5 +51,5 @@ class SimulationError:
 
     @property
     def message(self) -> str:
-        """Simulation error message."""
+        """Provides simulation error message."""
         return self._message
