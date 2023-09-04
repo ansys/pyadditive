@@ -6,7 +6,7 @@ import os
 from ansys.api.additive.v0.additive_simulation_pb2 import DownloadFileRequest
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 
-from ansys.additive.progress_logger import Progress, ProgressLogger, ProgressState
+from ansys.additive.core.progress_logger import Progress, ProgressLogger, ProgressState
 
 
 def download_file(

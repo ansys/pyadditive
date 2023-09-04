@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import panel as pn
 
-from ansys.additive import (
+from ansys.additive.core import (
     Additive,
     AdditiveMachine,
     AdditiveMaterial,
@@ -22,7 +22,7 @@ from ansys.additive import (
     SingleBeadInput,
     SingleBeadSummary,
 )
-import ansys.additive.misc as misc
+import ansys.additive.core.misc as misc
 
 from .constants import DEFAULT_ITERATION, DEFAULT_PRIORITY, ColumnNames
 from .parametric_runner import ParametricRunner
@@ -76,8 +76,8 @@ class ParametricStudy:
 
         Parameters
         ----------
-        additive: :class:`Additive <ansys.additive.additive.Additive>`
-            Additive service to use for running simulations.
+        additive: :class:`Additive <ansys.additive.core.additive.Additive>`
+            Additive service connection to use for running simulations.
         type : list[SimulationType], None
             Type of simulations to run. The default is ``None``, in which case
             all simulation types are run.
@@ -341,19 +341,19 @@ class ParametricStudy:
             Layer thicknesses (m) to use for single bead simulations.
             The default is ``None``, in which case ``MachineConstants.DEFAULT_LAYER_THICKNESS``
             is used. For more information, see the
-            :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
             class.
         heater_temperatures : List[float], None
             Heater temperatures (C) to use for single bead simulations.
             The default is ``None``, in which case ``MachineConstants.DEFAULT_HEATER_TEMP``
             is used. For more information, see the
-            :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
             class.
         beam_diameters : List[float], None
             Beam diameters (m) to use for single bead simulations.
             The default is ``None``, in which case``MachineConstants.DEFAULT_BEAM_DIAMETER``
             is used. For more information, see the
-            :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
             class.
         min_area_energy_density : float, None
             Minimum area energy density (J/m^2) to use for single bead simulations.
@@ -483,25 +483,25 @@ class ParametricStudy:
             Layer thicknesses (m) to use for porosity simulations.
             The default is ``None``, in which case ``MachineConstants.DEFAULT_LAYER_THICKNESS``
             is used. For more information, see the
-            :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
             class.
         heater_temperatures : list[float], None
             Heater temperatures (C) to use for porosity simulations.
             The default is ``None``, in which case ``MachineConstants.DEFAULT_HEATER_TEMP``
             is used. For more information, see the
-            :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
             class.
         beam_diameters : list[float], None
             Beam diameters (m) to use for porosity simulations.
             The default is ``None``, in which case ``MachineConstants.DEFAULT_BEAM_DIAMETER``
             is used. For more information, see the
-            :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
             class.
         start_angles : list[float], None
             Scan angles (deg) for the first layer to use for porosity simulations.
             The default is ``None``, in which case ``MachineConstants.DEFAULT_STARTING_LAYER_ANGLE``
             is used. For more information, see the
-            :class:`MachineConstants <ansys.additive.machine.MachineConstants>` class.
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
         rotation_angles : list[float], None
             Angles (deg) by which the scan direction is rotated with each layer
             to use for porosity simulations. The default is ``None``, in which
@@ -717,98 +717,90 @@ class ParametricStudy:
             The default is ``None``, in which case
             ``MachineConstants.DEFAULT_LAYER_THICKNESS`` is used.
             For more information, see the
-            :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
             class.
         heater_temperatures : list[float], None
             Heater temperatures (C) to use for microstructure simulations.
             The default is ``None``, in which case
             ``MachineConstants.DEFAULT_HEATER_TEMP`` is used.
             For more information, see the
-            :class:`MachineConstants <ansys.additive.machine.MachineConstants>` class.
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
         beam_diameters : list[float], None
             Beam diameters (m) to use for microstructure simulations. The default is
             ``None``, in which case ``MachineConstants.DEFAULT_BEAM_DIAMETER`` is used.
             For more information, see the
-            :class:`MachineConstants <ansys.additive.machine.MachineConstants>` class.
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
         start_angles : list[float], None
             Scan angles (deg) for the first layer to use for microstructure simulations.
             The default is ``None``, in which case ``MachineConstants.DEFAULT_STARTING_LAYER_ANGLE``
             is used. For more information, see the
-            :class:`MachineConstants <ansys.additive.machine.MachineConstants>` class.
+            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
         rotation_angles : List[float], None
             Angles (deg) by which the scan direction is rotated with each layer
-            to use for microstructure simulations. The default is ``None``, in
-            which case ``MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE`` is used.
-            For more information, see the
-            :class:`MachineConstants <ansys.additive.machine.MachineConstants>` class.
-        hatch_spacings : list[float], None
-            Hatch spacings (m) to use for microstructure simulations. The default is
-            ``None``, in which case ``MachineConstants.DEFAULT_HATCH_SPACING`` is used.
-            For more information, see the
-            :class:`MachineConstants <ansys.additive.machine.MachineConstants>` class.
-        stripe_widths : list[float], None
-            Stripe widths (m) to use for microstructure simulations. The default is
-            ``None``, in which case``MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH`` is used.
-            For more information, see the :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
-            class.
-        min_energy_density : float, None
-            Minimum energy density (J/m^3) to use for microstructure simulations. Parameter combinations
-            with an area energy density below this value are not included. Area energy density is defined as
-            laser power / (layer thickness * scan speed * hatch spacing).
-        max_energy_density : float
-            Xaximum energy density (J/m^3) to use for microstructure simulations. Parameter combinations
-            with an area energy density above this value are not included. Energy density is defined as
-            laser power / (layer thickness * scan speed * hatch spacing).
-        min_build_rate : float, None
-            Minimum build rate (m^3/s) to use for microstructure simulations. Parameter combinations
-            with a build rate below this value are not included. Build rate is defined as
-            layer thickness * scan speed * hatch spacing.
-        max_build_rate : float, None
-            Maximum build rate (m^3/s) to use for microstructure simulations. Parameter combinations
-            with a build rate above this value are not included. Build rate is defined as
-            layer thickness * scan speed * hatch spacing.
-        cooling_rate : float, None
-            Cooling rate (K/s) to use for microstructure simulations. The default is ``None``,
-            in which case if the values are also ``None`` for the ``thermal_gradient``,
-            ``melt_pool_width``, and  ``melt_pool_depth`` parameters, the cooling rate is
-            calculated. If the value for the ``cooling_rate`` parameter is ``None`` and any of
-            the other three parameters have a value other than ``None``, the cooling rate is set
-            to ``MicrostructureInput.DEFAULT_COOLING_RATE``. For more information, see the
-            :class:`MicrostructureInput <ansys.additive.machine.MicrostructureInput>` class.
-        thermal_gradient : float, None
-            Thermal gradient (K/m) to use for microstructure simulations. The default is
-            ``None``, in which case if the values are also ``None`` for the ``cooling_rate``,
-            ``melt_pool_width``, and ``melt_pool_depth`` parameters, the thermal gradient is
-            calculated. If the value for the ``thermal_gradient`` parameter is ``None`` and any
-            of the other three parameters have a value other than ``None``, the thermal gradient
-            is set to ``MicrostructureInput.DEFAULT_THERMAL_GRADIENT``. For more information,
-            see the :class:`MicrostructureInput <ansys.additive.machine.MicrostructureInput>`
-            class.
-        melt_pool_width : float, None
-            Melt pool width (m) to use for microstructure simulations. The default is
-            ``None``, in which case if the values are also ``None`` for the ``cooling_rate``,
-            ``thermal_gradient``, and ``melt_pool_depth`` parameters, the melt pool width
-            is calculated. If the value for the ``melt_pool_width`` parameter is ``None`` and
-            any of the other three parameters have a value other than ``None``, the melt pool
-            width is set to ``MicrostructureInput.DEFAULT_MELT_POOL_WIDTH``. For more information,
-            see the :class:`MicrostructureInput <ansys.additive.machine.MicrostructureInput>` class.
-        melt_pool_depth : float, None
-            Melt pool depth (m) to use for microstructure simulations. The default is
-            ``None``, in which case if the values are also ``None`` for the ``cooling_rate``,
-            ``thermal_gradient``, and ``melt_pool_width`` parameters, melt pool depth is
-            calculated. If the value for the ``melt_pool_depth`` parameter is ``None`` and any
-            of the other three parameters have value other than ``None``, the melt pool depth
-            is set to ``MicrostructureInput.DEFAULT_MELT_POOL_DEPTH``. For more information,
-            see the :class:`MicrostructureInput <ansys.additive.machine.MicrostructureInput>`
-            class.
-        random_seed : int, None
-            Random seed to use for microstructure simulations. The default is ``None``,
-            in which case a random seed is automatically generated. Valid values are between
-            1 and 2^31 - 1.
-        iteration : int, DEFAULT_ITERATION
-            Iteration number for this set of simulations.
-        priority : int, DEFAULT_PRIORITY
-            Priority for this set of simulations.
+            to use for microstructure simulations.
+            If None, ``MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE`` is used.
+            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
+        hatch_spacings : Optional[List[float]]
+            Hatch spacings (m) to use for microstructure simulations.
+            If None, ``MachineConstants.DEFAULT_HATCH_SPACING`` is used.
+            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
+        stripe_widths : Optional[List[float]]
+            Stripe widths (m) to use for microstructure simulations.
+            If None, ``MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH`` is used.
+            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
+        min_energy_density : Optional[float]
+            The minimum energy density (J/m^3) to use for microstructure simulations.
+            Parameter combinations with an area energy density below this value will
+            not be included.
+            Area energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
+        max_energy_density : Optional[float]
+            The maximum energy density (J/m^3) to use for microstructure simulations.
+            Parameter combinations with an area energy density above this value will
+            not be included.
+            Energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
+        min_build_rate : Optional[float]
+            The minimum build rate (m^3/s) to use for microstructure simulations.
+            Parameter combinations with a build rate below this value will
+            not be included.
+            Build rate is defined as layer thickness * scan speed * hatch spacing.
+        max_build_rate : Optional[float]
+            The maximum build rate (m^3/s) to use for microstructure simulations.
+            Parameter combinations with a build rate above this value will
+            not be included.
+            Build rate is defined as layer thickness * scan speed * hatch spacing.
+        cooling_rate : Optional[float]
+            The cooling rate (K/s) to use for microstructure simulations.
+            If None, and ``thermal_gradient``, ``melt_pool_width``, and ``melt_pool_depth``
+            are None, it will be calculated. If None and any of the other three parameters
+            are not None, it will be set to ``MicrostructureInput.DEFAULT_COOLING_RATE``.
+            See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
+        thermal_gradient : Optional[float]
+            The thermal gradient (K/m) to use for microstructure simulations.
+            If None, and ``cooling_rate``, ``melt_pool_width``, and ``melt_pool_depth``
+            are None, it will be calculated. If None and any of the other three parameters
+            are not None, it will be set to ``MicrostructureInput.DEFAULT_THERMAL_GRADIENT``.
+            See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
+        melt_pool_width : Optional[float]
+            The melt pool width (m) to use for microstructure simulations.
+            If None, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_depth``
+            are None, it will be calculated. If None and any of the other three parameters
+            are not None, it will be set to ``MicrostructureInput.DEFAULT_MELT_POOL_WIDTH``.
+            See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
+        melt_pool_depth : Optional[float]
+            The melt pool depth (m) to use for microstructure simulations.
+            If None, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_width``
+            are None, it will be calculated. If None and any of the other three parameters
+            are not None, it will be set to ``MicrostructureInput.DEFAULT_MELT_POOL_DEPTH``.
+            See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
+        random_seed : Optional[int]
+            The random seed to use for microstructure simulations. If None,
+            an automatically generated random seed will be used.
+            Valid values are between 1 and 2^31 - 1.
+        iteration : int, optional
+            The iteration number for this set of simulations.
+
+        priority : int, optional
+            The priority for this set of simulations.
         """
         lt = (
             layer_thicknesses

@@ -1,5 +1,5 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
-"""PyAdditive is a Python client for the Ansys Additive service."""
+"""Python client for the Ansys Additive service."""
 import os
 
 import platformdirs
@@ -24,35 +24,35 @@ EXAMPLES_PATH = os.path.join(USER_DATA_PATH, "examples")
 if not os.path.exists(EXAMPLES_PATH):  # pragma: no cover
     os.makedirs(EXAMPLES_PATH)
 
-from ansys.additive.additive import (
+from ansys.additive.core.additive import (
     DEFAULT_ADDITIVE_SERVICE_PORT,
     LOCALHOST,
     MAX_MESSAGE_LENGTH,
     Additive,
 )
-from ansys.additive.geometry_file import BuildFile, MachineType, StlFile
-from ansys.additive.machine import AdditiveMachine, MachineConstants
-from ansys.additive.material import (
+from ansys.additive.core.geometry_file import BuildFile, MachineType, StlFile
+from ansys.additive.core.machine import AdditiveMachine, MachineConstants
+from ansys.additive.core.material import (
     AdditiveMaterial,
     CharacteristicWidthDataPoint,
     ThermalPropertiesDataPoint,
 )
-from ansys.additive.material_tuning import MaterialTuningInput, MaterialTuningSummary
-from ansys.additive.microstructure import (
+from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
+from ansys.additive.core.microstructure import (
     CircleEquivalenceColumnNames,
     MicrostructureInput,
     MicrostructureSummary,
 )
-from ansys.additive.porosity import PorosityInput, PorositySummary
-from ansys.additive.server_utils import find_open_port, launch_server
-from ansys.additive.simulation import SimulationError, SimulationStatus, SimulationType
-from ansys.additive.single_bead import (
+from ansys.additive.core.porosity import PorosityInput, PorositySummary
+from ansys.additive.core.server_utils import find_open_port, launch_server
+from ansys.additive.core.simulation import SimulationError, SimulationStatus, SimulationType
+from ansys.additive.core.single_bead import (
     MeltPool,
     MeltPoolColumnNames,
     SingleBeadInput,
     SingleBeadSummary,
 )
-from ansys.additive.thermal_history import (
+from ansys.additive.core.thermal_history import (
     CoaxialAverageSensorInputs,
     Range,
     ThermalHistoryInput,

@@ -1,10 +1,10 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 from typing import Union
 
-from ansys.additive.microstructure import MicrostructureInput
-from ansys.additive.porosity import PorosityInput
-from ansys.additive.single_bead import SingleBeadInput
-from ansys.additive.thermal_history import ThermalHistoryInput
+from ansys.additive.core.microstructure import MicrostructureInput
+from ansys.additive.core.porosity import PorosityInput
+from ansys.additive.core.single_bead import SingleBeadInput
+from ansys.additive.core.thermal_history import ThermalHistoryInput
 
 
 class SimulationType:

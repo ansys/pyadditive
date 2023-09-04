@@ -45,7 +45,7 @@ service with this code:
 
 .. code:: pycon
 
-   >>> import ansys.additive as pyadditive
+   >>> import ansys.additive.core as pyadditive
    >>> additive = pyadditive.Additive()
 
 Example notebooks are available in `Examples <https://additive.docs.pyansys.com/version/dev/examples/gallery_examples/index.html>`_.
@@ -75,7 +75,7 @@ Next, connect to the Additive service with this code:
 
 .. code:: pycon
 
-   >>> import ansys.additive as pyadditive
+   >>> import ansys.additive.core as pyadditive
    >>> additive = pyadditive.Additive()
 
 Installation
@@ -124,7 +124,7 @@ Then, run this command to install PyAdditive:
 
 .. code:: bash
 
-   python -m pip install ansys-additive
+   python -m pip install ansys-additive-core
 
 .. caution::
 
@@ -141,7 +141,7 @@ Then, run this command to install PyAdditive:
     .. code:: bash
 
         # On Linux
-        pip install ansys-additive --index-url=https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
+        pip install ansys-additive-core --index-url=https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
 
         # On Windows
         pip install ansys-additive --index-url=https://%PYANSYS_PYPI_PRIVATE_PAT%@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
@@ -224,8 +224,8 @@ For example, on Linux with Python 3.8, unzip and install the wheelhouse archive 
 
 .. code:: bash
 
-    unzip ansys-additive-v0.1.dev0-wheelhouse-Linux-3.8.zip wheelhouse
-    pip install ansys-additive -f wheelhouse --no-index --upgrade --ignore-installed
+    unzip ansys-additive-core-v0.1.dev0-wheelhouse-Linux-3.8.zip wheelhouse
+    pip install ansys-additive-core -f wheelhouse --no-index --upgrade --ignore-installed
 
 If you're on Windows with Python 3.9, unzip the wheelhouse archive to a wheelhouse directory and
 then install using the preceding command.

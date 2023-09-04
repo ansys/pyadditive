@@ -21,7 +21,7 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # import numpy as np
 # import pyvista as pv
 
-# import ansys.additive as pyadditive
+# import ansys.additive.core as pyadditive
 
 # additive = pyadditive.Additive()
 

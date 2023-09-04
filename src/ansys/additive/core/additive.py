@@ -19,18 +19,18 @@ import ansys.platform.instancemanagement as pypim
 from google.protobuf.empty_pb2 import Empty
 import grpc
 
-from ansys.additive import USER_DATA_PATH, __version__
-from ansys.additive.download import download_file
-from ansys.additive.material import AdditiveMaterial
-from ansys.additive.material_tuning import MaterialTuningInput, MaterialTuningSummary
-from ansys.additive.microstructure import MicrostructureSummary
-import ansys.additive.misc as misc
-from ansys.additive.porosity import PorositySummary
-from ansys.additive.progress_logger import ProgressLogger, ProgressState
-from ansys.additive.server_utils import find_open_port, launch_server
-from ansys.additive.simulation import SimulationError
-from ansys.additive.single_bead import SingleBeadSummary
-from ansys.additive.thermal_history import ThermalHistoryInput, ThermalHistorySummary
+from ansys.additive.core import USER_DATA_PATH, __version__
+from ansys.additive.core.download import download_file
+from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
+from ansys.additive.core.microstructure import MicrostructureSummary
+import ansys.additive.core.misc as misc
+from ansys.additive.core.porosity import PorositySummary
+from ansys.additive.core.progress_logger import ProgressLogger, ProgressState
+from ansys.additive.core.server_utils import find_open_port, launch_server
+from ansys.additive.core.simulation import SimulationError
+from ansys.additive.core.single_bead import SingleBeadSummary
+from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHistorySummary
 
 MAX_MESSAGE_LENGTH = int(256 * 1024**2)
 DEFAULT_ADDITIVE_SERVICE_PORT = 50052

@@ -12,15 +12,15 @@ PyAdditive
    :target: https://docs.pyansys.com/
    :alt: PyAnsys
 
-.. |python| image:: https://img.shields.io/pypi/pyversions/ansys-additive?logo=pypi
-   :target: https://pypi.org/project/ansys-additive/
+.. |python| image:: https://img.shields.io/pypi/pyversions/ansys-additive-core?logo=pypi
+   :target: https://pypi.org/project/ansys-additive-core/
    :alt: Python
 
-.. |pypi| image:: https://img.shields.io/pypi/v/ansys-additive.svg?logo=python&logoColor=white
-   :target: https://pypi.org/project/ansys-additive
+.. |pypi| image:: https://img.shields.io/pypi/v/ansys-additive-core.svg?logo=python&logoColor=white
+   :target: https://pypi.org/project/ansys-additive-core
    :alt: PyPI
 
-.. |codecov| image:: https://codecov.io/gh/pyansys/ansys-additive/branch/main/graph/badge.svg
+.. |codecov| image:: https://codecov.io/gh/pyansys/ansys-additive-core/branch/main/graph/badge.svg
    :target: https://codecov.io/gh/pyansys/pyadditive
    :alt: Codecov
 
@@ -46,7 +46,7 @@ is made public, you must use a private PyPI repository. For more information, se
 
 .. code:: bash
 
-    pip install ansys-additive --index-url=https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
+    pip install ansys-additive-core --index-url=https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
 
 To install the latest development version, run these commands:
 
@@ -63,7 +63,7 @@ This code shows how to import PyAdditive and use some basic capabilities:
 
 .. code:: python
 
-   import ansys.additive as pyadditive
+   import ansys.additive.core as pyadditive
 
    additive = pyadditive.Additive()
 

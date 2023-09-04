@@ -1,7 +1,7 @@
 # (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 import pytest
 
-from ansys.additive import misc
+from ansys.additive.core import misc
 
 
 def test_valid_ip_returns_without_error_for_valid_values():

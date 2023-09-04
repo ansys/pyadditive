@@ -3,8 +3,8 @@ from ansys.api.additive.v0.additive_domain_pb2 import PorosityInput as PorosityI
 from ansys.api.additive.v0.additive_domain_pb2 import PorosityResult
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
-from ansys.additive.machine import AdditiveMachine
-from ansys.additive.material import AdditiveMaterial
+from ansys.additive.core.machine import AdditiveMachine
+from ansys.additive.core.material import AdditiveMaterial
 
 
 class PorosityInput:

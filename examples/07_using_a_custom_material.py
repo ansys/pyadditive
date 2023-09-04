@@ -18,7 +18,7 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # -----------------------------------
 # Perform the required import and connect to the Additive service.
 
-import ansys.additive as pyadditive
+import ansys.additive.core as pyadditive
 
 additive = pyadditive.Additive()
 
@@ -28,7 +28,7 @@ additive = pyadditive.Additive()
 # Download an example of a custom material. Typically, you would have the
 # files defining your custom material stored locally.
 
-import ansys.additive.examples as examples
+import ansys.additive.core.examples as examples
 
 material_files = examples.download_custom_material()
 

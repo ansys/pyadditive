@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 
 import pandas as pd
 
-from ansys.additive import (
+from ansys.additive.core import (
     AdditiveMachine,
     AdditiveMaterial,
     MachineConstants,
@@ -12,10 +12,10 @@ from ansys.additive import (
     SimulationType,
     SingleBeadInput,
 )
-from ansys.additive.additive import Additive
-import ansys.additive.parametric_study as ps
-from ansys.additive.parametric_study.constants import ColumnNames
-from ansys.additive.parametric_study.parametric_runner import ParametricRunner as pr
+from ansys.additive.core.additive import Additive
+import ansys.additive.core.parametric_study as ps
+from ansys.additive.core.parametric_study.constants import ColumnNames
+from ansys.additive.core.parametric_study.parametric_runner import ParametricRunner as pr
 
 
 def test_create_machine_assigns_all_values():

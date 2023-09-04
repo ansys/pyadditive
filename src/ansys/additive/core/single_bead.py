@@ -4,8 +4,8 @@ from ansys.api.additive.v0.additive_domain_pb2 import SingleBeadInput as SingleB
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 from pandas import DataFrame
 
-from ansys.additive.machine import AdditiveMachine
-from ansys.additive.material import AdditiveMaterial
+from ansys.additive.core.machine import AdditiveMachine
+from ansys.additive.core.material import AdditiveMaterial
 
 
 class SingleBeadInput:

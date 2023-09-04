@@ -14,7 +14,7 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # -----------------------------------
 # Perform the required import and connect to the Additive service.
 
-import ansys.additive as pyadditive
+import ansys.additive.core as pyadditive
 
 additive = pyadditive.Additive()
 
@@ -22,7 +22,7 @@ additive = pyadditive.Additive()
 # Select material
 # ---------------
 # Select a material. You can use the
-# :meth:`get_materials_list() <ansys.additive.additive.Additive.get_materials_list>`
+# :meth:`get_materials_list() <ansys.additive.core.additive.Additive.get_materials_list>`
 # method to obtain a list of available materials.
 
 print(additive.get_materials_list())
@@ -30,7 +30,7 @@ print(additive.get_materials_list())
 ###############################################################################
 # You can obtain the parameters for a single material by passing a name
 # from the materials list to the
-# :meth:`get_material() <ansys.additive.additive.Additive.get_material>`
+# :meth:`get_material() <ansys.additive.core.additive.Additive.get_material>`
 # method.
 
 material = additive.get_material("17-4PH")
@@ -114,7 +114,7 @@ from matplotlib.ticker import PercentFormatter
 import pandas as pd
 import pyvista as pv
 
-from ansys.additive import CircleEquivalenceColumnNames
+from ansys.additive.core import CircleEquivalenceColumnNames
 
 ###############################################################################
 # Plot grain 2D visualizations

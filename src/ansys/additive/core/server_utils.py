@@ -4,7 +4,7 @@ import os
 import subprocess
 import time
 
-from ansys.additive import USER_DATA_PATH
+from ansys.additive.core import USER_DATA_PATH
 
 DEFAULT_ANSYS_VERSION = "241"
 ADDITIVE_SERVER_EXE_NAME = "Additive.Grpc"

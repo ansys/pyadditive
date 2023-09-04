@@ -18,7 +18,7 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # -----------------------------------
 # Perform the required import and connect to the Additive service.
 
-import ansys.additive as pyadditive
+import ansys.additive.core as pyadditive
 
 additive = pyadditive.Additive()
 
@@ -37,7 +37,7 @@ additive = pyadditive.Additive()
 #
 # Download example input files.
 
-import ansys.additive.examples as examples
+import ansys.additive.core.examples as examples
 
 input_files = examples.download_material_tuning_input()
 

@@ -11,8 +11,8 @@ from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
 import numpy as np
 import pandas as pd
 
-from ansys.additive.machine import AdditiveMachine
-from ansys.additive.material import AdditiveMaterial
+from ansys.additive.core.machine import AdditiveMachine
+from ansys.additive.core.material import AdditiveMaterial
 
 
 class MicrostructureInput:
@@ -366,7 +366,7 @@ class MicrostructureInput:
 
         This is the width of the melt pool measured at the top of the powder layer,
         which corresponds to the ``WIDTH`` value in
-        :class:`MeltPoolColumnNames <ansys.additive.single_bead.MeltPoolColumnNames>`
+        :class:`MeltPoolColumnNames <ansys.additive.core.single_bead.MeltPoolColumnNames>`
         class.
 
         Valid values are from 7.5e-5 to 8e-4.
@@ -386,7 +386,7 @@ class MicrostructureInput:
 
         This is the depth of the melt pool as measured from the top of the powder layer,
         which corresponds to the ``DEPTH``value in the
-        :class:`MeltPoolColumnNames <ansys.additive.single_bead.MeltPoolColumnNames>`
+        :class:`MeltPoolColumnNames <ansys.additive.core.single_bead.MeltPoolColumnNames>`
         class.
 
         Valid values are from 1.5e-5 to 8e-4.

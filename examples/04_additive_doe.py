@@ -18,7 +18,7 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # import matplotlib.pyplot as plt
 # import numpy as np
 
-# import ansys.additive as pyadditive
+# import ansys.additive.core as pyadditive
 
 # additive = pyadditive.Additive()
 

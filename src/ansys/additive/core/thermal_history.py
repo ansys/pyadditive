@@ -10,9 +10,9 @@ from ansys.api.additive.v0.additive_domain_pb2 import Range as RangeMessage
 from ansys.api.additive.v0.additive_domain_pb2 import StlFile as StlFileMessage
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
-from ansys.additive.geometry_file import BuildFile, StlFile
-from ansys.additive.machine import AdditiveMachine
-from ansys.additive.material import AdditiveMaterial
+from ansys.additive.core.geometry_file import BuildFile, StlFile
+from ansys.additive.core.machine import AdditiveMachine
+from ansys.additive.core.material import AdditiveMaterial
 
 
 class Range:

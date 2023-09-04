@@ -16,8 +16,8 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 
 import matplotlib.pyplot as plt
 
-import ansys.additive as pyadditive
-from ansys.additive import MeltPoolColumnNames
+import ansys.additive.core as pyadditive
+from ansys.additive.core import MeltPoolColumnNames
 
 additive = pyadditive.Additive()
 
@@ -25,7 +25,7 @@ additive = pyadditive.Additive()
 # Select material
 # ---------------
 # Select a material. You can use the
-# :meth:`get_materials_list() <ansys.additive.additive.Additive.get_materials_list>`
+# :meth:`get_materials_list() <ansys.additive.core.additive.Additive.get_materials_list>`
 # method to obtain a list of available materials.
 
 print(additive.get_materials_list())
@@ -33,7 +33,7 @@ print(additive.get_materials_list())
 ###############################################################################
 # You can obtain the parameters for a single material by passing a name
 # from the materials list to the
-# :meth:`get_material() <ansys.additive.additive.Additive.get_material>`
+# :meth:`get_material() <ansys.additive.core.additive.Additive.get_material>`
 # method.
 
 material = additive.get_material("17-4PH")
@@ -42,7 +42,7 @@ material = additive.get_material("17-4PH")
 # Specify machine parameters
 # --------------------------
 # Specify machine parameters by first creating an
-# :class:`AdditiveMachine <ansys.additive.machine.AdditiveMachine>` object
+# :class:`AdditiveMachine <from ansys.additive.core.machine.AdditiveMachine>` object
 # then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
@@ -62,7 +62,7 @@ machine.laser_power = 300  # W
 ###############################################################################
 # Specify inputs for single bead simulation
 # -----------------------------------------
-# Create a :class:`SingleBeadInput <ansys.additive.single_bead.SingleBeadInput>`
+# Create a :class:`SingleBeadInput <ansys.additive.core.single_bead.SingleBeadInput>`
 # object containing the desired simulation parameters.
 
 input = pyadditive.SingleBeadInput(
@@ -72,11 +72,11 @@ input = pyadditive.SingleBeadInput(
 ###############################################################################
 # Run simulation
 # --------------
-# Use the :meth:`simulate() <ansys.additive.additive.Additive.simulate>`
+# Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>`
 # method of the ``additive`` object to run the simulation. The returned object is a
-# :class:`SingleBeadSummary <ansys.additive.single_bead.SingleBeadSummary>`
+# :class:`SingleBeadSummary <ansys.additive.core.single_bead.SingleBeadSummary>`
 # class containing the input and a
-# :class:`MeltPool <ansys.additive.single_bead.MeltPool>` object.
+# :class:`MeltPool <ansys.additive.core.single_bead.MeltPool>` object.
 
 summary = additive.simulate(input)
 
@@ -84,7 +84,7 @@ summary = additive.simulate(input)
 # Plot melt pool statistics
 # -------------------------
 # Obtain a :class:`Pandas DataFrame <pandas.DataFrame>` containing the melt pool
-# statistics by using the :meth:`data_frame() <ansys.additive.single_bead.MeltPool.data_frame>`
+# statistics by using the :meth:`data_frame() <ansys.additive.core.single_bead.MeltPool.data_frame>`
 # property of the ``melt_pool`` attribute of the ``summary`` object. Use the
 # :meth:`plot() <pandas.DataFrame.plot>` method to plot the melt
 # pool dimensions as a function of bead length.
