@@ -24,8 +24,8 @@ PyAdditive
    :target: https://codecov.io/gh/pyansys/pyadditive
    :alt: Codecov
 
-.. |GH-CI| image:: https://github.com/ansys-internal/pyadditive/actions/workflows/ci_cd.yml/badge.svg
-   :target: https://github.com/ansys-internal/pyadditive/actions/workflows/ci_cd.yml
+.. |GH-CI| image:: https://github.com/ansys/pyadditive/actions/workflows/ci_cd.yml/badge.svg
+   :target: https://github.com/ansys/pyadditive/actions/workflows/ci_cd.yml
    :alt: GH-CI
 
 .. |MIT| image:: https://img.shields.io/badge/License-MIT-yellow.svg
@@ -52,7 +52,7 @@ To install the latest development version, run these commands:
 
 .. code:: bash
 
-   git clone https://github.com/ansys-internal/pyadditive
+   git clone https://github.com/ansys/pyadditive
    cd pyadditive
    pip install -e .
 
@@ -86,9 +86,9 @@ In the upper right corner of the documentation's title bar, there is an option f
 viewing the documentation for the latest stable release to viewing the documentation for the
 development version or previously released versions.
 
-On the `PyAdditive Issues <https://github.com/ansys-internal/pyadditive/issues>`_ page,
+On the `PyAdditive Issues <https://github.com/ansys/pyadditive/issues>`_ page,
 you can create issues to report bugs and request new features. On the `PyAdditive Discussions
-<https://github.com/ansys-internal/pyadditive/discussions>`_ page or the `Discussions <https://discuss.ansys.com/>`_
+<https://github.com/ansys/pyadditive/discussions>`_ page or the `Discussions <https://discuss.ansys.com/>`_
 page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback.
 
 To reach the project support team, email `pyansys.core@ansys.com <mailto:pyansys.core@ansys.com>`_.

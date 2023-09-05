@@ -162,7 +162,7 @@ To install PyAdditive in developer mode, perform these steps:
 
    .. code:: bash
 
-      git clone https://github.com/ansys-internal/pyadditive
+      git clone https://github.com/ansys/pyadditive
       cd pyadditive
 
 #. Create a clean Python virtual environment and activate it:
@@ -213,7 +213,7 @@ Install in offline mode
 
 If you lack an internet connection on your installation machine (or you do not have access to the
 private Ansys PyPI packages repository), you should install PyAdditive by downloading the wheelhouse
-archive from the `Releases <https://github.com/ansys-internal/pyadditive/releases>`_ page for your
+archive from the `Releases <https://github.com/ansys/pyadditive/releases>`_ page for your
 corresponding machine architecture.
 
 Each wheelhouse archive contains all the Python wheels necessary to install PyAdditive from scratch on Windows,

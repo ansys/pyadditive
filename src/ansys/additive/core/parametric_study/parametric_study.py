@@ -86,7 +86,7 @@ class ParametricStudy:
             case all priorities are run.
         """
         # TODO: Add support for running multiple simulations in parallel
-        # once issue https://github.com/ansys-internal/pyadditive/issues/9
+        # once issue https://github.com/ansys/pyadditive/issues/9
         # is resolved
         # workers : int, 1
         #     Number of workers to use for multiprocessing. Each worker

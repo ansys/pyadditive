@@ -4,12 +4,12 @@
 
 ### New features
 
-* Microstructure circle equivalence data now returned as Pandas DataFrame [#2](https://github.com/ansys-internal/pyadditive/issues/2).
-* Added ParametricStudy [#2](https://github.com/ansys-internal/pyadditive/issues/2).
+* Microstructure circle equivalence data now returned as Pandas DataFrame [#2](https://github.com/ansys/pyadditive/issues/2).
+* Added ParametricStudy [#2](https://github.com/ansys/pyadditive/issues/2).
 
 ### Doc improvements
 
-* Added link checks during doc builds [#19](https://github.com/ansys-internal/pyadditive/pull/19)
+* Added link checks during doc builds [#19](https://github.com/ansys/pyadditive/pull/19)
 
 ### Contributors
 
@@ -23,11 +23,11 @@
 
 ### New features
 
-* Added about endpoint, [#17](https://github.com/ansys-internal/pyadditive/pull/17)
+* Added about endpoint, [#17](https://github.com/ansys/pyadditive/pull/17)
 
 ### Doc improvements
 
-* Added required project files, [#13](https://github.com/ansys-internal/pyadditive/issues/13)
+* Added required project files, [#13](https://github.com/ansys/pyadditive/issues/13)
 
 ### Contributors
 
