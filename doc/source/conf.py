@@ -40,7 +40,7 @@ release = version = __version__
 cname = os.getenv("DOCUMENTATION_CNAME", "nocname.com")
 
 REPOSITORY_NAME = "pyadditive"
-USERNAME = "ansys-internal"
+USERNAME = "ansys"
 BRANCH = "main"
 GALLERY_EXAMPLES_PATH = "examples/gallery_examples"
 EXAMPLES_ROOT = "examples"
@@ -56,7 +56,7 @@ html_show_sourcelink = False
 
 # specify the location of your github repo
 html_theme_options = {
-    "github_url": f"https://github.com/ansys-internal/{REPOSITORY_NAME}",
+    "github_url": f"https://github.com/ansys/{REPOSITORY_NAME}",
     "show_prev_next": False,
     "show_breadcrumbs": True,
     "collapse_navigation": True,
@@ -260,7 +260,7 @@ jinja_contexts = {
 
 linkcheck_ignore = [
     r"https://pypi.org/project/ansys-additive-core.*",  # TODO: remove once pyadditive is published
-    r"https://github.com/ansys-internal/.*",  # TODO: remove once pyadditive is published
+    r"https://github.com/ansys/.*",  # TODO: remove once pyadditive is published
     r"https://ansyshelp.ansys.com/.*",
     r"https://ansysproducthelpqa.win.ansys.com/.*",
 ]

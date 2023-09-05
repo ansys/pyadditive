@@ -87,11 +87,11 @@ doc = [
 ]
 
 [project.urls]
-Source = "https://github.com/ansys-internal/pyadditive"
-Issues = "https://github.com/ansys-internal/pyadditive/issues"
+Source = "https://github.com/ansys/pyadditive"
+Issues = "https://github.com/ansys/pyadditive/issues"
 Documentation = "https://additive.docs.pyansys.com"
-Discussions = "https://github.com/ansys-internal/pyadditive/discussions"
-Releases = "https://github.com/ansys-internal/pyadditive/releases"
+Discussions = "https://github.com/ansys/pyadditive/discussions"
+Releases = "https://github.com/ansys/pyadditive/releases"
 
 [tool.flit.module]
 name = "ansys.additive.core"

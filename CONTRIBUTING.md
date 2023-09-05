@@ -11,7 +11,7 @@ The following contribution information is specific to PyAdditive.
 To clone PyAdditive and install the dependencies for development, run:
 
 ```text
-    git clone https://github.com/ansys-internal/pyadditive
+    git clone https://github.com/ansys/pyadditive
     cd pyadditive
     python -m venv .venv
     source .venv/bin/activate # or .venv\Scripts\activate.bat on Windows
@@ -23,7 +23,7 @@ To clone PyAdditive and install the dependencies for development, run:
 
 Use the [PyAdditive Issues] page to submit questions, report bugs, and request new features.
 
-[PyAdditive Issues]: https://github.com/ansys-internal/pyadditive/issues
+[PyAdditive Issues]: https://github.com/ansys/pyadditive/issues
 
 ## Reading documentation
 
