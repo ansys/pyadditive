@@ -1,4 +1,3 @@
-# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 import argparse
 import codecs
 from datetime import date

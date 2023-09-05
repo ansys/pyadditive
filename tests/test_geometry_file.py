@@ -1,4 +1,3 @@
-# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 import os
 
 from ansys.api.additive.v0.additive_domain_pb2 import BuildFile as BuildFileMessage

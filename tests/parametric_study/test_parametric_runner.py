@@ -1,4 +1,3 @@
-# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 from unittest.mock import create_autospec
 
 import pandas as pd
