@@ -12,7 +12,7 @@ from google.protobuf.empty_pb2 import Empty
 import grpc
 import pytest
 
-from ansys.additive import (
+from ansys.additive.core import (
     MAX_MESSAGE_LENGTH,
     Additive,
     MicrostructureInput,
@@ -21,7 +21,7 @@ from ansys.additive import (
     ThermalHistoryInput,
     __version__,
 )
-import ansys.additive.additive
+import ansys.additive.core.additive
 
 
 def test_Additive_init_connects_with_defaults(monkeypatch):
@@ -33,8 +33,8 @@ def test_Additive_init_connects_with_defaults(monkeypatch):
         ],
     )
 
-    mock_launcher = create_autospec(ansys.additive.additive.launch_server, return_value=None)
-    monkeypatch.setattr(ansys.additive.additive, "launch_server", mock_launcher)
+    mock_launcher = create_autospec(ansys.additive.core.additive.launch_server, return_value=None)
+    monkeypatch.setattr(ansys.additive.core.additive, "launch_server", mock_launcher)
     mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=channel)
     monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
 
@@ -174,7 +174,7 @@ def test_simulate_list_of_inputs_with_duplicate_ids_raises_exception():
     ]
 
     # act, assert
-    with pytest.raises(ValueError, match='Duplicate simulation id "id" in input list'):
+    with pytest.raises(ValueError, match='Duplicate simulation ID "id" in input list'):
         additive.simulate(inputs)
 
 

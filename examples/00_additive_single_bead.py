@@ -1,43 +1,48 @@
+# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 """
-Single Bead Analysis
+Single bead analysis
 ====================
 
-This tutorial shows how you can use PyAdditive to determine
-meltpool characteristics for given material and machine
+This example shows how you can use PyAdditive to determine
+melt pool characteristics for a given material and machine
 parameter combinations.
 
 Units are SI (m, kg, s, K) unless otherwise noted.
-
-First, connect to the Additive service.
 """
+###############################################################################
+# Perform required imports and connect
+# -----------------------------------
+# Perform the required imports and connect to the Additive service.
+
 import matplotlib.pyplot as plt
 
-import ansys.additive as pyadditive
-from ansys.additive import MeltPoolColumnNames
+import ansys.additive.core as pyadditive
+from ansys.additive.core import MeltPoolColumnNames
 
 additive = pyadditive.Additive()
 
 ###############################################################################
-# Select Material
+# Select material
 # ---------------
-# The next step is a to choose a material. A list of available materials can
-# be obtained using the
-# :meth:`get_materials_list() <ansys.additive.additive.Additive.get_materials_list>`
-# command.
+# Select a material. You can use the
+# :meth:`get_materials_list() <ansys.additive.core.additive.Additive.get_materials_list>`
+# method to obtain a list of available materials.
 
 print(additive.get_materials_list())
 
 ###############################################################################
-# Obtain the parameters for a single material by passing one of the names
-# from the materials list to
-# :meth:`get_material() <ansys.additive.additive.Additive.get_material>`.
+# You can obtain the parameters for a single material by passing a name
+# from the materials list to the
+# :meth:`get_material() <ansys.additive.core.additive.Additive.get_material>`
+# method.
+
 material = additive.get_material("17-4PH")
 
 ###############################################################################
-# Set Machine Parameters
-# ----------------------
+# Specify machine parameters
+# --------------------------
 # Specify machine parameters by first creating an
-# :class:`AdditiveMachine <ansys.additive.machine.AdditiveMachine>` object
+# :class:`AdditiveMachine <from ansys.additive.core.machine.AdditiveMachine>` object
 # then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
@@ -48,13 +53,16 @@ print(machine)
 
 ###############################################################################
 # Set laser power and scan speed
+# ------------------------------
+# Set the laser power and scan speed.
+
 machine.scan_speed = 1  # m/s
 machine.laser_power = 300  # W
 
 ###############################################################################
-# Specify Single Bead Simulation Inputs
-# -------------------------------------
-# Create a :class:`SingleBeadInput <ansys.additive.single_bead.SingleBeadInput>`
+# Specify inputs for single bead simulation
+# -----------------------------------------
+# Create a :class:`SingleBeadInput <ansys.additive.core.single_bead.SingleBeadInput>`
 # object containing the desired simulation parameters.
 
 input = pyadditive.SingleBeadInput(
@@ -62,24 +70,23 @@ input = pyadditive.SingleBeadInput(
 )
 
 ###############################################################################
-# Run Simulation
+# Run simulation
 # --------------
-# Use the :meth:`simulate() <ansys.additive.additive.Additive.simulate>`
+# Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>`
 # method of the ``additive`` object to run the simulation. The returned object is a
-# :class:`SingleBeadSummary <ansys.additive.single_bead.SingleBeadSummary>`
-# containing the input and a
-# :class:`MeltPool <ansys.additive.single_bead.MeltPool>` object.
+# :class:`SingleBeadSummary <ansys.additive.core.single_bead.SingleBeadSummary>`
+# class containing the input and a
+# :class:`MeltPool <ansys.additive.core.single_bead.MeltPool>` object.
 
 summary = additive.simulate(input)
 
 ###############################################################################
-# Plot Melt Pool Statistics
+# Plot melt pool statistics
 # -------------------------
-# A :class:`Pandas DataFrame <pandas.DataFrame>` containing the melt pool
-# statistics can be obtained using the
-# :meth:`data_frame() <ansys.additive.single_bead.MeltPool.data_frame>` property
-# of the ``melt_pool`` attribute of the ``summary`` object. The
-# :meth:`plot() <pandas.DataFrame.plot>` method can be used to plot the melt
+# Obtain a :class:`Pandas DataFrame <pandas.DataFrame>` containing the melt pool
+# statistics by using the :meth:`data_frame() <ansys.additive.core.single_bead.MeltPool.data_frame>`
+# property of the ``melt_pool`` attribute of the ``summary`` object. Use the
+# :meth:`plot() <pandas.DataFrame.plot>` method to plot the melt
 # pool dimensions as a function of bead length.
 
 df = summary.melt_pool.data_frame().multiply(1e6)  # convert from meters to microns
@@ -101,19 +108,20 @@ plt.show()
 
 
 ###############################################################################
-# List Melt Pool Statistics
+# List melt pool statistics
 # -------------------------
-# A table of the melt pool statistics can be shown by simply
-# typing the name of the data frame object and pressing enter.
-# Here we show only the first few rows using ``head()`` for brevity.
-# NOTE: If running this example as a python script, no output will be shown.
+# You can show a table of the melt pool statistics by typing the name of the
+# data frame object and pressing enter. For brevity, the following code
+# uses ``head()`` so that only the first few rows are shown.
 
 df.head()
 
+# .. note::
+#    If running this example as a Python script, no output is shown.
 ###############################################################################
-# Save Melt Pool Statistics
+# Save melt pool statistics
 # -------------------------
-# The melt pool statistics can be saved to a CSV file using the
+# Save the melt pool statistics to a CSV file using the
 # :meth:`to_csv() <pandas.DataFrame.to_csv>` method.
 
 df.to_csv("melt_pool.csv")

@@ -1,62 +1,73 @@
+# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 """
-Thermal History Analysis
+Thermal history analysis
 ========================
 
-This tutorial shows how you can use PyAdditive to determine
+This example shows how you can use PyAdditive to determine
 thermal history during a build using a simulated coaxial
 average sensor.
 
 Units are SI (m, kg, s, K) unless otherwise noted.
-
-First, connect to the Additive service.
 """
-import ansys.additive as pyadditive
+###############################################################################
+# Perform required import and connect
+# -----------------------------------
+# Perform the required import and connect to the Additive service.
+
+import ansys.additive.core as pyadditive
 
 additive = pyadditive.Additive()
 
 ###############################################################################
-# Model Selection
-# ---------------
-# The next step is a to specify a geometry model. Currently, PyAdditive supports
-# two types of geometry specifications, STL files and build files. A build file
-# in this context is a zip archive containing an STL file describing the
-# geometry, a machine instruction file and zero or more STL files describing
-# support structures. For details of the build file see <TBD>.
+# Select model
+# ------------
+# Select the geometry model. Currently, PyAdditive supports
+# two types of geometry specifications, STL files and build files. In
+# this context, a build file is a ZIP archive that contains an STL file describing the
+# geometry, a machine instruction file, and zero or more STL files describing
+# support structures. For more information on build files, see <TBD>.
 #
-# Example build and STL files can be downloaded by importing the examples
-# module as shown below.
+# You can download example build and STL files by importing the ``examples``
+# module.
 
-import ansys.additive.examples as examples
+import ansys.additive.core.examples as examples
 
-# Creating an ``StlFile`` object
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create ``StlFile`` object
+# ~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create an ``StlFile`` object.
 
 stl_name = examples.download_10mm_cube()
 stl_file = pyadditive.StlFile(stl_name)
 
-# Creating a ``BuildFile`` object
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create ``BuildFile`` object
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a ``BuildFile`` object.
 
 build_file_name = examples.download_small_wedge_slm_build_file()
 build_file = pyadditive.BuildFile(pyadditive.MachineType.SLM, build_file_name)
 
 ###############################################################################
-# Select Material
+# Select material
 # ---------------
-# The next step is a to choose a material. A list of available materials can
-# be obtained using the ``get_materials_list`` command.
+# Select a material. You can use the
+# :meth:`get_materials_list() <ansys.additive.additive.Additive.get_materials_list>`
+# method to obtain a list of available materials.
 
 print(additive.get_materials_list())
 
 ###############################################################################
-# Obtain the parameters for a single material using one of the names from the list.
+# You can obtain the parameters for a single material by passing a name
+# from the materials list to the
+# :meth:`get_material() <ansys.additive.additive.Additive.get_material>`
+# method.
+
 material = additive.get_material("17-4PH")
 
 ###############################################################################
-# Set Machine Parameters
+# Specify machine parameters
 # ----------------------
 # Specify machine parameters by first creating an ``AdditiveMachine`` object
-# then assigning the desired values. All values are in SI units (m, kg, s, K)
+# and then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
 machine = pyadditive.AdditiveMachine()
@@ -66,12 +77,15 @@ print(machine)
 
 ###############################################################################
 # Set laser power and scan speed
+# ------------------------------
+# Set the laser power and scan speed.
+
 machine.scan_speed = 1  # m/s
 machine.laser_power = 500  # W
 
 ###############################################################################
-# Specify Thermal History Simulation Inputs
-# -----------------------------------------
+# Specify inputs for thermal history simulation
+# ---------------------------------------------
 # Create a ``ThermalHistoryInput`` object containing the desired simulation
 # parameters. The ``ThermalHistoryInput`` object contains ``CoaxialAverageSensorInputs``.
 # ``CoaxialAverageSensorInputs`` consist of a sensor radius and one or more ``Range``
@@ -92,16 +106,16 @@ input = pyadditive.ThermalHistoryInput(
 )
 
 ###############################################################################
-# Run Simulation
+# Run simulation
 # --------------
 # Use the ``simulate`` method of the ``additive`` object to run the simulation.
 
 summary = additive.simulate(input)
 
 ###############################################################################
-# Plot Thermal History
+# Plot thermal history
 # --------------------
-# You can plot the thermal history using pyvista as shown below.
+# Plot the thermal history using PyVista.
 
 import glob
 import os

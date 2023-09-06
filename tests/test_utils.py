@@ -7,12 +7,11 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
     ThermalPropertiesDataPoint,
 )
 
-from ansys.additive.material import AdditiveMaterial
-from ansys.additive.single_bead import MeltPoolMessage
+from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.single_bead import MeltPoolMessage
 
 
 def get_test_material() -> AdditiveMaterial:
-
     return AdditiveMaterial(
         absorptivity_maximum=101,
         absorptivity_minimum=102,

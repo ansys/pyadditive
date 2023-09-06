@@ -9,7 +9,7 @@ import numpy as np
 import pyvista
 from sphinx_gallery.sorting import FileNameSortKey
 
-from ansys.additive import __version__
+from ansys.additive.core import __version__
 
 # Manage errors
 pyvista.set_error_output_file("errors.txt")
@@ -40,7 +40,7 @@ release = version = __version__
 cname = os.getenv("DOCUMENTATION_CNAME", "nocname.com")
 
 REPOSITORY_NAME = "pyadditive"
-USERNAME = "ansys-internal"
+USERNAME = "ansys"
 BRANCH = "main"
 GALLERY_EXAMPLES_PATH = "examples/gallery_examples"
 EXAMPLES_ROOT = "examples"
@@ -56,7 +56,7 @@ html_show_sourcelink = False
 
 # specify the location of your github repo
 html_theme_options = {
-    "github_url": f"https://github.com/ansys-internal/{REPOSITORY_NAME}",
+    "github_url": f"https://github.com/ansys/{REPOSITORY_NAME}",
     "show_prev_next": False,
     "show_breadcrumbs": True,
     "collapse_navigation": True,
@@ -136,7 +136,8 @@ numpydoc_validate = True
 numpydoc_validation_checks = {
     "GL06",  # Found unknown section
     "GL07",  # Sections are in the wrong order.
-    "GL08",  # The object does not have a docstring
+    # TODO: GL08 should be reactivated since it detects undocumented members
+    # "GL08",  # The object does not have a docstring
     "GL09",  # Deprecation warning should precede extended summary
     "GL10",  # reST directives {directives} must be followed by two colons
     "SS01",  # No summary found
@@ -188,7 +189,24 @@ copybutton_prompt_is_regexp = True
 # -- Declare the Jinja context -----------------------------------------------
 BUILD_API = True if os.environ.get("BUILD_API", "true") == "true" else False
 if not BUILD_API:
-    exclude_patterns.append("api")
+    exclude_patterns.append("autoapi")
+else:
+    # Configuration for Sphinx autoapi
+    extensions.append("autoapi.extension")
+    autoapi_type = "python"
+    autoapi_dirs = ["../../src/ansys"]
+    autoapi_options = [
+        "members",
+        "undoc-members",
+        "show-inheritance",
+        "show-module-summary",
+        "special-members",
+    ]
+    autoapi_template_dir = "_autoapi_templates"
+    suppress_warnings = ["autoapi.python_import_resolution"]
+    exclude_patterns.append("_autoapi_templates/index.rst")
+    autoapi_python_use_implicit_namespaces = True
+
 
 BUILD_EXAMPLES = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
 BUILD_EXAMPLES_LONG = True if os.environ.get("BUILD_EXAMPLES_LONG", "true") == "true" else False
@@ -225,7 +243,7 @@ if BUILD_EXAMPLES is True:
         # directory where function granular galleries are stored
         "backreferences_dir": None,
         # Modules for which function level galleries are created.
-        "doc_module": "ansys-additive",
+        "doc_module": "ansys-additive-core",
         "image_scrapers": ("pyvista", "matplotlib"),
         "ignore_pattern": r"\b(" + "|".join(map(re.escape, ignore_patterns)) + r")\b",
         "thumbnail_size": (350, 350),
@@ -241,8 +259,8 @@ jinja_contexts = {
 }
 
 linkcheck_ignore = [
-    r"https://pypi.org/project/ansys-additive.*",  # TODO: remove once pyadditive is published
-    r"https://github.com/ansys-internal/.*",
-    r"https://ansyshelp.ansys.com/.*",  # TODO: remove once pyadditive docs are updated
-    r"https://ansysproducthelpqa.win.ansys.com/.*",  # TODO: remove once pyadditive docs are updated
+    r"https://pypi.org/project/ansys-additive-core.*",  # TODO: remove once pyadditive is published
+    r"https://github.com/ansys/.*",  # TODO: remove once pyadditive is published
+    r"https://ansyshelp.ansys.com/.*",
+    r"https://ansysproducthelpqa.win.ansys.com/.*",
 ]

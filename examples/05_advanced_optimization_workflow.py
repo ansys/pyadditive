@@ -1,14 +1,19 @@
+# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 """
-Optimization Workflow Analysis
+Optimization workflow analysis
 ==============================
 
-This tutorial shows how you can use PyAdditive to perform machine
+This example shows how you can use PyAdditive to perform machine
 parameter optimization.
 
 Units are SI (m, kg, s, K) unless otherwise noted.
-
-First, connect to the Additive service.
 """
+
+###############################################################################
+# Perform required imports and connect
+# -----------------------------------
+# Perform the required imports and connect to the Additive service.
+
 # from matplotlib import colors
 # from matplotlib.colors import LinearSegmentedColormap as colorMap
 # import matplotlib.pyplot as plt
@@ -16,15 +21,15 @@ First, connect to the Additive service.
 # import numpy as np
 # import pyvista as pv
 
-# import ansys.additive as pyadditive
+# import ansys.additive.core as pyadditive
 
 # additive = pyadditive.Additive()
 
 # ###############################################################################
-# # Perform A Single Bead Evaluation
-# # ---------------------------------
-# # Here we simulate multiple single beads using various laser power
-# # and scan speed combinations.
+# Perform a single bead evaluation
+# --------------------------------
+# Simulate multiple single beads using various laser power
+# and scan speed combinations.
 
 # # Select a material to use for the evaluation
 # material = additive.get_material("17-4PH")
@@ -37,7 +42,7 @@ First, connect to the Additive service.
 # bead_length = 0.001
 
 # # Create a list of machines, one per power and scan speed combination.
-# # We use a comprehension to create the list.
+# # A comprehension is used here to create the list.
 # machines = [
 #     pyadditive.AdditiveMachine(laser_power=p, scan_speed=s)
 #     for p in initial_powers
@@ -56,17 +61,18 @@ First, connect to the Additive service.
 
 
 # ###############################################################################
-# # Run The Simulations
-# # ^^^^^^^^^^^^^^^^^^^
-# # The ``simulate`` method returns a list of summaries. In this case they are of
-# # type :class:`SingleBeadSummary`.
+# Run simulation
+# --------------
+# # Use the ``simulate`` method of the ``additive`` object to run the simulation.
+# The list of summaries returned here are of the :class:`SingleBeadSummary` type.
 
 # sb_summaries = additive.simulate(inputs)
 
 
 ###############################################################################
-# Plot Individual Meltpool Statistics
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# Plot melt pool statistics
+# -------------------------
+# Plot the indidivual melt pool statistics.
 
 # sb_summaries.sort(key=lambda s: (s.input.machine.laser_power, s.input.machine.scan_speed))
 # nrows = len(initial_powers)
@@ -94,12 +100,13 @@ First, connect to the Additive service.
 #         axs[r][c].set_title(title)
 
 # ###############################################################################
-# # Plot Meltpool Average Depth Over Width Verses Laser Power And Scan Speed
-# # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-# # Here we create a "watermelon" plot to visualize the desired range for laser
-# # power and scan speed. The criteria used is the melt pool average depth over
-# # width. The acceptable range is defined by ``dwMin`` and ``dwMax`` below. The
-# # combinations that fall in this range will be used in the porosity evaluation.
+# Plot melt pool average depth over width verses laser power and scan speed
+# -------------------------------------------------------------------------
+# Create a "watermelon" plot to visualize the desired range for laser
+# power and scan speed. The criteria used is the melt pool average depth over
+# width. The acceptable range is defined by ``dwMin`` and ``dwMax`` in the
+# following code. The combinations that fall in this range are used in the
+# porosity evaluation.
 
 # # Gather plot values
 # powers = []
@@ -145,15 +152,15 @@ First, connect to the Additive service.
 # ax.set_ylabel(f"Laser Power (W)")
 
 # ###############################################################################
-# # Perform A Porosity Evaluation
-# # -----------------------------
-# # Here we filter the results from the single bead simulations and combine them
-# # with various hatch spacing values to run porosity simulations. The filter
-# # criteria used is a range of average meltpool depth over width values. This range
-# # is defined by ``dwMin`` and ``dwMax`` above.
+# Perform a porosity evaluation
+# -----------------------------
+# Filter the results from the single bead simulations and combine them
+# with various hatch spacing values to run porosity simulations. The filter
+# criteria used is a range of average melt pool depth over width values. This range
+# is defined by ``dwMin`` and ``dwMax`` in the preceding code.
 
-# # Determine laser power and scan speed combinations of interest
-# # We narrow the range from what was used earlier only to reduce simulation time
+# # Determine laser power and scan speed combinations of interest.
+# # Narrow the range from what was used earlier only to reduce simulation time
 # dwMin = 0.45
 # dwMax = 0.55
 # ps_of_interest = []
@@ -171,7 +178,7 @@ First, connect to the Additive service.
 #     for h in hatch_spacings
 # ]
 
-# # Create a list of PorosityInputs, one per machine
+# # Create a list of porosity inputs, one per machine
 # inputs = []
 # for count, machine in enumerate(machines):
 #     inputs.append(
@@ -184,16 +191,15 @@ First, connect to the Additive service.
 #             size_z=0.001,
 #         )
 #     )
-
 # # Run the simulations
 # porosity_summaries = additive.simulate(inputs)
 
 # ###############################################################################
-# # Perform A Microstructure Evaluation
-# # -----------------------------------
-# # Here we filter the results of the porosity simulations based upon the solid
-# # ratio value. For results above this value we run microstructure simulations
-# # to determine if the resulting build has the desired grain properties.
+# Perform a microstructure evaluation
+# -----------------------------------
+# Filter the results of the porosity simulations based upon the solid
+# ratio value. For results above this value, run microstructure simulations
+# to determine if the resulting build has the desired grain properties.
 
 # # Specify the minimum acceptable solid ratio
 # min_solid_ratio = 0.99
@@ -227,10 +233,10 @@ First, connect to the Additive service.
 # micro_summaries = additive.simulate(inputs)
 
 # ###############################################################################
-# # Plot Grain 2D Visualtions
-# # ^^^^^^^^^^^^^^^^^^^^^^^^^
-# # For the plots that follow, we use only the first microstructure summary.
-# # Plotting the remaining summaries is similar.
+# Plot grain 2D visualtions
+# ^^^^^^^^^^^^^^^^^^^^^^^^^
+# The following code uses only the first microstructure summary for plots.
+# Plotting the remaining summaries is similar.
 
 # # Function to plot the planar data
 # def plot_microstructure(
@@ -268,7 +274,7 @@ First, connect to the Additive service.
 # xz = pv.read(summary.xz_vtk)
 # yz = pv.read(summary.yz_vtk)
 
-# # Create colormap to use with boundary plot
+# # Create color map to use with boundary plot
 # white_black_cmap = colorMap.from_list("whiteblack", ["white", "black"])
 
 # plot_microstructure(xy, xz, yz, "GrainBoundaries", white_black_cmap).show(title="Grain Boundaries")
@@ -276,8 +282,8 @@ First, connect to the Additive service.
 # plot_microstructure(xy, xz, yz, "GrainNumber", None).show(title="Grain Number")
 
 # ###############################################################################
-# # Plot Grain Statistics
-# # ^^^^^^^^^^^^^^^^^^^^^
+# Plot grain statistics
+# ^^^^^^^^^^^^^^^^^^^^^
 
 # # Function to simplify plotting grain statistics
 # def add_grain_statistics_to_figure(

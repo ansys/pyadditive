@@ -3,7 +3,11 @@
    Provide any documentation specific to your online documentation
    here.
 
+PyAdditive documentation  |version|
+===================================
+
 .. include:: ../../README.rst
+   :start-after: .. readme_start
 
 .. jinja:: main_toctree
 
@@ -13,7 +17,7 @@
 
        getting_started/index
        {% if build_api %}
-       api/index
+       autoapi/index
        {% endif %}
        {% if build_examples %}
        examples/gallery_examples/index

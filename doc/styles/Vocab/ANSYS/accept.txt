@@ -20,3 +20,6 @@ Makefile
 isort
 pandoc
 Ansys Lab
+subpackages
+single sign-on
+sign-on

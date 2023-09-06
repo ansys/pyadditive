@@ -1,42 +1,53 @@
+# (c) 2023 ANSYS, Inc. Unauthorized use, distribution, or duplication is prohibited.
 """
-Using A Custom Material
+Using a custom material
 =======================
 
-This tutorial shows how you can use a custom material in PyAdditive simulations.
-Background information and file formats can be found in `the Additive documentation
-<https://ansysproducthelpqa.win.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_science_BETA_material_tuning_tool.html>`_.
+This example shows how you can use a custom material in PyAdditive simulations.
+For background information and file formats, see
+`Material Tuning Tool (Beta) to Create User Defined Materials
+<https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_science_BETA_material_tuning_tool.html?q=material%20tuning%20tool>`_
+in the *Additive Manufacturing Beta Features* documentation.
+To prevent wasted time, before executing this example, carefully review
+the steps described in this PyAdditive documentation.
 
 Units are SI (m, kg, s, K) unless otherwise noted.
-
 """
-import ansys.additive as pyadditive
+###############################################################################
+# Perform required import and connect
+# -----------------------------------
+# Perform the required import and connect to the Additive service.
+
+import ansys.additive.core as pyadditive
 
 additive = pyadditive.Additive()
 
 ###############################################################################
-# Example Custom Material
-# -----------------------
-# Here we download an example custom material. Typically a user would have the
-# files defining their custom material stored locally.
-import ansys.additive.examples as examples
+# Download custom material
+# ------------------------
+# Download an example of a custom material. Typically, you would have the
+# files defining your custom material stored locally.
+
+import ansys.additive.core.examples as examples
 
 material_files = examples.download_custom_material()
 
 ###############################################################################
-# Load the Custom Material Files
-# ------------------------------
-# The ``load_material`` method on the ``additive`` object loads the files defining a custom material.
+# Load custom material files
+# --------------------------
+# Use the ``load_material`` method on the ``additive`` object to load the files
+# defining a custom material.
+
 custom_material = additive.load_material(
     parameters_file=material_files.material_parameters_file,
     thermal_lookup_file=material_files.thermal_properties_lookup_file,
     characteristic_width_lookup_file=material_files.characteristic_width_lookup_file,
 )
 
-
 ###############################################################################
-# Use the Custom Material in a Simulation
+# Use the custom material in a simulation
 # ---------------------------------------
-# Once the custom material has been loaded, it can be assigned to a simulation input
+# Once the custom material has been loaded, you can assign it to a simulation input
 # object.
 
 input = pyadditive.SingleBeadInput(

@@ -8,7 +8,7 @@ from unittest.mock import ANY, Mock, patch
 
 import pytest
 
-from ansys.additive.server_utils import DEFAULT_ANSYS_VERSION, find_open_port, launch_server
+from ansys.additive.core.server_utils import DEFAULT_ANSYS_VERSION, find_open_port, launch_server
 
 
 @patch("os.name", "unknown_os")

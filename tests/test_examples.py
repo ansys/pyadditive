@@ -2,8 +2,8 @@
 import os
 import shutil
 
-from ansys.additive import EXAMPLES_PATH
-import ansys.additive.examples as examples
+from ansys.additive.core import EXAMPLES_PATH
+import ansys.additive.core.examples as examples
 
 
 def _clean_examples_path():
