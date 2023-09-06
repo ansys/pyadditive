@@ -60,3 +60,5 @@ repos:
     rev: v0.1.2
     hooks:
       - id: add-license-headers
+        args:
+        - --loc=./
