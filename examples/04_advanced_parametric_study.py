@@ -63,8 +63,6 @@ print(study.file_name)
 # the Additive service. You can connect to the Additive service
 # and print a list of available materials prior to selecting one.
 
-from ansys.additive.core import Additive
-
 additive = Additive()
 print(additive.get_materials_list())
 material = "IN718"
