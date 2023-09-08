@@ -80,6 +80,7 @@ instance/
 doc/source/examples
 _autosummary/
 doc/_build
+doc/source/api
 
 # PyBuilder
 .pybuilder/

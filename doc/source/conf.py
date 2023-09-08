@@ -1,10 +1,16 @@
 """Sphinx documentation configuration file."""
 from datetime import datetime
 import os
+from pathlib import Path
 import re
 import warnings
 
-from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_black
+from ansys_sphinx_theme import (
+    ansys_favicon,
+    get_autoapi_templates_dir_relative_path,
+    get_version_match,
+    pyansys_logo_black,
+)
 import numpy as np
 import pyvista
 from sphinx_gallery.sorting import FileNameSortKey
@@ -105,6 +111,7 @@ extensions = [
     "sphinx_copybutton",
     "sphinxemoji.sphinxemoji",
     "sphinx_jinja",
+    "sphinx_design",
 ]
 
 # Intersphinx mapping
@@ -196,6 +203,7 @@ if not BUILD_API:
 else:
     # Configuration for Sphinx autoapi
     extensions.append("autoapi.extension")
+    autoapi_root = "api"
     autoapi_type = "python"
     autoapi_dirs = ["../../src/ansys"]
     autoapi_options = [
@@ -205,10 +213,12 @@ else:
         "show-module-summary",
         "special-members",
     ]
-    autoapi_template_dir = "_autoapi_templates"
+    autoapi_template_dir = get_autoapi_templates_dir_relative_path(Path(__file__))
     suppress_warnings = ["autoapi.python_import_resolution"]
     exclude_patterns.append("_autoapi_templates/index.rst")
     autoapi_python_use_implicit_namespaces = True
+    autoapi_keep_files = True
+    autoapi_render_in_single_page = ["class", "enum", "exception"]
 
 
 BUILD_EXAMPLES = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
@@ -267,3 +277,16 @@ linkcheck_ignore = [
     r"https://ansyshelp.ansys.com/.*",
     r"https://ansysproducthelpqa.win.ansys.com/.*",
 ]
+
+
+def prepare_jinja_env(jinja_env) -> None:
+    """Customize the jinja env.
+
+    Notes
+    -----
+    See https://jinja.palletsprojects.com/en/3.0.x/api/#jinja2.Environment
+    """
+    jinja_env.globals["project_name"] = project
+
+
+autoapi_prepare_jinja_env = prepare_jinja_env
