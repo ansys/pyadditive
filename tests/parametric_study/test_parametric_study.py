@@ -21,9 +21,6 @@
 # SOFTWARE.
 
 import os
-from pathlib import Path
-import shutil
-import tempfile
 from unittest.mock import create_autospec
 
 from ansys.api.additive.v0.additive_domain_pb2 import (
@@ -58,28 +55,21 @@ from ansys.additive.core.parametric_study.parametric_utils import build_rate
 from tests import test_utils
 
 
-def test_init_assigns_creates_file():
+def test_init_saves_study_to_file(tmp_path: pytest.TempPathFactory):
     # arrange
     study_name = "test_study"
-    expected_path = Path(tempfile.gettempdir(), "parametric_init_test", f"{study_name}.ps")
-    if expected_path.parent.exists():
-        shutil.rmtree(expected_path.parent)
+    expected_path = tmp_path / "parametric_init_test" / f"{study_name}.ps"
     study = ps.ParametricStudy(study_name, expected_path.parent)
 
     # assert
     assert study.file_name == expected_path.absolute()
     assert study.file_name.is_file()
 
-    # clean up
-    shutil.rmtree(expected_path.parent, ignore_errors=True)
 
-
-def test_save_and_load_returns_original_object():
+def test_save_and_load_returns_original_object(tmp_path: pytest.TempPathFactory):
     # arrange
     study_name = "test_study"
-    test_path = Path(tempfile.gettempdir(), "parametric_save_and_load_test", f"{study_name}.ps")
-    if test_path.parent.exists():
-        shutil.rmtree(test_path.parent)
+    test_path = tmp_path / "parametric_save_and_load_test" / f"{study_name}.ps"
     study = ps.ParametricStudy(study_name)
 
     # act
@@ -91,7 +81,6 @@ def test_save_and_load_returns_original_object():
     assert study2.file_name == test_path
 
     # cleanup
-    shutil.rmtree(test_path.parent, ignore_errors=True)
     os.remove(f"{study_name}.ps")
 
 
@@ -214,14 +203,12 @@ def test_add_summaries_with_single_bead_summary_adds_row():
     assert row[ps.ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] == expected_lw
 
 
-def test_add_summaries_with_microstructure_summary_adds_row():
+def test_add_summaries_with_microstructure_summary_adds_row(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(study_name="test_study")
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
-    user_data_path = os.path.join(tempfile.gettempdir(), "microstructure_summary_init")
-    if not os.path.exists(user_data_path):
-        os.makedirs(user_data_path)
+    user_data_path = tmp_path / "microstructure_summary_init"
     input = MicrostructureInput(
         id="id",
         machine=machine,
@@ -287,9 +274,6 @@ def test_add_summaries_with_microstructure_summary_adds_row():
     assert row[ps.ColumnNames.XY_AVERAGE_GRAIN_SIZE] == summary.xy_average_grain_size
     assert row[ps.ColumnNames.XZ_AVERAGE_GRAIN_SIZE] == summary.xz_average_grain_size
     assert row[ps.ColumnNames.YZ_AVERAGE_GRAIN_SIZE] == summary.yz_average_grain_size
-
-    # clean up
-    shutil.rmtree(user_data_path)
 
 
 def test_add_summaries_with_unknown_summaries_raises_error():
@@ -836,15 +820,13 @@ def test_update_updates_porosity_permutation():
     assert df2.loc[0, ps.ColumnNames.RELATIVE_DENSITY] == 12
 
 
-def test_update_updates_microstructure_permutation():
+def test_update_updates_microstructure_permutation(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(study_name="test_study")
     study.generate_microstructure_permutations("material", [50], [1])
     df1 = study.data_frame()
     id = df1.loc[0, ps.ColumnNames.ID]
-    user_data_path = os.path.join(tempfile.gettempdir(), "ps_microstructure_update_test")
-    if not os.path.exists(user_data_path):
-        os.makedirs(user_data_path)
+    user_data_path = tmp_path / "ps_microstructure_update_test"
     input = MicrostructureInput(id=id)
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
