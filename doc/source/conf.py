@@ -1,11 +1,16 @@
 """Sphinx documentation configuration file."""
-from pathlib import Path
 from datetime import datetime
 import os
+from pathlib import Path
 import re
 import warnings
 
-from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_black, get_autoapi_templates_dir_relative_path
+from ansys_sphinx_theme import (
+    ansys_favicon,
+    get_autoapi_templates_dir_relative_path,
+    get_version_match,
+    pyansys_logo_black,
+)
 import numpy as np
 import pyvista
 from sphinx_gallery.sorting import FileNameSortKey
@@ -208,7 +213,7 @@ else:
         "show-module-summary",
         "special-members",
     ]
-    autoapi_template_dir =  get_autoapi_templates_dir_relative_path(Path(__file__))
+    autoapi_template_dir = get_autoapi_templates_dir_relative_path(Path(__file__))
     suppress_warnings = ["autoapi.python_import_resolution"]
     exclude_patterns.append("_autoapi_templates/index.rst")
     autoapi_python_use_implicit_namespaces = True
@@ -275,8 +280,8 @@ linkcheck_ignore = [
 
 
 def prepare_jinja_env(jinja_env) -> None:
-    """
-    Customize the jinja env.
+    """Customize the jinja env.
+
     Notes
     -----
     See https://jinja.palletsprojects.com/en/3.0.x/api/#jinja2.Environment
