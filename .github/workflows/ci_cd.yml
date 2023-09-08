@@ -74,7 +74,7 @@ jobs:
 
   doc-build:
     name: "Building library documentation"
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, public-ubuntu-latest-16-cores]
     needs: [doc-style]
     steps:
       - name: "Install system dependencies"
