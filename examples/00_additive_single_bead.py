@@ -31,7 +31,7 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 """
 ###############################################################################
 # Perform required imports and connect
-# -----------------------------------
+# ------------------------------------
 # Perform the required imports and connect to the Additive service.
 
 import matplotlib.pyplot as plt
