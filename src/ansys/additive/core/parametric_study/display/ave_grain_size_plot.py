@@ -137,7 +137,7 @@ def __update_plot(
         mode="markers+text",
         text=[f"{z:.2f}" for z in xy],
         textposition="top center",
-        marker=dict(color="darkred", size=__normalize(xy, min_ags, max_ags)),
+        marker=dict(color="darkred", size=__normalized_markers(xy, min_ags, max_ags)),
         cliponaxis=False,
     )
     xz_scatter = go.Scatter(
@@ -146,7 +146,7 @@ def __update_plot(
         mode="markers+text",
         text=[f"{z:.2f}" for z in xz],
         textposition="top center",
-        marker=dict(color="darkorchid", size=__normalize(xz, min_ags, max_ags)),
+        marker=dict(color="darkorchid", size=__normalized_markers(xz, min_ags, max_ags)),
         cliponaxis=False,
     )
     yz_scatter = go.Scatter(
@@ -155,7 +155,7 @@ def __update_plot(
         mode="markers+text",
         text=[f"{z:.2f}" for z in yz],
         textposition="top center",
-        marker=dict(color="steelblue", size=__normalize(yz, min_ags, max_ags)),
+        marker=dict(color="steelblue", size=__normalized_markers(yz, min_ags, max_ags)),
         cliponaxis=False,
     )
     fig.add_trace(xy_scatter, row=1, col=1)
@@ -186,10 +186,10 @@ def __update_plot(
     return fig
 
 
-def __normalize(
+def __normalized_markers(
     x: list[float], v_min: float, v_max: float, m_min: float = 5, m_max: float = 18
 ) -> list:
-    """Normalize a list of values and map them to marker sizes.
+    """Normalize a list of values and map them to a range of marker values.
 
     Parameters
     ----------
@@ -202,7 +202,7 @@ def __normalize(
     m_min: float
         Minimum output value.
     m_max: float
-        Minimum output value.
+        Maximum output value.
 
     Returns
     -------
