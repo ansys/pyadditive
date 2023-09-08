@@ -281,7 +281,7 @@ def test_create_microstructure_input_assigns_defaults_for_nans():
 
 def test_simulate_sorts_by_priority():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
@@ -302,7 +302,7 @@ def test_simulate_sorts_by_priority():
 
 def test_simulate_filters_by_priority():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
@@ -323,7 +323,7 @@ def test_simulate_filters_by_priority():
 
 def test_simulate_filters_by_single_simulation_type():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
@@ -344,7 +344,7 @@ def test_simulate_filters_by_single_simulation_type():
 
 def test_simulate_filters_by_simulation_type_list():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
@@ -369,7 +369,7 @@ def test_simulate_filters_by_simulation_type_list():
 
 def test_simulate_skips_simulations_with_missing_materials():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)

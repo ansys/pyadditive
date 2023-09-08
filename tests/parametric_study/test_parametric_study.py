@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import os
+from pathlib import Path
 import shutil
 import tempfile
 from unittest.mock import create_autospec
@@ -57,51 +58,46 @@ from ansys.additive.core.parametric_study.parametric_utils import build_rate
 from tests import test_utils
 
 
-def test_init_assigns_name():
+def test_init_assigns_creates_file():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study_name = "test_study"
+    expected_path = Path(tempfile.gettempdir(), "parametric_init_test", f"{study_name}.ps")
+    if expected_path.parent.exists():
+        shutil.rmtree(expected_path.parent)
+    study = ps.ParametricStudy(study_name, expected_path.parent)
 
     # assert
-    assert study.project_name == "test_study"
+    assert study.file_name == expected_path.absolute()
+    assert study.file_name.is_file()
+
+    # clean up
+    shutil.rmtree(expected_path.parent, ignore_errors=True)
 
 
 def test_save_and_load_returns_original_object():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study_name = "test_study"
+    test_path = Path(tempfile.gettempdir(), "parametric_save_and_load_test", f"{study_name}.ps")
+    if test_path.parent.exists():
+        shutil.rmtree(test_path.parent)
+    study = ps.ParametricStudy(study_name)
 
     # act
-    study.save("test_study.prm")
-    study2 = ps.ParametricStudy.load("test_study.prm")
+    study.save(test_path)
+    study2 = ps.ParametricStudy.load(test_path)
 
     # assert
-    assert study == study2
+    assert study.data_frame().equals(study2.data_frame())
+    assert study2.file_name == test_path
 
     # cleanup
-    os.remove("test_study.prm")
-
-
-def test_eq_returns_false_for_different_names():
-    # arrange, act
-    study = ps.ParametricStudy(project_name="test_study")
-    study2 = ps.ParametricStudy(project_name="test_study2")
-
-    # assert
-    assert study != study2
-
-
-def test_eq_returns_false_for_different_data():
-    # arrange
-    study = ps.ParametricStudy(project_name="test_study")
-    study2 = ps.ParametricStudy(project_name="test_study")
-    study2.generate_single_bead_permutations("material", [100], [1])
-
-    # act, assert
-    assert study != study2
+    shutil.rmtree(test_path.parent, ignore_errors=True)
+    os.remove(f"{study_name}.ps")
 
 
 def test_add_summaries_with_porosity_summary_adds_row():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input = PorosityInput(
@@ -128,7 +124,6 @@ def test_add_summaries_with_porosity_summary_adds_row():
     # assert
     assert len(study.data_frame()) == 1
     row = study.data_frame().iloc[0]
-    assert row[ps.ColumnNames.PROJECT] == "test_study"
     assert row[ps.ColumnNames.ITERATION] == 99
     assert row[ps.ColumnNames.ID] == "id"
     assert row[ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
@@ -153,7 +148,7 @@ def test_add_summaries_with_porosity_summary_adds_row():
 
 def test_add_summaries_with_single_bead_summary_adds_row():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     melt_pool_msg = test_utils.get_test_melt_pool_message()
@@ -187,7 +182,6 @@ def test_add_summaries_with_single_bead_summary_adds_row():
     # assert
     assert len(study.data_frame()) == 1
     row = study.data_frame().iloc[0]
-    assert row[ps.ColumnNames.PROJECT] == "test_study"
     assert row[ps.ColumnNames.ITERATION] == 98
     assert row[ps.ColumnNames.ID] == "id"
     assert row[ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
@@ -222,7 +216,7 @@ def test_add_summaries_with_single_bead_summary_adds_row():
 
 def test_add_summaries_with_microstructure_summary_adds_row():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     user_data_path = os.path.join(tempfile.gettempdir(), "microstructure_summary_init")
@@ -262,7 +256,6 @@ def test_add_summaries_with_microstructure_summary_adds_row():
     # assert
     assert len(study.data_frame()) == 1
     row = study.data_frame().iloc[0]
-    assert row[ps.ColumnNames.PROJECT] == "test_study"
     assert row[ps.ColumnNames.ITERATION] == 99
     assert row[ps.ColumnNames.ID] == "id"
     assert row[ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
@@ -301,7 +294,7 @@ def test_add_summaries_with_microstructure_summary_adds_row():
 
 def test_add_summaries_with_unknown_summaries_raises_error():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     unknown_summary = "unknown_summary"
 
     # act/assert
@@ -311,7 +304,7 @@ def test_add_summaries_with_unknown_summaries_raises_error():
 
 def test_generate_single_bead_permutations_creates_permutations():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     bead_length = 0.005
     powers = [50, 250, 700]
     scan_speeds = [0.35, 1, 2.4]
@@ -339,8 +332,7 @@ def test_generate_single_bead_permutations_creates_permutations():
                 for t in heater_temperatures:
                     for d in beam_diameters:
                         assert any(
-                            (df[ps.ColumnNames.PROJECT] == "test_study")
-                            & (df[ps.ColumnNames.ITERATION] == 0)
+                            (df[ps.ColumnNames.ITERATION] == 0)
                             & (df[ps.ColumnNames.TYPE] == SimulationType.SINGLE_BEAD)
                             & (df[ps.ColumnNames.STATUS] == SimulationStatus.PENDING)
                             & (df[ps.ColumnNames.MATERIAL] == "material")
@@ -361,7 +353,7 @@ def test_generate_single_bead_permutations_creates_permutations():
 
 def test_generate_single_bead_permutations_filters_by_energy_density():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     powers = [50, 250, 700]
     scan_speeds = [1]
     layer_thicknesses = [50e-6]
@@ -386,7 +378,7 @@ def test_generate_single_bead_permutations_filters_by_energy_density():
 
 def test_generate_single_bead_permutations_only_adds_valid_permutations():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     powers = [
         MachineConstants.MIN_LASER_POWER - 1,
         MachineConstants.DEFAULT_LASER_POWER,
@@ -410,7 +402,7 @@ def test_generate_single_bead_permutations_only_adds_valid_permutations():
 
 def test_generate_porosity_permutations_creates_permutations():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     powers = [50, 250, 700]
     scan_speeds = [0.35, 1, 2.4]
     layer_thicknesses = [30e-6, 50e-6]
@@ -454,8 +446,7 @@ def test_generate_porosity_permutations_creates_permutations():
                                 for h in hatch_spacings:
                                     for w in stripe_widths:
                                         assert any(
-                                            (df[ps.ColumnNames.PROJECT] == "test_study")
-                                            & (df[ps.ColumnNames.ITERATION] == 0)
+                                            (df[ps.ColumnNames.ITERATION] == 0)
                                             & (df[ps.ColumnNames.TYPE] == SimulationType.POROSITY)
                                             & (
                                                 df[ps.ColumnNames.STATUS]
@@ -481,7 +472,7 @@ def test_generate_porosity_permutations_creates_permutations():
 
 def test_generate_porosity_permutations_filters_by_energy_density():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     powers = [50, 250, 700]
     scan_speeds = [1]
     layer_thicknesses = [50e-6]
@@ -508,7 +499,7 @@ def test_generate_porosity_permutations_filters_by_energy_density():
 
 def test_generate_porosity_permutations_filters_by_build_rate():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     powers = [50]
     scan_speeds = [1]
     layer_thicknesses = [30e-6, 50e-6, 90e-6]
@@ -535,7 +526,7 @@ def test_generate_porosity_permutations_filters_by_build_rate():
 
 def test_generate_porosity_permutations_only_adds_valid_permutations():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     powers = [
         MachineConstants.MIN_LASER_POWER - 1,
         MachineConstants.DEFAULT_LASER_POWER,
@@ -559,7 +550,7 @@ def test_generate_porosity_permutations_only_adds_valid_permutations():
 
 def test_generate_microstructure_permutations_creates_permutations():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     powers = [50, 250, 700]
     scan_speeds = [0.35, 1, 2.4]
     layer_thicknesses = [30e-6, 50e-6]
@@ -620,8 +611,7 @@ def test_generate_microstructure_permutations_creates_permutations():
                                 for h in hatch_spacings:
                                     for w in stripe_widths:
                                         assert any(
-                                            (df[ps.ColumnNames.PROJECT] == "test_study")
-                                            & (df[ps.ColumnNames.ITERATION] == 9)
+                                            (df[ps.ColumnNames.ITERATION] == 9)
                                             & (
                                                 df[ps.ColumnNames.TYPE]
                                                 == SimulationType.MICROSTRUCTURE
@@ -667,7 +657,7 @@ def test_generate_microstructure_permutations_creates_permutations():
 
 def test_generate_microstructure_permutations_converts_Nones_to_NANs_in_dataframe():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     powers = [50]
     scan_speeds = [1]
 
@@ -686,7 +676,7 @@ def test_generate_microstructure_permutations_converts_Nones_to_NANs_in_datafram
 
 def test_generate_microstructure_permutations_filters_by_energy_density():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     powers = [50, 250, 700]
     scan_speeds = [1]
     layer_thicknesses = [50e-6]
@@ -713,7 +703,7 @@ def test_generate_microstructure_permutations_filters_by_energy_density():
 
 def test_generate_microstructure_permutations_filters_by_build_rate():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     powers = [50]
     scan_speeds = [1]
     layer_thicknesses = [30e-6, 50e-6, 90e-6]
@@ -740,7 +730,7 @@ def test_generate_microstructure_permutations_filters_by_build_rate():
 
 def test_generate_microstructure_permutations_only_adds_valid_permutations():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     powers = [
         MachineConstants.MIN_LASER_POWER - 1,
         MachineConstants.DEFAULT_LASER_POWER,
@@ -764,7 +754,7 @@ def test_generate_microstructure_permutations_only_adds_valid_permutations():
 
 def test_update_updates_error_status():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     study.generate_single_bead_permutations("material", [50], [1])
     df1 = study.data_frame()
     id = df1.loc[0, ps.ColumnNames.ID]
@@ -784,7 +774,7 @@ def test_update_updates_error_status():
 
 def test_update_updates_single_bead_permutation():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     study.generate_single_bead_permutations("material", [50], [1])
     df1 = study.data_frame()
     id = df1.loc[0, ps.ColumnNames.ID]
@@ -823,7 +813,7 @@ def test_update_updates_single_bead_permutation():
 
 def test_update_updates_porosity_permutation():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     study.generate_porosity_permutations("material", [50], [1])
     df1 = study.data_frame()
     id = df1.loc[0, ps.ColumnNames.ID]
@@ -848,7 +838,7 @@ def test_update_updates_porosity_permutation():
 
 def test_update_updates_microstructure_permutation():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     study.generate_microstructure_permutations("material", [50], [1])
     df1 = study.data_frame()
     id = df1.loc[0, ps.ColumnNames.ID]
@@ -885,7 +875,7 @@ def test_update_updates_microstructure_permutation():
 
 def test_update_raises_error_for_unknown_summary_type():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     summary = "invalid summary"
 
     # act
@@ -895,7 +885,7 @@ def test_update_raises_error_for_unknown_summary_type():
 
 def test_add_inputs_creates_new_rows():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     inputs = [
         SingleBeadInput(id="test_id_1"),
         PorosityInput(id="test_id_2"),
@@ -912,7 +902,7 @@ def test_add_inputs_creates_new_rows():
 
 def test_add_inputs_does_not_create_new_rows_for_invalid_input():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     inputs = [
         "invalid input",
         "another one",
@@ -928,7 +918,7 @@ def test_add_inputs_does_not_create_new_rows_for_invalid_input():
 
 def test_add_inputs_assigns_common_params_correctly():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     power = 50
     speed = 1.2
     layer_thickness = 40e-6
@@ -961,7 +951,6 @@ def test_add_inputs_assigns_common_params_correctly():
     # assert
     df = study.data_frame()
     assert len(df) == 1
-    assert df.loc[0, ps.ColumnNames.PROJECT] == "test_study"
     assert df.loc[0, ps.ColumnNames.ITERATION] == iteration
     assert df.loc[0, ps.ColumnNames.PRIORITY] == priority
     assert df.loc[0, ps.ColumnNames.ID] == "test_input"
@@ -980,7 +969,7 @@ def test_add_inputs_assigns_common_params_correctly():
 
 def test_add_inputs_assigns_porosity_params_correctly():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     size_x = 1.1e-3
     size_y = 1.2e-3
     size_z = 1.3e-3
@@ -1000,7 +989,7 @@ def test_add_inputs_assigns_porosity_params_correctly():
 
 def test_add_inputs_assigns_all_microstructure_params_correctly():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     size_x = 1.1e-3
     size_y = 1.2e-3
     size_z = 1.3e-3
@@ -1052,7 +1041,7 @@ def test_add_inputs_assigns_all_microstructure_params_correctly():
 
 def test_add_inputs_assigns_unspecified_microstructure_params_correctly():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     size_x = 1.1e-3
     size_y = 1.2e-3
     size_z = 1.3e-3
@@ -1087,7 +1076,7 @@ def test_add_inputs_assigns_unspecified_microstructure_params_correctly():
 
 def test_run_simulations_calls_simulate_correctly(monkeypatch):
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     sb = SingleBeadInput()
     p = PorosityInput()
     ms = MicrostructureInput()
@@ -1107,7 +1096,7 @@ def test_run_simulations_calls_simulate_correctly(monkeypatch):
 
 def test_remove_deletes_multiple_rows_from_dataframe():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     for i in range(4):
         study.add_inputs([SingleBeadInput(id=f"test_id_{i}")])
     df1 = study.data_frame()
@@ -1125,7 +1114,7 @@ def test_remove_deletes_multiple_rows_from_dataframe():
 
 def test_remove_deletes_single_row_from_dataframe():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     for i in range(4):
         study.add_inputs([SingleBeadInput(id=f"test_id_{i}")])
     df1 = study.data_frame()
@@ -1142,7 +1131,7 @@ def test_remove_deletes_single_row_from_dataframe():
 
 def test_set_status_changes_status():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     for i in range(4):
         study.add_inputs([SingleBeadInput(id=f"test_id_{i}")])
     status1 = study.data_frame()[ps.ColumnNames.STATUS]
@@ -1162,7 +1151,7 @@ def test_set_status_changes_status():
 
 def test_set_status_changes_status_for_single_id():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     for i in range(4):
         study.add_inputs([SingleBeadInput(id=f"test_id_{i}")])
     status1 = study.data_frame()[ps.ColumnNames.STATUS]
@@ -1182,7 +1171,7 @@ def test_set_status_changes_status_for_single_id():
 
 def test_create_unique_id_returns_unique_id():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     study.add_inputs([SingleBeadInput(id="test_id_1")])
 
     # act
@@ -1198,7 +1187,7 @@ def test_create_unique_id_returns_unique_id():
 
 def test_clear_removes_all_rows_but_not_columns():
     # arrange
-    study = ps.ParametricStudy(project_name="test_study")
+    study = ps.ParametricStudy(study_name="test_study")
     study.add_inputs([SingleBeadInput(id="test_id_1")])
     df1 = study.data_frame()
 

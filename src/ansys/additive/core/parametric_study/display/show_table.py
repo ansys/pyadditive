@@ -58,7 +58,6 @@ def show_table(ps: ParametricStudy, page_size: int = 10):
     _df = _ps.data_frame()
 
     (
-        proj_select,
         _iter_select,
         _pri_select,
         type_select,
@@ -66,9 +65,12 @@ def show_table(ps: ParametricStudy, page_size: int = 10):
     ) = __init_controls(_df)
 
     table = pn.widgets.Tabulator(
-        _df, page_size=page_size, layout="fit_data_stretch", editors=__editors(_df)
+        _df,
+        pagination="local",
+        page_size=page_size,
+        layout="fit_data_stretch",
+        editors=__editors(_df),
     ).servable()
-    table.add_filter(proj_select, ColumnNames.PROJECT)
     table.add_filter(_iter_select, ColumnNames.ITERATION)
     table.add_filter(_pri_select, ColumnNames.PRIORITY)
     table.add_filter(type_select, ColumnNames.TYPE)
@@ -76,7 +78,6 @@ def show_table(ps: ParametricStudy, page_size: int = 10):
     table.on_edit(__on_edit)
 
     control_bar = pn.Row(
-        proj_select,
         _iter_select,
         _pri_select,
         type_select,
@@ -94,7 +95,6 @@ def show_table(ps: ParametricStudy, page_size: int = 10):
 
 
 def __init_controls(df: pd.DataFrame) -> Tuple[pn.widgets.MultiSelect, ...]:
-    proj_options = df[ColumnNames.PROJECT].unique().tolist()
     iter_options = sorted(df[ColumnNames.ITERATION].unique().tolist())
     pri_options = sorted(df[ColumnNames.PRIORITY].unique().tolist())
     type_options = [
@@ -108,9 +108,6 @@ def __init_controls(df: pd.DataFrame) -> Tuple[pn.widgets.MultiSelect, ...]:
         SimulationStatus.SKIP,
         SimulationStatus.ERROR,
     ]
-    proj_select = pn.widgets.MultiSelect(
-        name="Project", options=proj_options, value=proj_options, sizing_mode="stretch_width"
-    ).servable()
     iter_select = pn.widgets.MultiSelect(
         name="Iteration", options=iter_options, value=iter_options, sizing_mode="stretch_width"
     ).servable()
@@ -124,7 +121,7 @@ def __init_controls(df: pd.DataFrame) -> Tuple[pn.widgets.MultiSelect, ...]:
         name="Status", options=status_options, value=status_options, sizing_mode="stretch_width"
     ).servable()
 
-    return proj_select, iter_select, pri_select, type_select, status_select
+    return iter_select, pri_select, type_select, status_select
 
 
 def __editors(df: pd.DataFrame):

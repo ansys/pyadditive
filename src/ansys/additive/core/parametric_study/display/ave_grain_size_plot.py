@@ -20,20 +20,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Tuple
+from __future__ import annotations
 
-import numpy as np
 import pandas as pd
 import panel as pn
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from ansys.additive.core import SimulationStatus, SimulationType
+from ansys.additive.core import MachineConstants, SimulationStatus, SimulationType
 from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
 
 from ._common_controls import _common_controls
 
+# Initialize panel for plotly.
 pn.extension("plotly")
+
+# Min/Max average grain size
+min_ags = None
+max_ags = None
 
 
 def ave_grain_size_plot(ps: ParametricStudy):
@@ -49,7 +53,10 @@ def ave_grain_size_plot(ps: ParametricStudy):
     :class: `panel.Row <panel.Row>`
         Iteractive plot.
     """
+    global min_ags, max_ags
     df = __data_frame(ps)
+    min_ags, max_ags = __min_max_ave_grain_size(df)
+
     (
         ht_select,
         lt_select,
@@ -99,7 +106,6 @@ def __data_frame(ps: ParametricStudy) -> pd.DataFrame:
     return df
 
 
-# @pn.cache
 def __update_plot(
     df: pd.DataFrame,
     ht: float,
@@ -110,6 +116,8 @@ def __update_plot(
     hs: float,
     sw: float,
 ) -> dict:
+    global min_ags, max_ags
+
     fig = make_subplots(
         rows=1,
         cols=3,
@@ -122,15 +130,14 @@ def __update_plot(
     )
 
     x, y, xy, xz, yz = __scatter_data(df, ht, lt, bd, sa, ra, hs, sw)
-    np_xy = np.array(xy)
-    xy_norm = np_xy / np.linalg.norm(np_xy)
+
     xy_scatter = go.Scatter(
         x=x,
         y=y,
         mode="markers+text",
         text=[f"{z:.2f}" for z in xy],
         textposition="top center",
-        marker=dict(color="darkred", size=__normalize(xy)),
+        marker=dict(color="darkred", size=__normalize(xy, min_ags, max_ags)),
         cliponaxis=False,
     )
     xz_scatter = go.Scatter(
@@ -139,7 +146,7 @@ def __update_plot(
         mode="markers+text",
         text=[f"{z:.2f}" for z in xz],
         textposition="top center",
-        marker=dict(color="darkorchid", size=__normalize(xz)),
+        marker=dict(color="darkorchid", size=__normalize(xz, min_ags, max_ags)),
         cliponaxis=False,
     )
     yz_scatter = go.Scatter(
@@ -148,46 +155,76 @@ def __update_plot(
         mode="markers+text",
         text=[f"{z:.2f}" for z in yz],
         textposition="top center",
-        marker=dict(color="steelblue", size=__normalize(yz)),
+        marker=dict(color="steelblue", size=__normalize(yz, min_ags, max_ags)),
         cliponaxis=False,
     )
     fig.add_trace(xy_scatter, row=1, col=1)
     fig.add_trace(xz_scatter, row=1, col=2)
     fig.add_trace(yz_scatter, row=1, col=3)
     fig.update_layout(showlegend=False, title_text="Average Grain Size (µm)")
+    min_x = MachineConstants.MIN_SCAN_SPEED if len(x) == 0 else min(x) - 0.1
+    max_x = MachineConstants.MAX_SCAN_SPEED if len(x) == 0 else max(x) + 0.1
     fig.update_xaxes(
         title_text="Scan Speed (m/s)",
         showgrid=True,
         gridwidth=1,
         gridcolor="white",
         title_font=dict(size=12),
-        range=[min(x) - 0.1, max(x) + 0.1],
+        range=[min_x, max_x],
     )
+    min_y = MachineConstants.MIN_LASER_POWER if len(y) == 0 else min(y) - 20
+    max_y = MachineConstants.MAX_LASER_POWER if len(y) == 0 else max(y) + 70
     fig.update_yaxes(
         title_text="Laser Power (W)",
         showgrid=True,
         gridwidth=1,
         gridcolor="white",
         title_font=dict(size=12),
-        range=[min(y) - 20, max(y) + 70],
+        range=[min_y, max_y],
     )
 
     return fig
 
 
-def __normalize(x: list, t_min: float = 5, t_max: float = 18) -> list:
-    norm_arr = []
-    diff = t_max - t_min
-    diff_arr = max(x) - min(x)
+def __normalize(
+    x: list[float], v_min: float, v_max: float, m_min: float = 5, m_max: float = 18
+) -> list:
+    """Normalize a list of values and map them to marker sizes.
+
+    Parameters
+    ----------
+    x: list[float]
+        Values to normalize.
+    v_min: float
+        Minimum input value which will map to minimum output value.
+    v_max: float
+        Maximum input value which will map to maximum output value.
+    m_min: float
+        Minimum output value.
+    m_max: float
+        Minimum output value.
+
+    Returns
+    -------
+    list[float]
+        Normalized values.
+    """
+    if not x:
+        return []
+    range = v_max - v_min
+    if range == 0:
+        return [m_max for _ in x]
+    scale_factor = m_max - m_min
+    normalized = []
     for i in x:
-        temp = (((i - min(x)) * diff) / diff_arr) + t_min
-        norm_arr.append(temp)
-    return norm_arr
+        temp = (((i - v_min) * scale_factor) / range) + m_min
+        normalized.append(temp)
+    return normalized
 
 
 def __scatter_data(
     df: pd.DataFrame, ht: float, lt: float, bd: float, sa: float, ra: float, hs: float, sw: float
-) -> Tuple[list, list, list, list, list]:
+) -> tuple[list[float], list[float], list[float], list[float], list[float]]:
     idx = df[
         (df[ColumnNames.LAYER_THICKNESS] == lt)
         & (df[ColumnNames.BEAM_DIAMETER] == bd)
@@ -219,3 +256,13 @@ def __scatter_data(
         df[ColumnNames.XZ_AVERAGE_GRAIN_SIZE].tolist(),
         df[ColumnNames.YZ_AVERAGE_GRAIN_SIZE].tolist(),
     )
+
+
+def __min_max_ave_grain_size(df: pd.DataFrame) -> tuple[float | None, float | None]:
+    xy = df[ColumnNames.XY_AVERAGE_GRAIN_SIZE].to_list()
+    xz = df[ColumnNames.XZ_AVERAGE_GRAIN_SIZE].to_list()
+    yz = df[ColumnNames.YZ_AVERAGE_GRAIN_SIZE].to_list()
+    all = xy + xz + yz
+    min_ags = min(all) if len(all) > 0 else None
+    max_ags = max(all) if len(all) > 0 else None
+    return (min_ags, max_ags)

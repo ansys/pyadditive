@@ -250,7 +250,10 @@ class Additive:
         nthreads = self._nproc
         if nproc:
             nthreads = nproc
-        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Executing {len(inputs)} simulations")
+        print(
+            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Completed 0 of {len(inputs)} simulations",
+            end="",
+        )
         with concurrent.futures.ThreadPoolExecutor(nthreads) as executor:
             futures = []
             for input in inputs:
@@ -265,6 +268,7 @@ class Additive:
                     f"\r{timestamp} Completed {len(summaries)} of {len(inputs)} simulations",
                     end="",
                 )
+        print("")
         return summaries
 
     def _simulate(self, input, show_progress: bool = False):
