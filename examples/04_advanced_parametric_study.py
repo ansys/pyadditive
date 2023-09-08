@@ -82,8 +82,6 @@ material = "IN718"
 # values defined in the :class:`MachineConstants <ansys.additive.core.machine.MachineConstants>`
 # class.
 
-import numpy as np
-
 # Specify a range of laser powers. Valid values are 50 to 700 W.
 initial_powers = np.linspace(50, 700, 3)
 # Specify a range of laser scan speeds. Valid values are 0.35 to 2.5 m/s.
