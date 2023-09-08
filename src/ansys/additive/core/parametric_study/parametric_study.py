@@ -83,7 +83,7 @@ class ParametricStudy:
 
     @property
     def file_name(self) -> os.PathLike:
-        """Name of the file whare the parametric study is stored."""
+        """Name of the file where the parametric study is stored."""
         return self._file_name
 
     @file_name.setter
