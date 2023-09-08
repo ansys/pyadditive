@@ -119,8 +119,6 @@ study.generate_single_bead_permutations(
 # You can use the ``display`` module of ``ParametricStudy`` to list the simulations
 # as a table.
 
-import ansys.additive.core.parametric_study.display as display
-
 display.show_table(study)
 
 ###############################################################################
