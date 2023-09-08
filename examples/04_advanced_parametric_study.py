@@ -43,8 +43,6 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # ------------------------------------------
 # Perform the required import and create a ``ParametricStudy``.
 
-from ansys.additive.core.parametric_study import ParametricStudy
-
 study = ParametricStudy("demo-study")
 
 ###############################################################################
