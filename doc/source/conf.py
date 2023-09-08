@@ -106,6 +106,7 @@ extensions = [
     "sphinx_copybutton",
     "sphinxemoji.sphinxemoji",
     "sphinx_jinja",
+    "sphinx_design",
 ]
 
 # Intersphinx mapping
@@ -197,6 +198,7 @@ if not BUILD_API:
 else:
     # Configuration for Sphinx autoapi
     extensions.append("autoapi.extension")
+    autoapi_root = "api"
     autoapi_type = "python"
     autoapi_dirs = ["../../src/ansys"]
     autoapi_options = [
