@@ -76,7 +76,7 @@ doc = [
     "pypandoc==1.8.1",
     "pyvista==0.42.0",
     "Sphinx==7.2.5",
-    "sphinx-autoapi==2.1.1",
+    "sphinx-autoapi @ git+https://github.com/jorgepiloto/sphinx-autoapi@feat/single-page-option",
     "sphinx-autodoc-typehints==1.24.0",
     "sphinx-copybutton==0.5.1",
     "sphinx-gallery==0.14.0",

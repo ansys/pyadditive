@@ -17,7 +17,7 @@ PyAdditive documentation  |version|
 
        getting_started/index
        {% if build_api %}
-       autoapi/index
+       api/index
        {% endif %}
        {% if build_examples %}
        examples/gallery_examples/index
