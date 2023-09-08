@@ -134,9 +134,6 @@ display.show_table(study)
 # applied to get a list of simulation IDs, then the status is updated on the
 # simulations with those IDs.
 
-from ansys.additive.core import SimulationStatus, SimulationType
-from ansys.additive.core.parametric_study import ColumnNames
-
 df = study.data_frame()
 # Get IDs for single bead simulations with laser power below 75 W.
 ids = df.loc[
