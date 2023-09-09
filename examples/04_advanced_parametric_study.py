@@ -33,7 +33,6 @@ class is used to conduct a parametric study. This is not required but
 
 Units are SI (m, kg, s, K) unless otherwise noted.
 """
-
 ###############################################################################
 # Perform required imports and create a study
 # ------------------------------------------

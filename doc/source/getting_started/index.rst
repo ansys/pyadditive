@@ -220,7 +220,7 @@ Each wheelhouse archive contains all the Python wheels necessary to install PyAd
 Linux, and MacOS from Python 3.8 to 3.11. You can unzip and install the wheelhouse archive on an isolated
 system with a fresh Python installation or in a virtual environment.
 
-For example, on Linux, with Python 3.8, unzip and install the wheelhouse archive with these commands:
+For example, on Linux with Python 3.8, unzip then install the wheelhouse archive with these commands:
 
 .. code:: bash
 
