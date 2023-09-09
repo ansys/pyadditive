@@ -220,7 +220,7 @@ Each wheelhouse archive contains all the Python wheels necessary to install PyAd
 Linux, and MacOS from Python 3.8 to 3.11. You can unzip and install the wheelhouse archive on an isolated
 system with a fresh Python installation or in a virtual environment.
 
-For example, on Linux with Python 3.8, unzip and install the wheelhouse archive with these commands:
+For example, on Linux with Python 3.8, unzip then install the wheelhouse archive with these commands:
 
 .. code:: bash
 
@@ -312,8 +312,8 @@ The URL for opening JupyterLab in your browser is ``http://localhost:8888/lab``.
 be different, but the port number that you should use is listed in the JupyterLab startup messages. You can find
 example Jupyter notebooks in the ``examples`` folder of the PyAdditive repository.
 
-pre-commit
-==========
+A note on ``pre-commit``
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 The style checks take advantage of `pre-commit`_. Developers are not forced but
 encouraged to install this tool by running this command:
@@ -362,3 +362,4 @@ the building requirements and then executing the build module:
 .. _pytest: https://docs.pytest.org/en/stable/
 .. _Sphinx: https://www.sphinx-doc.org/en/master/
 .. _tox: https://tox.wiki/
+

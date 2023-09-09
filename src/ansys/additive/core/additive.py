@@ -90,6 +90,7 @@ class Additive:
         self._materials_stub = MaterialsServiceStub(self._channel)
         self._simulation_stub = SimulationServiceStub(self._channel)
         self._about_stub = AboutServiceStub(self._channel)
+        self.about()
 
         # Setup data directory
         self._user_data_path = USER_DATA_PATH
@@ -211,8 +212,13 @@ class Additive:
         if self._channel is None:
             print("Not connected to server")
             return
+        try:
+            response = self._about_stub.About(Empty())
+        except grpc.RpcError as exc:
+            print(f"Failed to connect to server: {self._channel_str}")
+            print(exc)
+            return
         print(f"Server {self._channel_str}")
-        response = self._about_stub.About(Empty())
         for key in response.metadata:
             value = response.metadata[key]
             print(f"    {key}: {value}")
@@ -250,7 +256,10 @@ class Additive:
         nthreads = self._nproc
         if nproc:
             nthreads = nproc
-        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Executing {len(inputs)} simulations")
+        print(
+            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Completed 0 of {len(inputs)} simulations",
+            end="",
+        )
         with concurrent.futures.ThreadPoolExecutor(nthreads) as executor:
             futures = []
             for input in inputs:
@@ -265,6 +274,7 @@ class Additive:
                     f"\r{timestamp} Completed {len(summaries)} of {len(inputs)} simulations",
                     end="",
                 )
+        print("")
         return summaries
 
     def _simulate(self, input, show_progress: bool = False):

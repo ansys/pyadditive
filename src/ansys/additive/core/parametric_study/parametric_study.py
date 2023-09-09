@@ -20,12 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Dict, List, Optional, Union
+from __future__ import annotations
+
+from functools import wraps
+import os
+from pathlib import Path
 
 import dill
 import numpy as np
 import pandas as pd
-import panel as pn
 
 from ansys.additive.core import (
     Additive,
@@ -49,43 +52,61 @@ from .constants import DEFAULT_ITERATION, DEFAULT_PRIORITY, ColumnNames
 from .parametric_runner import ParametricRunner
 from .parametric_utils import build_rate, energy_density
 
-pn.extension("tabulator")
+
+def save_on_return(func):
+    @wraps(func)
+    def wrap(self, *args, **kwargs):
+        func(self, *args, **kwargs)
+        self.save(self.file_name)
+
+    return wrap
 
 
 class ParametricStudy:
     """Provides data storage and utility methods for a parametric study."""
 
-    def __init__(self, project_name: str):
-        pn.extension()
-        self._project_name = project_name
+    def __init__(self, study_name: str, study_dir: str | os.PathLike = "."):
+        """Initialize the parametric study.
+
+        Parameters
+        ----------
+        study_name: str
+            Name of study.
+        study_dir: str | os.PathLike
+            Directory where study will be stored.
+        """
+        self._file_name = Path(study_dir).absolute() / f"{study_name}.ps"
         columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
         self._data_frame = pd.DataFrame(columns=columns)
+        self.save(self.file_name)
+        print(f"Saving parametric study to {self.file_name}")
 
     @property
-    def project_name(self):
-        """Name of the parametric study."""
-        return self._project_name
+    def file_name(self) -> os.PathLike:
+        """Name of the file where the parametric study is stored."""
+        return self._file_name
 
-    def __eq__(self, other):
-        return self.project_name == other.project_name and self._data_frame.equals(
-            other._data_frame
-        )
+    @file_name.setter
+    def file_name(self, value: str | os.PathLike):
+        self._file_name = Path(value)
 
     def data_frame(self) -> pd.DataFrame:
-        """Return a copy of the internal data frame for the parametric study.
+        """Return a :class:`DataFrame <pandas.DataFrame>` representing the
+        parametric study.
 
         For the column names used in the returned data frame, see the `:class:`ColumnNames` class.
 
         .. note::
-           Updating the returned data frame does not update the internal data frame.
+           Updating the returned data frame does not update this parametric study.
         """
         return self._data_frame.copy()
 
+    @save_on_return
     def run_simulations(
         self,
         additive: Additive,
-        type: Optional[List[SimulationType]] = None,
-        priority: Optional[int] = None,
+        type: list[SimulationType] | None = None,
+        priority: int | None = None,
         # workers: int = 1,
         # threads: int = 4,
     ):
@@ -125,37 +146,47 @@ class ParametricStudy:
         )
         self.update(summaries)
 
-    def save(self, filename):
+    def save(self, file_name: str | os.PathLike):
         """Save the parametric study to a file.
 
         Parameters
         ----------
-        filename : str
+        file_name : str | os.PathLike
             Name of the file to save the parametric study to.
         """
-        with open(filename, "wb") as f:
+
+        Path(file_name).parent.mkdir(parents=True, exist_ok=True)
+        with open(file_name, "wb") as f:
             dill.dump(self, f)
 
     @staticmethod
-    def load(filename):
+    def load(file_name) -> ParametricStudy | None:
         """Load a parametric study from a file.
 
         Parameters
         ----------
-        filename : str
+        file_name : str | os.PathLike
             Name of file to load the parametric study from.
 
         Returns
         -------
-        ParametricStudy
-            Loaded parametric study.
+        ParametricStudy | None
+            Loaded parametric study or None if ``file_name`` does not
+            refer to a parametric study.
         """
-        with open(filename, "rb") as f:
-            return dill.load(f)
+        with open(file_name, "rb") as f:
+            study = dill.load(f)
 
+        if not isinstance(study, ParametricStudy):
+            return None
+
+        study.file_name = file_name
+        return study
+
+    @save_on_return
     def add_summaries(
         self,
-        summaries: List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary]],
+        summaries: list[SingleBeadSummary | PorositySummary | MicrostructureSummary],
         iteration: int = DEFAULT_ITERATION,
     ):
         """Add summaries of previously executed simulations to the parametric
@@ -297,14 +328,14 @@ class ParametricStudy:
 
     def _common_param_to_dict(
         self,
-        summary: Union[SingleBeadSummary, PorositySummary, MicrostructureSummary],
+        summary: SingleBeadSummary | PorositySummary | MicrostructureSummary,
         iteration: int = DEFAULT_ITERATION,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, any]:
         """Convert common simulation parameters to a dictionary.
 
         Parameters
         ----------
-        summary : Union[SingleBeadSummary, PorositySummary, MicrostructureSummary]
+        summary : SingleBeadSummary | PorositySummary | MicrostructureSummary
             Summary of common simulation parameters to convert.
 
         iteration : int, DEFAULT_ITERATION
@@ -316,7 +347,6 @@ class ParametricStudy:
             Dictionary of common simulation parameters.
         """
         return {
-            ColumnNames.PROJECT: self._project_name,
             ColumnNames.ITERATION: iteration,
             ColumnNames.ID: self._create_unique_id(id=summary.input.id),
             ColumnNames.STATUS: SimulationStatus.COMPLETED,
@@ -332,17 +362,18 @@ class ParametricStudy:
             ColumnNames.STRIPE_WIDTH: summary.input.machine.slicing_stripe_width,
         }
 
+    @save_on_return
     def generate_single_bead_permutations(
         self,
         material_name: str,
-        laser_powers: List[float],
-        scan_speeds: List[float],
+        laser_powers: list[float],
+        scan_speeds: list[float],
         bead_length: float = SingleBeadInput.DEFAULT_BEAD_LENGTH,
-        layer_thicknesses: Optional[List[float]] = None,
-        heater_temperatures: Optional[List[float]] = None,
-        beam_diameters: Optional[List[float]] = None,
-        min_area_energy_density: Optional[float] = None,
-        max_area_energy_density: Optional[float] = None,
+        layer_thicknesses: list[float] | None = None,
+        heater_temperatures: list[float] | None = None,
+        beam_diameters: list[float] | None = None,
+        min_area_energy_density: float | None = None,
+        max_area_energy_density: float | None = None,
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
     ):
@@ -364,13 +395,13 @@ class ParametricStudy:
             is used. For more information, see the
             :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
             class.
-        heater_temperatures : List[float], None
+        heater_temperatures : list[float], None
             Heater temperatures (C) to use for single bead simulations.
             The default is ``None``, in which case ``MachineConstants.DEFAULT_HEATER_TEMP``
             is used. For more information, see the
             :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
             class.
-        beam_diameters : List[float], None
+        beam_diameters : list[float], None
             Beam diameters (m) to use for single bead simulations.
             The default is ``None``, in which case``MachineConstants.DEFAULT_BEAM_DIAMETER``
             is used. For more information, see the
@@ -436,7 +467,6 @@ class ParametricStudy:
                             # add row to parametric study data frame
                             row = pd.Series(
                                 {
-                                    ColumnNames.PROJECT: self.project_name,
                                     ColumnNames.ITERATION: iteration,
                                     ColumnNames.PRIORITY: priority,
                                     ColumnNames.TYPE: SimulationType.SINGLE_BEAD,
@@ -459,25 +489,26 @@ class ParametricStudy:
                                 [self._data_frame, row.to_frame().T], ignore_index=True
                             )
 
+    @save_on_return
     def generate_porosity_permutations(
         self,
         material_name: str,
-        laser_powers: List[float],
-        scan_speeds: List[float],
+        laser_powers: list[float],
+        scan_speeds: list[float],
         size_x: float = PorosityInput.DEFAULT_SAMPLE_SIZE,
         size_y: float = PorosityInput.DEFAULT_SAMPLE_SIZE,
         size_z: float = PorosityInput.DEFAULT_SAMPLE_SIZE,
-        layer_thicknesses: Optional[List[float]] = None,
-        heater_temperatures: Optional[List[float]] = None,
-        beam_diameters: Optional[List[float]] = None,
-        start_angles: Optional[List[float]] = None,
-        rotation_angles: Optional[List[float]] = None,
-        hatch_spacings: Optional[List[float]] = None,
-        stripe_widths: Optional[List[float]] = None,
-        min_energy_density: Optional[float] = None,
-        max_energy_density: Optional[float] = None,
-        min_build_rate: Optional[float] = None,
-        max_build_rate: Optional[float] = None,
+        layer_thicknesses: list[float] | None = None,
+        heater_temperatures: list[float] | None = None,
+        beam_diameters: list[float] | None = None,
+        start_angles: list[float] | None = None,
+        rotation_angles: list[float] | None = None,
+        hatch_spacings: list[float] | None = None,
+        stripe_widths: list[float] | None = None,
+        min_energy_density: float | None = None,
+        max_energy_density: float | None = None,
+        min_build_rate: float | None = None,
+        max_build_rate: float | None = None,
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
     ):
@@ -640,7 +671,6 @@ class ParametricStudy:
                                             # add row to parametric study data frame
                                             row = pd.Series(
                                                 {
-                                                    ColumnNames.PROJECT: self.project_name,
                                                     ColumnNames.ITERATION: iteration,
                                                     ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.POROSITY,
@@ -670,11 +700,12 @@ class ParametricStudy:
                                                 ignore_index=True,
                                             )
 
+    @save_on_return
     def generate_microstructure_permutations(
         self,
         material_name: str,
-        laser_powers: List[float],
-        scan_speeds: List[float],
+        laser_powers: list[float],
+        scan_speeds: list[float],
         min_x: float = MicrostructureInput.DEFAULT_POSITION_COORDINATE,
         min_y: float = MicrostructureInput.DEFAULT_POSITION_COORDINATE,
         min_z: float = MicrostructureInput.DEFAULT_POSITION_COORDINATE,
@@ -682,22 +713,22 @@ class ParametricStudy:
         size_y: float = MicrostructureInput.DEFAULT_SAMPLE_SIZE,
         size_z: float = MicrostructureInput.DEFAULT_SAMPLE_SIZE,
         sensor_dimension: float = MicrostructureInput.DEFAULT_SENSOR_DIMENSION,
-        layer_thicknesses: Optional[List[float]] = None,
-        heater_temperatures: Optional[List[float]] = None,
-        beam_diameters: Optional[List[float]] = None,
-        start_angles: Optional[List[float]] = None,
-        rotation_angles: Optional[List[float]] = None,
-        hatch_spacings: Optional[List[float]] = None,
-        stripe_widths: Optional[List[float]] = None,
-        min_energy_density: Optional[float] = None,
-        max_energy_density: Optional[float] = None,
-        min_build_rate: Optional[float] = None,
-        max_build_rate: Optional[float] = None,
-        cooling_rate: Optional[float] = None,
-        thermal_gradient: Optional[float] = None,
-        melt_pool_width: Optional[float] = None,
-        melt_pool_depth: Optional[float] = None,
-        random_seed: Optional[int] = None,
+        layer_thicknesses: list[float] | None = None,
+        heater_temperatures: list[float] | None = None,
+        beam_diameters: list[float] | None = None,
+        start_angles: list[float] | None = None,
+        rotation_angles: list[float] | None = None,
+        hatch_spacings: list[float] | None = None,
+        stripe_widths: list[float] | None = None,
+        min_energy_density: float | None = None,
+        max_energy_density: float | None = None,
+        min_build_rate: float | None = None,
+        max_build_rate: float | None = None,
+        cooling_rate: float | None = None,
+        thermal_gradient: float | None = None,
+        melt_pool_width: float | None = None,
+        melt_pool_depth: float | None = None,
+        random_seed: int | None = None,
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
     ):
@@ -756,64 +787,64 @@ class ParametricStudy:
             The default is ``None``, in which case ``MachineConstants.DEFAULT_STARTING_LAYER_ANGLE``
             is used. For more information, see the
             :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
-        rotation_angles : List[float], None
+        rotation_angles : list[float], None
             Angles (deg) by which the scan direction is rotated with each layer
             to use for microstructure simulations.
             If None, ``MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE`` is used.
             See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        hatch_spacings : Optional[List[float]]
+        hatch_spacings : list[float] | None
             Hatch spacings (m) to use for microstructure simulations.
             If None, ``MachineConstants.DEFAULT_HATCH_SPACING`` is used.
             See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        stripe_widths : Optional[List[float]]
+        stripe_widths : list[float] | None
             Stripe widths (m) to use for microstructure simulations.
             If None, ``MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH`` is used.
             See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        min_energy_density : Optional[float]
+        min_energy_density : float | None
             The minimum energy density (J/m^3) to use for microstructure simulations.
             Parameter combinations with an area energy density below this value will
             not be included.
             Area energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
-        max_energy_density : Optional[float]
+        max_energy_density : float | None
             The maximum energy density (J/m^3) to use for microstructure simulations.
             Parameter combinations with an area energy density above this value will
             not be included.
             Energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
-        min_build_rate : Optional[float]
+        min_build_rate : float | None
             The minimum build rate (m^3/s) to use for microstructure simulations.
             Parameter combinations with a build rate below this value will
             not be included.
             Build rate is defined as layer thickness * scan speed * hatch spacing.
-        max_build_rate : Optional[float]
+        max_build_rate : float | None
             The maximum build rate (m^3/s) to use for microstructure simulations.
             Parameter combinations with a build rate above this value will
             not be included.
             Build rate is defined as layer thickness * scan speed * hatch spacing.
-        cooling_rate : Optional[float]
+        cooling_rate : float | None
             The cooling rate (K/s) to use for microstructure simulations.
             If None, and ``thermal_gradient``, ``melt_pool_width``, and ``melt_pool_depth``
             are None, it will be calculated. If None and any of the other three parameters
             are not None, it will be set to ``MicrostructureInput.DEFAULT_COOLING_RATE``.
             See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
-        thermal_gradient : Optional[float]
+        thermal_gradient : float | None
             The thermal gradient (K/m) to use for microstructure simulations.
             If None, and ``cooling_rate``, ``melt_pool_width``, and ``melt_pool_depth``
             are None, it will be calculated. If None and any of the other three parameters
             are not None, it will be set to ``MicrostructureInput.DEFAULT_THERMAL_GRADIENT``.
             See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
-        melt_pool_width : Optional[float]
+        melt_pool_width : float | None
             The melt pool width (m) to use for microstructure simulations.
             If None, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_depth``
             are None, it will be calculated. If None and any of the other three parameters
             are not None, it will be set to ``MicrostructureInput.DEFAULT_MELT_POOL_WIDTH``.
             See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
-        melt_pool_depth : Optional[float]
+        melt_pool_depth : float | None
             The melt pool depth (m) to use for microstructure simulations.
             If None, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_width``
             are None, it will be calculated. If None and any of the other three parameters
             are not None, it will be set to ``MicrostructureInput.DEFAULT_MELT_POOL_DEPTH``.
             See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
-        random_seed : Optional[int]
+        random_seed : int | None
             The random seed to use for microstructure simulations. If None,
             an automatically generated random seed will be used.
             Valid values are between 1 and 2^31 - 1.
@@ -936,7 +967,6 @@ class ParametricStudy:
                                             # add row to parametric study data frame
                                             row = pd.Series(
                                                 {
-                                                    ColumnNames.PROJECT: self.project_name,
                                                     ColumnNames.ITERATION: iteration,
                                                     ColumnNames.PRIORITY: priority,
                                                     ColumnNames.TYPE: SimulationType.MICROSTRUCTURE,
@@ -985,9 +1015,8 @@ class ParametricStudy:
                                                 ignore_index=True,
                                             )
 
-    def update(
-        self, summaries: List[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary]]
-    ):
+    @save_on_return
+    def update(self, summaries: list[SingleBeadSummary | PorositySummary | MicrostructureSummary]):
         """Update the results of simulations in the parametric study.
 
         This method updates values for existing simulations in the parametric study. To add
@@ -995,7 +1024,7 @@ class ParametricStudy:
 
         Parameters
         ----------
-        summaries : list[Union[SingleBeadSummary, PorositySummary, MicrostructureSummary, SimulationError]]
+        summaries : list[SingleBeadSummary | PorositySummary | MicrostructureSummary | SimulationError]
             List of simulation summaries to use for updating the parametric study.
         """
         for summary in summaries:
@@ -1072,9 +1101,10 @@ class ParametricStudy:
         self._data_frame.loc[idx, ColumnNames.XZ_AVERAGE_GRAIN_SIZE] = summary.xz_average_grain_size
         self._data_frame.loc[idx, ColumnNames.YZ_AVERAGE_GRAIN_SIZE] = summary.yz_average_grain_size
 
+    @save_on_return
     def add_inputs(
         self,
-        inputs: List[Union[SingleBeadInput, PorosityInput, MicrostructureInput]],
+        inputs: list[SingleBeadInput | PorosityInput | MicrostructureInput],
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
         status: SimulationStatus = SimulationStatus.PENDING,
@@ -1083,7 +1113,7 @@ class ParametricStudy:
 
         Parameters
         ----------
-        inputs : list[Union[SingleBeadInput, PorosityInput, MicrostructureInput]]
+        inputs : list[SingleBeadInput | PorosityInput | MicrostructureInput]
             List of simulation inputs to add to the parametric study.
 
         iteration : int, DEFAULT_ITERATION
@@ -1122,7 +1152,6 @@ class ParametricStudy:
                 print(f"Invalid simulation input type: {type(input)}")
                 continue
 
-            dict[ColumnNames.PROJECT] = self.project_name
             dict[ColumnNames.ITERATION] = iteration
             dict[ColumnNames.PRIORITY] = priority
             dict[ColumnNames.ID] = self._create_unique_id(id=input.id)
@@ -1142,12 +1171,13 @@ class ParametricStudy:
                 [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
             )
 
-    def remove(self, ids: Union[str, List[str]]):
+    @save_on_return
+    def remove(self, ids: str | list[str]):
         """Remove simulations from the parametric study.
 
         Parameters
         ----------
-        ids : Union[str, List[str]]
+        ids : str | list[str]
             One or more ID field values for the rows to remove.
         """
         if isinstance(ids, str):
@@ -1155,12 +1185,13 @@ class ParametricStudy:
         idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)].tolist()
         self._data_frame.drop(index=idx, inplace=True)
 
-    def set_status(self, ids: Union[str, List[str]], status: SimulationStatus):
+    @save_on_return
+    def set_status(self, ids: str | list[str], status: SimulationStatus):
         """Set the status of simulations in the parametric study.
 
         Parameters
         ----------
-        index : Union[int, List[int]]
+        ids : str | list[str]
             One or more IDs of the simulations to update.
 
         status : SimulationStatus
@@ -1171,12 +1202,13 @@ class ParametricStudy:
         idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)]
         self._data_frame.loc[idx, ColumnNames.STATUS] = status
 
-    def set_priority(self, ids: Union[str, List[str]], priority: int):
+    @save_on_return
+    def set_priority(self, ids: str | list[str], priority: int):
         """Set the priority of simulations in the parametric study.
 
         Parameters
         ----------
-        index : Union[int, List[int]]
+        ids : str | list[str]
             One or more IDs of the simulations to update.
 
         priority : int
@@ -1187,12 +1219,13 @@ class ParametricStudy:
         idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)]
         self._data_frame.loc[idx, ColumnNames.PRIORITY] = priority
 
-    def set_iteration(self, ids: Union[str, List[str]], iteration: int):
+    @save_on_return
+    def set_iteration(self, ids: str | list[str], iteration: int):
         """Set the iteration of simulations in the parametric study.
 
         Parameters
         ----------
-        index : Union[int, List[int]]
+        ids : str | list[str]
             One or more IDs of the simulations to update.
 
         iteration : int
@@ -1203,7 +1236,7 @@ class ParametricStudy:
         idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)]
         self._data_frame.loc[idx, ColumnNames.ITERATION] = iteration
 
-    def _create_unique_id(self, prefix: Optional[str] = None, id: Optional[str] = None) -> str:
+    def _create_unique_id(self, prefix: str | None = None, id: str | None = None) -> str:
         """Create a unique simulation ID for a permutation.
 
         Parameters
@@ -1229,6 +1262,7 @@ class ParametricStudy:
             uid = f"{_prefix}_{misc.short_uuid()}"
         return uid
 
+    @save_on_return
     def clear(self):
         """Remove all permutations from the parametric study."""
         self._data_frame = self._data_frame[0:0]

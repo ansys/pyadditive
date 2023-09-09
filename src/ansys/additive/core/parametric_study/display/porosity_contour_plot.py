@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Tuple
+from __future__ import annotations
 
 import numpy as np
 import pandas as pd
@@ -32,6 +32,7 @@ from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
 
 from ._common_controls import _common_controls
 
+# Initialize panel for plotly.
 pn.extension("plotly")
 
 
@@ -233,7 +234,7 @@ def __update_plot(
 
 def __contour_data(
     df: pd.DataFrame, ht: float, lt: float, bd: float, sa: float, ra: float, hs: float, sw: float
-) -> Tuple[list, list, list, list]:
+) -> tuple[list, list, list, list]:
     """Returns lists of scan speed, laser power, build rate, and relative
     density values."""
 

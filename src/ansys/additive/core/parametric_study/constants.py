@@ -28,8 +28,6 @@ class ColumnNames:
     <pandas.DataFrame>`. Column name definitions follow.
     """
 
-    #: Name of the parametric summary project.
-    PROJECT = "Project"
     #: Iteration number, which is useful for tracking the sequence of simulation groups.
     ITERATION = "Iteration"
     #: Priority value used to determine execution order.

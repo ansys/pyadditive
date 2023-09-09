@@ -15,7 +15,19 @@ Files: doc/*
 Copyright: 2023 ANSYS, Inc. and/or its affiliates.
 License: MIT
 
+Files: notebooks/*
+Copyright: 2023 ANSYS, Inc. and/or its affiliates.
+License: MIT
+
 Files: docker/*
+Copyright: 2023 ANSYS, Inc. and/or its affiliates.
+License: MIT
+
+Files: LICENSES/*
+Copyright: 2023 ANSYS, Inc. and/or its affiliates.
+License: MIT
+
+Files: tests/*
 Copyright: 2023 ANSYS, Inc. and/or its affiliates.
 License: MIT
 
@@ -32,6 +44,10 @@ Copyright: 2023 ANSYS, Inc. and/or its affiliates.
 License: MIT
 
 Files: .pre-commit-config.yaml
+Copyright: 2023 ANSYS, Inc. and/or its affiliates.
+License: MIT
+
+Files: .pre-commit-hooks.yaml
 Copyright: 2023 ANSYS, Inc. and/or its affiliates.
 License: MIT
 
@@ -64,17 +80,5 @@ Copyright: 2023 ANSYS, Inc. and/or its affiliates.
 License: MIT
 
 Files: tox.ini
-Copyright: 2023 ANSYS, Inc. and/or its affiliates.
-License: MIT
-
-Files: *.json
-Copyright: 2023 ANSYS, Inc. and/or its affiliates.
-License: MIT
-
-Files: *.csv
-Copyright: 2023 ANSYS, Inc. and/or its affiliates.
-License: MIT
-
-Files: *.zip
 Copyright: 2023 ANSYS, Inc. and/or its affiliates.
 License: MIT
