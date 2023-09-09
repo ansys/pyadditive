@@ -20,12 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import numpy as np
-
-from ansys.additive.core import Additive, SimulationStatus, SimulationType
-from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
-import ansys.additive.core.parametric_study.display as display
-
 """
 Parametric study
 ================
@@ -39,10 +33,16 @@ class is used to conduct a parametric study. This is not required but
 
 Units are SI (m, kg, s, K) unless otherwise noted.
 """
+
 ###############################################################################
-# Perform required import and create a study
+# Perform required imports and create a study
 # ------------------------------------------
 # Perform the required import and create a ``ParametricStudy``.
+import numpy as np
+
+from ansys.additive.core import Additive, SimulationStatus, SimulationType
+from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
+import ansys.additive.core.parametric_study.display as display
 
 study = ParametricStudy("demo-study")
 
