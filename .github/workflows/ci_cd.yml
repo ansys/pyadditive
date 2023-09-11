@@ -13,7 +13,8 @@ env:
   MAIN_PYTHON_VERSION: "3.10"
   DOCUMENTATION_CNAME: "additive.docs.pyansys.com"
   LIBRARY_NAME: "ansys-additive-core"
-  ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys/additive:latest"
+  # NOTE: The server needs to stay in a private registry.
+  ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys-internal/additive:latest"
   ANSYS_PRODUCT_CONTAINER: "ansys-additive-container"
 
 concurrency:

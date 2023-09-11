@@ -406,7 +406,7 @@ class MicrostructureInput:
         """Melt pool depth (m).
 
         This is the depth of the melt pool as measured from the top of the powder layer,
-        which corresponds to the ``DEPTH``value in the
+        which corresponds to the ``DEPTH`` value in the
         :class:`MeltPoolColumnNames <ansys.additive.core.single_bead.MeltPoolColumnNames>`
         class.
 

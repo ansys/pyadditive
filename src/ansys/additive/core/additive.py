@@ -46,7 +46,7 @@ from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTun
 from ansys.additive.core.microstructure import MicrostructureSummary
 import ansys.additive.core.misc as misc
 from ansys.additive.core.porosity import PorositySummary
-from ansys.additive.core.progress_logger import ProgressLogger, ProgressState
+from ansys.additive.core.progress_logger import ProgressLogger
 from ansys.additive.core.server_utils import find_open_port, launch_server
 from ansys.additive.core.simulation import SimulationError
 from ansys.additive.core.single_bead import SingleBeadSummary
