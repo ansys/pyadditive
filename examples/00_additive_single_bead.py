@@ -99,6 +99,8 @@ input = pyadditive.SingleBeadInput(
 # :class:`MeltPool <ansys.additive.core.single_bead.MeltPool>` object.
 
 summary = additive.simulate(input)
+if isinstance(summary, pyadditive.SimulationError):
+    raise Exception(summary.message)
 
 ###############################################################################
 # Plot melt pool statistics
