@@ -215,9 +215,7 @@ class Additive:
         try:
             response = self._about_stub.About(Empty())
         except grpc.RpcError as exc:
-            print(f"Failed to connect to server: {self._channel_str}")
-            print(exc)
-            return
+            raise Exception(f"Failed to connect to server: {self._channel_str}\n{exc}")
         print(f"Server {self._channel_str}")
         for key in response.metadata:
             value = response.metadata[key]

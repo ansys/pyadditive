@@ -78,11 +78,6 @@ jobs:
     runs-on: ubuntu-latest-8-cores
     needs: [doc-style]
     steps:
-      - name: "Install system dependencies"
-        run: |
-          sudo apt-get update
-          sudo apt-get install pandoc
-
       - name: "Login into the GitHub registry container"
         uses: docker/login-action@v2
         with:
@@ -112,7 +107,7 @@ jobs:
         uses: ansys/actions/doc-build@v4
         with:
           checkout: false
-          sphinxopts: "-j auto"
+          sphinxopts: "-j 1"
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
