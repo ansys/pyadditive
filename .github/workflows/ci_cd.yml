@@ -93,9 +93,11 @@ jobs:
         run: |
           docker run --detach \
             --name ${{ env.ANSYS_PRODUCT_CONTAINER }} \
-            -e ANSYSLMD_LICENSE_FILE=1055@${{ secrets.LICENSE_SERVER }} \
+            -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} \
             -p 50052:50052 \
             ${{ env.ANSYS_PRODUCT_IMAGE }}
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
 
       - name: "Setup headless display"
         uses: pyvista/setup-headless-display-action@v2
@@ -108,6 +110,7 @@ jobs:
         with:
           checkout: false
           sphinxopts: "-j 1"
+          dependencies: "pandoc"
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
