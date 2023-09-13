@@ -13,7 +13,7 @@ env:
   MAIN_PYTHON_VERSION: "3.10"
   DOCUMENTATION_CNAME: "additive.docs.pyansys.com"
   LIBRARY_NAME: "ansys-additive-core"
-  ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys-internal/additive:24.1.0-alpha7"
+  ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys-internal/additive:24.1.0-alpha6"
   ANSYS_PRODUCT_CONTAINER: "ansys-additive-container"
 
 concurrency:
