@@ -136,6 +136,7 @@ jobs:
           docker rm ${{ env.ANSYS_PRODUCT_CONTAINER }}
 
       - name: "Upload container logs as artifacts"
+        if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: docker-logs.txt
