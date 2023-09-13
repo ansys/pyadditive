@@ -14,7 +14,7 @@ env:
   DOCUMENTATION_CNAME: "additive.docs.pyansys.com"
   LIBRARY_NAME: "ansys-additive-core"
   # NOTE: The server needs to stay in a private registry.
-  ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys-internal/additive:latest"
+  ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys-internal/additive:24.1.0-alpha8"
   ANSYS_PRODUCT_CONTAINER: "ansys-additive-container"
 
 concurrency:
@@ -90,8 +90,10 @@ jobs:
           docker pull ${{ env.ANSYS_PRODUCT_IMAGE }}
 
       - name: "Start product server"
+        # Don't use --rm flag. The container is removed in a later step
+        # after collecting the logs.
         run: |
-          docker run --rm --detach \
+          docker run --detach \
             --name ${{ env.ANSYS_PRODUCT_CONTAINER }} \
             -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} \
             -p 50052:50052 \
