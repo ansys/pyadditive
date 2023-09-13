@@ -91,7 +91,7 @@ jobs:
 
       - name: "Start product server"
         run: |
-          docker run --detach \
+          docker run --rm --detach \
             --name ${{ env.ANSYS_PRODUCT_CONTAINER }} \
             -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} \
             -p 50052:50052 \

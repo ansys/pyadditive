@@ -90,7 +90,6 @@ class Additive:
         self._materials_stub = MaterialsServiceStub(self._channel)
         self._simulation_stub = SimulationServiceStub(self._channel)
         self._about_stub = AboutServiceStub(self._channel)
-        self.about()
 
         # Setup data directory
         self._user_data_path = USER_DATA_PATH
