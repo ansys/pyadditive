@@ -9,7 +9,7 @@
 #
 services:
   backend:
-    image: ghcr.io/pyansys/additive:latest
+    image: ghcr.io/ansys-internal/additive:latest
     ports:
       - "50052:50052"
     # volumes:

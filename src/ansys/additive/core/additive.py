@@ -46,7 +46,7 @@ from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTun
 from ansys.additive.core.microstructure import MicrostructureSummary
 import ansys.additive.core.misc as misc
 from ansys.additive.core.porosity import PorositySummary
-from ansys.additive.core.progress_logger import ProgressLogger, ProgressState
+from ansys.additive.core.progress_logger import ProgressLogger
 from ansys.additive.core.server_utils import find_open_port, launch_server
 from ansys.additive.core.simulation import SimulationError
 from ansys.additive.core.single_bead import SingleBeadSummary
@@ -90,7 +90,6 @@ class Additive:
         self._materials_stub = MaterialsServiceStub(self._channel)
         self._simulation_stub = SimulationServiceStub(self._channel)
         self._about_stub = AboutServiceStub(self._channel)
-        self.about()
 
         # Setup data directory
         self._user_data_path = USER_DATA_PATH
@@ -215,9 +214,7 @@ class Additive:
         try:
             response = self._about_stub.About(Empty())
         except grpc.RpcError as exc:
-            print(f"Failed to connect to server: {self._channel_str}")
-            print(exc)
-            return
+            raise Exception(f"Failed to connect to server: {self._channel_str}\n{exc}")
         print(f"Server {self._channel_str}")
         for key in response.metadata:
             value = response.metadata[key]

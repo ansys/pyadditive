@@ -154,7 +154,7 @@ Installing PyAdditive in developer mode allows you to modify the source code and
 
 .. note::
    Before contributing to PyAdditive, see the `Contributing <https://dev.docs.pyansys.com/how-to/contributing.html>`_ topic
-in the *PyAnsys Developer's Guide*. You should be thoroughly familiar with this guide.
+   in the *PyAnsys Developer's Guide*. You should be thoroughly familiar with this guide.
 
 To install PyAdditive in developer mode, perform these steps:
 
@@ -362,4 +362,3 @@ the building requirements and then executing the build module:
 .. _pytest: https://docs.pytest.org/en/stable/
 .. _Sphinx: https://www.sphinx-doc.org/en/master/
 .. _tox: https://tox.wiki/
-

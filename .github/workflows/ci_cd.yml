@@ -13,7 +13,8 @@ env:
   MAIN_PYTHON_VERSION: "3.10"
   DOCUMENTATION_CNAME: "additive.docs.pyansys.com"
   LIBRARY_NAME: "ansys-additive-core"
-  ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys/additive:latest"
+  # NOTE: The server needs to stay in a private registry.
+  ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys-internal/additive:24.1.0-alpha10"
   ANSYS_PRODUCT_CONTAINER: "ansys-additive-container"
 
 concurrency:
@@ -74,14 +75,9 @@ jobs:
 
   doc-build:
     name: "Building library documentation"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-8-cores
     needs: [doc-style]
     steps:
-      - name: "Install system dependencies"
-        run: |
-          sudo apt-get update
-          sudo apt-get install pandoc
-
       - name: "Login into the GitHub registry container"
         uses: docker/login-action@v2
         with:
@@ -94,12 +90,16 @@ jobs:
           docker pull ${{ env.ANSYS_PRODUCT_IMAGE }}
 
       - name: "Start product server"
+        # Don't use --rm flag. The container is removed in a later step
+        # after collecting the logs.
         run: |
           docker run --detach \
             --name ${{ env.ANSYS_PRODUCT_CONTAINER }} \
-            -e ANSYSLMD_LICENSE_FILE=1055@${{ secrets.LICENSE_SERVER }} \
+            -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} \
             -p 50052:50052 \
             ${{ env.ANSYS_PRODUCT_IMAGE }}
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
 
       - name: "Setup headless display"
         uses: pyvista/setup-headless-display-action@v2
@@ -111,7 +111,8 @@ jobs:
         uses: ansys/actions/doc-build@v4
         with:
           checkout: false
-          sphinxopts: "-j auto"
+          sphinxopts: "-j 1"
+          dependencies: "pandoc"
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
@@ -135,6 +136,7 @@ jobs:
           docker rm ${{ env.ANSYS_PRODUCT_CONTAINER }}
 
       - name: "Upload container logs as artifacts"
+        if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: docker-logs.txt

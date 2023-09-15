@@ -36,10 +36,22 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 
 import matplotlib.pyplot as plt
 
-import ansys.additive.core as pyadditive
-from ansys.additive.core import MeltPoolColumnNames
+from ansys.additive.core import (
+    Additive,
+    AdditiveMachine,
+    MeltPoolColumnNames,
+    SimulationError,
+    SingleBeadInput,
+)
 
-additive = pyadditive.Additive()
+additive = Additive()
+
+###############################################################################
+# Get server connection information
+# ---------------------------------
+# Get server connection information using the :meth:`about <Additive.about>` method.
+
+print(additive.about())
 
 ###############################################################################
 # Select material
@@ -66,7 +78,7 @@ material = additive.get_material("17-4PH")
 # then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
-machine = pyadditive.AdditiveMachine()
+machine = AdditiveMachine()
 
 # Show available parameters
 print(machine)
@@ -85,7 +97,7 @@ machine.laser_power = 300  # W
 # Create a :class:`SingleBeadInput <ansys.additive.core.single_bead.SingleBeadInput>`
 # object containing the desired simulation parameters.
 
-input = pyadditive.SingleBeadInput(
+input = SingleBeadInput(
     machine=machine, material=material, id="single-bead-example", bead_length=0.0012  # meters
 )
 
@@ -99,6 +111,8 @@ input = pyadditive.SingleBeadInput(
 # :class:`MeltPool <ansys.additive.core.single_bead.MeltPool>` object.
 
 summary = additive.simulate(input)
+if isinstance(summary, SimulationError):
+    raise Exception(summary.message)
 
 ###############################################################################
 # Plot melt pool statistics

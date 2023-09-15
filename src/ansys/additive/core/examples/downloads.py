@@ -59,7 +59,6 @@ def decompress(filename, subdir=None) -> str:
     subdir : str, None
         Name of the subdirectory of the ``examples`` directory
         to extract the ZIP file contents to. The default is ``None``.
-
     Returns
     -------
     str
@@ -90,7 +89,6 @@ def _retrieve_file(url, filename) -> tuple[str, HTTPMessage]:
        URL for the example data file.
     filename : str
        Name for the example data file.
-
     Returns
     -------
     str: Local path file was downloaded to.

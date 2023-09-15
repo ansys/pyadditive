@@ -2,7 +2,6 @@
 from datetime import datetime
 import os
 from pathlib import Path
-import re
 import warnings
 
 from ansys_sphinx_theme import (
@@ -97,9 +96,9 @@ html_context = {
 
 # Sphinx extensions
 extensions = [
+    "enum_tools.autoenum",
     "jupyter_sphinx",
     "notfound.extension",
-    "enum_tools.autoenum",
     "numpydoc",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
@@ -124,7 +123,7 @@ intersphinx_mapping = {
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
     "pyvista": ("https://docs.pyvista.org/", None),
     "pypim": ("https://pypim.docs.pyansys.com/version/stable", None),
-    # "panel": ("https://panel.holoviz.org/", None),
+    "panel": ("https://panel.holoviz.org/", None),
 }
 
 # List of patterns, relative to source directory, that match files and
@@ -235,7 +234,7 @@ if BUILD_EXAMPLES is True:
     if not BUILD_EXAMPLES_LONG:
         ignore_patterns.extend(
             [
-                "*advanced*.py",
+                ".*advanced.*",
             ]
         )
 
@@ -258,11 +257,12 @@ if BUILD_EXAMPLES is True:
         # Modules for which function level galleries are created.
         "doc_module": "ansys-additive-core",
         "image_scrapers": ("pyvista", "matplotlib"),
-        "ignore_pattern": r"\b(" + "|".join(map(re.escape, ignore_patterns)) + r")\b",
+        "ignore_pattern": r"\b(" + "|".join(ignore_patterns) + r")\b",
         "thumbnail_size": (350, 350),
         # Set plot_gallery to False for building docs without running examples.
         # "plot_gallery": False,
     }
+    print(f"sphinx_gallery_conf {sphinx_gallery_conf}")
 
 jinja_contexts = {
     "main_toctree": {
