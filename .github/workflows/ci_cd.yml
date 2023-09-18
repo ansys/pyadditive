@@ -79,7 +79,7 @@ jobs:
     needs: [doc-style]
     steps:
       - name: "Login into the GitHub registry container"
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
