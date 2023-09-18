@@ -111,7 +111,7 @@ jobs:
         uses: ansys/actions/doc-build@v4
         with:
           checkout: false
-          sphinxopts: "-j 1"
+          sphinxopts: "-j auto"
           dependencies: "pandoc"
         env:
           GENERATING_DOCS: 1
