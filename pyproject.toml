@@ -76,7 +76,7 @@ doc = [
     "numpydoc==1.5.0",
     "panel==1.2.2",
     "pypandoc==1.8.1",
-    "pyvista==0.42.1",
+    "pyvista==0.42.2",
     "sphinx==7.2.5",
     "sphinx-autoapi==2.1.1",
     # "sphinx-autoapi @ git+https://github.com/jorgepiloto/sphinx-autoapi@feat/single-page-option",
