@@ -53,7 +53,7 @@ tests = [
     "googleapis-common-protos==1.60.0",
     "grpcio==1.57.0",
     "grpcio-health-checking==1.48.2",
-    "numpy==1.25.2; python_version=='3.8'",
+    "numpy==1.26.0; python_version=='3.8'",
     "numpy==1.25.2; python_version>'3.8'",
     "pandas==2.1.0",
     "panel==1.2.2",
