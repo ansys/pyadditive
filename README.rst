@@ -97,5 +97,5 @@ To reach the project support team, email `pyansys.core@ansys.com <mailto:pyansys
 .. LINKS AND REFERENCES
 .. _Ansys Additive: https://www.ansys.com/products/additive
 .. _Getting Started: https://additive.docs.pyansys.com/version/stable/getting_started/index.html
-.. _Examples: https://additive.docs.pyansys.com/version/dev/examples/gallery_examples/index.html
+.. _Examples: https://additive.docs.pyansys.com/version/stable/examples/gallery_examples/index.html
 .. _PyAdditive documentation: https://additive.docs.pyansys.com/version/stable/index.html
