@@ -126,3 +126,11 @@ minversion = "7.1"
 addopts = "-ra --cov=ansys.additive.core --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --cov-fail-under 90"
 testpaths = ["tests"]
 filterwarnings = ["ignore:::.*protoc_gen_swagger*"]
+
+[tool.interrogate]
+ignore-semiprivate = true
+ignore-private = true
+ignore-setters = true
+ignore-module = true
+ignore-magic = true
+verbose = 1
