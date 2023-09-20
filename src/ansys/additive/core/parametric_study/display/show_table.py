@@ -20,12 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Tuple
+from __future__ import annotations
+
+import os
 
 import pandas as pd
 import panel as pn
 
 from ansys.additive.core import SimulationStatus, SimulationType
+from ansys.additive.core.misc import short_uuid
 from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
 
 # global variables
@@ -91,10 +94,14 @@ def show_table(ps: ParametricStudy, page_size: int = 10):
         table,
         sizing_mode="stretch_both",
     ).servable()
+    if os.getenv("GENERATING_DOCS"):
+        name = show_table.__name__
+        col.save(f"{name}_{short_uuid()}.png")
+        col.__repr__ = lambda: name
     return col
 
 
-def __init_controls(df: pd.DataFrame) -> Tuple[pn.widgets.MultiSelect, ...]:
+def __init_controls(df: pd.DataFrame) -> tuple[pn.widgets.MultiSelect, ...]:
     iter_options = sorted(df[ColumnNames.ITERATION].unique().tolist())
     pri_options = sorted(df[ColumnNames.PRIORITY].unique().tolist())
     type_options = [

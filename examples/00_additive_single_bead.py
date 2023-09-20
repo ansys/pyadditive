@@ -106,9 +106,10 @@ input = SingleBeadInput(
 # --------------
 # Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>`
 # method of the ``additive`` object to run the simulation. The returned object is a
-# :class:`SingleBeadSummary <ansys.additive.core.single_bead.SingleBeadSummary>`
-# class containing the input and a
-# :class:`MeltPool <ansys.additive.core.single_bead.MeltPool>` object.
+# either a :class:`SingleBeadSummary <ansys.additive.core.single_bead.SingleBeadSummary>`
+# object containing the input and a
+# :class:`MeltPool <ansys.additive.core.single_bead.MeltPool>` or a
+# :class:`SimulationError <ansys.additive.core.simulation.SimulationError>.
 
 summary = additive.simulate(input)
 if isinstance(summary, SimulationError):
@@ -120,7 +121,7 @@ if isinstance(summary, SimulationError):
 # Obtain a :class:`Pandas DataFrame <pandas.DataFrame>` containing the melt pool
 # statistics by using the :meth:`data_frame() <ansys.additive.core.single_bead.MeltPool.data_frame>`
 # property of the ``melt_pool`` attribute of the ``summary`` object. Use the
-# :meth:`plot() <pandas.DataFrame.plot>` method to plot the melt
+# :meth:`DataFrame.plot() <pandas.DataFrame.plot>` method to plot the melt
 # pool dimensions as a function of bead length.
 
 df = summary.melt_pool.data_frame().multiply(1e6)  # convert from meters to microns

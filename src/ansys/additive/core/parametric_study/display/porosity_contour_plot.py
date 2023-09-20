@@ -22,12 +22,15 @@
 
 from __future__ import annotations
 
+import os
+
 import numpy as np
 import pandas as pd
 import panel as pn
 import plotly.graph_objects as go
 
 from ansys.additive.core import SimulationStatus, SimulationType
+from ansys.additive.core.misc import short_uuid
 from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
 
 from ._common_controls import _common_controls
@@ -71,7 +74,7 @@ def porosity_contour_plot(ps: ParametricStudy):
         ra_select,
         hs_select,
         sw_select,
-        max_width=200,
+        width=200,
     )
     plot_view = pn.bind(
         __update_plot,
@@ -91,6 +94,10 @@ def porosity_contour_plot(ps: ParametricStudy):
         pn.pane.Plotly(plot_view, sizing_mode="stretch_both", min_height=600),
         sizing_mode="stretch_both",
     ).servable()
+    if os.getenv("GENERATING_DOCS"):
+        name = porosity_contour_plot.__name__
+        plot.save(f"{name}_{short_uuid()}.png")
+        plot.__repr__ = lambda: name
     return plot
 
 
@@ -100,6 +107,8 @@ def __data_frame(ps: ParametricStudy) -> pd.DataFrame:
         (df[ColumnNames.TYPE] == SimulationType.POROSITY)
         & (df[ColumnNames.STATUS] == SimulationStatus.COMPLETED)
     ]
+    if len(df.index) < 2:
+        raise ValueError("Too few data points to plot")
     # convert build rate from m^3/s to mm^3/s
     df.loc[:, ColumnNames.BUILD_RATE] *= 1e9
     return df
@@ -310,7 +319,7 @@ def __contour_data(
 
 def __scatter_data(
     df: pd.DataFrame, ht: float, lt: float, bd: float, sa: float, ra: float, hs: float, sw: float
-) -> Tuple[list, list, list]:
+) -> tuple[list, list, list]:
     idx = df[
         (df[ColumnNames.LAYER_THICKNESS] == lt)
         & (df[ColumnNames.BEAM_DIAMETER] == bd)

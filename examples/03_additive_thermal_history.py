@@ -34,37 +34,40 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # -----------------------------------
 # Perform the required import and connect to the Additive service.
 
-import ansys.additive.core as pyadditive
+from ansys.additive.core import (
+    Additive,
+    AdditiveMachine,
+    BuildFile,
+    CoaxialAverageSensorInputs,
+    MachineType,
+    Range,
+    SimulationError,
+    StlFile,
+    ThermalHistoryInput,
+)
 
-additive = pyadditive.Additive()
+additive = Additive()
 
 ###############################################################################
 # Select model
 # ------------
 # Select the geometry model. Currently, PyAdditive supports
-# two types of geometry specifications, STL files and build files. In
-# this context, a build file is a ZIP archive that contains an STL file describing the
-# geometry, a machine instruction file, and zero or more STL files describing
-# support structures. For more information on build files, see <TBD>.
+# two types of geometry specifications,
+# :class:`STLFile <ansys.additive.core.geometry_file.StlFile>` and
+# :class:`BuildFile <ansys.additive.core.geometry_file.BuildFile>`.
 #
 # You can download example build and STL files by importing the ``examples``
 # module.
 
 import ansys.additive.core.examples as examples
 
-# Create ``StlFile`` object
-# ~~~~~~~~~~~~~~~~~~~~~~~~~
 # Create an ``StlFile`` object.
-
 stl_name = examples.download_10mm_cube()
-stl_file = pyadditive.StlFile(stl_name)
+stl_file = StlFile(stl_name)
 
-# Create ``BuildFile`` object
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Create a ``BuildFile`` object.
-
+# Or, create a ``BuildFile`` object.
 build_file_name = examples.download_small_wedge_slm_build_file()
-build_file = pyadditive.BuildFile(pyadditive.MachineType.SLM, build_file_name)
+build_file = BuildFile(MachineType.SLM, build_file_name)
 
 ###############################################################################
 # Select material
@@ -86,11 +89,12 @@ material = additive.get_material("17-4PH")
 ###############################################################################
 # Specify machine parameters
 # --------------------------
-# Specify machine parameters by first creating an ``AdditiveMachine`` object
-# and then assigning the desired values. All values are in SI units (m, kg, s, K)
-# unless otherwise noted.
+# Specify machine parameters by first creating an
+# :class:`AdditiveMachine <from ansys.additive.core.machine.AdditiveMachine>`
+# object then assigning the desired values.
+# All values are in SI units (m, kg, s, K) unless otherwise noted.
 
-machine = pyadditive.AdditiveMachine()
+machine = AdditiveMachine()
 
 # Show available parameters
 print(machine)
@@ -106,18 +110,23 @@ machine.laser_power = 500  # W
 ###############################################################################
 # Specify inputs for thermal history simulation
 # ---------------------------------------------
-# Create a ``ThermalHistoryInput`` object containing the desired simulation
-# parameters. The ``ThermalHistoryInput`` object contains ``CoaxialAverageSensorInputs``.
-# ``CoaxialAverageSensorInputs`` consist of a sensor radius and one or more ``Range``
-# of z heights.
+# Thermal history is simulated for the given geometry over a range of heights
+# in the Z dimension. More than one range can be specified. Each range is specified
+# with a :class:`Range <ansys.additive.core.thermal_history.Range>` object.
+# The ranges are assigned to a
+# :class:`CoaxialAverageSensorInputs <ansys.additive.core.thermal_history.CoaxialAverageSensorInputs>`
+# object which also includes a sensor radius. The ``CoaxialAverageSensorInputs`` object
+# is assigned to a
+# :class:`ThermalHistoryInput <ansys.additive.core.thermal_history.ThermalHistoryInput>`
+# object.
 
 # Values are in meters
-sensor_inputs = pyadditive.CoaxialAverageSensorInputs(
+sensor_inputs = CoaxialAverageSensorInputs(
     radius=5e-4,
-    z_heights=[pyadditive.Range(min=1e-3, max=1.1e-3), pyadditive.Range(min=6.5e-3, max=6.6e-3)],
+    z_heights=[Range(min=1e-3, max=1.1e-3), Range(min=6.5e-3, max=6.6e-3)],
 )
 
-input = pyadditive.ThermalHistoryInput(
+input = ThermalHistoryInput(
     machine=machine,
     material=material,
     id="thermal-history-example",
@@ -128,9 +137,16 @@ input = pyadditive.ThermalHistoryInput(
 ###############################################################################
 # Run simulation
 # --------------
-# Use the ``simulate`` method of the ``additive`` object to run the simulation.
+# Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>`
+# method of the ``additive`` object to run the simulation. The returned object is a
+# either a
+# :class:`ThermalHistorySummary <ansys.additive.core.thermal_history.ThemalHistorySummary>`
+# object or a
+# :class:`SimulationError <ansys.additive.core.simulation.SimulationError>.
 
 summary = additive.simulate(input)
+if isinstance(summary, SimulationError):
+    raise Exception(summary.message)
 
 ###############################################################################
 # Plot thermal history

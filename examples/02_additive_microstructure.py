@@ -34,9 +34,9 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # -----------------------------------
 # Perform the required import and connect to the Additive service.
 
-import ansys.additive.core as pyadditive
+from ansys.additive.core import Additive, AdditiveMachine, MicrostructureInput, SimulationError
 
-additive = pyadditive.Additive()
+additive = Additive()
 
 ###############################################################################
 # Select material
@@ -62,7 +62,7 @@ material = additive.get_material("17-4PH")
 # and then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
-machine = pyadditive.AdditiveMachine()
+machine = AdditiveMachine()
 
 # Show available parameters
 print(machine)
@@ -85,7 +85,7 @@ machine.laser_power = 500  # W
 # to running the microstructure solver.
 
 # Specify microstructure inputs with thermal parameters
-input_with_thermal = pyadditive.MicrostructureInput(
+input_with_thermal = MicrostructureInput(
     machine=machine,
     material=material,
     id="micro-with-thermal",
@@ -101,7 +101,7 @@ input_with_thermal = pyadditive.MicrostructureInput(
 )
 
 # Specify microstructure inputs without thermal parameters
-input_without_thermal = pyadditive.MicrostructureInput(
+input_without_thermal = MicrostructureInput(
     machine=machine,
     material=material,
     id="micro-without-thermal",
@@ -115,17 +115,23 @@ input_without_thermal = pyadditive.MicrostructureInput(
 ###############################################################################
 # Run simulation
 # --------------
-# Use the ``simulate`` method of the ``additive`` object to run the simulation.
+# Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>` method of the
+# ``additive`` object to run the simulation. The returned object is either a
+# :class:`MicrostructureSummary <ansys.additive.core.microstructure.MicrostructureSummary>`
+# object or a :class:`SimulationError <ansys.additive.core.simulation.SimulationError>`.
 
 summary = additive.simulate(input_with_thermal)
+if isinstance(summary, SimulationError):
+    raise Exception(summary.message)
 
 ###############################################################################
 # Plot results
 # ------------
-# The microstructure simulation results include three VTK files, one for each
-# of the XY, XZ, and YZ planes. Each file contains data sets for grain
-# orientation, boundaries, and number. In addition, the results include grain
-# statistics. For more information, see the :class:`MicrostructureSummary` class.
+# The :class:`MicrostructureSummary <ansys.additive.core.microstructure.MicrostructureSummary>`
+# includes three VTK files, one for each of the XY, XZ, and YZ planes. Each VTK file
+# contains data sets for grain orientation, boundaries, and number. In addition,
+# :class:`MicrostructureSummary <ansys.additive.core.microstructure.MicrostructureSummary>`
+# includes circle equivalence data and average grain size for each plane.
 
 from matplotlib import colors
 from matplotlib.colors import LinearSegmentedColormap as colorMap

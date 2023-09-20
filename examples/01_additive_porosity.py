@@ -33,9 +33,9 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # -----------------------------------
 # Perform the required import and connect to the Additive service.
 
-import ansys.additive.core as pyadditive
+from ansys.additive.core import Additive, AdditiveMachine, PorosityInput, SimulationError
 
-additive = pyadditive.Additive()
+additive = Additive()
 
 ###############################################################################
 # Select material
@@ -62,7 +62,7 @@ material = additive.get_material("316L")
 # and then assigning the desired values. All values are in SI units
 # (m, kg, s, K) unless otherwise noted.
 
-machine = pyadditive.AdditiveMachine()
+machine = AdditiveMachine()
 
 # Show available parameters
 print(machine)
@@ -81,7 +81,7 @@ machine.laser_power = 250  # W
 # Create a :class:`PorosityInput <ansys.additive.core.porosity.PorosityInput>` object
 # containing the desired simulation parameters.
 
-input = pyadditive.PorosityInput(
+input = PorosityInput(
     machine=machine,
     material=material,
     id="porosity-example",
@@ -96,13 +96,16 @@ input = pyadditive.PorosityInput(
 # Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>` method
 # on the ``additive`` object to run the simulation. The returned object is a
 # :class:`PorositySummary <ansys.additive.core.porosity.PorositySummary>` object
-# containing the input and the relative density of the simulated sample.
+# containing the input and the relative density of the simulated sample or a
+# :class:`SimulationError <ansys.additive.core.simulation.SimulationError>.
 
 summary = additive.simulate(input)
+if isinstance(summary, SimulationError):
+    raise Exception(summary.message)
 
 ###############################################################################
-# Print results
-# -------------
+# Print relative density
+# ----------------------
 
 print(f"For {summary.input.material.name} with \n", summary.input.machine)
 print(f"\n    relative density = {round(summary.relative_density, 5)}")

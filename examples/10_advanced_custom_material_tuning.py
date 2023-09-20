@@ -38,14 +38,16 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # -----------------------------------
 # Perform the required import and connect to the Additive service.
 
-import ansys.additive.core as pyadditive
+from ansys.additive.core import Additive, MaterialTuningInput
 
-additive = pyadditive.Additive()
+additive = Additive()
 
 ###############################################################################
 # Specify tuning inputs
 # ---------------------
-# The ``MaterialTuningInput`` object contains the paths to the files needed to
+# The
+# :class:`MaterialTuningInput <ansys.additive.core.material_tuning.MaterialTuningInput>`
+# object contains the paths to the files needed to
 # tune a material. The ``experiment_data_file`` is a CSV file containing the
 # results of single bead experiments. The ``material_parameters_file`` is a JSON
 # file containing the material parameters. The ``thermal_properties_lookup_file``
@@ -54,8 +56,8 @@ additive = pyadditive.Additive()
 # the melt pool characteristic width at various laser powers and scan speeds.
 # If the characteristic width lookup file is not specified, it is generated
 # during the tuning process.
-#
-# Download example input files.
+
+# Download the example input files.
 
 import ansys.additive.core.examples as examples
 
@@ -63,9 +65,9 @@ input_files = examples.download_material_tuning_input()
 
 # This code includes the characteristic width lookup file to reduce
 # processing time. If a characteristic width lookup file is not available,
-# the field can be omitted when creating the ``MaterialTuningInput`` object.
+# the field can be omitted when creating the MaterialTuningInput object.
 
-input = pyadditive.MaterialTuningInput(
+input = MaterialTuningInput(
     id="custom-material-tuning",
     experiment_data_file=input_files.experiment_data_file,
     material_parameters_file=input_files.material_parameters_file,
@@ -79,14 +81,16 @@ input = pyadditive.MaterialTuningInput(
 ###############################################################################
 # Perform material tuning
 # ------------------------
-# Use the ``tune_material`` method to perform material tuning.
+# Use the :meth:`tune_material() <ansys.additive.core.additive.Additive.tune_material>`
+# method to perform material tuning.
 
 summary = additive.tune_material(input)
 
 ###############################################################################
 # Review results
 # --------------
-# The ``MaterialTuningSummary`` object contains the results of the material
+# The :class:`MaterialTuningSummary <ansys.additive.core.material_tuning.MaterialTuningSummary>`
+# object contains the results of the material
 # tuning process. These results are used in follow-on steps to calculate the
 # material parameters needed by PyAdditive. For more information, see the
 # Additive documentation referred to earlier.

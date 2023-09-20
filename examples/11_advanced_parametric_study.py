@@ -25,16 +25,15 @@ Parametric study
 
 This example shows how you can use PyAdditive to perform a parametric study.
 The intended audience is a user who desires to optimize additive machine parameters
-to achieve a specific result. Here, the
-:class:`ParametricStudy <ansys.additive.core.parametric_study.ParametricStudy>`
-class is used to conduct a parametric study. This is not required but
-``ParametricStudy`` provides data management and visualization features which ease the task.
+to achieve a specific result. Here, the ``ParametricStudy`` class is used to
+conduct a parametric study. This is not required but ``ParametricStudy``
+provides data management and visualization features which ease the task.
 
 Units are SI (m, kg, s, K) unless otherwise noted.
 """
 ###############################################################################
 # Perform required imports and create a study
-# ------------------------------------------
+# -------------------------------------------
 # Perform the required import and create a ``ParametricStudy``.
 import numpy as np
 
@@ -45,8 +44,8 @@ import ansys.additive.core.parametric_study.display as display
 study = ParametricStudy("demo-study")
 
 ###############################################################################
-# Get study file name
-# -------------------
+# Get the study file name
+# -----------------------
 # The current state of the parametric study is saved to a file upon each
 # update. You can retrieve the name of the file as shown below. This file
 # uses a binary format and is not human readable.
@@ -68,25 +67,23 @@ material = "IN718"
 # Create a single bead evaluation
 # -------------------------------
 # Parametric studies often start with single bead simulations in order to
-# determine melt pool statistics. Here, the
-# :meth:`generate_single_bead_permutations <ParametricStudy.generate_single_bead_permutations`
+# determine melt pool statistics. Here, the ``generate_single_bead_permutations()``
 # method is used to generate single bead simulation permutations. The parameters
-# for ``generate_single_bead_permutations`` allow you to specify a range of
+# for ``generate_single_bead_permutations()`` allow you to specify a range of
 # machine parameters and filter them by energy density. Not all the parameters
 # shown are required. Optional parameters that are not specified will use default
-# values defined in the :class:`MachineConstants <ansys.additive.core.machine.MachineConstants>`
-# class.
+# values defined in the ``MachineConstants`` class.
 
 # Specify a range of laser powers. Valid values are 50 to 700 W.
-initial_powers = np.linspace(50, 700, 3)
+initial_powers = np.linspace(50, 700, 7)
 # Specify a range of laser scan speeds. Valid values are 0.35 to 2.5 m/s.
-initial_scan_speeds = np.linspace(0.35, 2.5, 3)
+initial_scan_speeds = np.linspace(0.35, 2.5, 5)
 # Specify powder layer thicknesses. Valid values are 10e-6 to 100e-6 m.
 initial_layer_thicknesses = [40e-6, 50e-6]
 # Specify laser beam diameters. Valid values are 20e-6 to 140e-6 m.
-initial_beam_diameters = [80e-6, 120e-6]
+initial_beam_diameters = [80e-6]
 # Specify heater temperatures. Valid values are 20 - 500 C.
-initial_heater_temps = [80, 120]
+initial_heater_temps = [80]
 # Restrict the permutations within a range of energy densities
 # For single bead, the energy density is laser power / (laser scan speed * layer thickness).
 min_energy_density = 2e6
@@ -119,9 +116,8 @@ display.show_table(study)
 # ---------------------
 # If you a working with a large parametric study, you may want to skip some
 # simulations to reduce processing time. To do so, set the simulation status
-# to ``SimulationStatus.SKIP``. See
-# :class:`SimulationStatus <ansys.additive.core.simulation.SimulationStatus>`
-# class. Here, a :class:`DataFrame <pandas.DataFrame>` is obtained, a filter is
+# to ``SimulationStatus.SKIP`` which is defined in the ``SimulationStatus``
+# class. Here, a ``Pandas DataFrame`` is obtained, a filter is
 # applied to get a list of simulation IDs, then the status is updated on the
 # simulations with those IDs.
 
@@ -134,28 +130,27 @@ ids = df.loc[
 study.set_status(ids, SimulationStatus.SKIP)
 display.show_table(study)
 
-# ###############################################################################
+###############################################################################
 # Run single bead simulations
 # ---------------------------
-# Run the simulations using :meth:`run_simulations <ParametricStudy.run_simulations>`.
-# All simulations with status ``SimulationStatus.PENDING`` will be executed.
+# Run the simulations using ``run_simulations()``. All simulations with status
+# ``SimulationStatus.PENDING`` will be executed.
 
 study.run_simulations(additive)
 
-# ###############################################################################
-# Save the study to CSV file
-# --------------------------
+###############################################################################
+# Save the study to a CSV file
+# ----------------------------
 # The parametric study is saved with each update in a binary format.
 # For other formats, use the ``to_*`` methods provided by
-# :class:`DataFrame <pandas.DataFrame>`.
+# ``Pandas DataFrame``.
 
 study.data_frame().to_csv("demo-study.csv")
 
-# ###############################################################################
+###############################################################################
 # Load a previously saved study
 # -----------------------------
-# Load a previously saved study using the :meth:`ParameticStudy.load <ParametricStudy.load>`
-# method.
+# Load a previously saved study using the static method ``ParameticStudy.load()``.
 
 study2 = ParametricStudy.load("demo-study.ps")
 display.show_table(study2)
@@ -181,8 +176,8 @@ display.single_bead_eval_plot(study)
 
 df = study.data_frame()
 df = df[
-    (df[ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] >= 0.15)
-    & (df[ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] <= 0.75)
+    (df[ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] >= 0.3)
+    & (df[ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] <= 0.65)
 ]
 
 study.generate_porosity_permutations(
@@ -195,21 +190,21 @@ study.generate_porosity_permutations(
     layer_thicknesses=[40e-6],
     heater_temperatures=[80],
     beam_diameters=[80e-6],
-    start_angles=[0, 45],
-    rotation_angles=[67.5, 23.75],
-    hatch_spacings=[100e-6, 200e-6],
-    min_build_rate=1e-8,
+    start_angles=[45],
+    rotation_angles=[67.5],
+    hatch_spacings=[100e-6, 150e-6],
+    min_build_rate=1.5e-9,
     iteration=1,
 )
 
-# ###############################################################################
+################################################################################
 # Run porosity simulations
 # ------------------------
-# Run the simulations using :meth:`run_simulations <ParametricStudy.run_simulations>`.
+# Run the simulations using ``run_simulations()``.
 
 study.run_simulations(additive)
 
-# ###############################################################################
+###############################################################################
 # Plot porosity results
 # ---------------------
 # Plot the porosity simulation results.
@@ -244,14 +239,14 @@ study.generate_microstructure_permutations(
     iteration=2,
 )
 
-# ###############################################################################
+###############################################################################
 # Run microstructure simulations
-# ------------------------
-# Run the simulations using :meth:`run_simulations <ParametricStudy.run_simulations>`.
+# ------------------------------
+# Run the simulations.
 
 study.run_simulations(additive)
 
-# ###############################################################################
+###############################################################################
 # Plot microstructure results
 # ---------------------------
 # Plot the average grain size from the microstructure simulation results.
