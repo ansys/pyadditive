@@ -122,7 +122,7 @@ jobs:
       # Remove when auto-api is updated
       - name: Install packages for documentation build
         run: |
-          .\.venv\Scripts\Activate.ps1
+          ./.venv/bin/activate
           python -m pip install --upgrade pip
           pip install --upgrade build wheel pandoc
           pip install .[doc]
