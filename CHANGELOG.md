@@ -1,6 +1,6 @@
 # Changelog
 
-## PyAdditive 0.14.0, 2023-08-08
+## PyAdditive 0.14.0, 2023-09-21
 
 ### New features
 
