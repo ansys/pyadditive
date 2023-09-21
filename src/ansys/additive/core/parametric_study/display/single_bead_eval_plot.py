@@ -20,7 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Tuple
+from __future__ import annotations
+
+import os
 
 import numpy as np
 import pandas as pd
@@ -28,6 +30,7 @@ import panel as pn
 import plotly.graph_objects as go
 
 from ansys.additive.core import SimulationStatus, SimulationType
+from ansys.additive.core.misc import short_uuid
 from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
 
 from ._common_controls import _common_controls
@@ -69,7 +72,7 @@ def single_bead_eval_plot(ps: ParametricStudy):
         lt_select,
         ht_select,
         bd_select,
-        max_width=200,
+        width=200,
     )
     plot_view = pn.bind(
         __update_plot,
@@ -85,6 +88,10 @@ def single_bead_eval_plot(ps: ParametricStudy):
         pn.pane.Plotly(plot_view, sizing_mode="stretch_both", min_height=600),
         sizing_mode="stretch_both",
     ).servable()
+    if os.getenv("GENERATING_DOCS"):
+        name = single_bead_eval_plot.__name__
+        plot.save(f"{name}_{short_uuid()}.png")
+        plot.__repr__ = lambda: name
     return plot
 
 
@@ -155,7 +162,7 @@ def __update_plot(
     lt: float,
     bd: float,
     poi: str,
-    range: Tuple[float, float],
+    range: tuple[float, float],
 ) -> go.Figure:
     global _range_slider, _last_poi
     if poi != _last_poi:
@@ -223,8 +230,8 @@ def __update_plot(
 
 
 def __contour_data(
-    df: pd.DataFrame, ht: float, lt: float, bd: float, poi: str, range: Tuple[float, float]
-) -> Tuple[list, list, list]:
+    df: pd.DataFrame, ht: float, lt: float, bd: float, poi: str, range: tuple[float, float]
+) -> tuple[list, list, list]:
     """Get lists of scan speed, laser power, and parameter of interest
     values."""
 
@@ -280,7 +287,7 @@ def __contour_data(
 
 def __scatter_data(
     df: pd.DataFrame, ht: float, lt: float, bd: float, poi: str
-) -> Tuple[list, list, list]:
+) -> tuple[list, list, list]:
     idx = df[
         (df[ColumnNames.LAYER_THICKNESS] == lt)
         & (df[ColumnNames.HEATER_TEMPERATURE] == ht)

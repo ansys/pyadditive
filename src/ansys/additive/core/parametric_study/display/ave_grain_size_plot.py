@@ -22,12 +22,15 @@
 
 from __future__ import annotations
 
+import os
+
 import pandas as pd
 import panel as pn
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 from ansys.additive.core import MachineConstants, SimulationStatus, SimulationType
+from ansys.additive.core.misc import short_uuid
 from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
 
 from ._common_controls import _common_controls
@@ -74,7 +77,7 @@ def ave_grain_size_plot(ps: ParametricStudy):
         ra_select,
         hs_select,
         sw_select,
-        max_width=200,
+        width=200,
     )
     plot_view = pn.bind(
         __update_plot,
@@ -92,6 +95,10 @@ def ave_grain_size_plot(ps: ParametricStudy):
         pn.pane.Plotly(plot_view, sizing_mode="stretch_both", min_height=600),
         sizing_mode="stretch_both",
     ).servable()
+    if os.getenv("GENERATING_DOCS"):
+        name = ave_grain_size_plot.__name__
+        plot.save(f"{name}_{short_uuid()}.png")
+        plot.__repr__ = lambda: name
     return plot
 
 

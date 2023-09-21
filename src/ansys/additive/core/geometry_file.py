@@ -38,9 +38,30 @@ class MachineType(IntEnum):
 
 
 class BuildFile:
-    """Provides the build file description."""
+    """Provides the build file description.
+
+    In the context of PyAdditive, a build file is a Zip archive
+    containing:
+        - One part geometry file in STL format.
+        - Zero or more support geometry files in STL format. Support file
+            names must end in ``*_vless.stl`` for volumeless supports and
+            ``*_solid.stl`` for solid supports.
+        - One or more machine instruction files. The number and type of
+            files depend upon the machine type.
+    These files must be placed in the root of the archive and not
+    under a folder.
+    """
 
     def __init__(self, type: MachineType, path: str):
+        """Initialize a ``BuildFile`` object.
+
+        Parameters
+        ----------
+        type: MachineType
+            Type of machine the build file is for.
+        path: str
+            Path to the build file.
+        """
         if not isinstance(type, MachineType):
             raise ValueError("Invalid machine type")
         if not exists(path):

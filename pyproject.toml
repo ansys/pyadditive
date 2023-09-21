@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-additive-core"
-version = "0.14.dev9"
+version = "0.14.dev10"
 description = "A python client for the Ansys Additive service"
 readme = "README.rst"
 requires-python = ">=3.8,<4"
@@ -75,11 +75,13 @@ doc = [
     "matplotlib==3.7.2",
     "numpydoc==1.5.0",
     "panel==1.2.2",
+    "phantomjs==1.4.1",
     "pypandoc==1.8.1",
     "pyvista==0.42.2",
+    "selenium==4.12.0",
     "sphinx==7.2.5",
     "sphinx-autoapi==2.1.1",
-    # "sphinx-autoapi @ git+https://github.com/jorgepiloto/sphinx-autoapi@feat/single-page-option",
+    # "sphinx-autoapi @ git+https://github.com/ansys/sphinx-autoapi@feat/single-page-option",
     "sphinx-autodoc-typehints==1.24.0",
     "sphinx-copybutton==0.5.2",
     "sphinx-design==0.5.0",

@@ -2,6 +2,7 @@
 from datetime import datetime
 import os
 from pathlib import Path
+import sys
 import warnings
 
 from ansys_sphinx_theme import (
@@ -15,6 +16,10 @@ import pyvista
 from sphinx_gallery.sorting import FileNameSortKey
 
 from ansys.additive.core import __version__
+
+path_root = Path(__file__).parents[0]
+sys.path.append(str(path_root))
+from _utils.png_scraper import PNGScraper
 
 # Manage errors
 pyvista.set_error_output_file("errors.txt")
@@ -46,6 +51,7 @@ copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS, Inc."
 release = version = __version__
 cname = os.getenv("DOCUMENTATION_CNAME", "nocname.com")
+switcher_version = get_version_match(__version__)
 
 REPOSITORY_NAME = "pyadditive"
 USERNAME = "ansys"
@@ -81,7 +87,7 @@ html_theme_options = {
     ],
     "switcher": {
         "json_url": f"https://{cname}/versions.json",
-        "version_match": get_version_match(__version__),
+        "version_match": switcher_version,
     },
     "check_switcher": False,
 }
@@ -124,6 +130,7 @@ intersphinx_mapping = {
     "pyvista": ("https://docs.pyvista.org/", None),
     "pypim": ("https://pypim.docs.pyansys.com/version/stable", None),
     "panel": ("https://panel.holoviz.org/", None),
+    "ansys.additive.core": (f"https://additive.docs.pyansys.com/version/{switcher_version}", None),
 }
 
 # List of patterns, relative to source directory, that match files and
@@ -210,7 +217,7 @@ else:
         "undoc-members",
         "show-inheritance",
         "show-module-summary",
-        "special-members",
+        # "special-members", - don't doc dunder methods
     ]
     autoapi_template_dir = get_autoapi_templates_dir_relative_path(Path(__file__))
     suppress_warnings = ["autoapi.python_import_resolution"]
@@ -256,7 +263,7 @@ if BUILD_EXAMPLES is True:
         "backreferences_dir": None,
         # Modules for which function level galleries are created.
         "doc_module": "ansys-additive-core",
-        "image_scrapers": ("pyvista", "matplotlib"),
+        "image_scrapers": ("pyvista", "matplotlib", PNGScraper()),
         "ignore_pattern": r"\b(" + "|".join(ignore_patterns) + r")\b",
         "thumbnail_size": (350, 350),
         # Set plot_gallery to False for building docs without running examples.

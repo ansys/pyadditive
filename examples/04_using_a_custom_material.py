@@ -38,9 +38,9 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # -----------------------------------
 # Perform the required import and connect to the Additive service.
 
-import ansys.additive.core as pyadditive
+from ansys.additive.core import Additive, AdditiveMachine, SingleBeadInput
 
-additive = pyadditive.Additive()
+additive = Additive()
 
 ###############################################################################
 # Download custom material
@@ -55,8 +55,8 @@ material_files = examples.download_custom_material()
 ###############################################################################
 # Load custom material files
 # --------------------------
-# Use the ``load_material`` method on the ``additive`` object to load the files
-# defining a custom material.
+# Use the :meth:`load_material() <ansys.additive.core.additive.load_material>`
+# method on the ``additive`` object to load the files defining a custom material.
 
 custom_material = additive.load_material(
     parameters_file=material_files.material_parameters_file,
@@ -70,8 +70,8 @@ custom_material = additive.load_material(
 # Once the custom material has been loaded, you can assign it to a simulation input
 # object.
 
-input = pyadditive.SingleBeadInput(
-    machine=pyadditive.AdditiveMachine(),
+input = SingleBeadInput(
+    machine=AdditiveMachine(),
     material=custom_material,
     id="single-bead-simulation",
     bead_length=0.001,  # meters
