@@ -107,26 +107,76 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v4
 
-      - name: "Build documentation with short examples"
-        uses: ansys/actions/doc-build@v4
+      # Remove when auto-api is updated
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          checkout: false
-          sphinxopts: "-j auto"
-          dependencies: "pandoc"
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      # Remove when auto-api is updated
+      - name: Create Python venv
+        run: |
+          python -m venv .venv
+          ./.venv/bin/activate
+
+      # Remove when auto-api is updated
+      - name: Install packages for documentation build
+        run: |
+          .\.venv\Scripts\Activate.ps1
+          python -m pip install --upgrade pip
+          pip install --upgrade build wheel pandoc
+          pip install .[doc]
+          pip uninstall --yes sphinx-autoapi
+          pip install "sphinx-autoapi @ git+https://github.com/ansys/sphinx-autoapi@feat/single-page-option"
+
+      - name: Build the documentation (HTML)
+        run: |
+          ./.venv/bin/activate
+          cd doc
+          make html
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
           BUILD_EXAMPLES_LONG: false
 
-      - name: "Build documentation with long examples"
+      - name: Build the long examples (HTML)
         if: github.event_name == 'push'
-        uses: ansys/actions/doc-build@v4
-        with:
-          checkout: false
-          sphinxopts: "-j auto"
+        run: |
+          ./.venv/bin/activate
+          cd doc
+          make html
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
+          BUILD_EXAMPLES_LONG: true
+
+      - name: Upload HTML documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation-html
+          path: doc/_build/html
+          retention-days: 7
+
+      # - name: "Build documentation with short examples"
+      #   uses: ansys/actions/doc-build@v4
+      #   with:
+      #     checkout: false
+      #     sphinxopts: "-j auto"
+      #     dependencies: "pandoc"
+      #   env:
+      #     GENERATING_DOCS: 1
+      #     ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
+      #     BUILD_EXAMPLES_LONG: false
+
+      # - name: "Build documentation with long examples"
+      #   if: github.event_name == 'push'
+      #   uses: ansys/actions/doc-build@v4
+      #   with:
+      #     checkout: false
+      #     sphinxopts: "-j auto"
+      #   env:
+      #     GENERATING_DOCS: 1
+      #     ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
 
       - name: "Collect logs and shutdown server"
         if: ${{ always() }}
