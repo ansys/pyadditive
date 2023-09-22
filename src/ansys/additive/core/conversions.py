@@ -20,13 +20,38 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+"""Length conversion constants."""
 MM_TO_METER = 0.001
 METER_TO_MM = 1000
 
 
-def celsius_to_kelvin(celsius):
+def celsius_to_kelvin(celsius: float) -> float:
+    """Convert celsius to kelvin.
+
+    Parameters
+    ----------
+    celsius: float
+        Degrees celsius.
+
+    Returns
+    -------
+    float
+        Equivalent degrees in kelvin.
+    """
     return celsius + 273.15
 
 
 def kelvin_to_celsius(kelvin):
+    """Convert degrees kelvin to celsius.
+
+    Parameters
+    ----------
+    kelvin: float
+        Degrees kelvin.
+
+    Returns
+    -------
+    float
+        Equivalent degrees in celsius.
+    """
     return kelvin - 273.15

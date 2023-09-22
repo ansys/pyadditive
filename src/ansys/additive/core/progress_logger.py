@@ -31,11 +31,25 @@ class ProgressLogger:
     """Provides for progress logging."""
 
     def __init__(self, name: str = None) -> None:
+        """Initialize a ``ProgressLogger`` object.
+
+        Parameters
+        ----------
+        name: str
+            Name of the logger.
+        """
         self._log = logging.getLogger(name)
         self._last_percent_complete = 0
         self._last_context = "Initializing"
 
     def log_progress(self, progress: Progress):
+        """Log progress.
+
+        Parameters
+        ----------
+        progress: :class:`Progress <Progress>`
+            Latest progress.
+        """
         if getenv("GENERATING_DOCS"):
             # Don't send  progress when generating docs
             return

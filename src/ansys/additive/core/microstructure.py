@@ -100,6 +100,8 @@ class MicrostructureInput:
         machine: AdditiveMachine = AdditiveMachine(),
         material: AdditiveMaterial = AdditiveMaterial(),
     ):
+        """Initialize a ``MicrostructureInput`` object."""
+
         # we have a circular dependency here, so we validate sensor_dimension
         # and sample_size_* then assign them without calling the setters
         self.__validate_range(
@@ -481,6 +483,7 @@ class MicrostructureSummary:
     def __init__(
         self, input: MicrostructureInput, result: MicrostructureResult, user_data_path: str
     ) -> None:
+        """Initialize a ``MicrostructureSummary`` object."""
         if not isinstance(input, MicrostructureInput):
             raise ValueError("Invalid input type passed to init, " + self.__class__.__name__)
         if not isinstance(result, MicrostructureResult):

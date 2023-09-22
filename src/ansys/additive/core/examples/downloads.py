@@ -124,19 +124,10 @@ def download_small_wedge_slm_build_file():
 
 
 class MaterialTuningExampleInputFiles:
-    """Holds the example inputs for the material tuning process."""
+    """Holds the example inputs for the material tuning process.
 
-    def __init__(
-        self,
-        experiment_data_file: str,
-        material_parameters_file: str,
-        thermal_properties_lookup_file: str,
-        characteristic_width_lookup_file: str,
-    ):
-        """Initialize the ``MaterialTuningInputs`` class.
-
-        Parameters
-        ----------
+    Parameters
+    ----------
         experiment_data_file : str
             Path to the experiment data file.
         material_parameters_file : str
@@ -145,7 +136,16 @@ class MaterialTuningExampleInputFiles:
             Path to the thermal properties lookup file.
         characteristic_width_lookup_file : str
             Path to the characteristic width lookup file.
-        """
+    """
+
+    def __init__(
+        self,
+        experiment_data_file: str,
+        material_parameters_file: str,
+        thermal_properties_lookup_file: str,
+        characteristic_width_lookup_file: str,
+    ):
+        """Initialize a ``MaterialTuningInputs`` object."""
         self._experiment_data_file = experiment_data_file
         self._material_parameters_file = material_parameters_file
         self._thermal_properties_lookup_file = thermal_properties_lookup_file
@@ -193,7 +193,17 @@ def download_material_tuning_input() -> MaterialTuningExampleInputFiles:
 
 
 class CustomMaterialExampleFiles:
-    """Holds the files associated with a custom material definition."""
+    """Holds the files associated with a custom material definition.
+
+    Parameters
+    ----------
+        material_parameters_file : str
+            Path to the material parameters file.
+        thermal_properties_lookup_file : str
+            Path to the thermal properties lookup file.
+        characteristic_width_lookup_file : str
+            Path to the characteristic width lookup file.
+    """
 
     def __init__(
         self,
@@ -201,17 +211,8 @@ class CustomMaterialExampleFiles:
         thermal_properties_lookup_file: str,
         characteristic_width_lookup_file: str,
     ):
-        """Initialize the ``CustomMaterialExampleFiles`` class.
+        """Initialize a ``CustomMaterialExampleFiles`` object."""
 
-        Parameters
-        ----------
-        material_parameters_file : str
-            Path to the material parameters file.
-        thermal_properties_lookup_file : str
-            Path to the thermal properties lookup file.
-        characteristic_width_lookup_file : str
-            Path to the characteristic width lookup file.
-        """
         self._material_parameters_file = material_parameters_file
         self._thermal_properties_lookup_file = thermal_properties_lookup_file
         self._characteristic_width_lookup_file = characteristic_width_lookup_file

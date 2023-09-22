@@ -90,6 +90,7 @@ class AdditiveMachine:
         hatch_spacing: float = MachineConstants.DEFAULT_HATCH_SPACING,
         slicing_stripe_width: float = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH,
     ):
+        """Initialize an ``AdditiveMachine`` object."""
         self.laser_power = laser_power
         self.scan_speed = scan_speed
         self.heater_temperature = heater_temperature

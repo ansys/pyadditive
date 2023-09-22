@@ -46,6 +46,7 @@ class Range:
     """
 
     def __init__(self, **kwargs):
+        """Initialize a ``Range`` object."""
         self.min = 0
         self.max = 0
         for key, value in kwargs.items():
@@ -69,7 +70,7 @@ class Range:
         return True
 
     def _to_range_message(self) -> RangeMessage:
-        """Create a range message to send to the server based upon this
+        """Create a ``RangeMessage`` to send to the server based upon this
         object."""
         return RangeMessage(min=self.min, max=self.max)
 
@@ -86,6 +87,7 @@ class CoaxialAverageSensorInputs:
     """
 
     def __init__(self, **kwargs):
+        """Initialize a ``CoaxialAverageSensorInputs`` object."""
         self.radius = 0
         self.z_heights = []
         for key, value in kwargs.items():
@@ -135,6 +137,7 @@ class ThermalHistoryInput:
     """
 
     def __init__(self, **kwargs):
+        """Initialize a ``ThermalHistoryInput`` object."""
         self.id = ""
         self._geometry = None
         self.coax_ave_sensor_inputs = CoaxialAverageSensorInputs()
@@ -212,6 +215,7 @@ class ThermalHistorySummary:
     """Summary of a thermal history simulation."""
 
     def __init__(self, input: ThermalHistoryInput, coax_ave_output_folder: str):
+        """Initialize a ``ThermalHistorySummary`` object."""
         if not isinstance(input, ThermalHistoryInput):
             raise ValueError("Invalid input type passed to init, " + self.__class__.__name__)
         self._input = input

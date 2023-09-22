@@ -30,20 +30,43 @@ from ansys.additive.core.material import AdditiveMaterial
 
 
 class SingleBeadInput:
-    """Provides input parameters for single bead simulation."""
+    """Provides input parameters for single bead simulation.
+
+    Parameters
+       ----------
+       bead_length: float, optional, default: :obj:`DEFAULT_BEAD_LENGTH`
+           Length (m) of bead to simulate, valid values are :obj:`MIN_BEAD_LENGTH` to :obj:`MAX_BEAD_LENGTH`.
+       machine: :class:`AdditiveMachine <ansys.additive.core.machine.AdditiveMachine>`
+           Machine parameters.
+       material: :class:`AdditiveMaterial <ansys.additive.core.material.AdditiveMaterial>`
+           Material parameters.
+    """
 
     #: Default bead length (m).
     DEFAULT_BEAD_LENGTH = 3e-3
-    __MIN_BEAD_LENGTH = 1e-3
-    __MAX_BEAD_LENGTH = 1e-2
+    #: Minimum bead length (m).
+    MIN_BEAD_LENGTH = 1e-3
+    #: Maximum bead length (m).
+    MAX_BEAD_LENGTH = 1e-2
 
     def __init__(
         self,
-        id="",
-        bead_length=DEFAULT_BEAD_LENGTH,
-        machine=AdditiveMachine(),
-        material=AdditiveMaterial(),
+        id: str = "",
+        bead_length: float = DEFAULT_BEAD_LENGTH,
+        machine: AdditiveMachine = AdditiveMachine(),
+        material: AdditiveMaterial = AdditiveMaterial(),
     ):
+        """Initialize a ``SingleBeadInput`` object.
+
+        Parameters
+        ----------
+        bead_length: float, optional, default: :obj:`DEFAULT_BEAD_LENGTH`
+            Length (m) of bead to simulate, valid values are :obj:`MIN_BEAD_LENGTH` to :obj:`MAX_BEAD_LENGTH`.
+        machine: :class:`AdditiveMachine <ansys.additive.core.machine.AdditiveMachine>`
+            Machine parameters.
+        material: :class:`AdditiveMaterial <ansys.additive.core.material.AdditiveMaterial>`
+            Material parameters.
+        """
         self.id = id
         self.bead_length = bead_length
         self.machine = machine
@@ -73,7 +96,7 @@ class SingleBeadInput:
             raise ValueError("{} must be between {} and {}.".format(name, min, max))
 
     @property
-    def id(self):
+    def id(self) -> str:
         """User-provided ID for the simulation."""
         return self._id
 
@@ -82,8 +105,8 @@ class SingleBeadInput:
         self._id = value
 
     @property
-    def machine(self):
-        """Machine-related parameters."""
+    def machine(self) -> AdditiveMachine:
+        """Machine parameters."""
         return self._machine
 
     @machine.setter
@@ -91,8 +114,8 @@ class SingleBeadInput:
         self._machine = value
 
     @property
-    def material(self):
-        """Material used during simulation."""
+    def material(self) -> AdditiveMaterial:
+        """Material parameters."""
         return self._material
 
     @material.setter
@@ -100,16 +123,16 @@ class SingleBeadInput:
         self._material = value
 
     @property
-    def bead_length(self):
+    def bead_length(self) -> float:
         """Length (m) of bead to simulate.
 
-        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
+        Valid values are from :obj:`MIN_BEAD_LENGTH` to :obj:`MAX_BEAD_LENGTH` m.
         """
         return self._bead_length
 
     @bead_length.setter
     def bead_length(self, value):
-        self.__validate_range(value, self.__MIN_BEAD_LENGTH, self.__MAX_BEAD_LENGTH, "bead_length")
+        self.__validate_range(value, self.MIN_BEAD_LENGTH, self.MAX_BEAD_LENGTH, "bead_length")
         self._bead_length = value
 
     def _to_simulation_request(self) -> SimulationRequest:
@@ -142,9 +165,15 @@ class MeltPool:
     single bead simulation.
 
     Units are SI unless otherwise noted.
+
+    Parameters
+    ----------
+    msg: ``MeltPoolMessage``
+        Simulation result message describing the melt pool.
     """
 
     def __init__(self, msg: MeltPoolMessage):
+        """Initialize a ``MeltPool`` object."""
         bead_length = [ts.laser_x for ts in msg.time_steps]
         length = [ts.length for ts in msg.time_steps]
         width = [ts.width for ts in msg.time_steps]
@@ -196,13 +225,30 @@ class MeltPool:
 
 
 class SingleBeadSummary:
-    """Provides a summary of a single bead simulation."""
+    """Provides a summary of a single bead simulation.
+
+    Parameters
+    ----------
+    input: :class:`SingleBeadInput`
+        Input for single bead simulation.
+    msg: ``MeltPoolMessage``
+        Simulation result message describing the melt pool.
+    """
 
     def __init__(
         self,
         input: SingleBeadInput,
         msg: MeltPoolMessage,
     ):
+        """Initialize a ``SingleBeadSummary`` object.
+
+        Parameters
+        ----------
+        input: :class:`SingleBeadInput`
+            Input for the single bead simulation.
+        msg: :class:`MeltPoolMessage`
+            Message from the server describing the melt pool.
+        """
         if not isinstance(input, SingleBeadInput):
             raise ValueError("Invalid input type passed to init, " + self.__class__.__name__)
         if not isinstance(msg, MeltPoolMessage):
