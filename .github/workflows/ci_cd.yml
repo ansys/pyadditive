@@ -78,6 +78,13 @@ jobs:
     runs-on: ubuntu-latest-8-cores
     needs: [doc-style]
     steps:
+      # Remove when auto-api is updated
+      - name: "Install requirements"
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra latexmk pandoc
+
       - name: "Login into the GitHub registry container"
         uses: docker/login-action@v3
         with:
@@ -118,33 +125,30 @@ jobs:
         run: |
           python -m venv .venv
           ./.venv/bin/activate
-
-      # Remove when auto-api is updated
-      - name: Install packages for documentation build
-        run: |
-          ./.venv/bin/activate
           python -m pip install --upgrade pip
           pip install --upgrade build wheel pandoc
           pip install .[doc]
           pip uninstall --yes sphinx-autoapi
           pip install "sphinx-autoapi @ git+https://github.com/ansys/sphinx-autoapi@feat/single-page-option"
 
+      # Remove when auto-api is updated
       - name: Build the documentation (HTML)
         run: |
           ./.venv/bin/activate
-          cd doc
-          make html
+          make -C doc html SPHINXOPTS="-j auto"
+          make -C doc pdf
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
           BUILD_EXAMPLES_LONG: false
 
-      - name: Build the long examples (HTML)
+      # Remove when auto-api is updated
+      - name: Build the long examples
         if: github.event_name == 'push'
         run: |
           ./.venv/bin/activate
-          cd doc
-          make html
+          make -C doc html SPHINXOPTS="-j auto"
+          make -C doc pdf
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
@@ -155,6 +159,13 @@ jobs:
         with:
           name: documentation-html
           path: doc/_build/html
+          retention-days: 7
+
+      - name: Upload PDF documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation-pdf
+          path: doc/_build/latex/*.pdf
           retention-days: 7
 
       # - name: "Build documentation with short examples"
