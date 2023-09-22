@@ -192,8 +192,8 @@ study.generate_porosity_permutations(
     beam_diameters=[80e-6],
     start_angles=[45],
     rotation_angles=[67.5],
-    hatch_spacings=[100e-6, 150e-6],
-    min_build_rate=1.5e-9,
+    hatch_spacings=[100e-6],
+    min_build_rate=5e-9,
     iteration=1,
 )
 
