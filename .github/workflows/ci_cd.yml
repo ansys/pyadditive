@@ -161,7 +161,7 @@ jobs:
           path: doc/_build/html
           retention-days: 7
 
-      - name: Upload HTML documentation
+      - name: Upload PDF documentation
         uses: actions/upload-artifact@v3
         with:
           name: documentation-pdf
