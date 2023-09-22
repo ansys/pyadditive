@@ -134,17 +134,19 @@ jobs:
           ./.venv/bin/activate
           cd doc
           make html
+          make pdf
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
           BUILD_EXAMPLES_LONG: false
 
-      - name: Build the long examples (HTML)
+      - name: Build the long examples
         if: github.event_name == 'push'
         run: |
           ./.venv/bin/activate
           cd doc
           make html
+          make pdf
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
@@ -155,6 +157,13 @@ jobs:
         with:
           name: documentation-html
           path: doc/_build/html
+          retention-days: 7
+
+      - name: Upload HTML documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation-pdf
+          path: doc/_build/latex/ansys-additive-core*.pdf
           retention-days: 7
 
       # - name: "Build documentation with short examples"
