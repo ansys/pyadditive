@@ -128,9 +128,9 @@ class MaterialTuningExampleInputFiles:
 
     Parameters
     ----------
-        experiment_data_file : str
-            Path to the experiment data file.
-        material_parameters_file : str
+    experiment_data_file : str
+        Path to the experiment data file.
+    material_parameters_file : str
             Path to the material parameters file.
         thermal_properties_lookup_file : str
             Path to the thermal properties lookup file.
