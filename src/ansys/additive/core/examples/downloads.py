@@ -197,12 +197,12 @@ class CustomMaterialExampleFiles:
 
     Parameters
     ----------
-        material_parameters_file : str
-            Path to the material parameters file.
-        thermal_properties_lookup_file : str
-            Path to the thermal properties lookup file.
-        characteristic_width_lookup_file : str
-            Path to the characteristic width lookup file.
+    material_parameters_file : str
+        Path to the material parameters file.
+    thermal_properties_lookup_file : str
+        Path to the thermal properties lookup file.
+    characteristic_width_lookup_file : str
+        Path to the characteristic width lookup file.
     """
 
     def __init__(
