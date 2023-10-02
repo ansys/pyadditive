@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: 23.7.0  # IF VERSION CHANGES --> MODIFY "blacken-docs" MANUALLY AS WELL!!
+    rev: 23.7.0 # IF VERSION CHANGES --> MODIFY "blacken-docs" MANUALLY AS WELL!!
     hooks:
       - id: black
 
@@ -55,6 +55,13 @@ repos:
     rev: 0.24.1
     hooks:
       - id: check-github-workflows
+
+  - repo: https://github.com/econchick/interrogate
+    rev: 1.5.0
+    hooks:
+      - id: interrogate
+        args: [-v, --fail-under=95]
+        files: src
 
   - repo: https://github.com/ansys/pre-commit-hooks
     rev: v0.1.2

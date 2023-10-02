@@ -65,6 +65,7 @@ class PorosityInput:
         machine=AdditiveMachine(),
         material=AdditiveMaterial(),
     ):
+        """Initialize a ``PorosityInput`` object."""
         self.id = id
         self.size_x = size_x
         self.size_y = size_y

@@ -27,6 +27,8 @@ from ansys.api.additive.v0.additive_domain_pb2 import BuildFileMachineType
 
 
 class MachineType(IntEnum):
+    """Machine type values."""
+
     NONE = BuildFileMachineType.BUILD_FILE_MACHINE_TYPE_NONE
     ADDITIVE_INDUSTRIES = BuildFileMachineType.BUILD_FILE_MACHINE_TYPE_AI
     SLM = BuildFileMachineType.BUILD_FILE_MACHINE_TYPE_SLM
@@ -118,6 +120,13 @@ class StlFile:
     """Container for the STL file definition."""
 
     def __init__(self, path: str):
+        """Initialize an ``StlFile`` object.
+
+        Parameters
+        ----------
+        path: str
+            Path to file.
+        """
         if not exists(path):
             raise ValueError(f"File does not exist, {path}")
         self._path = path
