@@ -33,13 +33,13 @@ class SingleBeadInput:
     """Provides input parameters for single bead simulation.
 
     Parameters
-       ----------
-       bead_length: float, optional, default: :obj:`DEFAULT_BEAD_LENGTH`
-           Length (m) of bead to simulate, valid values are :obj:`MIN_BEAD_LENGTH` to :obj:`MAX_BEAD_LENGTH`.
-       machine: :class:`AdditiveMachine <ansys.additive.core.machine.AdditiveMachine>`
-           Machine parameters.
-       material: :class:`AdditiveMaterial <ansys.additive.core.material.AdditiveMaterial>`
-           Material parameters.
+    ----------
+    bead_length: float, optional, default: :obj:`DEFAULT_BEAD_LENGTH`
+        Length (m) of bead to simulate, valid values are :obj:`MIN_BEAD_LENGTH` to :obj:`MAX_BEAD_LENGTH`.
+    machine: :class:`AdditiveMachine <ansys.additive.core.machine.AdditiveMachine>`
+        Machine parameters.
+    material: :class:`AdditiveMaterial <ansys.additive.core.material.AdditiveMaterial>`
+        Material parameters.
     """
 
     #: Default bead length (m).
