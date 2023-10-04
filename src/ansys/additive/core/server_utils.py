@@ -28,7 +28,7 @@ import time
 from ansys.additive.core import USER_DATA_PATH
 
 DEFAULT_ANSYS_VERSION = "241"
-ADDITIVE_SERVER_EXE_NAME = "Additive.Grpc"
+ADDITIVE_SERVER_EXE_NAME = "additiveserver"
 
 
 def launch_server(port: int, cwd: str = USER_DATA_PATH) -> subprocess.Popen:
@@ -53,7 +53,7 @@ def launch_server(port: int, cwd: str = USER_DATA_PATH) -> subprocess.Popen:
         if not awp_root:
             raise Exception("Cannot find Ansys installation directory")
         server_exe = os.path.join(
-            awp_root, "Additive", "additive_grpc", f"{ADDITIVE_SERVER_EXE_NAME}.exe"
+            awp_root, "Additive", "additiveserver", f"{ADDITIVE_SERVER_EXE_NAME}.exe"
         )
     elif os.name == "posix":
         base_path = None
@@ -64,7 +64,7 @@ def launch_server(port: int, cwd: str = USER_DATA_PATH) -> subprocess.Popen:
         if not base_path:
             raise Exception("Cannot find Ansys installation directory")
         server_exe = os.path.join(
-            base_path, f"v{ver}", "Additive", "additive_grpc", ADDITIVE_SERVER_EXE_NAME
+            base_path, f"v{ver}", "Additive", "additiveserver", ADDITIVE_SERVER_EXE_NAME
         )
     else:
         raise OSError(f"Unsupported OS {os.name}")
