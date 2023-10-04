@@ -90,7 +90,7 @@ def test_launch_server_calls_popen_as_expected_win(mock_popen):
     mock_process.configure_mock(**attrs)
     mock_popen.return_value = mock_process
     os.environ["AWP_ROOT241"] = tmpdir.name
-    exe_path = os.path.join(tmpdir.name, "Additive", "additive_grpc", "additiveserver.exe")
+    exe_path = os.path.join(tmpdir.name, "Additive", "additiveserver", "additiveserver.exe")
     os.makedirs(os.path.dirname(exe_path), exist_ok=True)
     Path(exe_path).touch(mode=0o777, exist_ok=True)
 
@@ -121,7 +121,7 @@ def test_launch_server_calls_popen_as_expected_linux(mock_popen, mock_isdir, moc
     mock_popen.return_value = mock_process
     mock_isdir.return_value = True
     mock_exists.return_value = True
-    exe_path = "/usr/ansys_inc/v241/Additive/additive_grpc/additiveserver"
+    exe_path = "/usr/ansys_inc/v241/Additive/additiveserver/additiveserver"
 
     # act
     launch_server(0, tmpdir.name)
@@ -147,7 +147,7 @@ def test_launch_server_raises_exception_if_process_fails_to_start_win(mock_popen
     attrs = {"poll.return_value": 1}
     mock_process.configure_mock(**attrs)
     mock_popen.return_value = mock_process
-    exe_path = os.path.join(tmpdir.name, "Additive", "additive_grpc", "additiveserver.exe")
+    exe_path = os.path.join(tmpdir.name, "Additive", "additiveserver", "additiveserver.exe")
     os.makedirs(os.path.dirname(exe_path), exist_ok=True)
     Path(exe_path).touch(mode=0o777, exist_ok=True)
 
