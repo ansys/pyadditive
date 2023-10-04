@@ -73,7 +73,7 @@ doc = [
     "enum-tools==0.11.0",
     "jupyter_sphinx==0.4.0",
     "matplotlib==3.8.0",
-    "numpydoc==1.5.0",
+    "numpydoc==1.6.0",
     "panel==1.2.2",
     "phantomjs==1.4.1",
     "pypandoc==1.8.1",
