@@ -28,7 +28,7 @@ import time
 from ansys.additive.core import USER_DATA_PATH
 
 DEFAULT_ANSYS_VERSION = "241"
-ADDITIVE_SERVER_EXE_NAME = "Additive.Grpc"
+ADDITIVE_SERVER_EXE_NAME = "additiveserver"
 
 
 def launch_server(port: int, cwd: str = USER_DATA_PATH) -> subprocess.Popen:
