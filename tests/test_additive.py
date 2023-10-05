@@ -22,6 +22,7 @@
 
 import contextlib
 import io
+import socket
 from unittest.mock import Mock, create_autospec
 
 from ansys.api.additive import __version__ as api_version
@@ -158,7 +159,7 @@ def test_Additive_init_connects_with_ip_and_port_parameters(monkeypatch):
     monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
 
     # act
-    additive = Additive(ip=ip, port=port)
+    additive = Additive(host=ip, port=port)
 
     # assert
     mock_insecure_channel.assert_called_with(
@@ -166,6 +167,33 @@ def test_Additive_init_connects_with_ip_and_port_parameters(monkeypatch):
     )
     assert additive._channel == channel
     assert hasattr(additive, "_server_instance") == False
+
+
+def test_Additive_init_converts_hostname_to_ip(monkeypatch):
+    # arrange
+    host = "myhost"
+    ip = "1.2.3.4"
+    port = 12345
+    target = f"{ip}:{port}"
+    channel = grpc.insecure_channel(
+        "channel_str",
+        options=[
+            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
+        ],
+    )
+    mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=channel)
+    monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
+    mock_gethostbyname = create_autospec(socket.gethostbyname, return_value=ip)
+    monkeypatch.setattr(socket, "gethostbyname", mock_gethostbyname)
+
+    # act
+    additive = Additive(host=host, port=port)
+
+    # assert
+    mock_gethostbyname.assert_called_with(host)
+    mock_insecure_channel.assert_called_with(
+        target, options=[("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH)]
+    )
 
 
 @pytest.mark.parametrize(
@@ -179,7 +207,7 @@ def test_Additive_init_connects_with_ip_and_port_parameters(monkeypatch):
 )
 def test_simulate_without_material_assigned_raises_exception(input):
     # arrange
-    additive = Additive(ip="localhost", port=12345)
+    additive = Additive(host="localhost", port=12345)
 
     # act, assert
     with pytest.raises(ValueError, match="Material must be specified"):
@@ -188,7 +216,7 @@ def test_simulate_without_material_assigned_raises_exception(input):
 
 def test_simulate_list_of_inputs_with_duplicate_ids_raises_exception():
     # arrange
-    additive = Additive(ip="localhost", port=12345)
+    additive = Additive(host="localhost", port=12345)
     inputs = [
         SingleBeadInput(id="id"),
         SingleBeadInput(id="id"),
@@ -210,14 +238,14 @@ def test_about_returns_about_response():
 
     mock_stub = Mock(AboutServiceStub)
     mock_stub.About = Mock(side_effect=mock_about_endpoint)
-    additive = Additive(ip="localhost", port=12345)
+    additive = Additive(host="1.2.3.4", port=12345)
     additive._about_stub = mock_stub
     f = io.StringIO()
     expected_result = (
         "Client\n"
         f"    Version: {__version__}\n"
         f"    API version: {api_version}\n"
-        "Server localhost:12345\n"
+        "Server 1.2.3.4:12345\n"
     )
 
     # act
