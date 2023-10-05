@@ -84,7 +84,8 @@ class Additive:
     log_file: str
         File name to write log messages to.
     channel: grpc.Channel, None
-        gRPC channel connection to use for communicating with the server.
+        gRPC channel connection to use for communicating with the server. If None, a connection will be
+        established using the host and port parameters.
     """
 
     def __init__(
