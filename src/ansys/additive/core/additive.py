@@ -83,7 +83,7 @@ class Additive:
         Minimum severity level of messages to log.
     log_file: str
         File name to write log messages to.
-    channel: grpc.Channel
+    channel: grpc.Channel, None
         gRPC channel connection to use for communicating with the server.
     """
 
