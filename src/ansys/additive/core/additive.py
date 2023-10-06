@@ -20,12 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides for interacting with the Additive service."""
+
+from __future__ import annotations
+
+from collections.abc import Iterator
 import concurrent.futures
 from datetime import datetime
 import hashlib
 import logging
 import os
-import typing
+import socket
 import zipfile
 
 from ansys.api.additive import __version__ as api_version
@@ -60,21 +64,46 @@ LOCALHOST = "127.0.0.1"
 class Additive:
     """Provides the client interface to the Additive service.
 
-    The :meth:`simulate` method is used to execute simulations.
+    Parameters
+    ----------
+    nproc: int
+        Number of simulations to run in parallel. The number of available licenses must
+        be greater than or equal to this number.
+    host: str, None
+        Host name or IPv4 address of the server. If ``None``, the client will attempt
+        to connect to a server using the following algorithm.
+        1. If running in a ``pypim`` enabled environment, connect to the ``additive`` service.
+        2. Use the value of the environment variable ``ANSYS_ADDITIVE_ADDRESS`` if it is defined.
+        The value uses the format ``<IP>:<port>``
+        3. Attempt to start the server on localhost and connect to it. For this to work,
+        the Additive portion of the Ansys Structures package must be installed.
+    port: int, None
+        Port number to use when connecting to the server. If None, the default port will be used, 50052.
+    loglevel: str
+        Minimum severity level of messages to log.
+    log_file: str
+        File name to write log messages to.
+    channel: grpc.Channel, None
+        gRPC channel connection to use for communicating with the server. If None, a connection will be
+        established using the host and port parameters.
     """
 
     def __init__(
         self,
-        nproc: typing.Optional[int] = 4,
-        ip: typing.Optional[str] = None,
-        port: typing.Optional[int] = None,
-        loglevel: typing.Optional[str] = "INFO",
-        log_file: typing.Optional[str] = "",
-        channel: typing.Optional[grpc.Channel] = None,
+        nproc: int = 4,
+        host: str | None = None,
+        port: int | None = None,
+        loglevel: str = "INFO",
+        log_file: str = "",
+        channel: grpc.Channel | None = None,
     ) -> None:  # PEP 484
         """Initialize a connection to the server."""
-        if channel is not None and (ip is not None or port is not None):
-            raise ValueError("If 'channel' is specified, neither 'port' nor 'ip' can be specified.")
+        if channel is not None and (host is not None or port is not None):
+            raise ValueError(
+                "If 'channel' is specified, neither 'port' nor 'host' can be specified."
+            )
+
+        ip = socket.gethostbyname(host) if host != None else None
 
         self._nproc = nproc
         self._log = self._create_logger(log_file, loglevel)
@@ -123,9 +152,9 @@ class Additive:
 
     def _create_channel(
         self,
-        ip: typing.Optional[str] = None,
-        port: typing.Optional[int] = None,
-        product_version: typing.Optional[str] = None,
+        ip: str | None = None,
+        port: int | None = None,
+        product_version: str | None = None,
     ):
         """Create an insecure gRPC channel.
 
@@ -220,7 +249,7 @@ class Additive:
             value = response.metadata[key]
             print(f"    {key}: {value}")
 
-    def simulate(self, inputs, nproc: typing.Optional[int] = None):
+    def simulate(self, inputs, nproc: int | None = None):
         """Execute an additive simulation.
 
         Parameters
@@ -427,7 +456,7 @@ class Additive:
 
     def __file_upload_reader(
         self, file_name: str, chunk_size=2 * 1024 * 1024
-    ) -> typing.Iterator[UploadFileRequest]:
+    ) -> Iterator[UploadFileRequest]:
         """Read a file and return an iterator of UploadFileRequests."""
         file_size = os.path.getsize(file_name)
         short_name = os.path.basename(file_name)
@@ -447,8 +476,8 @@ class Additive:
         self,
         input: ThermalHistoryInput,
         out_dir: str,
-        logger: typing.Optional[ProgressLogger] = None,
-    ) -> typing.Optional[ThermalHistorySummary]:
+        logger: ProgressLogger | None = None,
+    ) -> ThermalHistorySummary:
         """Execute a thermal history simulation.
 
         Parameters
