@@ -58,7 +58,7 @@ tests = [
     "panel==1.2.3",
     "platformdirs==3.10.0",
     "plotly==5.17.0",
-    "protobuf==3.20.3",
+    "protobuf==4.24.4",
     "six==1.16.0",
     "tqdm==4.66.1",
     # Test specific dependencies
