@@ -1,5 +1,25 @@
 # Changelog
 
+## PyAdditive 0.15.0, 2023-10-09
+
+### New Features
+
+* PyAdditive uses new server name when starting server locally [#105](https://github.com/ansys/pyadditive/issues/105).
+* Dropped support for Python 3.8 and added support for Python 3.12 [#106](https://github.com/ansys/pyadditive/issues/106).
+
+### Bug Fixes
+
+* PyAdditive client can connect to server using server name rather than IPv4 address [#10](https://github.com/ansys/pyadditive/issues/10).
+
+### Doc improvements
+
+* Added interrogate to pre-commit checks [#48](https://github.com/ansys/pyadditive/issues/48).
+
+### Contributors
+
+* Peter Krull - <peter.krull@ansys.com>
+
+
 ## PyAdditive 0.14.0, 2023-08-08
 
 ### New features
