@@ -76,7 +76,7 @@ doc = [
     "panel==1.2.3",
     "phantomjs==1.4.1",
     "pypandoc==1.8.1",
-    "pyvista==0.42.2",
+    "pyvista==0.42.3",
     "selenium==4.14.0",
     "sphinx==7.2.6",
     "sphinx-autoapi==3.0.0",
