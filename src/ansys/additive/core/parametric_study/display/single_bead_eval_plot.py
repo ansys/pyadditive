@@ -22,6 +22,7 @@
 
 from __future__ import annotations
 
+import math
 import os
 
 import numpy as np
@@ -101,6 +102,14 @@ def __data_frame(ps: ParametricStudy) -> pd.DataFrame:
         (df[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD)
         & (df[ColumnNames.STATUS] == SimulationStatus.COMPLETED)
     ]
+    df.update(
+        df[
+            [
+                ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH,
+                ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH,
+            ]
+        ].fillna(0)
+    )
     return df
 
 
@@ -144,14 +153,11 @@ def __init_controls(df: pd.DataFrame):
 
 def __contour_colorscale() -> list:
     return [
-        [0.0, "rgb(26, 150, 65)"],
-        [0.1, "rgb(26, 150, 65)"],
-        [0.2, "rgb(166, 217, 106)"],
-        [0.4, "rgb(255, 255, 191)"],
-        [0.6, "rgb(253, 174, 97)"],
-        [0.8, "rgb(215, 25, 28)"],
-        [0.9, "rgb(215, 25, 28)"],
-        [1.0, "rgb(215, 25, 28)"],
+        [0.0, "green"],
+        [0.1, "green"],
+        [0.15, "yellow"],
+        [0.5, "firebrick"],
+        [1.0, "firebrick"],
     ]
 
 
@@ -174,21 +180,15 @@ def __update_plot(
     fig = go.Figure()
 
     x, y, z = __contour_data(df, ht, lt, bd, poi, range)
-    contour = go.Contour(
+    contour = go.Heatmap(
         x=x,
         y=y,
         z=z,
-        contours=dict(showlabels=False, start=0, end=1, size=0.1),
-        # contours_coloring="heatmap",
-        line=dict(color="darkblue"),  # dash="dot", width=2),
         colorscale=__contour_colorscale(),
-        colorbar=dict(
-            # showticklabels=False doesn't work so we use a white font
-            tickfont=dict(color="white"),
-            thickness=20,
-        ),
+        showscale=False,
         connectgaps=True,
         hoverinfo="skip",
+        zsmooth="best",
     )
     fig.add_trace(contour)
 
@@ -257,6 +257,8 @@ def __contour_data(
     powers = df[ColumnNames.LASER_POWER].unique()
     z_vals = []
     z_max = df[poi].max()
+    if math.isclose(z_max, 0, abs_tol=1e-5):
+        z_max = 1
     min_range = range[0]
     max_range = range[1]
     for p in powers:
@@ -275,6 +277,7 @@ def __contour_data(
                     (df[ColumnNames.LASER_POWER] == p) & (df[ColumnNames.SCAN_SPEED] == v),
                     poi,
                 ].values[0]
+                z = round(z, 2)
                 if z >= min_range and z <= max_range:
                     row.append(0.01)
                 else:
