@@ -68,7 +68,7 @@ tests = [
 ]
 
 doc = [
-    "ansys-sphinx-theme==0.12.2",
+    "ansys-sphinx-theme==0.12.3",
     "enum-tools==0.11.0",
     "jupyter_sphinx==0.4.0",
     "matplotlib==3.8.0",
