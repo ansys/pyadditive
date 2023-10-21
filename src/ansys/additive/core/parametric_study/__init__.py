@@ -23,6 +23,7 @@
 from ansys.additive.core.parametric_study.constants import (
     DEFAULT_ITERATION,
     DEFAULT_PRIORITY,
+    FORMAT_VERSION,
     ColumnNames,
 )
 from ansys.additive.core.parametric_study.parametric_runner import ParametricRunner
