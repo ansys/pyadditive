@@ -194,7 +194,7 @@ To install PyAdditive in developer mode, perform these steps:
 
     .. code:: bash
 
-       tox
+       tox -e py
 
 #. Optionally, install the project in editable mode:
 

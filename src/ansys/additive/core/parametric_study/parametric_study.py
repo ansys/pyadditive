@@ -24,7 +24,8 @@ from __future__ import annotations
 
 from functools import wraps
 import os
-from pathlib import Path
+import pathlib
+import platform
 
 import dill
 import numpy as np
@@ -48,12 +49,14 @@ from ansys.additive.core import (
 )
 import ansys.additive.core.misc as misc
 
-from .constants import DEFAULT_ITERATION, DEFAULT_PRIORITY, ColumnNames
+from .constants import DEFAULT_ITERATION, DEFAULT_PRIORITY, FORMAT_VERSION, ColumnNames
 from .parametric_runner import ParametricRunner
 from .parametric_utils import build_rate, energy_density
 
 
 def save_on_return(func):
+    """Decorator to save study file upon method return."""
+
     @wraps(func)
     def wrap(self, *args, **kwargs):
         func(self, *args, **kwargs)
@@ -75,11 +78,16 @@ class ParametricStudy:
         study_dir: str | os.PathLike
             Directory where study will be stored.
         """
-        self._file_name = Path(study_dir).absolute() / f"{study_name}.ps"
+        self._file_name = pathlib.Path(study_dir).absolute() / f"{study_name}.ps"
         columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
         self._data_frame = pd.DataFrame(columns=columns)
         self.save(self.file_name)
         print(f"Saving parametric study to {self.file_name}")
+
+    @property
+    def format_version(self) -> int:
+        """Version of the parametric study file format."""
+        return FORMAT_VERSION
 
     @property
     def file_name(self) -> os.PathLike:
@@ -88,7 +96,7 @@ class ParametricStudy:
 
     @file_name.setter
     def file_name(self, value: str | os.PathLike):
-        self._file_name = Path(value)
+        self._file_name = pathlib.Path(value)
 
     def data_frame(self) -> pd.DataFrame:
         """Return a :class:`DataFrame <pandas.DataFrame>` representing the
@@ -155,12 +163,12 @@ class ParametricStudy:
             Name of the file to save the parametric study to.
         """
 
-        Path(file_name).parent.mkdir(parents=True, exist_ok=True)
+        pathlib.Path(file_name).parent.mkdir(parents=True, exist_ok=True)
         with open(file_name, "wb") as f:
             dill.dump(self, f)
 
     @staticmethod
-    def load(file_name) -> ParametricStudy | None:
+    def load(file_name) -> ParametricStudy:
         """Load a parametric study from a file.
 
         Parameters
@@ -170,15 +178,41 @@ class ParametricStudy:
 
         Returns
         -------
-        ParametricStudy | None
-            Loaded parametric study or None if ``file_name`` does not
-            refer to a parametric study.
+        ParametricStudy
+            Loaded parametric study.
         """
-        with open(file_name, "rb") as f:
-            study = dill.load(f)
+        if not pathlib.Path(file_name).is_file():
+            raise ValueError(f"{file_name} is not a valid file.")
+
+        # Hack to allow for sharing study files cross-platform.
+        temp = None
+        if platform.system() == "Windows":
+            temp = pathlib.PosixPath
+            pathlib.PosixPath = pathlib.WindowsPath
+        else:
+            temp = pathlib.WindowsPath
+            pathlib.WindowsPath = pathlib.PosixPath
+
+        try:
+            with open(file_name, "rb") as f:
+                study = dill.load(f)
+        except Exception:
+            raise
+        finally:
+            # Undo hack
+            if platform.system() == "Windows":
+                pathlib.PosixPath = temp
+            else:
+                pathlib.WindowsPath = temp
 
         if not isinstance(study, ParametricStudy):
-            return None
+            raise ValueError(f"{file_name} is not a parametric study.")
+
+        if hasattr(study, "format_version") and study.format_version > FORMAT_VERSION:
+            raise ValueError(
+                f"Unsupported version, study version = {study.format_version},"
+                + "current supported versions up to {FORMAT_VERSION}."
+            )
 
         study.file_name = file_name
         return study
