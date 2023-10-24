@@ -112,7 +112,7 @@ def test_load_raises_exception_when_version_too_great(tmp_path: pytest.TempPathF
             ps.ParametricStudy.load(filename)
 
 
-@pytest.mark.skipif(platform.system() != "Windows", reason=f"Only runs on Windows.")
+@pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
 def test_load_reads_linux_file_on_windows(tmp_path: pytest.TempPathFactory):
     # arrange
     filename = test_utils.get_test_file_path("linux.ps")
@@ -124,7 +124,7 @@ def test_load_reads_linux_file_on_windows(tmp_path: pytest.TempPathFactory):
     assert study != None
 
 
-@pytest.mark.skipif(platform.system() == "Windows", reason="Only runs on linux.")
+@pytest.mark.skipif(platform.system() == "Windows", reason="Test only valid on Linux.")
 def test_load_reads_windows_file_on_linux(tmp_path: pytest.TempPathFactory):
     # arrange
     filename = test_utils.get_test_file_path("windows.ps")
