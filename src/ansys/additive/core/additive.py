@@ -51,7 +51,7 @@ from ansys.additive.core.microstructure import MicrostructureSummary
 import ansys.additive.core.misc as misc
 from ansys.additive.core.porosity import PorositySummary
 from ansys.additive.core.progress_logger import ProgressLogger
-from ansys.additive.core.server_utils import find_open_port, launch_server
+from ansys.additive.core.server_utils import find_open_port, launch_server, server_ready
 from ansys.additive.core.simulation import SimulationError
 from ansys.additive.core.single_bead import SingleBeadSummary
 from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHistorySummary
@@ -119,6 +119,9 @@ class Additive:
         self._materials_stub = MaterialsServiceStub(self._channel)
         self._simulation_stub = SimulationServiceStub(self._channel)
         self._about_stub = AboutServiceStub(self._channel)
+
+        if not server_ready(self._about_stub):
+            raise RuntimeError("Unable to connect to server")
 
         # Setup data directory
         self._user_data_path = USER_DATA_PATH

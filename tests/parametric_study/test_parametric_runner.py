@@ -23,6 +23,7 @@
 from unittest.mock import create_autospec
 
 import pandas as pd
+import pytest
 
 from ansys.additive.core import (
     AdditiveMachine,
@@ -279,9 +280,9 @@ def test_create_microstructure_input_assigns_defaults_for_nans():
     assert input.material == material
 
 
-def test_simulate_sorts_by_priority():
+def test_simulate_sorts_by_priority(tmp_path: pytest.TempPathFactory):
     # arrange
-    study = ps.ParametricStudy(study_name="test_study")
+    study = ps.ParametricStudy("test_study", tmp_path)
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
@@ -300,9 +301,9 @@ def test_simulate_sorts_by_priority():
     mock_additive.simulate.assert_called_once_with(inputs)
 
 
-def test_simulate_filters_by_priority():
+def test_simulate_filters_by_priority(tmp_path: pytest.TempPathFactory):
     # arrange
-    study = ps.ParametricStudy(study_name="test_study")
+    study = ps.ParametricStudy("test_study", tmp_path)
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
@@ -321,9 +322,9 @@ def test_simulate_filters_by_priority():
     mock_additive.simulate.assert_called_once_with(inputs)
 
 
-def test_simulate_filters_by_single_simulation_type():
+def test_simulate_filters_by_single_simulation_type(tmp_path: pytest.TempPathFactory):
     # arrange
-    study = ps.ParametricStudy(study_name="test_study")
+    study = ps.ParametricStudy("test_study", tmp_path)
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
@@ -342,9 +343,9 @@ def test_simulate_filters_by_single_simulation_type():
     mock_additive.simulate.assert_called_once_with(inputs)
 
 
-def test_simulate_filters_by_simulation_type_list():
+def test_simulate_filters_by_simulation_type_list(tmp_path: pytest.TempPathFactory):
     # arrange
-    study = ps.ParametricStudy(study_name="test_study")
+    study = ps.ParametricStudy("test_study", tmp_path)
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
@@ -367,9 +368,9 @@ def test_simulate_filters_by_simulation_type_list():
     mock_additive.simulate.assert_called_once_with(inputs)
 
 
-def test_simulate_skips_simulations_with_missing_materials():
+def test_simulate_skips_simulations_with_missing_materials(tmp_path: pytest.TempPathFactory):
     # arrange
-    study = ps.ParametricStudy(study_name="test_study")
+    study = ps.ParametricStudy("test_study", tmp_path)
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
