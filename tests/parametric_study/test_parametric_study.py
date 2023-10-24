@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
 import platform
 from unittest.mock import PropertyMock, create_autospec, patch
 import uuid
@@ -113,7 +112,7 @@ def test_load_raises_exception_when_version_too_great(tmp_path: pytest.TempPathF
             ps.ParametricStudy.load(filename)
 
 
-@pytest.mark.skipif(platform.system != "Windows", reason="Only runs on Windows.")
+@pytest.mark.skipif(platform.system() != "Windows", reason=f"Only runs on Windows.")
 def test_load_reads_linux_file_on_windows(tmp_path: pytest.TempPathFactory):
     # arrange
     filename = test_utils.get_test_file_path("linux.ps")
@@ -125,7 +124,7 @@ def test_load_reads_linux_file_on_windows(tmp_path: pytest.TempPathFactory):
     assert study != None
 
 
-@pytest.mark.skipif(platform.system == "Windows", reason="Only runs on linux.")
+@pytest.mark.skipif(platform.system() == "Windows", reason="Only runs on linux.")
 def test_load_reads_windows_file_on_linux(tmp_path: pytest.TempPathFactory):
     # arrange
     filename = test_utils.get_test_file_path("windows.ps")
@@ -150,9 +149,6 @@ def test_save_and_load_returns_original_object(tmp_path: pytest.TempPathFactory)
     # assert
     assert study.data_frame().equals(study2.data_frame())
     assert study2.file_name == test_path
-
-    # cleanup
-    os.remove(f"{study_name}.ps")
 
 
 def test_add_summaries_with_porosity_summary_adds_row(tmp_path: pytest.TempPathFactory):

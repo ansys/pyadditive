@@ -27,6 +27,7 @@ from unittest.mock import Mock, create_autospec
 
 from ansys.api.additive import __version__ as api_version
 from ansys.api.additive.v0.about_pb2 import AboutResponse
+import ansys.api.additive.v0.about_pb2_grpc
 from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
 import ansys.platform.instancemanagement as pypim
 from callee import Contains
@@ -59,6 +60,10 @@ def test_Additive_init_connects_with_defaults(monkeypatch):
     monkeypatch.setattr(ansys.additive.core.additive, "launch_server", mock_launcher)
     mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=channel)
     monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
+    mock_server_ready = create_autospec(
+        ansys.additive.core.additive.server_ready, return_value=True
+    )
+    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
 
     # act
     additive = Additive()
@@ -100,6 +105,10 @@ def test_Additive_init_can_connect_with_pypim(monkeypatch):
     monkeypatch.setattr(pypim, "connect", mock_connect)
     monkeypatch.setattr(pypim, "is_configured", mock_is_configured)
     monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
+    mock_server_ready = create_autospec(
+        ansys.additive.core.additive.server_ready, return_value=True
+    )
+    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
 
     # act
     additive = Additive()
@@ -132,6 +141,10 @@ def test_Additive_init_connects_using_ANSYS_ADDITIVE_ADDRESS_if_available(monkey
     )
     mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=channel)
     monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
+    mock_server_ready = create_autospec(
+        ansys.additive.core.additive.server_ready, return_value=True
+    )
+    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
 
     # act
     additive = Additive()
@@ -157,6 +170,10 @@ def test_Additive_init_connects_with_ip_and_port_parameters(monkeypatch):
     )
     mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=channel)
     monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
+    mock_server_ready = create_autospec(
+        ansys.additive.core.additive.server_ready, return_value=True
+    )
+    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
 
     # act
     additive = Additive(host=ip, port=port)
@@ -185,6 +202,10 @@ def test_Additive_init_converts_hostname_to_ip(monkeypatch):
     monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
     mock_gethostbyname = create_autospec(socket.gethostbyname, return_value=ip)
     monkeypatch.setattr(socket, "gethostbyname", mock_gethostbyname)
+    mock_server_ready = create_autospec(
+        ansys.additive.core.additive.server_ready, return_value=True
+    )
+    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
 
     # act
     additive = Additive(host=host, port=port)
@@ -196,6 +217,29 @@ def test_Additive_init_converts_hostname_to_ip(monkeypatch):
     )
 
 
+def test_Additive_init_raises_exception_if_server_ready_false(monkeypatch):
+    # arrange
+    ip = "1.2.3.4"
+    port = 12345
+    target = f"{ip}:{port}"
+    channel = grpc.insecure_channel(
+        "channel_str",
+        options=[
+            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
+        ],
+    )
+    mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=channel)
+    monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
+    mock_server_ready = create_autospec(
+        ansys.additive.core.additive.server_ready, return_value=False
+    )
+    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
+
+    # act, assert
+    with pytest.raises(RuntimeError, match="Unable to connect to server"):
+        Additive(host=ip, port=port)
+
+
 @pytest.mark.parametrize(
     "input",
     [
@@ -205,8 +249,13 @@ def test_Additive_init_converts_hostname_to_ip(monkeypatch):
         ThermalHistoryInput(),
     ],
 )
-def test_simulate_without_material_assigned_raises_exception(input):
+def test_simulate_without_material_assigned_raises_exception(monkeypatch, input):
     # arrange
+    mock_server_ready = create_autospec(
+        ansys.additive.core.additive.server_ready, return_value=True
+    )
+    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
+
     additive = Additive(host="localhost", port=12345)
 
     # act, assert
@@ -214,8 +263,13 @@ def test_simulate_without_material_assigned_raises_exception(input):
         additive.simulate(input)
 
 
-def test_simulate_list_of_inputs_with_duplicate_ids_raises_exception():
+def test_simulate_list_of_inputs_with_duplicate_ids_raises_exception(monkeypatch):
     # arrange
+    mock_server_ready = create_autospec(
+        ansys.additive.core.additive.server_ready, return_value=True
+    )
+    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
+
     additive = Additive(host="localhost", port=12345)
     inputs = [
         SingleBeadInput(id="id"),
@@ -227,8 +281,13 @@ def test_simulate_list_of_inputs_with_duplicate_ids_raises_exception():
         additive.simulate(inputs)
 
 
-def test_about_returns_about_response():
+def test_about_returns_about_response(monkeypatch):
     # arrange
+    mock_server_ready = create_autospec(
+        ansys.additive.core.additive.server_ready, return_value=True
+    )
+    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
+
     def mock_about_endpoint(request: Empty):
         response = AboutResponse()
         response.metadata["key1"] = "value1"

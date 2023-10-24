@@ -27,9 +27,16 @@ import subprocess
 import tempfile
 from unittest.mock import ANY, Mock, patch
 
+from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
+import grpc
 import pytest
 
-from ansys.additive.core.server_utils import DEFAULT_ANSYS_VERSION, find_open_port, launch_server
+from ansys.additive.core.server_utils import (
+    DEFAULT_ANSYS_VERSION,
+    find_open_port,
+    launch_server,
+    server_ready,
+)
 
 
 @patch("os.name", "unknown_os")
@@ -185,3 +192,27 @@ def test_find_open_port_returns_valid_port():
 
     # assert
     assert port > 1024 and port < 65535
+
+
+def test_server_ready_returns_false_when_server_cannot_be_reached():
+    # arrange
+    channel = grpc.insecure_channel("channel")
+    stub = AboutServiceStub(channel)
+
+    # act
+    ready = server_ready(stub, 1)
+
+    # assert
+    assert ready == False
+
+
+@patch("ansys.api.additive.v0.about_pb2_grpc.AboutServiceStub")
+def test_server_ready_returns_true_when_server_can_be_reached(mock_stub):
+    # arrange
+    mock_stub.About.return_value = "all about it"
+
+    # act
+    ready = server_ready(mock_stub)
+
+    # assert
+    assert ready == True

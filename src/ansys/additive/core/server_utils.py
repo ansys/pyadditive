@@ -25,6 +25,9 @@ import os
 import subprocess
 import time
 
+from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
+from google.protobuf.empty_pb2 import Empty
+
 from ansys.additive.core import USER_DATA_PATH
 
 DEFAULT_ANSYS_VERSION = "241"
@@ -111,3 +114,32 @@ def find_open_port() -> int:
     port = s.getsockname()[1]
     s.close()
     return port
+
+
+def server_ready(stub: AboutServiceStub, retries: int = 5) -> bool:
+    """Return whether the server is ready.
+
+    Parameters
+    ----------
+    stub: AboutServiceStub
+        Stub used to call the about service on the server.
+    retries: int
+        Number of times to retry before giving up. An exponential backoff delay
+        is used between each retry.
+
+    Returns
+    -------
+    bool:
+        True means server is ready. False means the number of retries was exceeded
+        without successfully connecting to the server.
+    """
+    ready = False
+    for i in range(retries):
+        try:
+            stub.About(Empty())
+            ready = True
+            break
+        except Exception:
+            time.sleep(i + 1)
+
+    return ready
