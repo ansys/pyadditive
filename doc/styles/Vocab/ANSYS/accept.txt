@@ -16,6 +16,7 @@ PyPI
 pytest
 jupyter
 Jupyter
+jupytext
 Makefile
 isort
 pandoc
