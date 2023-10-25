@@ -15,7 +15,7 @@ server is with Ansys 2024 R1.
 Starting a session
 ==================
 
-There a multiple ways to start a session with the PyAdditive client.
+There are multiple ways to start a session with the PyAdditive client.
 
 Starting a local session
 ------------------------
