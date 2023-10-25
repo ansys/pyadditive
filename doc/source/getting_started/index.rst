@@ -6,77 +6,51 @@
 Getting started
 ###############
 
-PyAdditive is a Python client library for the Ansys Additive service.
-
-.. note::
-
-    PyAdditive has not been made public and is currently hosted in a private
-    PyPI repository. The PyAnsys team can provide you a read-only token to
-    assign to an environment variable named ``PYANSYS_PYPI_PRIVATE_PAT``.
-    To request a token, email
-    `pyansys.support@ansys.com <mailto:pyansys.support@ansys.com>`_.
+PyAdditive is a Python client library for the Ansys Additive server. The Ansys
+Additive server is distributed with the Additive option of the Structures package
+in the Ansys unified installation. The first release of the Ansys Additive
+server is with Ansys 2024 R1.
 
 
-    Additionally, the Docker image for the Additive service is stored under the private
-    PyAnsys organization packages on GitHub. If you want to run the image yourself,
-    you must have a GitHub account with two-factor authentication. For more
-    information, see `Configuring two-factor authentication
-    <https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/configuring-two-factor-authentication>`_
-    in the GitHub documentation. You must also contact
-    `pyansys.support@ansys.com <mailto:pyansys.support@ansys.com>`_
-    to request that you be added to the PyAnsys organization.
-    Lastly, you must create a personal access token with ``read:packages`` scope and
-    authorize it for single sign on. For more information, see these topics in the
-    GitHub documentation:
+Starting a session
+==================
 
-    - `Managing your personal access tokens <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token>`_
-    - `Authorizing a personal access token for use with SAML single sign-on <https://docs.github.com/en/enterprise-cloud@latest/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on>`_.
+There a multiple ways to start a session with the PyAdditive client.
 
+Starting a local session
+------------------------
 
-Ansys Lab usage
-===============
-
-The easiest way to use PyAdditive is within a Jupyter notebook in the `Ansys Lab
-<https://account.activedirectory.windowsazure.com/applications/signin/d95b9231-50da-45bf-badd-4afa22a5d067?tenantId=34c6ce67-15b8-4eff-80e9-52da8be89706>`_
-cloud environment.
-
-Once you sign in to Ansys Lab, create a Jupyter notebook and connect to the Additive
-service with this code:
+Instantiating an Additive object will start the local installation of the Additive server.
 
 .. code:: pycon
 
-   >>> import ansys.additive.core as pyadditive
-   >>> additive = pyadditive.Additive()
+   import ansys.additive.core as pyadditive
+   additive = pyadditive.Additive()
 
-Example notebooks are available in `Examples <https://additive.docs.pyansys.com/version/dev/examples/gallery_examples/index.html>`_.
+Starting a remote session
+-------------------------
 
-
-Standalone usage
-================
-
-To use PyAdditive in standalone mode, first start the Additive service locally. If you have
-Docker installed, you must be authenticated to ghcr.io. For more information, see
-`Working with the Container registry <https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry>`_
-in the GitHub documentation.
-
-.. warning::
-   To authenticate to ghcr.io, you must have your GitHub user
-   account added to the PyAnsys organization as indicated in
-   the preceding note.
-
-
-Start the Additive service locally with this Docker command:
-
-.. code:: bash
-
-   docker run --rm --name additive -p 50052:50052 ghcr.io/pyansys/pyadditive:latest
-
-Next, connect to the Additive service with this code:
+A remote session can be established by specifying the host name and port of the server.
 
 .. code:: pycon
 
-   >>> import ansys.additive.core as pyadditive
-   >>> additive = pyadditive.Additive()
+   import ansys.additive.core as pyadditive
+   additive = pyadditive.Additive(host="additiveserver.mydomain.com", port=12345)
+
+Alternative startup methods
+---------------------------
+
+For details on additional session startup methods, see the documentation for the
+`Additive class <https://additive.docs.pyansys.com/version/stable/api/ansys/additive/core/additive/Additive.html>`_.
+
+
+Running simulations
+===================
+
+For examples of the types of simulations possible with PyAdditive, see
+`Examples <https://additive.docs.pyansys.com/version/dev/examples/gallery_examples/index.html>`_.
+
+
 
 Installation
 ============
@@ -88,20 +62,18 @@ PyAdditive is supported on Python version 3.9 and later. Previous versions of Py
 no longer supported as outlined in this `Moving to require Python 3 <https://python3statement.org/>`_
 statement.
 
-PyAdditive dependencies are automatically checked when packages are installed. These projects
-are required dependencies for PyAdditive:
+PyAdditive dependencies are automatically checked when packages are installed. Included
+in these dependencies are the projects listed below:
 
 * `ansys-api-additive <https://github.com/ansys/ansys-api-additive>`_: Python package containing the auto-generated
    gRPC Python interface files for the Additive service
-* `pandoc <https://pandoc.org/installing.html>`_: Universal document converter for documentation generation
 * `NumPy <https://pypi.org/project/numpy/>`_: Fundamental package for scientific computing with Python, providing
    data array access for PyAdditive
 * `PyVista <https://pypi.org/project/pyvista/>`_: 3D visualization library for interactive 3D plotting of
   PyAdditive results.
+* `Panel <https://panel.holoviz.org/>`_: Web app framework used for interactive visualization
+  of PyAdditive results.
 
-..
-   * `Pint <https://pypi.org/project/Pint/>`_: Python package to define, operate, and manipulate physical quantities,
-     including conversions from and to different measurement units.
 
 Install the package
 -------------------
@@ -111,7 +83,7 @@ PyAdditive has three installation modes: user, developer, and offline.
 Install in user mode
 ^^^^^^^^^^^^^^^^^^^^
 
-On a Windows system, install `Python <https://www.python.org/downloads>`_ if it is not already installed.
+Install `Python <https://www.python.org/downloads>`_ if it is not already installed.
 
 Before installing PyAdditive in user mode, run this command to make sure that you have the latest version
 of `pip <https://pypi.org/project/pip/>`_:
@@ -125,27 +97,6 @@ Then, run this command to install PyAdditive:
 .. code:: bash
 
    python -m pip install ansys-additive-core
-
-.. caution::
-
-    Until PyAdditive is made public, you must provide the index
-    URL to the private PyPI repository when performing a ``pip`` install:
-
-    * Index URL: ``https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/``
-
-    If access to this package registry is needed, email `pyansys.core@ansys.com <mailto:pyansys.core@ansys.com>`_
-    to request access. The PyAnsys team can provide you a read-only token to be inserted in ``${PRIVATE_PYPI_ACCESS_TOKEN}``.
-
-    Once you have the token run the installation command for your OS:
-
-    .. code:: bash
-
-        # On Linux
-        pip install ansys-additive-core --index-url=https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
-
-        # On Windows
-        pip install ansys-additive --index-url=https://%PYANSYS_PYPI_PRIVATE_PAT%@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
-
 
 Install in developer mode
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -194,13 +145,13 @@ To install PyAdditive in developer mode, perform these steps:
 
     .. code:: bash
 
-       tox -e py
+      tox -e py
 
 #. Optionally, install the project in editable mode:
 
     .. code:: bash
 
-       python -m pip install -e .
+      python -m pip install -e .
 
 #. When finished, you can exit the virtual environment:
 
@@ -284,16 +235,15 @@ Then, run this command from the root folder of the project:
 System testing on localhost
 ---------------------------
 
-Install the `docker-compose <https://docs.docker.com/compose/>`_ package, if necessary.
-Start the server by running this command from the root folder of the project:
+System testing can be done on localhost using the startup method
+described in :ref:`Starting a local session` within a python script
+or Jupyter notebook. The `examples` folder of the PyAdditive
+repository contains script files that can be used for testing or
+converted to Jupyter notebooks using
+`jupytext <https://jupytext.readthedocs.io/en/latest/install.html>`_.
 
-.. code:: bash
-
-   docker compose up
-
-Open a Jupyter notebook in Visual Studio Code and execute it.
-
-Or, use these commands to start `JupyterLab <https://pypi.org/project/jupyterlab/>`_:
+To test with a notebook, you will need to install and run
+`JupyterLab <https://pypi.org/project/jupyterlab/>`_:
 
 .. code:: bash
 
@@ -309,8 +259,7 @@ Or, use these commands to start `JupyterLab <https://pypi.org/project/jupyterlab
 
 
 The URL for opening JupyterLab in your browser is ``http://localhost:8888/lab``. Note that the port number may
-be different, but the port number that you should use is listed in the JupyterLab startup messages. You can find
-example Jupyter notebooks in the ``examples`` folder of the PyAdditive repository.
+be different, but the port number is listed in the JupyterLab startup messages.
 
 A note on ``pre-commit``
 ^^^^^^^^^^^^^^^^^^^^^^^^

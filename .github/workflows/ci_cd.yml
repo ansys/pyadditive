@@ -73,13 +73,31 @@ jobs:
       - name: "Run pytest"
         uses: ansys/actions/tests-pytest@v4
 
+      - name: Upload Coverage Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-html
+          path: .cov/html
+          retention-days: 7
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        if: matrix.os == 'ubuntu-latest'
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          files: .cov/xml
+
+
   doc-build:
     name: "Building library documentation"
     if: github.event_name != 'merge_group'
     runs-on: ubuntu-latest-8-cores
     needs: [doc-style]
     steps:
-      # Remove when auto-api is updated
+      # Remove when https://github.com/readthedocs/sphinx-autoapi/pull/399 gets merged
+      # and auto-api is updated.
       - name: "Install requirements"
         shell: bash
         run: |
@@ -169,6 +187,7 @@ jobs:
           path: doc/_build/latex/*.pdf
           retention-days: 7
 
+      # Restore when auto-api is updated
       # - name: "Build documentation with short examples"
       #   uses: ansys/actions/doc-build@v4
       #   with:
@@ -221,12 +240,12 @@ jobs:
     needs: [build-library]
     runs-on: ubuntu-latest
     steps:
-      - name: "Release to the private PyPI repository"
-        uses: ansys/actions/release-pypi-private@v4
+      - name: "Release to the PyPI repository"
+        uses: ansys/actions/release-pypi-public@v4
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           twine-username: "__token__"
-          twine-token: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
+          twine-token: ${{ secrets.PYPI_TOKEN }}
 
       - name: "Release to GitHub"
         uses: ansys/actions/release-github@v4

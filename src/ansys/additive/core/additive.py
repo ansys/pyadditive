@@ -64,6 +64,19 @@ LOCALHOST = "127.0.0.1"
 class Additive:
     """Provides the client interface to the Additive service.
 
+    Connection to the Additive server can be made using one of the following
+    methods. The methods are listed in order of precedence.
+        1. If ``channel`` is provided, use it to connect to the server.
+        2. If ``host``, and optionally ``port``, are provided, connect to the server at ``host:port``.
+        3. If running in a :class:`pypim <ansys.platform.instancemanagement.pypim>`
+        enabled cloud environment, launch and connect to  an ``additive`` service.
+        4. Use the value of the environment variable ``ANSYS_ADDITIVE_ADDRESS``, if it is defined.
+        The value uses the format ``host:port``.
+        5. Attempt to start the server on localhost and connect to it. For this to work,
+        the Additive portion of the Ansys Structures package from the Ansys unified installation
+        must be installed.
+
+
     Parameters
     ----------
     nproc: int
@@ -71,12 +84,7 @@ class Additive:
         be greater than or equal to this number.
     host: str, None
         Host name or IPv4 address of the server. If ``None``, the client will attempt
-        to connect to a server using the following algorithm.
-        1. If running in a ``pypim`` enabled environment, connect to the ``additive`` service.
-        2. Use the value of the environment variable ``ANSYS_ADDITIVE_ADDRESS`` if it is defined.
-        The value uses the format ``<IP>:<port>``
-        3. Attempt to start the server on localhost and connect to it. For this to work,
-        the Additive portion of the Ansys Structures package must be installed.
+        to connect to a server using one of the methods described above.
     port: int, None
         Port number to use when connecting to the server. If None, the default port will be used, 50052.
     loglevel: str
