@@ -236,7 +236,7 @@ System testing on localhost
 ---------------------------
 
 System testing can be done on localhost using the startup method
-described in :ref:`Starting a local session` within a python script
+described in :ref:`Starting a local session` within a Python script
 or Jupyter notebook. The `examples` folder of the PyAdditive
 repository contains script files that can be used for testing or
 converted to Jupyter notebooks using
