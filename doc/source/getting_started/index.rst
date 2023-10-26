@@ -40,7 +40,7 @@ You can start a remote session by specifying the host name and port of the serve
 Alternative startup methods
 ---------------------------
 
-For details on additional session startup methods, see the documentation for the
+For additional session startup methods, see the documentation for the
 `Additive class <https://additive.docs.pyansys.com/version/stable/api/ansys/additive/core/additive/Additive.html>`_.
 
 
