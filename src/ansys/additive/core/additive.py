@@ -64,13 +64,13 @@ LOCALHOST = "127.0.0.1"
 class Additive:
     """Provides the client interface to the Additive service.
 
-    Connection to the Additive server can be made using one of the following
+    You can connect to the Additive server using one of the following
     methods. The methods are listed in order of precedence.
         1. If ``channel`` is provided, use it to connect to the server.
         2. If ``host``, and optionally ``port``, are provided, connect to the server at ``host:port``.
-        3. If running in a :class:`pypim <ansys.platform.instancemanagement.pypim>`
-        enabled cloud environment, launch and connect to  an ``additive`` service.
-        4. Use the value of the environment variable ``ANSYS_ADDITIVE_ADDRESS``, if it is defined.
+        3. If running in a :class:`PyPIM <ansys.platform.instancemanagement.pypim>`-
+        enabled cloud environment, launch and connect to an ``additive`` service.
+        4. Use the value of the ``ANSYS_ADDITIVE_ADDRESS`` environment variable if it is defined.
         The value uses the format ``host:port``.
         5. Attempt to start the server on localhost and connect to it. For this to work,
         the Additive portion of the Ansys Structures package from the Ansys unified installation
@@ -83,10 +83,10 @@ class Additive:
         Number of simulations to run in parallel. The number of available licenses must
         be greater than or equal to this number.
     host: str, None
-        Host name or IPv4 address of the server. If ``None``, the client will attempt
+        Host name or IPv4 address of the server. If ``None``, the client attempts
         to connect to a server using one of the methods described previously.
     port: int, None
-        Port number to use when connecting to the server. If None, the default port will be used, 50052.
+        Port number to use when connecting to the server. If ``None``, the default port (50052) is used.
     loglevel: str
         Minimum severity level of messages to log.
     log_file: str

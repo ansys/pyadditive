@@ -30,7 +30,7 @@ Instantiating an Additive object starts the local installation of the Additive s
 Starting a remote session
 -------------------------
 
-A remote session can be established by specifying the host name and port of the server.
+You can start a remote session by specifying the host name and port of the server.
 
 .. code:: pycon
 
@@ -40,7 +40,7 @@ A remote session can be established by specifying the host name and port of the 
 Alternative startup methods
 ---------------------------
 
-For details on additional session startup methods, see the documentation for the
+For additional session startup methods, see the documentation for the
 `Additive class <https://additive.docs.pyansys.com/version/stable/api/ansys/additive/core/additive/Additive.html>`_.
 
 
@@ -63,7 +63,7 @@ no longer supported as outlined in this `Moving to require Python 3 <https://pyt
 statement.
 
 PyAdditive dependencies are automatically checked when packages are installed. Included
-in these dependencies are the projects listed below:
+in these dependencies are these projects:
 
 * `ansys-api-additive <https://github.com/ansys/ansys-api-additive>`_: Python package containing the auto-generated
    gRPC Python interface files for the Additive service
@@ -236,11 +236,11 @@ System testing on localhost
 ---------------------------
 
 System testing can be done on localhost using the startup method
-described in :ref:`Starting a local session` within a python script
-or Jupyter notebook. The `examples` folder of the PyAdditive
+described in :ref:`Starting a local session` within a Python script
+or Jupyter notebook. The ``examples`` folder of the PyAdditive
 repository contains script files that can be used for testing or
 converted to Jupyter notebooks using
-`jupytext <https://jupytext.readthedocs.io/en/latest/install.html>`_.
+`Jupytext <https://jupytext.readthedocs.io/en/latest/install.html>`_.
 
 To test with a notebook, you need to install and run
 `JupyterLab <https://pypi.org/project/jupyterlab/>`_:
