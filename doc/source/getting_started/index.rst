@@ -63,7 +63,7 @@ no longer supported as outlined in this `Moving to require Python 3 <https://pyt
 statement.
 
 PyAdditive dependencies are automatically checked when packages are installed. Included
-in these dependencies are the projects listed below:
+in these dependencies are these projects:
 
 * `ansys-api-additive <https://github.com/ansys/ansys-api-additive>`_: Python package containing the auto-generated
    gRPC Python interface files for the Additive service
