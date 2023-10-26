@@ -86,7 +86,7 @@ class Additive:
         Host name or IPv4 address of the server. If ``None``, the client attempts
         to connect to a server using one of the methods described previously.
     port: int, None
-        Port number to use when connecting to the server. If None, the default port will be used, 50052.
+        Port number to use when connecting to the server. If ``None``, the default port (50052) is used.
     loglevel: str
         Minimum severity level of messages to log.
     log_file: str
