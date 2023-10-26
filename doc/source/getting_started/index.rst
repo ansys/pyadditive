@@ -240,7 +240,7 @@ described in :ref:`Starting a local session` within a Python script
 or Jupyter notebook. The ``examples`` folder of the PyAdditive
 repository contains script files that can be used for testing or
 converted to Jupyter notebooks using
-`jupytext <https://jupytext.readthedocs.io/en/latest/install.html>`_.
+`Jupytext <https://jupytext.readthedocs.io/en/latest/install.html>`_.
 
 To test with a notebook, you need to install and run
 `JupyterLab <https://pypi.org/project/jupyterlab/>`_:
