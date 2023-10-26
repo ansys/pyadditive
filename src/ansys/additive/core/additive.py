@@ -64,7 +64,7 @@ LOCALHOST = "127.0.0.1"
 class Additive:
     """Provides the client interface to the Additive service.
 
-    Connection to the Additive server can be made using one of the following
+    You can connect to the Additive server using one of the following
     methods. The methods are listed in order of precedence.
         1. If ``channel`` is provided, use it to connect to the server.
         2. If ``host``, and optionally ``port``, are provided, connect to the server at ``host:port``.
