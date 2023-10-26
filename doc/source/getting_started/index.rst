@@ -44,8 +44,8 @@ For details on additional session startup methods, see the documentation for the
 `Additive class <https://additive.docs.pyansys.com/version/stable/api/ansys/additive/core/additive/Additive.html>`_.
 
 
-Running simulations
-===================
+Run simulations
+===============
 
 For examples of the types of simulations possible with PyAdditive, see
 `Examples <https://additive.docs.pyansys.com/version/dev/examples/gallery_examples/index.html>`_.
@@ -143,13 +143,13 @@ To install PyAdditive in developer mode, perform these steps:
 
 #. Verify your development installation:
 
-    .. code:: bash
+   .. code:: bash
 
       tox -e py
 
 #. Optionally, install the project in editable mode:
 
-    .. code:: bash
+   .. code:: bash
 
       python -m pip install -e .
 
