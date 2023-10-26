@@ -83,7 +83,7 @@ class Additive:
         Number of simulations to run in parallel. The number of available licenses must
         be greater than or equal to this number.
     host: str, None
-        Host name or IPv4 address of the server. If ``None``, the client will attempt
+        Host name or IPv4 address of the server. If ``None``, the client attempts
         to connect to a server using one of the methods described previously.
     port: int, None
         Port number to use when connecting to the server. If None, the default port will be used, 50052.
