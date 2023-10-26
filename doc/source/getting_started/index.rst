@@ -20,7 +20,7 @@ There are multiple ways to start a session with the PyAdditive client.
 Starting a local session
 ------------------------
 
-Instantiating an Additive object will start the local installation of the Additive server.
+Instantiating an Additive object starts the local installation of the Additive server.
 
 .. code:: pycon
 
@@ -242,7 +242,7 @@ repository contains script files that can be used for testing or
 converted to Jupyter notebooks using
 `jupytext <https://jupytext.readthedocs.io/en/latest/install.html>`_.
 
-To test with a notebook, you will need to install and run
+To test with a notebook, you need to install and run
 `JupyterLab <https://pypi.org/project/jupyterlab/>`_:
 
 .. code:: bash
