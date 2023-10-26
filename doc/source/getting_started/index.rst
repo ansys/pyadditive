@@ -30,7 +30,7 @@ Instantiating an Additive object starts the local installation of the Additive s
 Starting a remote session
 -------------------------
 
-A remote session can be established by specifying the host name and port of the server.
+You can start a remote session by specifying the host name and port of the server.
 
 .. code:: pycon
 
