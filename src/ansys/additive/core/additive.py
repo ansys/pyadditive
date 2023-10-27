@@ -29,21 +29,16 @@ from datetime import datetime
 import hashlib
 import logging
 import os
-import socket
 import zipfile
 
-from ansys.api.additive import __version__ as api_version
-from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
+# from ansys.api.additive import __version__ as api_version
 from ansys.api.additive.v0.additive_domain_pb2 import ProgressState
 from ansys.api.additive.v0.additive_materials_pb2 import GetMaterialRequest
-from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
 from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
-from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
-import ansys.platform.instancemanagement as pypim
 from google.protobuf.empty_pb2 import Empty
 import grpc
 
-from ansys.additive.core import USER_DATA_PATH, __version__
+from ansys.additive.core import USER_DATA_PATH  # , __version__
 from ansys.additive.core.download import download_file
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
@@ -51,14 +46,10 @@ from ansys.additive.core.microstructure import MicrostructureSummary
 import ansys.additive.core.misc as misc
 from ansys.additive.core.porosity import PorositySummary
 from ansys.additive.core.progress_logger import ProgressLogger
-from ansys.additive.core.server_utils import find_open_port, launch_server, server_ready
+from ansys.additive.core.server_connection import ServerConnection
 from ansys.additive.core.simulation import SimulationError
 from ansys.additive.core.single_bead import SingleBeadSummary
 from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHistorySummary
-
-MAX_MESSAGE_LENGTH = int(256 * 1024**2)
-DEFAULT_ADDITIVE_SERVICE_PORT = 50052
-LOCALHOST = "127.0.0.1"
 
 
 class Additive:
@@ -66,62 +57,69 @@ class Additive:
 
     Parameters
     ----------
-    nproc: int
-        Number of simulations to run in parallel. The number of available licenses must
-        be greater than or equal to this number.
+    server_connections: list[str | grpc.Channel], None
+        List of connection definitions for servers. The list may be a combination of strings and
+        connected ``grpc.Channel``s. Strings use the format ``host:port`` to specify
+        the server IPv4 address.
+    channel: grpc.Channel, None
+        gRPC channel connection to use for communicating with the server. If None, a connection will be
+        established using the host and port parameters. Ignored if ``server_channels``
+        is not ``None``.
     host: str, None
-        Host name or IPv4 address of the server. If ``None``, the client will attempt
-        to connect to a server using the following algorithm.
-        1. If running in a ``pypim`` enabled environment, connect to the ``additive`` service.
-        2. Use the value of the environment variable ``ANSYS_ADDITIVE_ADDRESS`` if it is defined.
-        The value uses the format ``<IP>:<port>``
-        3. Attempt to start the server on localhost and connect to it. For this to work,
-        the Additive portion of the Ansys Structures package must be installed.
-    port: int, None
-        Port number to use when connecting to the server. If None, the default port will be used, 50052.
-    loglevel: str
+        Host name or IPv4 address of the server. Ignored if ``server_channels`` or ``channel``
+        is not ``None``.
+    port: int
+        Port number to use when connecting to the server. Defaults to 50052.
+    nservers: int
+        Number of Additive servers to start and connect to. If running in a
+        :class:`PyPIM <ansys.platform.instancemanagement.pypim>` enabled environment,
+        ``nservers`` ``additive`` services will be started. If running on localhost,
+        ``nservers`` instances of Additive server will be started. For this to work,
+        the Additive portion of the Ansys Structures package must be installed. Ignored if
+        ``server_connections``, ``channel``, or ``host`` is not ``None``.
+    log_level: str
         Minimum severity level of messages to log.
     log_file: str
         File name to write log messages to.
-    channel: grpc.Channel, None
-        gRPC channel connection to use for communicating with the server. If None, a connection will be
-        established using the host and port parameters.
     """
+
+    DEFAULT_ADDITIVE_SERVICE_PORT = 50052
 
     def __init__(
         self,
-        nproc: int = 4,
-        host: str | None = None,
-        port: int | None = None,
-        loglevel: str = "INFO",
-        log_file: str = "",
+        server_connections: list[str | grpc.Channel] = None,
         channel: grpc.Channel | None = None,
-    ) -> None:  # PEP 484
+        host: str | None = None,
+        port: int = DEFAULT_ADDITIVE_SERVICE_PORT,
+        nservers: int = 1,
+        log_level: str = "INFO",
+        log_file: str = "",
+    ) -> None:
         """Initialize a connection to the server."""
-        if channel is not None and (host is not None or port is not None):
-            raise ValueError(
-                "If 'channel' is specified, neither 'port' nor 'host' can be specified."
-            )
+        if channel is not None and host is not None:
+            raise ValueError("'channel' and 'host' cannot both be specified.")
 
-        ip = socket.gethostbyname(host) if host != None else None
+        self._log = self._create_logger(log_file, log_level)
+        self._log.debug("Logging set to %s", log_level)
 
-        self._nproc = nproc
-        self._log = self._create_logger(log_file, loglevel)
-        self._log.debug("Logging set to %s", loglevel)
-
-        if channel:
-            self._channel = channel
+        self._servers = []
+        if server_connections:
+            for target in server_connections:
+                if isinstance(target, grpc.Channel):
+                    self._servers.append(ServerConnection(channel=target))
+                else:
+                    self._servers.append(ServerConnection(addr=target))
+        elif channel:
+            self._servers.append(ServerConnection(channel=channel))
+        elif host:
+            self._servers.append(ServerConnection(addr=f"{host}:{port}"))
+        elif os.getenv("ANSYS_ADDITIVE_ADDRESS"):
+            self._servers.append(ServerConnection(os.getenv("ANSYS_ADDITIVE_ADDRESS")))
         else:
-            self._channel = self._create_channel(ip, port)
-        self._log.info("Connected to %s", self._channel_str)
-
-        # assign service stubs
-        self._materials_stub = MaterialsServiceStub(self._channel)
-        self._simulation_stub = SimulationServiceStub(self._channel)
-        self._about_stub = AboutServiceStub(self._channel)
-
-        if not server_ready(self._about_stub):
-            raise RuntimeError("Unable to connect to server")
+            for _ in range(nservers):
+                server = ServerConnection()
+                self._log.info("Connected to %s", server.channel_str)
+                self._servers.append(server)
 
         # Setup data directory
         self._user_data_path = USER_DATA_PATH
@@ -129,21 +127,14 @@ class Additive:
             os.makedirs(self._user_data_path)
         print("user data path: " + self._user_data_path)
 
-    def __del__(self):
-        """Destructor for cleaning up the service connection."""
-        if hasattr(self, "_server_instance") and self._server_instance:
-            self._server_instance.delete()
-        if hasattr(self, "_server_process") and self._server_process:
-            self._server_process.kill()
-
-    def _create_logger(self, log_file, loglevel) -> logging.Logger:
+    def _create_logger(self, log_file, log_level) -> logging.Logger:
         """Instantiate the logger."""
-        numeric_level = getattr(logging, loglevel.upper(), None)
+        numeric_level = getattr(logging, log_level.upper(), None)
         if not isinstance(numeric_level, int):
-            raise ValueError("Invalid log level: %s" % loglevel)
+            raise ValueError("Invalid log level: %s" % log_level)
         if log_file:
             if not isinstance(log_file, str):
-                log_file = "instance.log"
+                log_file = "pyadditive.log"
             logging.basicConfig(filename=log_file, level=numeric_level)
         else:
             logging.basicConfig(
@@ -152,105 +143,6 @@ class Additive:
                 datefmt="%Y-%m-%d %H:%M:%S",
             )
         return logging.getLogger(__name__)
-
-    def _create_channel(
-        self,
-        ip: str | None = None,
-        port: int | None = None,
-        product_version: str | None = None,
-    ):
-        """Create an insecure gRPC channel.
-
-        A channel connection is established using one of the following methods.
-        The methods are listed in order of precedence.
-
-        #. Use the user-provided IP address and port values, if any.
-        #. Use PyPIM if the client is running in a PyPIM-enabled environment
-           such as Ansys Lab.
-        #. Use an IP address and port definition string defined by the
-           ``ANSYS_ADDITIVE_ADDRESS`` environment variable.
-        #. Use the default IP address and port, ``localhost:50052``.
-
-        Parameters
-        ----------
-        ip: str, None
-            IP address of the remote server host in IPv4 dotted-quad string format.
-        port: int, None
-            Port number on the server to connect to.
-        product_version: str, None
-            Product version of the Additive server. This parameter is only applicable
-            in PyPIM environments.
-
-        Returns
-        -------
-        channel: grpc.Channel
-            Insecure gRPC channel.
-        """
-        if port:
-            misc.check_valid_port(port)
-        else:
-            port = DEFAULT_ADDITIVE_SERVICE_PORT
-
-        if ip:
-            misc.check_valid_ip(ip)
-            return self.__open_insecure_channel(f"{ip}:{port}")
-
-        elif pypim.is_configured():
-            pim = pypim.connect()
-            self._server_instance = pim.create_instance(
-                product_name="additive", product_version=product_version
-            )
-            self._log.info("Waiting for server to initialize")
-            self._server_instance.wait_for_ready()
-            (_, target) = self._server_instance.services["grpc"].uri.split(":", 1)
-            return self.__open_insecure_channel(target)
-
-        elif os.getenv("ANSYS_ADDITIVE_ADDRESS"):
-            return self.__open_insecure_channel(os.getenv("ANSYS_ADDITIVE_ADDRESS"))
-
-        else:
-            port = find_open_port()
-            self._server_process = launch_server(port)
-            return self.__open_insecure_channel(f"{LOCALHOST}:{port}")
-
-    def __open_insecure_channel(self, target: str) -> grpc.Channel:
-        """Open an insecure gRPC channel to a given target.
-
-        Parameters
-        ----------
-        target : str
-            Target for the insecure gRPC channel.
-        """
-        return grpc.insecure_channel(
-            target, options=[("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH)]
-        )
-
-    @property
-    def _channel_str(self):
-        """Target string.
-
-        The form is generally ``"ip:port"``. For example, ``"127.0.0.1:50052"``.
-        """
-        if self._channel is not None:
-            return self._channel._channel.target().decode()
-        return ""
-
-    def about(self) -> None:
-        """Print information about the client and server."""
-        print("Client")
-        print(f"    Version: {__version__}")
-        print(f"    API version: {api_version}")
-        if self._channel is None:
-            print("Not connected to server")
-            return
-        try:
-            response = self._about_stub.About(Empty())
-        except grpc.RpcError as exc:
-            raise Exception(f"Failed to connect to server: {self._channel_str}\n{exc}")
-        print(f"Server {self._channel_str}")
-        for key in response.metadata:
-            value = response.metadata[key]
-            print(f"    {key}: {value}")
 
     def simulate(self, inputs, nproc: int | None = None):
         """Execute an additive simulation.

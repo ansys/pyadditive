@@ -1,0 +1,182 @@
+# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+import logging
+import time
+
+from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
+from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
+from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
+import ansys.platform.instancemanagement as pypim
+from google.protobuf.empty_pb2 import Empty
+import grpc
+
+from ansys.additive.core.server_connection.server_utils import (
+    create_channel,
+    find_open_port,
+    launch_server,
+)
+
+
+@dataclass(frozen=True)
+class ServerConnectionStatus:
+    """Provides status information about a server."""
+
+    connected: bool
+    target: str = None
+    metadata: dict = None
+
+
+class ServerConnection:
+    """Provides connection to Additive server.
+
+    If neither ``channel`` nor ``addr`` are provided, an attempt will be
+    made to start an Additive server and connect to it. If running in a
+    cloud environment, :class:`PyPIM <ansys.platform.instancemanagement.pypim>`
+    must be supported. If running on localhost, the Additive option of the
+    Structures package of the Ansys unified installation must be installed.
+
+    Parameters
+    ----------
+    channel: grpc.Channel | None
+        gRPC channel connected to server.
+    addr: str | None
+        IPv4 address of server of the form ``host:port``. Ignored if ``channel``
+        is defined.
+    product_version: str | None
+        Product version of the Additive server, of the form ``"YYR"``, where ``YY`` is
+        the two-digit year and ``R`` is the release number. For example, the release
+        2024 R1 would be specified as ``241``. This parameter is only applicable in
+        PyPIM environments.
+    """
+
+    LOCALHOST = "127.0.0.1"
+
+    def __init__(
+        self,
+        channel: grpc.Channel | None = None,
+        addr: str | None = None,
+        product_version: str | None = None,
+    ) -> None:
+        """Initialize a server connection."""
+
+        if channel is not None and addr is not None:
+            raise ValueError("Both 'channel' and 'addr' cannot both be specified.")
+
+        self._log = logging.getLogger(__name__)
+        self._channel = None
+
+        if channel:
+            self._channel = channel
+        else:
+            if addr:
+                target = addr
+            elif pypim.is_configured():
+                pim = pypim.connect()
+                self._server_instance = pim.create_instance(
+                    product_name="additive", product_version=product_version
+                )
+                self._log.info("Waiting for server to initialize")
+                self._server_instance.wait_for_ready()
+                (_, target) = self._server_instance.services["grpc"].uri.split(":", 1)
+            else:
+                port = find_open_port()
+                self._server_process = launch_server(port)
+                target = f"{ServerConnection.LOCALHOST}:{port}"
+            self._channel = create_channel(target)
+
+        # assign service stubs
+        self._materials_stub = MaterialsServiceStub(self._channel)
+        self._simulation_stub = SimulationServiceStub(self._channel)
+        self._about_stub = AboutServiceStub(self._channel)
+
+        if not self.ready():
+            raise RuntimeError(f"Unable to connect to server {self.channel_str}")
+
+    def __del__(self):
+        """Destructor for cleaning up server connection."""
+        if hasattr(self, "_server_instance") and self._server_instance:
+            self._server_instance.delete()
+        if hasattr(self, "_server_process") and self._server_process:
+            self._server_process.kill()
+
+    @property
+    def channel_str(self) -> str:
+        """GRPC channel target.
+
+        The form is generally ``"ip:port"``. For example, ``"127.0.0.1:50052"``.
+        """
+        if self._channel is not None:
+            return self._channel._channel.target().decode()
+        return ""
+
+    @property
+    def materials_stub(self) -> MaterialsServiceStub:
+        """Materials service stub."""
+        return self._materials_stub
+
+    @property
+    def simulation_stub(self) -> SimulationServiceStub:
+        """Simulation service stub."""
+        return self._simulation_stub
+
+    def status(self) -> ServerConnectionStatus:
+        """Return the server connection status."""
+        if self._channel is None:
+            return ServerConnectionStatus(False, self.channel_str)
+        try:
+            response = self._about_stub.About(Empty())
+        except grpc.RpcError:
+            return ServerConnectionStatus(False, self.channel_str)
+        metadata = {}
+        for key in response.metadata:
+            metadata[key] = response.metadata[key]
+        return ServerConnection(True, self.channel_str, metadata)
+
+    def ready(self, retries: int = 5) -> bool:
+        """Return whether the server is ready.
+
+        Parameters
+        ----------
+        retries: int
+            Number of times to retry before giving up. An linearly increasing delay
+            is used between each retry.
+
+        Returns
+        -------
+        bool:
+            True means server is ready. False means the number of retries was exceeded
+            without receiving a response from the server.
+        """
+        ready = False
+        for i in range(retries):
+            try:
+                self.about_stub.About(Empty())
+                ready = True
+                break
+            except Exception:
+                time.sleep(i + 1)
+
+        return ready

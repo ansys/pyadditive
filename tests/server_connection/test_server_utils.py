@@ -31,7 +31,7 @@ from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
 import grpc
 import pytest
 
-from ansys.additive.core.server_utils import (
+from ansys.additive.core.server_connection.server_utils import (
     DEFAULT_ANSYS_VERSION,
     find_open_port,
     launch_server,

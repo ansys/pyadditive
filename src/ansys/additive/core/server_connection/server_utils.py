@@ -19,19 +19,21 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from __future__ import annotations
 
 from datetime import datetime
 import os
+import socket
 import subprocess
 import time
 
-from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
-from google.protobuf.empty_pb2 import Empty
+import grpc
 
 from ansys.additive.core import USER_DATA_PATH
 
 DEFAULT_ANSYS_VERSION = "241"
 ADDITIVE_SERVER_EXE_NAME = "additiveserver"
+MAX_RCV_MSG_LEN = 256 * 1024**2
 
 
 def launch_server(port: int, cwd: str = USER_DATA_PATH) -> subprocess.Popen:
@@ -116,30 +118,45 @@ def find_open_port() -> int:
     return port
 
 
-def server_ready(stub: AboutServiceStub, retries: int = 5) -> bool:
-    """Return whether the server is ready.
+def check_valid_ip(ip):
+    """Check for valid IP address."""
+    if ip.lower() != "localhost":
+        ip = ip.replace('"', "").replace("'", "")
+        socket.inet_aton(ip)
+
+
+def check_valid_port(port, lower_bound=1000, high_bound=65535):
+    """Check for valid port number."""
+    _port = int(port)
+
+    if lower_bound < _port < high_bound:
+        return
+    else:
+        raise ValueError(f"'port' values should be between {lower_bound} and {high_bound}.")
+
+
+def create_channel(target: str, max_rcv_msg_len: int = MAX_RCV_MSG_LEN):
+    """Create an insecure gRPC channel.
 
     Parameters
     ----------
-    stub: AboutServiceStub
-        Stub used to call the about service on the server.
-    retries: int
-        Number of times to retry before giving up. An exponential backoff delay
-        is used between each retry.
+    target: str
+        IP address of the host to connect to, of the form ``host:port``.
+    max_rcv_msg_len: int
+        Size, in bytes, of the buffer used to receive messages. Default is
+        :obj:`MAX_RCV_MSG_LEN`.
 
     Returns
     -------
-    bool:
-        True means server is ready. False means the number of retries was exceeded
-        without successfully connecting to the server.
+    channel: grpc.Channel
+        Insecure gRPC channel.
     """
-    ready = False
-    for i in range(retries):
-        try:
-            stub.About(Empty())
-            ready = True
-            break
-        except Exception:
-            time.sleep(i + 1)
 
-    return ready
+    (host, port_str) = target.split(":")
+    ip = socket.gethostbyname(host) if host is not None else None
+    check_valid_ip(ip)
+    check_valid_port(int(port_str))
+
+    return grpc.insecure_channel(
+        target, options=[("grpc.max_receive_message_length", max_rcv_msg_len)]
+    )
