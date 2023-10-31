@@ -27,10 +27,6 @@ Files: LICENSES/*
 Copyright: 2023 ANSYS, Inc. and/or its affiliates.
 License: MIT
 
-Files: tests/*
-Copyright: 2023 ANSYS, Inc. and/or its affiliates.
-License: MIT
-
 Files: .flake8
 Copyright: 2023 ANSYS, Inc. and/or its affiliates.
 License: MIT
