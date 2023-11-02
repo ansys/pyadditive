@@ -64,7 +64,6 @@ tests = [
     # Test specific dependencies
     "pytest==7.4.2",
     "pytest-cov==4.0.0",
-    "callee==0.3.1",
 ]
 
 doc = [
@@ -122,7 +121,7 @@ show_missing = true
 
 [tool.pytest.ini_options]
 minversion = "7.1"
-addopts = "-ra --cov=ansys.additive.core --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --cov-fail-under 90"
+addopts = "-ra --cov=ansys.additive.core --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --cov-fail-under 97"
 testpaths = ["tests"]
 filterwarnings = ["ignore:::.*protoc_gen_swagger*"]
 

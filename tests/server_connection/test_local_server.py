@@ -22,34 +22,29 @@
 
 import glob
 import os
-from pathlib import Path
+import pathlib
 import subprocess
-import tempfile
 from unittest.mock import ANY, Mock, patch
 
-from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
-import grpc
 import pytest
 
-from ansys.additive.core.server_connection.server_utils import (
-    DEFAULT_ANSYS_VERSION,
-    find_open_port,
-    launch_server,
-    server_ready,
-)
+from ansys.additive.core.server_connection.constants import DEFAULT_ANSYS_VERSION
+from ansys.additive.core.server_connection.local_server import LocalServer
+
+TEST_VALID_PORT = 1024
 
 
 @patch("os.name", "unknown_os")
-def test_launch_server_with_invalid_os_raises_exception():
+def test_launch_with_invalid_os_raises_exception():
     # arrange
     # act, assert
     with pytest.raises(OSError) as excinfo:
-        launch_server(0)
+        LocalServer.launch(TEST_VALID_PORT)
     assert "Unsupported OS" in str(excinfo.value)
 
 
 @patch("os.name", "nt")
-def test_launch_server_with_windows_os_and_AWP_ROOT_not_defined_raises_exception():
+def test_launch_with_windows_os_and_AWP_ROOT_not_defined_raises_exception():
     # arrange
     orig_ansys_ver = None
     if f"AWP_ROOT{DEFAULT_ANSYS_VERSION}" in os.environ:
@@ -57,7 +52,7 @@ def test_launch_server_with_windows_os_and_AWP_ROOT_not_defined_raises_exception
         del os.environ[f"AWP_ROOT{DEFAULT_ANSYS_VERSION}"]
     # act, assert
     with pytest.raises(Exception) as excinfo:
-        launch_server(0)
+        LocalServer.launch(TEST_VALID_PORT)
     assert "Cannot find Ansys installation directory" in str(excinfo.value)
 
     # cleanup
@@ -67,100 +62,141 @@ def test_launch_server_with_windows_os_and_AWP_ROOT_not_defined_raises_exception
 
 @patch("os.name", "posix")
 @patch("os.path.isdir")
-def test_launch_server_with_linux_os_and_no_install_dir_raises_exception(mock_isdir):
+def test_launch_with_linux_os_and_no_install_dir_raises_exception(mock_isdir):
     # arrange
     mock_isdir.return_value = False
+
     # act, assert
     with pytest.raises(Exception) as excinfo:
-        launch_server(0)
+        LocalServer.launch(TEST_VALID_PORT)
     assert "Cannot find Ansys installation directory" in str(excinfo.value)
 
 
+@pytest.mark.skipif(os.name == "nt", reason="Test only valid on linux")
+@patch("os.name", "posix")
+@patch("os.path.isdir")
+def test_launch_with_linux_installation_but_invalid_ansys_version_raises_exception(mock_isdir):
+    # arrange
+    mock_isdir.return_value = True
+
+    # act, assert
+    with pytest.raises(FileNotFoundError) as excinfo:
+        LocalServer.launch(TEST_VALID_PORT, product_version="bogus")
+    assert "Cannot find " in str(excinfo.value)
+
+
 @patch("os.name", "nt")
-def test_launch_server_when_exe_not_found_raises_exception():
+def test_launch_when_exe_not_found_raises_exception():
     # arrange
     os.environ["AWP_ROOT241"] = "Bogus"
 
     # act, assert
     with pytest.raises(FileNotFoundError) as excinfo:
-        launch_server(0)
+        LocalServer.launch(TEST_VALID_PORT)
     assert "Cannot find " in str(excinfo.value)
+
+
+@patch("os.name", "nt")
+def test_launch_when_product_version_invalid_raises_exception_win(tmp_path: pathlib.Path):
+    # arrange
+    exe_name = tmp_path / "server.exe"
+    exe_name.touch()
+    os.environ["AWP_ROOT241"] = str(exe_name)
+
+    # act, assert
+    with pytest.raises(Exception) as excinfo:
+        LocalServer.launch(TEST_VALID_PORT, tmp_path, "242")
+    assert "Cannot find Ansys installation directory" in str(excinfo.value)
+
+
+@patch("os.name", "nt")
+def test_launch_when_product_version_invalid_raises_exception_win(tmp_path: pathlib.Path):
+    # arrange
+    exe_name = tmp_path / "server.exe"
+    exe_name.touch()
+    os.environ["AWP_ROOT241"] = str(exe_name)
+
+    # act, assert
+    with pytest.raises(Exception) as excinfo:
+        LocalServer.launch(TEST_VALID_PORT, tmp_path, "242")
+    assert "Cannot find Ansys installation directory" in str(excinfo.value)
 
 
 @pytest.mark.skipif(os.name == "posix", reason="Test only valid on Windows")
 @patch("subprocess.Popen")
-def test_launch_server_calls_popen_as_expected_win(mock_popen):
+def test_launch_calls_popen_as_expected_win(mock_popen, tmp_path: pathlib.Path):
     # arrange
-    tmpdir = tempfile.TemporaryDirectory()
     mock_process = Mock()
+    product_version = "myversion"
     attrs = {"poll.return_value": None}
     mock_process.configure_mock(**attrs)
     mock_popen.return_value = mock_process
-    os.environ["AWP_ROOT241"] = tmpdir.name
-    exe_path = os.path.join(tmpdir.name, "Additive", "additiveserver", "additiveserver.exe")
-    os.makedirs(os.path.dirname(exe_path), exist_ok=True)
-    Path(exe_path).touch(mode=0o777, exist_ok=True)
+    os.environ[f"AWP_ROOT{product_version}"] = str(tmp_path)
+    exe_path = tmp_path / "Additive" / "additiveserver" / "additiveserver.exe"
+    exe_path.mkdir(parents=True, exist_ok=True)
+    exe_path.touch(mode=0o777, exist_ok=True)
 
     # act
-    launch_server(0, tmpdir.name)
+    LocalServer.launch(TEST_VALID_PORT, tmp_path, product_version)
 
     # assert
     mock_popen.assert_called_once_with(
-        '"' + exe_path + '"' + " --port 0",
+        f'"{exe_path}" --port {TEST_VALID_PORT}',
         shell=False,
-        cwd=tmpdir.name,
+        cwd=tmp_path,
         stdout=ANY,
         stderr=subprocess.STDOUT,
     )
-    assert len(glob.glob(os.path.join(tmpdir.name, "additive_server_*.log"))) == 1
+    assert len(glob.glob(str(tmp_path / "additiveserver_*.log"))) == 1
 
 
 @pytest.mark.skipif(os.name == "nt", reason="Test only valid on linux")
 @patch("os.path.exists")
 @patch("os.path.isdir")
 @patch("subprocess.Popen")
-def test_launch_server_calls_popen_as_expected_linux(mock_popen, mock_isdir, mock_exists):
+def test_launch_calls_popen_as_expected_linux(
+    mock_popen, mock_isdir, mock_exists, tmp_path: pathlib.Path
+):
     # arrange
-    tmpdir = tempfile.TemporaryDirectory()
     mock_process = Mock()
+    product_version = 123
     attrs = {"poll.return_value": None}
     mock_process.configure_mock(**attrs)
     mock_popen.return_value = mock_process
     mock_isdir.return_value = True
     mock_exists.return_value = True
-    exe_path = "/usr/ansys_inc/v241/Additive/additiveserver/additiveserver"
+    exe_path = f"/usr/ansys_inc/v{product_version}/Additive/additiveserver/additiveserver"
 
     # act
-    launch_server(0, tmpdir.name)
+    LocalServer.launch(TEST_VALID_PORT, tmp_path, product_version)
 
     # assert
     mock_popen.assert_called_once_with(
-        '"' + exe_path + '"' + " --port 0",
+        f'"{exe_path}" --port {TEST_VALID_PORT}',
         shell=True,
-        cwd=tmpdir.name,
+        cwd=tmp_path,
         stdout=ANY,
         stderr=subprocess.STDOUT,
     )
-    assert len(glob.glob(os.path.join(tmpdir.name, "additive_server_*.log"))) == 1
+    assert len(glob.glob(str(tmp_path / "additiveserver_*.log"))) == 1
 
 
 @pytest.mark.skipif(os.name == "posix", reason="Test only valid on Windows")
 @patch("subprocess.Popen")
-def test_launch_server_raises_exception_if_process_fails_to_start_win(mock_popen):
+def test_launch_raises_exception_if_process_fails_to_start_win(mock_popen, tmp_path: pathlib.Path):
     # arrange
-    tmpdir = tempfile.TemporaryDirectory()
-    os.environ["AWP_ROOT241"] = tmpdir.name
+    os.environ["AWP_ROOT241"] = str(tmp_path)
     mock_process = Mock()
     attrs = {"poll.return_value": 1}
     mock_process.configure_mock(**attrs)
     mock_popen.return_value = mock_process
-    exe_path = os.path.join(tmpdir.name, "Additive", "additiveserver", "additiveserver.exe")
-    os.makedirs(os.path.dirname(exe_path), exist_ok=True)
-    Path(exe_path).touch(mode=0o777, exist_ok=True)
+    exe_path = tmp_path / "Additive" / "additiveserver" / "additiveserver.exe"
+    exe_path.mkdir(parents=True, exist_ok=True)
+    exe_path.touch(mode=0o777, exist_ok=True)
 
     # act, assert
     with pytest.raises(Exception) as excinfo:
-        launch_server(0, tmpdir.name)
+        LocalServer.launch(TEST_VALID_PORT, tmp_path)
     assert "Server exited with code" in str(excinfo.value)
 
 
@@ -168,11 +204,10 @@ def test_launch_server_raises_exception_if_process_fails_to_start_win(mock_popen
 @patch("os.path.exists")
 @patch("os.path.isdir")
 @patch("subprocess.Popen")
-def test_launch_server_raises_exception_if_process_fails_to_start_linux(
-    mock_popen, mock_isdir, mock_exists
+def test_launch_raises_exception_if_process_fails_to_start_linux(
+    mock_popen, mock_isdir, mock_exists, tmp_path: pathlib.Path
 ):
     # arrange
-    tmpdir = tempfile.TemporaryDirectory()
     mock_process = Mock()
     attrs = {"poll.return_value": 1}
     mock_process.configure_mock(**attrs)
@@ -182,37 +217,13 @@ def test_launch_server_raises_exception_if_process_fails_to_start_linux(
 
     # act, assert
     with pytest.raises(Exception) as excinfo:
-        launch_server(0, tmpdir.name)
+        LocalServer.launch(0, tmp_path)
     assert "Server exited with code" in str(excinfo.value)
 
 
 def test_find_open_port_returns_valid_port():
     # act
-    port = find_open_port()
+    port = LocalServer.find_open_port()
 
     # assert
-    assert port > 1024 and port < 65535
-
-
-def test_server_ready_returns_false_when_server_cannot_be_reached():
-    # arrange
-    channel = grpc.insecure_channel("channel")
-    stub = AboutServiceStub(channel)
-
-    # act
-    ready = server_ready(stub, 1)
-
-    # assert
-    assert ready == False
-
-
-@patch("ansys.api.additive.v0.about_pb2_grpc.AboutServiceStub")
-def test_server_ready_returns_true_when_server_can_be_reached(mock_stub):
-    # arrange
-    mock_stub.About.return_value = "all about it"
-
-    # act
-    ready = server_ready(mock_stub)
-
-    # assert
-    assert ready == True
+    assert port >= 1024 and port <= 65535

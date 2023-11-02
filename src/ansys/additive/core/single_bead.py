@@ -137,6 +137,11 @@ class SingleBeadInput:
 
     def _to_simulation_request(self) -> SimulationRequest:
         """Convert this object into a simulation request message."""
+        try:
+            self.material._to_material_message()
+        except Exception as ex:
+            print("in _to_simulation_request", ex)
+            raise
         input = SingleBeadInputMessage(
             machine=self.machine._to_machine_message(),
             material=self.material._to_material_message(),

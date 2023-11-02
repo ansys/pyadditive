@@ -31,9 +31,8 @@ except ModuleNotFoundError:  # pragma: no cover
 
 __version__ = importlib_metadata.version(__name__.replace(".", "-"))
 
-APP_NAME = "ansys-pyadditive"
+APP_NAME = "pyadditive"
 COMPANY_NAME = "Ansys Inc"
-
 
 # Setup data directory
 USER_DATA_PATH = platformdirs.user_data_dir(APP_NAME, COMPANY_NAME)
@@ -59,7 +58,6 @@ from ansys.additive.core.microstructure import (
     MicrostructureSummary,
 )
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
-from ansys.additive.core.server_connection.server_utils import find_open_port, launch_server
 from ansys.additive.core.simulation import SimulationError, SimulationStatus, SimulationType
 from ansys.additive.core.single_bead import (
     MeltPool,

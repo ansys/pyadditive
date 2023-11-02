@@ -292,7 +292,7 @@ def test_simulate_sorts_by_priority(tmp_path: pytest.TempPathFactory):
     study.add_inputs([ms], priority=3)
     inputs = [sb, p, ms]
     mock_additive = create_autospec(Additive)
-    mock_additive.get_material.return_value = material
+    mock_additive.material.return_value = material
 
     # act
     pr.simulate(study.data_frame(), mock_additive)
@@ -313,7 +313,7 @@ def test_simulate_filters_by_priority(tmp_path: pytest.TempPathFactory):
     study.add_inputs([ms], priority=3)
     inputs = [sb]
     mock_additive = create_autospec(Additive)
-    mock_additive.get_material.return_value = material
+    mock_additive.material.return_value = material
 
     # act
     pr.simulate(study.data_frame(), mock_additive, priority=1)
@@ -334,7 +334,7 @@ def test_simulate_filters_by_single_simulation_type(tmp_path: pytest.TempPathFac
     study.add_inputs([ms], priority=3)
     inputs = [p]
     mock_additive = create_autospec(Additive)
-    mock_additive.get_material.return_value = material
+    mock_additive.material.return_value = material
 
     # act
     pr.simulate(study.data_frame(), mock_additive, type=SimulationType.POROSITY)
@@ -355,7 +355,7 @@ def test_simulate_filters_by_simulation_type_list(tmp_path: pytest.TempPathFacto
     study.add_inputs([ms], priority=3)
     inputs = [p, ms]
     mock_additive = create_autospec(Additive)
-    mock_additive.get_material.return_value = material
+    mock_additive.material.return_value = material
 
     # act
     pr.simulate(
@@ -380,7 +380,7 @@ def test_simulate_skips_simulations_with_missing_materials(tmp_path: pytest.Temp
     study.add_inputs([ms], priority=3)
     inputs = [sb, p, ms]
     mock_additive = create_autospec(Additive)
-    mock_additive.get_material.side_effect = [material, Exception(), material]
+    mock_additive.material.side_effect = [material, Exception(), material]
 
     # act
     pr.simulate(study.data_frame(), mock_additive)

@@ -31,14 +31,14 @@ import logging
 import os
 import zipfile
 
-# from ansys.api.additive import __version__ as api_version
+from ansys.api.additive import __version__ as api_version
 from ansys.api.additive.v0.additive_domain_pb2 import ProgressState
 from ansys.api.additive.v0.additive_materials_pb2 import GetMaterialRequest
 from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
 from google.protobuf.empty_pb2 import Empty
 import grpc
 
-from ansys.additive.core import USER_DATA_PATH  # , __version__
+from ansys.additive.core import USER_DATA_PATH, __version__
 from ansys.additive.core.download import download_file
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
@@ -95,31 +95,13 @@ class Additive:
         log_level: str = "INFO",
         log_file: str = "",
     ) -> None:
-        """Initialize a connection to the server."""
-        if channel is not None and host is not None:
-            raise ValueError("'channel' and 'host' cannot both be specified.")
-
-        self._log = self._create_logger(log_file, log_level)
+        """Initialize server connections."""
+        self._log = Additive._create_logger(log_file, log_level)
         self._log.debug("Logging set to %s", log_level)
 
-        self._servers = []
-        if server_connections:
-            for target in server_connections:
-                if isinstance(target, grpc.Channel):
-                    self._servers.append(ServerConnection(channel=target))
-                else:
-                    self._servers.append(ServerConnection(addr=target))
-        elif channel:
-            self._servers.append(ServerConnection(channel=channel))
-        elif host:
-            self._servers.append(ServerConnection(addr=f"{host}:{port}"))
-        elif os.getenv("ANSYS_ADDITIVE_ADDRESS"):
-            self._servers.append(ServerConnection(os.getenv("ANSYS_ADDITIVE_ADDRESS")))
-        else:
-            for _ in range(nservers):
-                server = ServerConnection()
-                self._log.info("Connected to %s", server.channel_str)
-                self._servers.append(server)
+        self._servers = Additive._connect_to_servers(
+            server_connections, channel, host, port, nservers, self._log
+        )
 
         # Setup data directory
         self._user_data_path = USER_DATA_PATH
@@ -127,24 +109,69 @@ class Additive:
             os.makedirs(self._user_data_path)
         print("user data path: " + self._user_data_path)
 
-    def _create_logger(self, log_file, log_level) -> logging.Logger:
+    @staticmethod
+    def _create_logger(log_file, log_level) -> logging.Logger:
         """Instantiate the logger."""
+        format = "%(asctime)s %(message)s"
+        datefmt = "%Y-%m-%d %H:%M:%S"
         numeric_level = getattr(logging, log_level.upper(), None)
         if not isinstance(numeric_level, int):
             raise ValueError("Invalid log level: %s" % log_level)
+        logging.basicConfig(
+            level=numeric_level,
+            format=format,
+            datefmt=datefmt,
+        )
+        log = logging.getLogger(__name__)
         if log_file:
-            if not isinstance(log_file, str):
-                log_file = "pyadditive.log"
-            logging.basicConfig(filename=log_file, level=numeric_level)
-        else:
-            logging.basicConfig(
-                level=numeric_level,
-                format="%(asctime)s %(message)s",
-                datefmt="%Y-%m-%d %H:%M:%S",
-            )
-        return logging.getLogger(__name__)
+            file_handler = logging.FileHandler(str(log_file))
+            file_handler.setLevel(numeric_level)
+            file_handler.setFormatter(logging.Formatter(format))
+            log.file_handler = file_handler
+            log.addHandler(file_handler)
+        return log
 
-    def simulate(self, inputs, nproc: int | None = None):
+    @staticmethod
+    def _connect_to_servers(
+        server_connections: list[str | grpc.Channel] = None,
+        channel: grpc.Channel | None = None,
+        host: str | None = None,
+        port: int = DEFAULT_ADDITIVE_SERVICE_PORT,
+        nservers: int = 1,
+        log: logging.Logger = None,
+    ) -> list[ServerConnection]:
+        """Connect to Additive servers, starting them if necessary."""
+        connections = []
+        if server_connections:
+            for target in server_connections:
+                if isinstance(target, grpc.Channel):
+                    connections.append(ServerConnection(channel=target, log=log))
+                else:
+                    connections.append(ServerConnection(addr=target, log=log))
+        elif channel:
+            connections.append(ServerConnection(channel=channel, log=log))
+        elif host:
+            connections.append(ServerConnection(addr=f"{host}:{port}", log=log))
+        elif os.getenv("ANSYS_ADDITIVE_ADDRESS"):
+            connections.append(ServerConnection(addr=os.getenv("ANSYS_ADDITIVE_ADDRESS"), log=log))
+        else:
+            for _ in range(nservers):
+                connections.append(ServerConnection(log=log))
+
+        return connections
+
+    def about(self) -> None:
+        """Print information about the client and server."""
+        print(f"Client {__version__}, API version: {api_version}")
+        if self._servers is None:
+            print("Not connected to server")
+            return
+        else:
+            print("_servers not None")
+            for server in self._servers:
+                print(server.status())
+
+    def simulate(self, inputs):
         """Execute an additive simulation.
 
         Parameters
@@ -154,12 +181,6 @@ class Additive:
         or a list of these input types
             Parameters to use for simulations.
 
-        nproc: int, None
-            Number of processors to use for simulation. This corresponds
-            to the maximum number of licenses to check out at one time.
-            If no value is specified, the value of the ``nproc`` parameter
-            provided in the Additive service constructor is used.
-
         Returns
         -------
         :class:`SingleBeadSummary`, :class:`PorositySummary`,
@@ -168,23 +189,27 @@ class Additive:
         a list of these types.
         """
         if type(inputs) is not list:
-            result = self._simulate(inputs, show_progress=True)
-            return result
+            return self._simulate(inputs, self._servers[0], show_progress=True)
         else:
             self._validate_inputs(inputs)
 
         summaries = []
-        nthreads = self._nproc
-        if nproc:
-            nthreads = nproc
         print(
             f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Completed 0 of {len(inputs)} simulations",
             end="",
         )
-        with concurrent.futures.ThreadPoolExecutor(nthreads) as executor:
+        with concurrent.futures.ThreadPoolExecutor(len(self._servers)) as executor:
             futures = []
-            for input in inputs:
-                futures.append(executor.submit(self._simulate, input=input, show_progress=False))
+            for i, input in enumerate(inputs):
+                server_id = i % len(self._servers)
+                futures.append(
+                    executor.submit(
+                        self._simulate,
+                        input=input,
+                        server=self._servers[server_id],
+                        show_progress=False,
+                    )
+                )
             for future in concurrent.futures.as_completed(futures):
                 summary = future.result()
                 if isinstance(summary, SimulationError):
@@ -198,13 +223,16 @@ class Additive:
         print("")
         return summaries
 
-    def _simulate(self, input, show_progress: bool = False):
+    def _simulate(self, input, server: ServerConnection, show_progress: bool = False):
         """Execute a single simulation.
 
         Parameters
         ----------
         input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput
             Parameters to use for simulation.
+
+        server: ServerConnection
+            Server to use for the simulation.
 
         show_progress: bool, False
             Whether to send progress updates to the user interface.
@@ -221,16 +249,16 @@ class Additive:
             logger = ProgressLogger("Simulation")
 
         if input.material == AdditiveMaterial():
-            raise ValueError("Material must be specified")
+            raise ValueError("A material is not assigned to the simulation input")
 
         try:
             request = None
             if isinstance(input, ThermalHistoryInput):
-                return self._simulate_thermal_history(input, USER_DATA_PATH, logger)
+                return self._simulate_thermal_history(input, USER_DATA_PATH, server, logger)
             else:
                 request = input._to_simulation_request()
 
-            for response in self._simulation_stub.Simulate(request):
+            for response in server.simulation_stub.Simulate(request):
                 if response.HasField("progress"):
                     if logger:
                         logger.log_progress(response.progress)
@@ -247,7 +275,7 @@ class Additive:
         except Exception as e:
             return SimulationError(input, str(e))
 
-    def get_materials_list(self) -> list[str]:
+    def materials_list(self) -> list[str]:
         """Get a list of material names used in additive simulations.
 
         Returns
@@ -255,9 +283,10 @@ class Additive:
         list[str]
             Names of available additive materials.
         """
-        return self._materials_stub.GetMaterialsList(Empty())
+        response = self._servers[0].materials_stub.GetMaterialsList(Empty())
+        return [n for n in response.names]
 
-    def get_material(self, name: str) -> AdditiveMaterial:
+    def material(self, name: str) -> AdditiveMaterial:
         """Get a material for use in an additive simulation.
 
         Parameters
@@ -270,9 +299,9 @@ class Additive:
         -------
         AdditiveMaterial
         """
-        request = GetMaterialRequest()
-        request.name = name
-        result = self._materials_stub.GetMaterial(request)
+        request = GetMaterialRequest(name=name)
+        result = self._servers[0].materials_stub.GetMaterial(request)
+        print("result type", type(result))
         return AdditiveMaterial._from_material_message(result)
 
     @staticmethod
@@ -327,13 +356,13 @@ class Additive:
             out_dir = os.path.join(out_dir, input.id)
 
         if os.path.exists(out_dir):
-            raise Exception(
+            raise ValueError(
                 f"Directory {out_dir} already exists. Delete or choose a different output directory."
             )
 
         request = input._to_request()
 
-        for response in self._materials_stub.TuneMaterial(request):
+        for response in self._servers[0].materials_stub.TuneMaterial(request):
             if response.HasField("progress"):
                 if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
                     raise Exception(response.progress.message)
@@ -350,7 +379,7 @@ class Additive:
                 return MaterialTuningSummary(input, response.result, out_dir)
 
     def __file_upload_reader(
-        self, file_name: str, chunk_size=2 * 1024 * 1024
+        self, file_name: str, chunk_size=2 * 1024**2
     ) -> Iterator[UploadFileRequest]:
         """Read a file and return an iterator of UploadFileRequests."""
         file_size = os.path.getsize(file_name)
@@ -371,6 +400,7 @@ class Additive:
         self,
         input: ThermalHistoryInput,
         out_dir: str,
+        server: ServerConnection,
         logger: ProgressLogger | None = None,
     ) -> ThermalHistorySummary:
         """Execute a thermal history simulation.
@@ -381,6 +411,8 @@ class Additive:
             Simulation input parameters.
         out_dir: str
             Folder path for output files.
+        server: ServerConnection
+            Server to use for the simulation.
         logger: ProgressLogger
             Log message handler.
 
@@ -388,11 +420,11 @@ class Additive:
         -------
         :class:`ThermalHistorySummary`
         """
-        if input.geometry == None or input.geometry.path == "":
-            raise ValueError("Geometry path not defined")
+        if input.geometry is None or input.geometry.path == "":
+            raise ValueError("The geometry path is not defined in the simulation input")
 
         remote_geometry_path = ""
-        for response in self._simulation_stub.UploadFile(
+        for response in server.simulation_stub.UploadFile(
             self.__file_upload_reader(input.geometry.path)
         ):
             remote_geometry_path = response.remote_file_name
@@ -402,7 +434,7 @@ class Additive:
                 raise Exception(response.progress.message)
 
         request = input._to_simulation_request(remote_geometry_path=remote_geometry_path)
-        for response in self._simulation_stub.Simulate(request):
+        for response in server.simulation_stub.Simulate(request):
             if response.HasField("progress"):
                 if logger:
                     logger.log_progress(response.progress)
@@ -414,7 +446,7 @@ class Additive:
             if response.HasField("thermal_history_result"):
                 path = os.path.join(out_dir, input.id, "coax_ave_output")
                 local_zip = download_file(
-                    self._simulation_stub,
+                    server.simulation_stub,
                     response.thermal_history_result.coax_ave_zip_file,
                     path,
                 )
