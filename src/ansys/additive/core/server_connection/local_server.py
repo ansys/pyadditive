@@ -77,7 +77,7 @@ class LocalServer:
             base_path = None
             for path in ["/usr/ansys_inc", "/ansys_inc"]:
                 if os.path.isdir(path):
-                    base_path = path  # pragma: no cover
+                    base_path = path
                     break
             if not base_path:
                 raise FileNotFoundError("Cannot find Ansys installation directory")

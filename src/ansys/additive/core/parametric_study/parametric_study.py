@@ -75,7 +75,7 @@ class ParametricStudy:
         ----------
         study_name: str
             Name of study.
-        study_dir: str | os.PathLike
+        study_dir: str, os.PathLike
             Directory where study will be stored.
         """
         self._file_name = pathlib.Path(study_dir).absolute() / f"{study_name}.ps"
@@ -146,7 +146,7 @@ class ParametricStudy:
 
         Parameters
         ----------
-        file_name : str | os.PathLike
+        file_name : str, os.PathLike
             Name of the file to save the parametric study to.
         """
 
@@ -160,7 +160,7 @@ class ParametricStudy:
 
         Parameters
         ----------
-        file_name : str | os.PathLike
+        file_name : str, os.PathLike
             Name of file to load the parametric study from.
 
         Returns
@@ -218,7 +218,7 @@ class ParametricStudy:
 
         Parameters
         ----------
-        summaries : list[SingleBeadSummary | PorositySummary | MicrostructureSummary]
+        summaries : list[SingleBeadSummary, PorositySummary, MicrostructureSummary]
             List of simulation result summaries to add to the parametric study.
         """
         for summary in summaries:
@@ -356,10 +356,10 @@ class ParametricStudy:
 
         Parameters
         ----------
-        summary : SingleBeadSummary | PorositySummary | MicrostructureSummary
+        summary : SingleBeadSummary, PorositySummary, MicrostructureSummary
             Summary of common simulation parameters to convert.
 
-        iteration : int, DEFAULT_ITERATION
+        iteration : int, default: :obj:`DEFAULT_ITERATION`
             Iteration number for this simulation.
 
         Returns
@@ -436,9 +436,9 @@ class ParametricStudy:
             Maximum area energy density (J/m^2) to use for single bead simulations.
             Parameter combinations with an area energy density above this value are
             not included. Area energy density is defined as laser power / (layer thickness * scan speed).
-        iteration : int, DEFAULT_ITERATION
+        iteration : int, default: :obj:`DEFAULT_ITERATION`
             Iteration number for this set of simulations.
-        priority : int, DEFAULT_PRIORITY
+        priority : int, default: :obj:`DEFAULT_PRIORITY`
             Priority for this set of simulations.
         """
         lt = (
@@ -543,13 +543,13 @@ class ParametricStudy:
             Laser powers (W) to use for porosity simulations.
         scan_speeds : list[float]
             Scan speeds (m/s) to use for porosity simulations.
-        size_x : float, DEFAULT_SAMPLE_SIZE
+        size_x : float, default: :obj:`DEFAULT_SAMPLE_SIZE`
             Size (m) of the porosity sample in the x direction.
             Valid values are between 0.001 and 0.01.
-        size_y : float, DEFAULT_SAMPLE_SIZE
+        size_y : float, :obj:`DEFAULT_SAMPLE_SIZE`
             Size (m) of the porosity sample in the y direction.
             Valid values are between 0.001 and 0.01.
-        size_z : float, DEFAULT_SAMPLE_SIZE
+        size_z : float, :obj:`DEFAULT_SAMPLE_SIZE`
             Size (m) of the porosity sample in the z direction.
             Valid values are between 0.001 and 0.01.
         layer_thicknesses : list[float], None
@@ -607,9 +607,9 @@ class ParametricStudy:
             Maximum build rate (m^3/s) to use for porosity simulations. Parameter combinations
             with a build rate above this value are not included. Build rate is defined as
             layer thickness * scan speed * hatch spacing.
-        iteration : int, DEFAULT_ITERATION
+        iteration : int, default: :obj:`DEFAULT_ITERATION`
             Iteration number for this set of simulations.
-        priority : int, DEFAULT_PRIORITY
+        priority : int, default: :obj:`DEFAULT_PRIORITY`
             Priority for this set of simulations.
         """
         lt = (
@@ -763,22 +763,22 @@ class ParametricStudy:
             Laser powers (W) to use for microstructure simulations.
         scan_speeds : list[float]
             Scan speeds (m/s) to use for microstructure simulations.
-        min_x : float, DEFAULT_POSITION_COORDINATE
+        min_x : float, default: :obj:`DEFAULT_POSITION_COORDINATE`
             Minimum x coordinate (m) of the microstructure sample.
-        min_y : float, DEFAULT_POSITION_COORDINATE
+        min_y : float, default: :obj:`DEFAULT_POSITION_COORDINATE`
             Minimum y coordinate (m) of the microstructure sample.
-        min_z : float, DEFAULT_POSITION_COORDINATE
+        min_z : float, default: :obj:`DEFAULT_POSITION_COORDINATE`
             Minimum z coordinate (m) of the microstructure sample.
-        size_x : float, DEFAULT_SAMPLE_SIZE
+        size_x : float, default: :obj:`DEFAULT_SAMPLE_SIZE`
             Size (m) of the microstructure sample in the x direction.
             Valid values are between 0.001 and 0.01.
-        size_y : float, DEFAULT_SAMPLE_SIZE
+        size_y : float, default: :obj:`DEFAULT_SAMPLE_SIZE`
             Size (m) of the microstructure sample in the y direction.
             Valid values are between 0.001 and 0.01.
-        size_z : float, DEFAULT_SAMPLE_SIZE
+        size_z : float, default: :obj:`DEFAULT_SAMPLE_SIZE`
             Size (m) of the microstructure sample in the z direction.
             Valid values are between 0.001 and 0.01.
-        sensor_dimension : float, DEFAULT_SENSOR_DIMENSION
+        sensor_dimension : float, default: :obj:`DEFAULT_SENSOR_DIMENSION`
             Sensor dimension (m) to use for microstructure simulations.
             Valid values are between 0.0001 and 0.001. The values for the
             ``size_x`` and ``size_y`` parameters must be greater than the
@@ -1045,7 +1045,7 @@ class ParametricStudy:
 
         Parameters
         ----------
-        summaries : list[SingleBeadSummary | PorositySummary | MicrostructureSummary | SimulationError]
+        summaries : list[SingleBeadSummary, PorositySummary, MicrostructureSummary, SimulationError]
             List of simulation summaries to use for updating the parametric study.
         """
         for summary in summaries:
@@ -1134,13 +1134,13 @@ class ParametricStudy:
 
         Parameters
         ----------
-        inputs : list[SingleBeadInput | PorosityInput | MicrostructureInput]
+        inputs : list[SingleBeadInput, PorosityInput, MicrostructureInput]
             List of simulation inputs to add to the parametric study.
 
-        iteration : int, DEFAULT_ITERATION
+        iteration : int, default: :obj:`DEFAULT_ITERATION`
             Iteration number for the simulation inputs.
 
-        priority : int, DEFAULT_PRIORITY
+        priority : int, default: :obj:`DEFAULT_PRIORITY`
             Priority for the simulations.
         """
         for input in inputs:
@@ -1198,7 +1198,7 @@ class ParametricStudy:
 
         Parameters
         ----------
-        ids : str | list[str]
+        ids : str, list[str]
             One or more ID field values for the rows to remove.
         """
         if isinstance(ids, str):
@@ -1212,7 +1212,7 @@ class ParametricStudy:
 
         Parameters
         ----------
-        ids : str | list[str]
+        ids : str, list[str]
             One or more IDs of the simulations to update.
 
         status : SimulationStatus
@@ -1229,7 +1229,7 @@ class ParametricStudy:
 
         Parameters
         ----------
-        ids : str | list[str]
+        ids : str, list[str]
             One or more IDs of the simulations to update.
 
         priority : int
@@ -1246,7 +1246,7 @@ class ParametricStudy:
 
         Parameters
         ----------
-        ids : str | list[str]
+        ids : str, list[str]
             One or more IDs of the simulations to update.
 
         iteration : int

@@ -57,7 +57,7 @@ class Additive:
 
     Parameters
     ----------
-    server_connections: list[str | grpc.Channel], None
+    server_connections: list[str, grpc.Channel], None
         List of connection definitions for servers. The list may be a combination of strings and
         connected ``grpc.Channel``s. Strings use the format ``host:port`` to specify
         the server IPv4 address.
