@@ -79,12 +79,12 @@ def test_create_channel_returns_expected_channel():
     assert channel._channel.target().decode() == target
 
 
-def test_create_channel_raises_exception_for_bad_ip():
+def test_create_channel_raises_exception_for_missing_ip():
     # arrange
-    target = "1.2.3:1234"
+    target = ":1234"
 
     # act, assert
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         create_channel(target)
 
 

@@ -64,7 +64,11 @@ def create_channel(target: str, max_rcv_msg_len: int = MAX_RCV_MSG_LEN):
     """
 
     (host, port_str) = target.split(":")
-    ip = socket.gethostbyname(host) if host is not None else None
+    if not host:
+        raise ValueError(
+            f"Improperly formed target string {target}, it should be of the form 'host:port'"
+        )
+    ip = socket.gethostbyname(host)
     check_valid_ip(ip)
     check_valid_port(int(port_str))
 

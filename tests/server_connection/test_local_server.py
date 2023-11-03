@@ -153,8 +153,9 @@ def test_launch_calls_popen_as_expected_win(mock_popen, tmp_path: pathlib.Path):
 @patch("os.path.exists")
 @patch("os.path.isdir")
 @patch("subprocess.Popen")
+@patch("pathlib.Path.exists")
 def test_launch_calls_popen_as_expected_linux(
-    mock_popen, mock_isdir, mock_exists, tmp_path: pathlib.Path
+    mock_pathlib_exists, mock_popen, mock_isdir, mock_os_exists, tmp_path: pathlib.Path
 ):
     # arrange
     mock_process = Mock()
@@ -162,8 +163,9 @@ def test_launch_calls_popen_as_expected_linux(
     attrs = {"poll.return_value": None}
     mock_process.configure_mock(**attrs)
     mock_popen.return_value = mock_process
+    mock_pathlib_exists.return_value = True
     mock_isdir.return_value = True
-    mock_exists.return_value = True
+    mock_os_exists.return_value = True
     exe_path = f"/usr/ansys_inc/v{product_version}/Additive/additiveserver/additiveserver"
 
     # act
@@ -212,9 +214,9 @@ def test_launch_raises_exception_if_process_fails_to_start_linux(
     attrs = {"poll.return_value": 1}
     mock_process.configure_mock(**attrs)
     mock_popen.return_value = mock_process
+    mock_pathlib_exists.return_value = True
     mock_isdir.return_value = True
     mock_os_exists.return_value = True
-    mock_pathlib_exists.return_value = True
 
     # act, assert
     with pytest.raises(Exception) as excinfo:
