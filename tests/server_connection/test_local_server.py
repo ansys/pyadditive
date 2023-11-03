@@ -67,13 +67,12 @@ def test_launch_with_linux_os_and_no_install_dir_raises_exception(mock_isdir):
     mock_isdir.return_value = False
 
     # act, assert
-    with pytest.raises(Exception) as excinfo:
+    with pytest.raises(FileNotFoundError) as excinfo:
         LocalServer.launch(TEST_VALID_PORT)
     assert "Cannot find Ansys installation directory" in str(excinfo.value)
 
 
 @pytest.mark.skipif(os.name == "nt", reason="Test only valid on linux")
-@patch("os.name", "posix")
 @patch("os.path.isdir")
 def test_launch_with_linux_installation_but_invalid_ansys_version_raises_exception(mock_isdir):
     # arrange
@@ -85,8 +84,8 @@ def test_launch_with_linux_installation_but_invalid_ansys_version_raises_excepti
     assert "Cannot find " in str(excinfo.value)
 
 
-@patch("os.name", "nt")
-def test_launch_when_exe_not_found_raises_exception():
+@pytest.mark.skipif(os.name != "nt", reason="Test only valid on Windows")
+def test_launch_when_exe_not_found_raises_exception_win():
     # arrange
     os.environ["AWP_ROOT241"] = "Bogus"
 
@@ -96,7 +95,20 @@ def test_launch_when_exe_not_found_raises_exception():
     assert "Cannot find " in str(excinfo.value)
 
 
-@patch("os.name", "nt")
+@pytest.mark.skipif(os.name != "nt", reason="Test only valid on Windows")
+def test_launch_when_product_version_invalid_raises_exception_win(tmp_path: pathlib.Path):
+    # arrange
+    exe_name = tmp_path / "server.exe"
+    exe_name.touch()
+    os.environ["AWP_ROOT241"] = str(exe_name)
+
+    # act, assert
+    with pytest.raises(FileNotFoundError) as excinfo:
+        LocalServer.launch(TEST_VALID_PORT, tmp_path, "242")
+    assert "Cannot find Ansys installation directory" in str(excinfo.value)
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Test only valid on Windows")
 def test_launch_when_product_version_invalid_raises_exception_win(tmp_path: pathlib.Path):
     # arrange
     exe_name = tmp_path / "server.exe"
@@ -109,20 +121,7 @@ def test_launch_when_product_version_invalid_raises_exception_win(tmp_path: path
     assert "Cannot find Ansys installation directory" in str(excinfo.value)
 
 
-@patch("os.name", "nt")
-def test_launch_when_product_version_invalid_raises_exception_win(tmp_path: pathlib.Path):
-    # arrange
-    exe_name = tmp_path / "server.exe"
-    exe_name.touch()
-    os.environ["AWP_ROOT241"] = str(exe_name)
-
-    # act, assert
-    with pytest.raises(Exception) as excinfo:
-        LocalServer.launch(TEST_VALID_PORT, tmp_path, "242")
-    assert "Cannot find Ansys installation directory" in str(excinfo.value)
-
-
-@pytest.mark.skipif(os.name == "posix", reason="Test only valid on Windows")
+@pytest.mark.skipif(os.name != "nt", reason="Test only valid on Windows")
 @patch("subprocess.Popen")
 def test_launch_calls_popen_as_expected_win(mock_popen, tmp_path: pathlib.Path):
     # arrange

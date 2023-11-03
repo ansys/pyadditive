@@ -71,7 +71,7 @@ class LocalServer:
             )
             awp_root = os.environ.get(env_var)
             if not awp_root:
-                raise Exception("Cannot find Ansys installation directory")
+                raise FileNotFoundError("Cannot find Ansys installation directory")
             server_exe = Path(awp_root) / ADDITIVE_SERVER_SUBDIR / f"{ADDITIVE_SERVER_EXE_NAME}.exe"
         elif os.name == "posix":
             base_path = None
@@ -80,7 +80,7 @@ class LocalServer:
                     base_path = path  # pragma: no cover
                     break
             if not base_path:
-                raise Exception("Cannot find Ansys installation directory")
+                raise FileNotFoundError("Cannot find Ansys installation directory")
             server_exe = (
                 Path(base_path)
                 / f"v{product_version}"
