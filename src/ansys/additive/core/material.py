@@ -42,13 +42,20 @@ class CharacteristicWidthDataPoint:
     power to be correlated to a characteristic melt pool width. This
     class represents a single row in the lookup table.
 
-    Units are SI (m, kg, s, K) unless otherwise noted.
+    Parameters
+    ----------
+    laser_power: float
+        Laser power (W).
+    scan_speed: float
+        Laser scan speed (m/s).
+    characteristic_widt: float
+        Characteristic melt pool width (m).
     """
 
     def __init__(
         self, *, laser_power: float = 0, scan_speed: float = 0, characteristic_width: float = 0
     ):
-        """Create a characteristic width data point."""
+        """Initialize a characteristic width data point."""
         self._laser_power = laser_power
         self._scan_speed = scan_speed
         self._characteristic_width = characteristic_width

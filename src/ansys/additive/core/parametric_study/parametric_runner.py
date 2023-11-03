@@ -95,7 +95,7 @@ class ParametricRunner:
         # access values by column name
         for _, row in view.iterrows():
             try:
-                material = additive.get_material(row[ColumnNames.MATERIAL])
+                material = additive.material(row[ColumnNames.MATERIAL])
             except Exception:
                 print(
                     f"Material {row[ColumnNames.MATERIAL]} not found, skipping {row[ColumnNames.ID]}"

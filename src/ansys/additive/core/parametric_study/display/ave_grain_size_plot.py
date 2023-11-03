@@ -54,7 +54,7 @@ def ave_grain_size_plot(ps: ParametricStudy):
     Returns
     -------
     :class: `panel.Row <panel.Row>`
-        Iteractive plot.
+        Interactive plot.
     """
     global min_ags, max_ags
     df = __data_frame(ps)
