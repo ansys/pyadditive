@@ -72,7 +72,7 @@ This code shows how to import PyAdditive and use some basic capabilities:
 
    input = pyadditive.SingleBeadInput(
        machine=pyadditive.AdditiveMachine(),
-       material=additive.get_material("Ti64"),
+       material=additive.material("Ti64"),
        id="bead1",
        bead_length=0.001,  # meters
    )

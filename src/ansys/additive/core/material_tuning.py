@@ -36,14 +36,29 @@ class MaterialTuningInput:
 
     Parameters
     ----------
-    id: string
-        User-provided ID for this simulation.
-    machine: AdditiveMachine
-        Machine-related parameters.
-    material: AdditiveMaterial
-        Material used during simulation.
-    bead_length: float
-        Length (m) of bead to simulate.
+    id: str
+        ID for this set of tuning simulations.
+    experiment_data_file: str
+        Name of the CSV file containing the experimental results data.
+    material_parameters_file: str
+        Name of the JSON file containing the material parameters.
+    thermal_properties_lookup_file: str
+        Name of the CSV file containing a lookup table for thermal-dependent properties.
+    characteristic_width_lookup_file: str, None
+        Name of the CSV file containing a lookup table for the characteristic melt pool
+        width at a given temperature. The default is ``None``, in which case the characteristic
+        width is calculated. However, a value must be provided for the ``base_plate_temperature``
+        parameter.
+    allowable_error: float, 0.05
+        Maximum allowable error between experimental and simulated results.
+        The default is ``0.05``, which is 5 percent.
+    max_iterations: int, 15
+        Maximum number of iterations to perform when trying to match
+        simulation results to an experiment if the allowable error is not met.
+    base_plate_temperature: float, 353.15
+        Temperature of the base plate in Kelvin. This is only required if the
+        value for the ``characteristic_width_lookup_file`` parameter is ``None``.
+        This value is ignored otherwise. The default is ``353.15`` K, which is 80 C.
     """
 
     def __init__(
@@ -58,34 +73,7 @@ class MaterialTuningInput:
         max_iterations: int = 15,
         base_plate_temperature: float = 353.15,
     ):
-        """Initialize a ``MaterialTuningInput`` object.
-
-        Parameters
-        ----------
-        id: str
-            ID for this set of tuning simulations.
-        experiment_data_file: str
-            Name of the CSV file containing the experimental results data.
-        material_parameters_file: str
-            Name of the JSON file containing the material parameters.
-        thermal_properties_lookup_file: str
-            Name of the CSV file containing a lookup table for thermal-dependent properties.
-        characteristic_width_lookup_file: str, None
-            Name of the CSV file containing a lookup table for the characteristic melt pool
-            width at a given temperature. The default is ``None``, in which case the characteristic
-            width is calculated. However, a value must be provided for the ``base_plate_temperature``
-            parameter.
-        allowable_error: float, 0.05
-            Maximum allowable error between experimental and simulated results.
-            The default is ``0.05``, which is 5 percent.
-        max_iterations: int, 15
-            Maximum number of iterations to perform when trying to match
-            simulation results to an experiment if the allowable error is not met.
-        base_plate_temperature: float, 353.15
-            Temperature of the base plate in Kelvin. This is only required if the
-            value for the ``characteristic_width_lookup_file`` parameter is ``None``.
-            This value is ignored otherwise. The default is ``353.15`` K, which is 80 C.
-        """
+        """Initialize a MaterialTuningInput object."""
 
         if not os.path.isfile(experiment_data_file):
             raise FileNotFoundError(f"File not found: {experiment_data_file}")

@@ -34,7 +34,7 @@ def download_file(
     remote_file_name: str,
     local_folder: str,
     logger: ProgressLogger = None,
-):
+) -> str:
     """Download a file from the server to the localhost.
 
     Parameters
@@ -45,6 +45,11 @@ def download_file(
         Folder on your localhost to write your file to.
     logger: ProgressLogger
         Log message handler.
+
+    Returns
+    -------
+    str
+        Local path of downloaded file.
     """
 
     if not os.path.isdir(local_folder):

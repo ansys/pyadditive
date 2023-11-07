@@ -20,224 +20,240 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import contextlib
-import io
-import socket
-from unittest.mock import Mock, create_autospec
+import hashlib
+import logging
+import os
+import pathlib
+import shutil
+from unittest.mock import ANY, MagicMock, Mock, call, create_autospec, patch
 
 from ansys.api.additive import __version__ as api_version
-from ansys.api.additive.v0.about_pb2 import AboutResponse
 import ansys.api.additive.v0.about_pb2_grpc
-from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
-import ansys.platform.instancemanagement as pypim
-from callee import Contains
-from google.protobuf.empty_pb2 import Empty
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    MaterialTuningResult,
+    Progress,
+    ProgressState,
+    ThermalHistoryResult,
+)
+from ansys.api.additive.v0.additive_materials_pb2 import (
+    GetMaterialRequest,
+    GetMaterialsListResponse,
+    TuneMaterialResponse,
+)
+from ansys.api.additive.v0.additive_simulation_pb2 import (
+    SimulationResponse,
+    UploadFileRequest,
+    UploadFileResponse,
+)
 import grpc
 import pytest
 
 from ansys.additive.core import (
-    MAX_MESSAGE_LENGTH,
+    USER_DATA_PATH,
     Additive,
     MicrostructureInput,
     PorosityInput,
+    SimulationError,
     SingleBeadInput,
+    SingleBeadSummary,
+    StlFile,
     ThermalHistoryInput,
     __version__,
 )
 import ansys.additive.core.additive
+from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.material_tuning import MaterialTuningInput
+from ansys.additive.core.server_connection import ServerConnection
+import ansys.additive.core.server_connection.server_connection
+
+from . import test_utils
 
 
-def test_Additive_init_connects_with_defaults(monkeypatch):
+def test_Additive_init_performs_expected_initialization(monkeypatch: pytest.MonkeyPatch):
     # arrange
-    channel = grpc.insecure_channel(
-        "channel_str",
-        options=[
-            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-        ],
-    )
-
-    mock_launcher = create_autospec(ansys.additive.core.additive.launch_server, return_value=None)
-    monkeypatch.setattr(ansys.additive.core.additive, "launch_server", mock_launcher)
-    mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=channel)
-    monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
-    mock_server_ready = create_autospec(
-        ansys.additive.core.additive.server_ready, return_value=True
-    )
-    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
-
-    # act
-    additive = Additive()
-
-    # assert
-    mock_insecure_channel.assert_called_with(
-        Contains("127.0.0.1:"), options=[("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH)]
-    )
-    assert additive._channel == channel
-    assert hasattr(additive, "_server_instance") == False
-
-
-def test_Additive_init_can_connect_with_pypim(monkeypatch):
-    # assemble
-    mock_instance = pypim.Instance(
-        definition_name="definition",
-        name="name",
-        ready=True,
-        status_message=None,
-        services={"grpc": pypim.Service(uri="dns:ip:port", headers={})},
-    )
-    pim_channel = grpc.insecure_channel(
-        "channel_str",
-        options=[
-            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-        ],
-    )
-    mock_instance.wait_for_ready = create_autospec(mock_instance.wait_for_ready)
-    mock_instance.delete = create_autospec(mock_instance.delete)
-
-    mock_client = pypim.Client(channel=grpc.insecure_channel("localhost:12345"))
-    mock_client.create_instance = create_autospec(
-        mock_client.create_instance, return_value=mock_instance
-    )
-
-    mock_connect = create_autospec(pypim.connect, return_value=mock_client)
-    mock_is_configured = create_autospec(pypim.is_configured, return_value=True)
-    mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=pim_channel)
-    monkeypatch.setattr(pypim, "connect", mock_connect)
-    monkeypatch.setattr(pypim, "is_configured", mock_is_configured)
-    monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
-    mock_server_ready = create_autospec(
-        ansys.additive.core.additive.server_ready, return_value=True
-    )
-    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
-
-    # act
-    additive = Additive()
-
-    # assert
-    assert mock_is_configured.called
-    assert mock_connect.called
-    mock_client.create_instance.assert_called_with(product_name="additive", product_version=None)
-    assert mock_instance.wait_for_ready.called
-    assert additive._channel == pim_channel
-    assert additive._server_instance == mock_instance
-    mock_insecure_channel.assert_called_with(
-        "ip:port", options=[("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH)]
-    )
-
-    # verify that destructor deletes the instance
-    additive.__del__()
-    assert mock_instance.delete.called
-
-
-def test_Additive_init_connects_using_ANSYS_ADDITIVE_ADDRESS_if_available(monkeypatch):
-    # arrange
-    target = "localhost:12345"
-    monkeypatch.setenv("ANSYS_ADDITIVE_ADDRESS", target)
-    channel = grpc.insecure_channel(
-        "channel_str",
-        options=[
-            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-        ],
-    )
-    mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=channel)
-    monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
-    mock_server_ready = create_autospec(
-        ansys.additive.core.additive.server_ready, return_value=True
-    )
-    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
-
-    # act
-    additive = Additive()
-
-    # assert
-    mock_insecure_channel.assert_called_with(
-        target, options=[("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH)]
-    )
-    assert additive._channel == channel
-    assert hasattr(additive, "_server_instance") == False
-
-
-def test_Additive_init_connects_with_ip_and_port_parameters(monkeypatch):
-    # arrange
-    ip = "1.2.3.4"
+    server_connections = ["connection1", "connection2"]
+    channel = grpc.insecure_channel("channel_str")
+    host = "hostname"
     port = 12345
-    target = f"{ip}:{port}"
-    channel = grpc.insecure_channel(
-        "channel_str",
-        options=[
-            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-        ],
+    nservers = 3
+
+    mock_server_connections = [Mock(ServerConnection)]
+    mock_connect = create_autospec(
+        ansys.additive.core.additive.Additive._connect_to_servers,
+        return_value=mock_server_connections,
     )
-    mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=channel)
-    monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
-    mock_server_ready = create_autospec(
-        ansys.additive.core.additive.server_ready, return_value=True
-    )
-    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
+    monkeypatch.setattr(ansys.additive.core.additive.Additive, "_connect_to_servers", mock_connect)
 
     # act
-    additive = Additive(host=ip, port=port)
+    additive = Additive(server_connections, channel, host, port, nservers)
 
     # assert
-    mock_insecure_channel.assert_called_with(
-        target, options=[("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH)]
-    )
-    assert additive._channel == channel
-    assert hasattr(additive, "_server_instance") == False
+    mock_connect.assert_called_with(server_connections, channel, host, port, nservers, ANY)
+    assert additive._servers == mock_server_connections
+    assert isinstance(additive._log, logging.Logger)
+    assert additive._user_data_path == USER_DATA_PATH
 
 
-def test_Additive_init_converts_hostname_to_ip(monkeypatch):
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_connect_to_servers_with_server_connections_creates_server_connections(mock_connection):
     # arrange
-    host = "myhost"
-    ip = "1.2.3.4"
-    port = 12345
-    target = f"{ip}:{port}"
-    channel = grpc.insecure_channel(
-        "channel_str",
-        options=[
-            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-        ],
-    )
-    mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=channel)
-    monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
-    mock_gethostbyname = create_autospec(socket.gethostbyname, return_value=ip)
-    monkeypatch.setattr(socket, "gethostbyname", mock_gethostbyname)
-    mock_server_ready = create_autospec(
-        ansys.additive.core.additive.server_ready, return_value=True
-    )
-    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
+    mock_connection.return_value = Mock(ServerConnection)
+    host1 = "localhost:1234"
+    host2 = "localhost:5678"
+    channel = grpc.insecure_channel("target")
+    connections = [host1, channel, host2]
+    log = logging.Logger("testlogger")
 
     # act
-    additive = Additive(host=host, port=port)
+    servers = Additive._connect_to_servers(
+        server_connections=connections,
+        channel=channel,
+        host=host1,
+        port=99999,
+        nservers=92,
+        log=log,
+    )
 
     # assert
-    mock_gethostbyname.assert_called_with(host)
-    mock_insecure_channel.assert_called_with(
-        target, options=[("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH)]
+    assert len(servers) == len(connections)
+    assert len(mock_connection.mock_calls) == 3
+    mock_connection.assert_has_calls(
+        [call(addr=host1, log=log), call(channel=channel, log=log), call(addr=host2, log=log)]
     )
 
 
-def test_Additive_init_raises_exception_if_server_ready_false(monkeypatch):
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_connect_to_servers_with_channel_creates_server_connection(mock_connection):
     # arrange
-    ip = "1.2.3.4"
-    port = 12345
-    target = f"{ip}:{port}"
-    channel = grpc.insecure_channel(
-        "channel_str",
-        options=[
-            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-        ],
-    )
-    mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=channel)
-    monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
-    mock_server_ready = create_autospec(
-        ansys.additive.core.additive.server_ready, return_value=False
-    )
-    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
+    mock_connection.return_value = Mock(ServerConnection)
+    channel = grpc.insecure_channel("target")
+    log = logging.Logger("testlogger")
 
-    # act, assert
-    with pytest.raises(RuntimeError, match="Unable to connect to server"):
-        Additive(host=ip, port=port)
+    # act
+    servers = Additive._connect_to_servers(
+        server_connections=None, channel=channel, host="myhost", port=99999, nservers=99, log=log
+    )
+
+    # assert
+    assert len(servers) == 1
+    mock_connection.assert_called_once_with(channel=channel, log=log)
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_connect_to_servers_with_host_creates_server_connection(mock_connection):
+    # arrange
+    mock_connection.return_value = Mock(ServerConnection)
+    host = "127.0.0.1"
+    port = 9999
+    log = logging.Logger("testlogger")
+
+    # act
+    servers = Additive._connect_to_servers(
+        server_connections=None, channel=None, host=host, port=port, nservers=99, log=log
+    )
+
+    # assert
+    assert len(servers) == 1
+    mock_connection.assert_called_once_with(addr=f"{host}:{port}", log=log)
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_connect_to_servers_with_env_var_creates_server_connection(
+    mock_connection, monkeypatch: pytest.MonkeyPatch
+):
+    # arrange
+    addr = "localhost:1234"
+    monkeypatch.setenv("ANSYS_ADDITIVE_ADDRESS", addr)
+    mock_connection.return_value = Mock(ServerConnection)
+    log = logging.Logger("testlogger")
+
+    # act
+    servers = Additive._connect_to_servers(
+        server_connections=None, channel=None, host=None, nservers=99, log=log
+    )
+
+    # assert
+    assert len(servers) == 1
+    mock_connection.assert_called_once_with(addr=addr, log=log)
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_connect_to_servers_with_nservers_creates_server_connections(mock_connection):
+    # arrange
+    nservers = 99
+    mock_connection.return_value = Mock(ServerConnection)
+    log = logging.Logger("testlogger")
+
+    # act
+    servers = Additive._connect_to_servers(
+        server_connections=None, channel=None, host=None, nservers=nservers, log=log
+    )
+
+    # assert
+    assert len(servers) == nservers
+    mock_connection.assert_called_with(log=log)
+
+
+def test_create_logger_raises_exception_for_invalid_log_level():
+    # arrange, act, assert
+    with pytest.raises(ValueError, match="Invalid log level"):
+        Additive._create_logger(None, "Tragic")
+
+
+def test_create_logger_creates_expected_logger(
+    tmp_path: pathlib.Path, caplog: pytest.LogCaptureFixture
+):
+    # arrange
+    log_file = tmp_path / "test.log"
+    message = "log message"
+
+    # act
+    log = Additive._create_logger(log_file, "INFO")
+    with caplog.at_level(logging.INFO, logger="ansys.additive.core.additive"):
+        log.info(message)
+    # assert
+    assert isinstance(log, logging.Logger)
+    assert message in caplog.text
+    assert hasattr(log, "file_handler")
+    assert log_file.exists()
+    with open(log_file, "r") as fid:
+        text = "".join(fid.readlines())
+    assert message in text
+
+
+def test_about_prints_not_connected_message(capsys: pytest.CaptureFixture[str]):
+    # arrange
+    mock_additive = MagicMock()
+    mock_additive.about = Additive.about
+    mock_additive._servers = None
+
+    # act
+    mock_additive.about(mock_additive)
+
+    # assert
+    out_str = capsys.readouterr().out
+    assert f"Client {__version__}, API version: {api_version}" in out_str
+    assert "Not connected to server" in out_str
+
+
+def test_about_prints_server_status_messages(capsys: pytest.CaptureFixture[str]):
+    # arrange
+    mock_additive = MagicMock()
+    mock_additive.about = Additive.about
+    servers = []
+    for i in range(5):
+        servers.append(Mock(ServerConnection))
+        servers[i].status.return_value = f"server {i} running"
+    mock_additive._servers = servers
+
+    # act
+    mock_additive.about(mock_additive)
+
+    # assert
+    out_str = capsys.readouterr().out
+    assert f"Client {__version__}, API version: {api_version}" in out_str
+    for i in range(len(servers)):
+        assert f"server {i} running" in out_str
 
 
 @pytest.mark.parametrize(
@@ -249,72 +265,542 @@ def test_Additive_init_raises_exception_if_server_ready_false(monkeypatch):
         ThermalHistoryInput(),
     ],
 )
-def test_simulate_without_material_assigned_raises_exception(monkeypatch, input):
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_simulate_with_single_input_calls_internal_simulate_once(_, input):
     # arrange
-    mock_server_ready = create_autospec(
-        ansys.additive.core.additive.server_ready, return_value=True
-    )
-    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
+    input.material = test_utils.get_test_material()
+    expected_summary = test_utils.get_test_SingleBeadSummary()
+    with patch("ansys.additive.core.additive.Additive._simulate") as _simulate_patch:
+        _simulate_patch.return_value = expected_summary
+    additive = Additive()
+    additive._simulate = _simulate_patch
 
-    additive = Additive(host="localhost", port=12345)
+    # act
+    summary = additive.simulate(input)
 
-    # act, assert
-    with pytest.raises(ValueError, match="Material must be specified"):
-        additive.simulate(input)
+    # assert
+    assert isinstance(summary, SingleBeadSummary)
+    assert summary == expected_summary
+    _simulate_patch.assert_called_once_with(input, ANY, show_progress=True)
 
 
-def test_simulate_list_of_inputs_with_duplicate_ids_raises_exception(monkeypatch):
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_simulate_with_input_list_calls_internal_simulate_n_times(_):
     # arrange
-    mock_server_ready = create_autospec(
-        ansys.additive.core.additive.server_ready, return_value=True
-    )
-    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
-
-    additive = Additive(host="localhost", port=12345)
+    with patch("ansys.additive.core.additive.Additive._simulate") as _simulate_patch:
+        _simulate_patch.return_value = None
+    additive = Additive()
+    additive._simulate = _simulate_patch
     inputs = [
-        SingleBeadInput(id="id"),
-        SingleBeadInput(id="id"),
+        x
+        for x in [
+            SingleBeadInput(id="id1"),
+            PorosityInput(id="id2"),
+            MicrostructureInput(id="id3"),
+            ThermalHistoryInput(id="id4"),
+        ]
     ]
+    # act
+    additive.simulate(inputs)
 
+    # assert
+    assert _simulate_patch.call_count == len(inputs)
+    print(_simulate_patch.call_args_list)
+    calls = [call(input=i, server=ANY, show_progress=False) for i in inputs]
+    _simulate_patch.assert_has_calls(calls, any_order=True)
+
+
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_simulate_with_duplicate_simulation_ids_raises_exception(_):
+    # arrange
+    with patch("ansys.additive.core.additive.Additive._simulate") as _simulate_patch:
+        _simulate_patch.return_value = None
+    additive = Additive()
+    additive._simulate = _simulate_patch
+    inputs = [
+        x
+        for x in [
+            SingleBeadInput(id="id"),
+            PorosityInput(id="id"),
+        ]
+    ]
     # act, assert
-    with pytest.raises(ValueError, match='Duplicate simulation ID "id" in input list'):
+    with pytest.raises(ValueError, match="Duplicate simulation ID"):
         additive.simulate(inputs)
 
 
-def test_about_returns_about_response(monkeypatch):
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_internal_simulate_with_thermal_history_without_geometry_returns_SimulationError(
+    _,
+):
     # arrange
-    mock_server_ready = create_autospec(
-        ansys.additive.core.additive.server_ready, return_value=True
+    input = ThermalHistoryInput()
+    input.material = test_utils.get_test_material()
+    additive = Additive()
+
+    # act
+    result = additive._simulate(input, None)
+
+    # assert
+    assert isinstance(result, SimulationError)
+    assert "The geometry path is not defined in the simulation input" in result.message
+
+
+@pytest.mark.parametrize(
+    "input",
+    [
+        SingleBeadInput(),
+        PorosityInput(),
+        MicrostructureInput(),
+        ThermalHistoryInput(),
+    ],
+)
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_internal_simulate_without_material_raises_exception(_, input):
+    # arrange
+    additive = Additive()
+
+    # act, assert
+    with pytest.raises(ValueError, match="A material is not assigned to the simulation input"):
+        additive._simulate(input, None)
+
+
+@pytest.mark.parametrize(
+    "input",
+    [
+        SingleBeadInput(),
+        PorosityInput(),
+        MicrostructureInput(),
+    ],
+)
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_exception_during_interal_simulation_returns_SimulationError(_, input):
+    # arrange
+    error_msg = "simulation error"
+    progress_msg = Progress(
+        state=ProgressState.PROGRESS_STATE_EXECUTING,
+        percent_complete=50,
+        message="running",
+        context="simulation",
     )
-    monkeypatch.setattr(ansys.additive.core.additive, "server_ready", mock_server_ready)
+    sim_response = SimulationResponse(id="id", progress=progress_msg)
 
-    def mock_about_endpoint(request: Empty):
-        response = AboutResponse()
-        response.metadata["key1"] = "value1"
-        response.metadata["key2"] = "value2"
-        response.metadata["key3"] = "value3"
-        return response
+    def iterable_with_exception(_):
+        yield sim_response
+        raise Exception(error_msg)
 
-    mock_stub = Mock(AboutServiceStub)
-    mock_stub.About = Mock(side_effect=mock_about_endpoint)
-    additive = Additive(host="1.2.3.4", port=12345)
-    additive._about_stub = mock_stub
-    f = io.StringIO()
-    expected_result = (
-        "Client\n"
-        f"    Version: {__version__}\n"
-        f"    API version: {api_version}\n"
-        "Server 1.2.3.4:12345\n"
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.simulation_stub.Simulate.side_effect = iterable_with_exception
+    input.material = test_utils.get_test_material()
+    additive = Additive()
+
+    # act
+    result = additive._simulate(input, mock_connection_with_stub)
+
+    # assert
+    assert isinstance(result, SimulationError)
+    assert error_msg in result.message
+
+
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_server_error_during_interal_simulation_returns_SimulationError(_):
+    # arrange
+    error_msg = "simulation error"
+    progress_msg = Progress(
+        state=ProgressState.PROGRESS_STATE_ERROR,
+        percent_complete=50,
+        message=error_msg,
+        context="simulation",
+    )
+    sim_response = SimulationResponse(id="id", progress=progress_msg)
+    input = SingleBeadInput(material=test_utils.get_test_material())
+
+    def iterable_response(_):
+        yield sim_response
+
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.simulation_stub.Simulate.side_effect = iterable_response
+    additive = Additive()
+
+    # act
+    result = additive._simulate(input, mock_connection_with_stub)
+
+    # assert
+    assert isinstance(result, SimulationError)
+    assert error_msg in result.message
+
+
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_materials_list_returns_list_of_material_names(mock_connection):
+    # arrange
+    names = ["material1", "material2"]
+    materials_list_response = GetMaterialsListResponse(names=names)
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.materials_stub.GetMaterialsList.return_value = materials_list_response
+    mock_connection.return_value = mock_connection_with_stub
+    additive = Additive()
+
+    # act
+    result = additive.materials_list()
+
+    # assert
+    assert result == names
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_get_material_returns_material(mock_connection):
+    # arrange
+    material = test_utils.get_test_material()
+    material_name = "vibranium"
+    material.name = material_name
+    material_msg = material._to_material_message()
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.materials_stub.GetMaterial.return_value = material_msg
+    mock_connection.return_value = mock_connection_with_stub
+    additive = Additive()
+
+    # act
+    result = additive.material(material_name)
+
+    # assert
+    assert result == material
+    mock_connection_with_stub.materials_stub.GetMaterial.assert_called_once_with(
+        GetMaterialRequest(name=material_name)
+    )
+
+
+def test_load_material_returns_material():
+    # arrange
+    parameters_file = test_utils.get_test_file_path(pathlib.Path("Material") / "material-data.json")
+    thermal_lookup_file = test_utils.get_test_file_path(
+        pathlib.Path("Material") / "Test_Lookup.csv"
+    )
+    characteristic_width_lookup_file = test_utils.get_test_file_path(
+        pathlib.Path("Material") / "Test_CW_Lookup.csv"
     )
 
     # act
-    with contextlib.redirect_stdout(f):
-        additive.about()
+    material = Additive.load_material(
+        parameters_file, thermal_lookup_file, characteristic_width_lookup_file
+    )
 
     # assert
-    out_str = f.getvalue()
-    assert expected_result in out_str
-    # the order of the metadata is not guaranteed
-    assert "    key1: value1\n" in out_str
-    assert "    key2: value2\n" in out_str
-    assert "    key3: value3\n" in out_str
+    assert isinstance(material, AdditiveMaterial)
+    assert material.poisson_ratio == 23
+    assert len(material.characteristic_width_data) == 64
+    assert len(material.thermal_properties_data) == 7500
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_tune_material_raises_exception_if_output_path_exists(_, tmp_path: pathlib.Path):
+    # arrange
+    input = MaterialTuningInput(
+        id="id",
+        experiment_data_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "experimental_data.csv"
+        ),
+        material_parameters_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "material-data.json"
+        ),
+        thermal_properties_lookup_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "Test_Lookup.csv"
+        ),
+    )
+    additive = Additive()
+
+    # act, assert
+    with pytest.raises(ValueError, match="already exists"):
+        result = additive.tune_material(input, out_dir=tmp_path)
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_tune_material_raises_exception_for_progress_error(mock_connection, tmp_path: pathlib.Path):
+    # arrange
+    input = MaterialTuningInput(
+        id="id",
+        experiment_data_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "experimental_data.csv"
+        ),
+        material_parameters_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "material-data.json"
+        ),
+        thermal_properties_lookup_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "Test_Lookup.csv"
+        ),
+    )
+    message = "error message"
+    response = TuneMaterialResponse(
+        id="id", progress=Progress(state=ProgressState.PROGRESS_STATE_ERROR, message=message)
+    )
+
+    def iterable_response(_):
+        yield response
+
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.materials_stub.TuneMaterial.side_effect = iterable_response
+    mock_connection.return_value = mock_connection_with_stub
+    additive = Additive()
+
+    # act, assert
+    with pytest.raises(Exception, match=message):
+        result = additive.tune_material(input, out_dir=tmp_path / "progress_error")
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("License successfully, should not be printed", False),
+        ("Starting ThermalSolver, should not be printed", False),
+        ("threads for solver, should not be printed", False),
+        ("this should be printed", True),
+    ],
+)
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_tune_material_filters_progress_messages(
+    mock_connection,
+    capsys: pytest.CaptureFixture[str],
+    tmp_path: pathlib.Path,
+    text: str,
+    expected: bool,
+):
+    # arrange
+    input = MaterialTuningInput(
+        id="id",
+        experiment_data_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "experimental_data.csv"
+        ),
+        material_parameters_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "material-data.json"
+        ),
+        thermal_properties_lookup_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "Test_Lookup.csv"
+        ),
+    )
+    response = TuneMaterialResponse(
+        id="id", progress=Progress(state=ProgressState.PROGRESS_STATE_EXECUTING, message=text)
+    )
+
+    def iterable_response(_):
+        yield response
+
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.materials_stub.TuneMaterial.side_effect = iterable_response
+    mock_connection.return_value = mock_connection_with_stub
+    additive = Additive()
+
+    # act
+    additive.tune_material(input, out_dir=tmp_path / "progress_error")
+
+    # assert
+    assert (text in capsys.readouterr().out) == expected
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_tune_material_returns_expected_result(
+    mock_connection,
+    tmp_path: pathlib.Path,
+):
+    # arrange
+    input = MaterialTuningInput(
+        id="id",
+        experiment_data_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "experimental_data.csv"
+        ),
+        material_parameters_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "material-data.json"
+        ),
+        thermal_properties_lookup_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "Test_Lookup.csv"
+        ),
+    )
+    log_bytes = b"log_bytes"
+    optimized_parameters_bytes = b"optimized_parameters"
+    cw_lookup_bytes = b"characteristic width lookup"
+    response = TuneMaterialResponse(
+        id="id",
+        result=MaterialTuningResult(
+            log=log_bytes,
+            optimized_parameters=optimized_parameters_bytes,
+            characteristic_width_lookup=cw_lookup_bytes,
+        ),
+    )
+
+    def iterable_response(_):
+        yield response
+
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.materials_stub.TuneMaterial.side_effect = iterable_response
+    mock_connection.return_value = mock_connection_with_stub
+    additive = Additive()
+
+    # act
+    summary = additive.tune_material(input, out_dir=tmp_path / "nominal_path")
+
+    # assert
+    assert summary.input == input
+    with open(summary.log_file, "r") as f:
+        assert log_bytes.decode() in f.read()
+    with open(summary.optimized_parameters_file, "r") as f:
+        assert optimized_parameters_bytes.decode() in f.read()
+    with open(summary.characteristic_width_file, "r") as f:
+        assert cw_lookup_bytes.decode() in f.read()
+
+
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_file_upload_reader_returns_expected_number_of_requests(_):
+    # arrange
+    file_size = os.path.getsize(__file__)
+    expected_iterations = 10
+    chunk_size = int(file_size / expected_iterations)
+    if file_size % expected_iterations > 0:
+        expected_iterations += 1
+    short_name = os.path.basename(__file__)
+    additive = Additive()
+
+    # act
+    for n, request in enumerate(
+        additive._Additive__file_upload_reader(os.path.abspath(__file__), chunk_size)
+    ):
+        assert isinstance(request, UploadFileRequest)
+        assert request.name == short_name
+        assert request.total_size == file_size
+        assert len(request.content) <= chunk_size
+        assert request.content_md5 == hashlib.md5(request.content).hexdigest()
+    assert n + 1 == expected_iterations
+
+
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_simulate_thermal_history_without_geometry_raises_exception(
+    _,
+):
+    # arrange
+    input = ThermalHistoryInput()
+    additive = Additive()
+
+    # act, assert
+    with pytest.raises(
+        ValueError, match="The geometry path is not defined in the simulation input"
+    ):
+        additive._simulate_thermal_history(input, None, None)
+
+
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_simulate_thermal_history_with_progress_error_during_upload_raises_exception(
+    _,
+):
+    # arrange
+    input = ThermalHistoryInput(
+        geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))
+    )
+    message = "error message"
+    response = UploadFileResponse(
+        remote_file_name="remote/file/name",
+        progress=Progress(state=ProgressState.PROGRESS_STATE_ERROR, message=message),
+    )
+
+    def iterable_response(_):
+        yield response
+
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.simulation_stub.UploadFile.side_effect = iterable_response
+    additive = Additive()
+
+    # act, assert
+    with pytest.raises(Exception, match=message):
+        additive._simulate_thermal_history(input, None, mock_connection_with_stub)
+    mock_connection_with_stub.simulation_stub.UploadFile.assert_called_once()
+
+
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_simulate_thermal_history_with_progress_error_during_simulation_raises_exception(
+    _,
+):
+    # arrange
+    input = ThermalHistoryInput(
+        geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))
+    )
+    message = "error message"
+    remote_file_name = "remote/file/name"
+    upload_response = UploadFileResponse(
+        remote_file_name=remote_file_name,
+        progress=Progress(state=ProgressState.PROGRESS_STATE_COMPLETED, message="done"),
+    )
+    simulation_request = input._to_simulation_request(remote_geometry_path=remote_file_name)
+    error_response_with_warn = SimulationResponse(
+        id="ignored-warning",
+        progress=Progress(state=ProgressState.PROGRESS_STATE_ERROR, message="WARN warning message"),
+    )
+    error_response = SimulationResponse(
+        id="id",
+        progress=Progress(state=ProgressState.PROGRESS_STATE_ERROR, message=message),
+    )
+
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.simulation_stub.UploadFile.return_value = [upload_response]
+    # The iterable returned from Simulate first generates a warning then an error
+    mock_connection_with_stub.simulation_stub.Simulate.return_value = [
+        error_response_with_warn,
+        error_response,
+    ]
+    additive = Additive()
+
+    # act, assert
+    with pytest.raises(Exception, match=message):
+        additive._simulate_thermal_history(input, None, mock_connection_with_stub)
+    mock_connection_with_stub.simulation_stub.UploadFile.assert_called_once()
+    # The Simulate method is called once and returns an iterator for the two responses above
+    mock_connection_with_stub.simulation_stub.Simulate.assert_called_once_with(simulation_request)
+
+
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+@patch("ansys.additive.core.additive.download_file")
+def test_simulate_thermal_history_returns_expected_summary(
+    mock_download_file, _, tmp_path: pathlib.Path
+):
+    # arrange
+    results_file = tmp_path / "results.zip"
+    out_dir = tmp_path / "out_dir"
+    shutil.copyfile(test_utils.get_test_file_path("thermal_history_results.zip"), str(results_file))
+    mock_download_file.side_effect = lambda a, b, c: str(results_file)
+
+    id = "thermal-history-test"
+    input = ThermalHistoryInput(
+        id=id, geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))
+    )
+    remote_file_name = "remote/file/name"
+    upload_response = UploadFileResponse(
+        remote_file_name=remote_file_name,
+        progress=Progress(state=ProgressState.PROGRESS_STATE_COMPLETED, message="done"),
+    )
+    simulation_request = input._to_simulation_request(remote_geometry_path=remote_file_name)
+    simulation_response = SimulationResponse(
+        id=id, thermal_history_result=ThermalHistoryResult(coax_ave_zip_file="zip-file")
+    )
+
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.simulation_stub.UploadFile.return_value = [upload_response]
+    mock_connection_with_stub.simulation_stub.Simulate.return_value = [simulation_response]
+    additive = Additive()
+
+    # act
+    summary = additive._simulate_thermal_history(input, str(out_dir), mock_connection_with_stub)
+
+    # assert
+    mock_connection_with_stub.simulation_stub.UploadFile.assert_called_once()
+    mock_connection_with_stub.simulation_stub.Simulate.assert_called_once_with(simulation_request)
+    assert summary.input == input
+    assert summary.coax_ave_output_folder == str(out_dir / id / "coax_ave_output")
+    assert len(list(pathlib.Path(summary.coax_ave_output_folder).glob("*.vtk"))) == 6

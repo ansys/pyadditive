@@ -73,18 +73,18 @@ build_file = BuildFile(MachineType.SLM, build_file_name)
 # Select material
 # ---------------
 # Select a material. You can use the
-# :meth:`get_materials_list() <ansys.additive.additive.Additive.get_materials_list>`
+# :meth:`materials_list() <ansys.additive.additive.Additive.materials_list>`
 # method to obtain a list of available materials.
 
-print(additive.get_materials_list())
+additive.materials_list()
 
 ###############################################################################
 # You can obtain the parameters for a single material by passing a name
 # from the materials list to the
-# :meth:`get_material() <ansys.additive.additive.Additive.get_material>`
+# :meth:`material() <ansys.additive.additive.Additive.material>`
 # method.
 
-material = additive.get_material("17-4PH")
+material = additive.material("17-4PH")
 
 ###############################################################################
 # Specify machine parameters

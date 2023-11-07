@@ -1149,7 +1149,7 @@ def test_run_simulations_calls_simulate_correctly(monkeypatch, tmp_path: pytest.
     ms = MicrostructureInput()
     study.add_inputs([sb, p, ms])
     mock_additive = create_autospec(Additive)
-    # mock_additive.get_material.return_value = material
+    # mock_additive.material.return_value = material
     patched_simulate = create_autospec(ParametricRunner.simulate, return_value=[])
     monkeypatch.setattr(ParametricRunner, "simulate", patched_simulate)
 

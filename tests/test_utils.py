@@ -22,14 +22,14 @@
 
 import os
 
-from ansys.api.additive.v0.additive_domain_pb2 import (
+from ansys.api.additive.v0.additive_domain_pb2 import MeltPoolTimeStep
+
+from ansys.additive.core.material import (
+    AdditiveMaterial,
     CharacteristicWidthDataPoint,
-    MeltPoolTimeStep,
     ThermalPropertiesDataPoint,
 )
-
-from ansys.additive.core.material import AdditiveMaterial
-from ansys.additive.core.single_bead import MeltPoolMessage
+from ansys.additive.core.single_bead import MeltPoolMessage, SingleBeadInput, SingleBeadSummary
 
 
 def get_test_material() -> AdditiveMaterial:
@@ -102,6 +102,16 @@ def get_test_melt_pool_message() -> MeltPoolMessage:
             )
         ]
     )
+
+
+def get_test_SingleBeadSummary(input: SingleBeadInput = None) -> SingleBeadSummary:
+    melt_pool_msg = get_test_melt_pool_message()
+    if input is None:
+        input = SingleBeadInput(
+            material=get_test_material(),
+        )
+
+    return SingleBeadSummary(input, melt_pool_msg)
 
 
 def get_test_file_path(name: str) -> str:
