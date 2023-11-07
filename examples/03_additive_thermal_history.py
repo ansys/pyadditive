@@ -53,8 +53,8 @@ additive = Additive()
 # ------------
 # Select the geometry model. Currently, PyAdditive supports
 # two types of geometry specifications,
-# :class:`STLFile <ansys.additive.core.geometry_file.StlFile>` and
-# :class:`BuildFile <ansys.additive.core.geometry_file.BuildFile>`.
+# :class:`STLFile <ansys.additive.core.StlFile>` and
+# :class:`BuildFile <ansys.additive.core.BuildFile>`.
 #
 # You can download example build and STL files by importing the ``examples``
 # module.
@@ -73,7 +73,7 @@ build_file = BuildFile(MachineType.SLM, build_file_name)
 # Select material
 # ---------------
 # Select a material. You can use the
-# :meth:`materials_list() <ansys.additive.additive.Additive.materials_list>`
+# :meth:`materials_list() <ansys.additive.core.Additive.materials_list>`
 # method to obtain a list of available materials.
 
 additive.materials_list()
@@ -81,7 +81,7 @@ additive.materials_list()
 ###############################################################################
 # You can obtain the parameters for a single material by passing a name
 # from the materials list to the
-# :meth:`material() <ansys.additive.additive.Additive.material>`
+# :meth:`material() <ansys.additive.core.Additive.material>`
 # method.
 
 material = additive.material("17-4PH")
@@ -90,7 +90,7 @@ material = additive.material("17-4PH")
 # Specify machine parameters
 # --------------------------
 # Specify machine parameters by first creating an
-# :class:`AdditiveMachine <from ansys.additive.core.machine.AdditiveMachine>`
+# :class:`AdditiveMachine <ansys.additive.core.AdditiveMachine>`
 # object then assigning the desired values.
 # All values are in SI units (m, kg, s, K) unless otherwise noted.
 
@@ -112,12 +112,12 @@ machine.laser_power = 500  # W
 # ---------------------------------------------
 # Thermal history is simulated for the given geometry over a range of heights
 # in the Z dimension. More than one range can be specified. Each range is specified
-# with a :class:`Range <ansys.additive.core.thermal_history.Range>` object.
+# with a :class:`Range <ansys.additive.core.Range>` object.
 # The ranges are assigned to a
-# :class:`CoaxialAverageSensorInputs <ansys.additive.core.thermal_history.CoaxialAverageSensorInputs>`
+# :class:`CoaxialAverageSensorInputs <ansys.additive.core.CoaxialAverageSensorInputs>`
 # object which also includes a sensor radius. The ``CoaxialAverageSensorInputs`` object
 # is assigned to a
-# :class:`ThermalHistoryInput <ansys.additive.core.thermal_history.ThermalHistoryInput>`
+# :class:`ThermalHistoryInput <ansys.additive.core.ThermalHistoryInput>`
 # object.
 
 # Values are in meters
@@ -137,12 +137,12 @@ input = ThermalHistoryInput(
 ###############################################################################
 # Run simulation
 # --------------
-# Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>`
+# Use the :meth:`simulate() <ansys.additive.core.Additive.simulate>`
 # method of the ``additive`` object to run the simulation. The returned object is a
 # either a
-# :class:`ThermalHistorySummary <ansys.additive.core.thermal_history.ThemalHistorySummary>`
+# :class:`ThermalHistorySummary <ansys.additive.core.ThemalHistorySummary>`
 # object or a
-# :class:`SimulationError <ansys.additive.core.simulation.SimulationError>.
+# :class:`SimulationError <ansys.additive.core.SimulationError>`.
 
 summary = additive.simulate(input)
 if isinstance(summary, SimulationError):

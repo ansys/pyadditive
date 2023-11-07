@@ -267,7 +267,7 @@ if BUILD_EXAMPLES is True:
         "ignore_pattern": r"\b(" + "|".join(ignore_patterns) + r")\b",
         "thumbnail_size": (350, 350),
         # Set plot_gallery to False for building docs without running examples.
-        # "plot_gallery": False,
+        "plot_gallery": False,
     }
     print(f"sphinx_gallery_conf {sphinx_gallery_conf}")
 

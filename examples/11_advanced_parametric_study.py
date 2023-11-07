@@ -72,7 +72,8 @@ material = "IN718"
 # for ``generate_single_bead_permutations()`` allow you to specify a range of
 # machine parameters and filter them by energy density. Not all the parameters
 # shown are required. Optional parameters that are not specified will use default
-# values defined in the ``MachineConstants`` class.
+# values defined in the :class:`MachineConstants <ansys.additive.core.machine.MachineConstants>`
+# class.
 
 # Specify a range of laser powers. Valid values are 50 to 700 W.
 initial_powers = np.linspace(50, 700, 7)

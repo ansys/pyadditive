@@ -57,7 +57,7 @@ additive.about()
 # Select material
 # ---------------
 # Select a material. You can use the
-# :meth:`materials_list() <ansys.additive.core.additive.Additive.materials_list>`
+# :meth:`materials_list() <ansys.additive.core.Additive.materials_list>`
 # method to obtain a list of available materials.
 
 additive.materials_list()
@@ -65,7 +65,7 @@ additive.materials_list()
 ###############################################################################
 # You can obtain the parameters for a single material by passing a name
 # from the materials list to the
-# :meth:`material() <ansys.additive.core.additive.Additive.material>`
+# :meth:`material() <ansys.additive.core.Additive.material>`
 # method.
 
 material = additive.material("17-4PH")
@@ -74,7 +74,7 @@ material = additive.material("17-4PH")
 # Specify machine parameters
 # --------------------------
 # Specify machine parameters by first creating an
-# :class:`AdditiveMachine <from ansys.additive.core.machine.AdditiveMachine>` object
+# :class:`AdditiveMachine <ansys.additive.core.AdditiveMachine>` object
 # then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
@@ -94,7 +94,7 @@ machine.laser_power = 300  # W
 ###############################################################################
 # Specify inputs for single bead simulation
 # -----------------------------------------
-# Create a :class:`SingleBeadInput <ansys.additive.core.single_bead.SingleBeadInput>`
+# Create a :class:`SingleBeadInput <ansys.additive.core.SingleBeadInput>`
 # object containing the desired simulation parameters.
 
 input = SingleBeadInput(
@@ -104,12 +104,12 @@ input = SingleBeadInput(
 ###############################################################################
 # Run simulation
 # --------------
-# Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>`
+# Use the :meth:`simulate() <ansys.additive.core.Additive.simulate>`
 # method of the ``additive`` object to run the simulation. The returned object is a
-# either a :class:`SingleBeadSummary <ansys.additive.core.single_bead.SingleBeadSummary>`
+# either a :class:`SingleBeadSummary <ansys.additive.core.SingleBeadSummary>`
 # object containing the input and a
-# :class:`MeltPool <ansys.additive.core.single_bead.MeltPool>` or a
-# :class:`SimulationError <ansys.additive.core.simulation.SimulationError>.
+# :class:`MeltPool <ansys.additive.core.MeltPool>` or a
+# :class:`SimulationError <ansys.additive.core.SimulationError>`.
 
 summary = additive.simulate(input)
 if isinstance(summary, SimulationError):
@@ -119,7 +119,7 @@ if isinstance(summary, SimulationError):
 # Plot melt pool statistics
 # -------------------------
 # Obtain a :class:`Pandas DataFrame <pandas.DataFrame>` containing the melt pool
-# statistics by using the :meth:`data_frame() <ansys.additive.core.single_bead.MeltPool.data_frame>`
+# statistics by using the :meth:`data_frame() <ansys.additive.core.MeltPool.data_frame>`
 # property of the ``melt_pool`` attribute of the ``summary`` object. Use the
 # :meth:`DataFrame.plot() <pandas.DataFrame.plot>` method to plot the melt
 # pool dimensions as a function of bead length.

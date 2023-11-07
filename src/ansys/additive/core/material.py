@@ -48,7 +48,7 @@ class CharacteristicWidthDataPoint:
         Laser power (W).
     scan_speed: float
         Laser scan speed (m/s).
-    characteristic_widt: float
+    characteristic_width: float
         Characteristic melt pool width (m).
     """
 

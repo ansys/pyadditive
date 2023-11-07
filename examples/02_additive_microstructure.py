@@ -117,8 +117,8 @@ input_without_thermal = MicrostructureInput(
 # --------------
 # Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>` method of the
 # ``additive`` object to run the simulation. The returned object is either a
-# :class:`MicrostructureSummary <ansys.additive.core.microstructure.MicrostructureSummary>`
-# object or a :class:`SimulationError <ansys.additive.core.simulation.SimulationError>`.
+# :class:`MicrostructureSummary <ansys.additive.core.MicrostructureSummary>`
+# object or a :class:`SimulationError <ansys.additive.core.SimulationError>`.
 
 summary = additive.simulate(input_with_thermal)
 if isinstance(summary, SimulationError):
@@ -127,10 +127,10 @@ if isinstance(summary, SimulationError):
 ###############################################################################
 # Plot results
 # ------------
-# The :class:`MicrostructureSummary <ansys.additive.core.microstructure.MicrostructureSummary>`
+# The :class:`MicrostructureSummary <ansys.additive.core.MicrostructureSummary>`
 # includes three VTK files, one for each of the XY, XZ, and YZ planes. Each VTK file
 # contains data sets for grain orientation, boundaries, and number. In addition,
-# :class:`MicrostructureSummary <ansys.additive.core.microstructure.MicrostructureSummary>`
+# :class:`MicrostructureSummary <ansys.additive.core.MicrostructureSummary>`
 # includes circle equivalence data and average grain size for each plane.
 
 from matplotlib import colors

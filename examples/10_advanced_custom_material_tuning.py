@@ -46,7 +46,7 @@ additive = Additive()
 # Specify tuning inputs
 # ---------------------
 # The
-# :class:`MaterialTuningInput <ansys.additive.core.material_tuning.MaterialTuningInput>`
+# :class:`MaterialTuningInput <ansys.additive.core.MaterialTuningInput>`
 # object contains the paths to the files needed to
 # tune a material. The ``experiment_data_file`` is a CSV file containing the
 # results of single bead experiments. The ``material_parameters_file`` is a JSON
@@ -81,7 +81,7 @@ input = MaterialTuningInput(
 ###############################################################################
 # Perform material tuning
 # ------------------------
-# Use the :meth:`tune_material() <ansys.additive.core.additive.Additive.tune_material>`
+# Use the :meth:`tune_material() <ansys.additive.core.Additive.tune_material>`
 # method to perform material tuning.
 
 summary = additive.tune_material(input)
@@ -89,7 +89,7 @@ summary = additive.tune_material(input)
 ###############################################################################
 # Review results
 # --------------
-# The :class:`MaterialTuningSummary <ansys.additive.core.material_tuning.MaterialTuningSummary>`
+# The :class:`MaterialTuningSummary <ansys.additive.core.MaterialTuningSummary>`
 # object contains the results of the material
 # tuning process. These results are used in follow-on steps to calculate the
 # material parameters needed by PyAdditive. For more information, see the

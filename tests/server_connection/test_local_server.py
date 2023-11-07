@@ -104,7 +104,7 @@ def test_launch_when_product_version_invalid_raises_exception_win(tmp_path: path
 
     # act, assert
     with pytest.raises(FileNotFoundError) as excinfo:
-        LocalServer.launch(TEST_VALID_PORT, tmp_path, "242")
+        LocalServer.launch(TEST_VALID_PORT, tmp_path, "233")
     assert "Cannot find Ansys installation directory" in str(excinfo.value)
 
 
