@@ -749,14 +749,11 @@ class ParametricStudy:
             Laser powers (W) to use for microstructure simulations.
         scan_speeds : list[float]
             Scan speeds (m/s) to use for microstructure simulations.
-        min_x : float, default: :obj:`DEFAULT_POSITION_COORDINATE
-        <MicrostructureInput.DEFAULT_POSITION_COORDINATE>`
+        min_x : float, default: :obj:`DEFAULT_POSITION_COORDINATE <MicrostructureInput.DEFAULT_POSITION_COORDINATE>`
             Minimum x coordinate (m) of the microstructure sample.
-        min_y : float, default: :obj:`DEFAULT_POSITION_COORDINATE
-        <MicrostructureInput.DEFAULT_POSITION_COORDINATE>`
+        min_y : float, default: :obj:`DEFAULT_POSITION_COORDINATE <MicrostructureInput.DEFAULT_POSITION_COORDINATE>`
             Minimum y coordinate (m) of the microstructure sample.
-        min_z : float, default: :obj:`DEFAULT_POSITION_COORDINATE
-        <MicrostructureInput.DEFAULT_POSITION_COORDINATE>`
+        min_z : float, default: :obj:`DEFAULT_POSITION_COORDINATE <MicrostructureInput.DEFAULT_POSITION_COORDINATE>`
             Minimum z coordinate (m) of the microstructure sample.
         size_x : float, default: :obj:`DEFAULT_SAMPLE_SIZE <MicrostructureInput.DEFAULT_SAMPLE_SIZE>`
             Size (m) of the microstructure sample in the x direction.
@@ -767,8 +764,7 @@ class ParametricStudy:
         size_z : float, default: :obj:`DEFAULT_SAMPLE_SIZE <MicrostructureInput.DEFAULT_SAMPLE_SIZE>`
             Size (m) of the microstructure sample in the z direction.
             Valid values are between 0.001 and 0.01.
-        sensor_dimension : float, default: :obj:`DEFAULT_SENSOR_DIMENSION
-        <MicrostructureInput.DEFAULT_SENSOR_DIMENSION>`
+        sensor_dimension : float, default: :obj:`DEFAULT_SENSOR_DIMENSION <MicrostructureInput.DEFAULT_SENSOR_DIMENSION>`
             Sensor dimension (m) to use for microstructure simulations.
             Valid values are between 0.0001 and 0.001. The values for the
             ``size_x`` and ``size_y`` parameters must be greater than the
@@ -829,20 +825,17 @@ class ParametricStudy:
             The thermal gradient (K/m) to use for microstructure simulations.
             If ``None``, and ``cooling_rate``, ``melt_pool_width``, and ``melt_pool_depth``
             are ``None``, it will be calculated. If ``None`` and any of the other three parameters
-            are not ``None``, it will be set to ``MicrostructureInput.DEFAULT_THERMAL_GRADIENT``.
-            See :class:`MicrostructureInput <ansys.additive.core.machine.MicrostructureInput>`.
+            are not ``None``, :obj:`DEFAULT_THERMAL_GRADIENT <MicrostructureInput.DEFAULT_THERMAL_GRADIENT>` will be used.
         melt_pool_width : float, default: None
             The melt pool width (m) to use for microstructure simulations.
             If ``None``, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_depth``
             are ``None``, it will be calculated. If ``None`` and any of the other three parameters
-            are not ``None``, it will be set to ``MicrostructureInput.DEFAULT_MELT_POOL_WIDTH``.
-            See :class:`MicrostructureInput <ansys.additive.core.machine.MicrostructureInput>`.
+            are not ``None``, :obj:`DEFAULT_MELT_POOL_WIDTH <MicrostructureInput.DEFAULT_MELT_POOL_WIDTH>`.
         melt_pool_depth : float, default: None
             The melt pool depth (m) to use for microstructure simulations.
             If ``None``, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_width``
             are ``None``, it will be calculated. If ``None`` and any of the other three parameters
-            are not ``None``, it will be set to ``MicrostructureInput.DEFAULT_MELT_POOL_DEPTH``.
-            See :class:`MicrostructureInput <ansys.additive.core.machine.MicrostructureInput>`.
+            are not ``None``, :obj:`DEFAULT_MELT_POOL_DEPTH <MicrostructureInput.DEFAULT_MELT_POOL_DEPTH>`.
         random_seed : int, default: None
             The random seed to use for microstructure simulations. If ``None``,
             an automatically generated random seed will be used.
@@ -852,7 +845,7 @@ class ParametricStudy:
 
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             The priority for this set of simulations.
-        """
+        """  # noqa
         lt = (
             layer_thicknesses
             if layer_thicknesses is not None
