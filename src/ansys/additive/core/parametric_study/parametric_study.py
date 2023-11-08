@@ -416,15 +416,15 @@ class ParametricStudy:
             Length of the bead (m).
         layer_thicknesses : list[float], default: None
             Layer thicknesses (m) to use for single bead simulations.
-            If ``None``, :obj:`MachineConstants.DEFAULT_LAYER_THICKNESS`
+            If ``None``, :obj:`DEFAULT_LAYER_THICKNESS <MachineConstants.DEFAULT_LAYER_THICKNESS>`
             is used.
         heater_temperatures : list[float], default: None
             Heater temperatures (C) to use for single bead simulations.
-            If ``None``, :obj:`MachineConstants.DEFAULT_HEATER_TEMP`
+            If ``None``, :obj:`DEFAULT_HEATER_TEMP <MachineConstants.DEFAULT_HEATER_TEMP>`
             is used.
         beam_diameters : list[float], default: None
             Beam diameters (m) to use for single bead simulations.
-            If ``None``, :obj:`MachineConstants.DEFAULT_BEAM_DIAMETER`
+            If ``None``, :obj:`DEFAULT_BEAM_DIAMETER <MachineConstants.DEFAULT_BEAM_DIAMETER>`
             is used.
         min_area_energy_density : float, default: None
             Minimum area energy density (J/m^2) to use for single bead simulations.
