@@ -20,7 +20,7 @@ There are multiple ways to start a session with the PyAdditive client.
 Starting a local session
 ------------------------
 
-Instantiating an Additive object starts the local installation of the Additive server.
+Instantiating an ``Additive`` object starts the local installation of the Additive server.
 
 .. code:: pycon
 
