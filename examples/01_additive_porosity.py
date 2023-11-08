@@ -78,7 +78,7 @@ machine.laser_power = 250  # W
 ###############################################################################
 # Specify inputs for porosity simulation
 # --------------------------------------
-# Create a :class:`PorosityInput <ansys.additive.core.PorosityInput>` object
+# Create a :class:`PorosityInput <ansys.additive.core.porosity.PorosityInput>` object
 # containing the desired simulation parameters.
 
 input = PorosityInput(
@@ -93,11 +93,11 @@ input = PorosityInput(
 ###############################################################################
 # Run simulation
 # --------------
-# Use the :meth:`simulate() <ansys.additive.core.Additive.simulate>` method
+# Use the :meth:`simulate() <Additive.simulate>` method
 # on the ``additive`` object to run the simulation. The returned object is a
-# :class:`PorositySummary <ansys.additive.core.PorositySummary>` object
+# :class:`PorositySummary <ansys.additive.core.porosity.PorositySummary>` object
 # containing the input and the relative density of the simulated sample or a
-# :class:`SimulationError <ansys.additive.core.SimulationError>`.
+# :class:`SimulationError <ansys.additive.core.simulation.SimulationError>`.
 
 summary = additive.simulate(input)
 if isinstance(summary, SimulationError):

@@ -73,7 +73,7 @@ build_file = BuildFile(MachineType.SLM, build_file_name)
 # Select material
 # ---------------
 # Select a material. You can use the
-# :meth:`materials_list() <ansys.additive.core.Additive.materials_list>`
+# :meth:`materials_list() <Additive.materials_list>`
 # method to obtain a list of available materials.
 
 additive.materials_list()
@@ -81,7 +81,7 @@ additive.materials_list()
 ###############################################################################
 # You can obtain the parameters for a single material by passing a name
 # from the materials list to the
-# :meth:`material() <ansys.additive.core.Additive.material>`
+# :meth:`material() <Additive.material>`
 # method.
 
 material = additive.material("17-4PH")
@@ -112,12 +112,12 @@ machine.laser_power = 500  # W
 # ---------------------------------------------
 # Thermal history is simulated for the given geometry over a range of heights
 # in the Z dimension. More than one range can be specified. Each range is specified
-# with a :class:`Range <ansys.additive.core.Range>` object.
+# with a :class:`Range <ansys.additive.core.thermal_history.Range>` object.
 # The ranges are assigned to a
-# :class:`CoaxialAverageSensorInputs <ansys.additive.core.CoaxialAverageSensorInputs>`
+# :class:`CoaxialAverageSensorInputs <ansys.additive.core.thermal_history.CoaxialAverageSensorInputs>`
 # object which also includes a sensor radius. The ``CoaxialAverageSensorInputs`` object
 # is assigned to a
-# :class:`ThermalHistoryInput <ansys.additive.core.ThermalHistoryInput>`
+# :class:`ThermalHistoryInput <ansys.additive.core.thermal_history.ThermalHistoryInput>`
 # object.
 
 # Values are in meters
@@ -137,12 +137,12 @@ input = ThermalHistoryInput(
 ###############################################################################
 # Run simulation
 # --------------
-# Use the :meth:`simulate() <ansys.additive.core.Additive.simulate>`
+# Use the :meth:`simulate() <Additive.simulate>`
 # method of the ``additive`` object to run the simulation. The returned object is a
 # either a
-# :class:`ThermalHistorySummary <ansys.additive.core.ThemalHistorySummary>`
+# :class:`ThermalHistorySummary <ansys.additive.core.thermal_history.ThemalHistorySummary>`
 # object or a
-# :class:`SimulationError <ansys.additive.core.SimulationError>`.
+# :class:`SimulationError <ansys.additive.core.simulation.SimulationError>`.
 
 summary = additive.simulate(input)
 if isinstance(summary, SimulationError):

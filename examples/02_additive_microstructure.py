@@ -42,7 +42,7 @@ additive = Additive()
 # Select material
 # ---------------
 # Select a material. You can use the
-# :meth:`materials_list() <ansys.additive.core.additive.Additive.materials_list>`
+# :meth:`materials_list() <Additive.materials_list>`
 # method to obtain a list of available materials.
 
 additive.materials_list()
@@ -50,7 +50,7 @@ additive.materials_list()
 ###############################################################################
 # You can obtain the parameters for a single material by passing a name
 # from the materials list to the
-# :meth:`material() <ansys.additive.core.additive.Additive.material>`
+# :meth:`material() <Additive.material>`
 # method.
 
 material = additive.material("17-4PH")
@@ -58,8 +58,9 @@ material = additive.material("17-4PH")
 ###############################################################################
 # Specify machine parameters
 # --------------------------
-# Specify machine parameters by first creating an ``AdditiveMachine`` object
-# and then assigning the desired values. All values are in SI units (m, kg, s, K)
+# Specify machine parameters by first creating an
+# :class:`AdditiveMachine <ansys.additive.core.machine.AdditiveMachine>`
+# object and then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
 machine = AdditiveMachine()
@@ -118,7 +119,7 @@ input_without_thermal = MicrostructureInput(
 # Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>` method of the
 # ``additive`` object to run the simulation. The returned object is either a
 # :class:`MicrostructureSummary <ansys.additive.core.MicrostructureSummary>`
-# object or a :class:`SimulationError <ansys.additive.core.SimulationError>`.
+# object or a :class:`SimulationError <ansys.additive.core.simulation.SimulationError>`.
 
 summary = additive.simulate(input_with_thermal)
 if isinstance(summary, SimulationError):
