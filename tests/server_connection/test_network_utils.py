@@ -31,12 +31,18 @@ from ansys.additive.core.server_connection.network_utils import (
 )
 
 
-def test_valid_ip_returns_without_error_for_valid_values():
+@pytest.mark.parametrize(
+    "ip",
+    [
+        "1.2.3.4",
+        "127.0.0.1",
+        "8.8.8.8",
+        "localhost",
+    ],
+)
+def test_valid_ip_returns_without_error_for_valid_values(ip: str):
     # arrange, act, assert
-    check_valid_ip("1.2.3.4")
-    check_valid_ip("127.0.0.1")
-    check_valid_ip("8.8.8.8")
-    check_valid_ip("localhost")
+    check_valid_ip(ip)
 
 
 def test_valid_ip_raises_error_for_invalid_values():
@@ -48,23 +54,20 @@ def test_valid_ip_raises_error_for_invalid_values():
 
 
 def test_check_valid_port_returns_without_error_for_valid_values():
-    # arrange, act, assert
-    check_valid_port(1024)
-    check_valid_port(65535)
-    check_valid_port("1024")
+    # arrange
+    ports = [1024, 65535, "1024"]
+    # act, assert
+    [check_valid_port(port) for port in ports]
     check_valid_port("1", 0, 2)
 
 
 def test_check_valid_port_raises_error_for_invalid_values():
-    # arrange, act, assert
-    with pytest.raises(ValueError):
-        check_valid_port(1023)
-    with pytest.raises(ValueError):
-        check_valid_port(65536)
-    with pytest.raises(ValueError):
-        check_valid_port("1023")
-    with pytest.raises(ValueError):
-        check_valid_port("0", 1, 2)
+    # arrange
+    ports = [1023, 65536, "1023"]
+    # act, assert
+    for port in ports:
+        with pytest.raises(ValueError):
+            check_valid_port(port)
 
 
 def test_create_channel_returns_expected_channel():

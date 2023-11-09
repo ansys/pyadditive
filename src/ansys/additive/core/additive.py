@@ -301,7 +301,6 @@ class Additive:
         """
         request = GetMaterialRequest(name=name)
         result = self._servers[0].materials_stub.GetMaterial(request)
-        print("result type", type(result))
         return AdditiveMaterial._from_material_message(result)
 
     @staticmethod

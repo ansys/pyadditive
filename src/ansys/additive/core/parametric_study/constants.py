@@ -40,7 +40,7 @@ class ColumnNames:
     #: Status of the simulation. For example, pending, success, or failure.
     STATUS = "Status"
     #: Name of material used during simulation.
-    #: See :class:`AdditiveMaterial <from ansys.additive.core.material.AdditiveMaterial>`.
+    #: See :class:`AdditiveMaterial <ansys.additive.core.material.AdditiveMaterial>`.
     MATERIAL = "Material"
     #: Heater temperature (°C).
     HEATER_TEMPERATURE = "Heater Temp (°C)"
