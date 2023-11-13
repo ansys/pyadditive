@@ -55,6 +55,19 @@ from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHist
 class Additive:
     """Provides the client interface to the Additive service.
 
+    You can connect to the Additive server using one of the following
+    methods. The methods are listed in order of precedence.
+        1. If ``channel`` is provided, use it to connect to the server.
+        2. If ``host``, and optionally ``port``, are provided, connect to the server at ``host:port``.
+        3. If running in a :class:`PyPIM <ansys.platform.instancemanagement.pypim>`-
+        enabled cloud environment, launch and connect to an ``additive`` service.
+        4. Use the value of the ``ANSYS_ADDITIVE_ADDRESS`` environment variable if it is defined.
+        The value uses the format ``host:port``.
+        5. Attempt to start the server on localhost and connect to it. For this to work,
+        the Additive portion of the Ansys Structures package from the Ansys unified installation
+        must be installed.
+
+
     Parameters
     ----------
     server_connections: list[str, grpc.Channel], None
