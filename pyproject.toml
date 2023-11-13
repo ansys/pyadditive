@@ -76,7 +76,7 @@ doc = [
     "phantomjs==1.4.1",
     "pypandoc==1.12",
     "pyvista==0.42.3",
-    "selenium==4.14.0",
+    "selenium==4.15.2",
     "sphinx==7.2.6",
     "sphinx-autoapi==3.0.0",
     # "sphinx-autoapi @ git+https://github.com/ansys/sphinx-autoapi@feat/single-page-option",
