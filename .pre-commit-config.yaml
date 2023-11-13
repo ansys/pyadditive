@@ -51,10 +51,10 @@ repos:
       - id: trailing-whitespace
 
   # this validates our github workflow files
-  # - repo: https://github.com/python-jsonschema/check-jsonschema
-  #   rev: 0.24.1
-  #   hooks:
-  #     - id: check-github-workflows
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.24.1
+    hooks:
+      - id: check-github-workflows
 
   - repo: https://github.com/econchick/interrogate
     rev: 1.5.0
