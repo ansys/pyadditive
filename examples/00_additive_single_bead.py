@@ -49,7 +49,7 @@ additive = Additive()
 ###############################################################################
 # Get server connection information
 # ---------------------------------
-# Get server connection information using the :meth:`about <Additive.about>` method.
+# Get server connection information using the :meth:`about() <Additive.about>` method.
 
 additive.about()
 
@@ -74,7 +74,7 @@ material = additive.material("17-4PH")
 # Specify machine parameters
 # --------------------------
 # Specify machine parameters by first creating an
-# :class:`AdditiveMachine <from ansys.additive.core.machine.AdditiveMachine>` object
+# :class:`AdditiveMachine <ansys.additive.core.machine.AdditiveMachine>` object
 # then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
@@ -109,7 +109,7 @@ input = SingleBeadInput(
 # either a :class:`SingleBeadSummary <ansys.additive.core.single_bead.SingleBeadSummary>`
 # object containing the input and a
 # :class:`MeltPool <ansys.additive.core.single_bead.MeltPool>` or a
-# :class:`SimulationError <ansys.additive.core.simulation.SimulationError>.
+# :class:`SimulationError <ansys.additive.core.simulation.SimulationError>`.
 
 summary = additive.simulate(input)
 if isinstance(summary, SimulationError):

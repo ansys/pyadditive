@@ -75,7 +75,7 @@ class ParametricStudy:
         ----------
         study_name: str
             Name of study.
-        study_dir: str, os.PathLike
+        study_dir: str, os.PathLike, default: "."
             Directory where study will be stored.
         """
         self._file_name = pathlib.Path(study_dir).absolute() / f"{study_name}.ps"
@@ -102,7 +102,8 @@ class ParametricStudy:
         """Return a :class:`DataFrame <pandas.DataFrame>` representing the
         parametric study.
 
-        For the column names used in the returned data frame, see the `:class:`ColumnNames` class.
+        For the column names used in the returned data frame, see
+        the :class:`ColumnNames <constants.ColumnNames>` class.
 
         .. note::
            Updating the returned data frame does not update this parametric study.
@@ -124,14 +125,12 @@ class ParametricStudy:
 
         Parameters
         ----------
-        additive: :class:`Additive <ansys.additive.core.additive.Additive>`
+        additive: :class:`Additive <ansys.additive.core.Additive>`
             Additive service connection to use for running simulations.
-        type : list[SimulationType], None
-            Type of simulations to run. The default is ``None``, in which case
-            all simulation types are run.
-        priority : int, None
-            Priority of simulations to run. The default is ``None``, in which
-            case all priorities are run.
+        type : list[SimulationType], default: None
+            Type of simulations to run. If ``None``, all simulation types are run.
+        priority : int, default: None
+            Priority of simulations to run. If ``None``, all priorities are run.
         """
         summaries = ParametricRunner.simulate(
             self.data_frame(),
@@ -214,11 +213,14 @@ class ParametricStudy:
         study.
 
         This method adds new simulations to the parametric study. To update existing
-        simulations, use the :meth:`update` method.
+        simulations, use the
+        :meth:`update() <ansys.additive.core.parametric_study.ParametricStudy.update>` method.
 
         Parameters
         ----------
-        summaries : list[SingleBeadSummary, PorositySummary, MicrostructureSummary]
+        summaries : list[:class:`SingleBeadSummary <ansys.additive.core.SingleBeadSummary>`,
+        :class:`PorositySummary <ansys.additive.core.PorositySummary>`,
+        :class:`MicrostructureSummary <ansys.additive.core.MicrostructureSummary>`]
             List of simulation result summaries to add to the parametric study.
         """
         for summary in summaries:
@@ -356,10 +358,12 @@ class ParametricStudy:
 
         Parameters
         ----------
-        summary : SingleBeadSummary, PorositySummary, MicrostructureSummary
+        summary : :class:`SingleBeadSummary <ansys.additive.core.SingleBeadSummary>`,
+        :class:`PorositySummary <ansys.additive.core.PorositySummary>`,
+        :class:`MicrostructureSummary <ansys.additive.core.MicrostructureSummary>`
             Summary of common simulation parameters to convert.
 
-        iteration : int, default: :obj:`DEFAULT_ITERATION`
+        iteration : int, default: :obj:`DEFAULT_ITERATION <constants.DEFAULT_ITERATION>`
             Iteration number for this simulation.
 
         Returns
@@ -408,37 +412,31 @@ class ParametricStudy:
             Laser powers (W) to use for single bead simulations.
         scan_speeds : list[float]
             Scan speeds (m/s) to use for single bead simulations.
-        bead_length : float, DEFAULT_BEAD_LENGTH
+        bead_length : float, default: :class:`DEFAULT_BEAD_LENGTH <SingleBeadInput.DEFAULT_BEAD_LENGTH>`
             Length of the bead (m).
-        layer_thicknesses : list[float], None
+        layer_thicknesses : list[float], default: None
             Layer thicknesses (m) to use for single bead simulations.
-            The default is ``None``, in which case ``MachineConstants.DEFAULT_LAYER_THICKNESS``
-            is used. For more information, see the
-            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
-            class.
-        heater_temperatures : list[float], None
+            If ``None``, :obj:`DEFAULT_LAYER_THICKNESS <MachineConstants.DEFAULT_LAYER_THICKNESS>`
+            is used.
+        heater_temperatures : list[float], default: None
             Heater temperatures (C) to use for single bead simulations.
-            The default is ``None``, in which case ``MachineConstants.DEFAULT_HEATER_TEMP``
-            is used. For more information, see the
-            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
-            class.
-        beam_diameters : list[float], None
+            If ``None``, :obj:`DEFAULT_HEATER_TEMP <MachineConstants.DEFAULT_HEATER_TEMP>`
+            is used.
+        beam_diameters : list[float], default: None
             Beam diameters (m) to use for single bead simulations.
-            The default is ``None``, in which case``MachineConstants.DEFAULT_BEAM_DIAMETER``
-            is used. For more information, see the
-            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
-            class.
-        min_area_energy_density : float, None
+            If ``None``, :obj:`DEFAULT_BEAM_DIAMETER <MachineConstants.DEFAULT_BEAM_DIAMETER>`
+            is used.
+        min_area_energy_density : float, default: None
             Minimum area energy density (J/m^2) to use for single bead simulations.
             Parameter combinations with an area energy density below this value are
             not included. Area energy density is defined as laser power / (layer thickness * scan speed).
-        max_area_energy_density : float, None
+        max_area_energy_density : float, default: None
             Maximum area energy density (J/m^2) to use for single bead simulations.
             Parameter combinations with an area energy density above this value are
             not included. Area energy density is defined as laser power / (layer thickness * scan speed).
-        iteration : int, default: :obj:`DEFAULT_ITERATION`
+        iteration : int, default: :obj:`DEFAULT_ITERATION <constants.DEFAULT_ITERATION>`
             Iteration number for this set of simulations.
-        priority : int, default: :obj:`DEFAULT_PRIORITY`
+        priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for this set of simulations.
         """
         lt = (
@@ -554,43 +552,31 @@ class ParametricStudy:
             Valid values are between 0.001 and 0.01.
         layer_thicknesses : list[float], None
             Layer thicknesses (m) to use for porosity simulations.
-            The default is ``None``, in which case ``MachineConstants.DEFAULT_LAYER_THICKNESS``
-            is used. For more information, see the
-            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
-            class.
+            If ``None``, :obj:`DEFAULT_LAYER_THICKNESS <MachineConstants.DEFAULT_LAYER_THICKNESS>`
+            is used.
         heater_temperatures : list[float], None
             Heater temperatures (C) to use for porosity simulations.
-            The default is ``None``, in which case ``MachineConstants.DEFAULT_HEATER_TEMP``
-            is used. For more information, see the
-            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
-            class.
+            If ``None``, :obj:`DEFAULT_HEATER_TEMP <MachineConstants.DEFAULT_HEATER_TEMP>`
+            is used.
         beam_diameters : list[float], None
             Beam diameters (m) to use for porosity simulations.
-            The default is ``None``, in which case ``MachineConstants.DEFAULT_BEAM_DIAMETER``
-            is used. For more information, see the
-            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
-            class.
+            If ``None``, :obj:`DEFAULT_BEAM_DIAMETER <MachineConstants.DEFAULT_BEAM_DIAMETER>`
+            is used.
         start_angles : list[float], None
             Scan angles (deg) for the first layer to use for porosity simulations.
-            The default is ``None``, in which case ``MachineConstants.DEFAULT_STARTING_LAYER_ANGLE``
-            is used. For more information, see the
-            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
+            If ``None``, :obj:`DEFAULT_STARTING_LAYER_ANGLE <MachineConstants.DEFAULT_STARTING_LAYER_ANGLE>`
+            is used.
         rotation_angles : list[float], None
             Angles (deg) by which the scan direction is rotated with each layer
-            to use for porosity simulations. The default is ``None``, in which
-            case ``MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE`` is used. For more
-            information, see the :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
-            class.
+            to use for porosity simulations. If ``None``,
+            :obj:`DEFAULT_LAYER_ROTATION_ANGLE <MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE>`
+            is used.
         hatch_spacings : list[float], None
-            Hatch spacings (m) to use for porosity simulations. The default is ``None``,
-            in which case ``MachineConstants.DEFAULT_HATCH_SPACING`` is used. For more
-            information, see the :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
-            class.
+            Hatch spacings (m) to use for porosity simulations. If ``None``,
+            :obj:`DEFAULT_HATCH_SPACING <MachineConstants.DEFAULT_HATCH_SPACING>` is used.
         stripe_widths : list[float], None
-            Stripe widths (m) to use for porosity simulations. The default is ``None``, in
-            which case ``MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH`` is used. For more
-            information, see the :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
-            class.
+            Stripe widths (m) to use for porosity simulations. If ``None``,
+            :obj:`DEFAULT_SLICING_STRIPE_WIDTH <MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH>` is used.
         min_energy_density : float, None
             Minimum energy density (J/m^3) to use for porosity simulations. Parameter combinations
             with an area energy density below this value are not included. Area energy density is
@@ -607,9 +593,9 @@ class ParametricStudy:
             Maximum build rate (m^3/s) to use for porosity simulations. Parameter combinations
             with a build rate above this value are not included. Build rate is defined as
             layer thickness * scan speed * hatch spacing.
-        iteration : int, default: :obj:`DEFAULT_ITERATION`
+        iteration : int, default: :obj:`DEFAULT_ITERATION <constants.DEFAULT_ITERATION>`
             Iteration number for this set of simulations.
-        priority : int, default: :obj:`DEFAULT_PRIORITY`
+        priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for this set of simulations.
         """
         lt = (
@@ -763,118 +749,103 @@ class ParametricStudy:
             Laser powers (W) to use for microstructure simulations.
         scan_speeds : list[float]
             Scan speeds (m/s) to use for microstructure simulations.
-        min_x : float, default: :obj:`DEFAULT_POSITION_COORDINATE`
+        min_x : float, default: :obj:`DEFAULT_POSITION_COORDINATE <MicrostructureInput.DEFAULT_POSITION_COORDINATE>`
             Minimum x coordinate (m) of the microstructure sample.
-        min_y : float, default: :obj:`DEFAULT_POSITION_COORDINATE`
+        min_y : float, default: :obj:`DEFAULT_POSITION_COORDINATE <MicrostructureInput.DEFAULT_POSITION_COORDINATE>`
             Minimum y coordinate (m) of the microstructure sample.
-        min_z : float, default: :obj:`DEFAULT_POSITION_COORDINATE`
+        min_z : float, default: :obj:`DEFAULT_POSITION_COORDINATE <MicrostructureInput.DEFAULT_POSITION_COORDINATE>`
             Minimum z coordinate (m) of the microstructure sample.
-        size_x : float, default: :obj:`DEFAULT_SAMPLE_SIZE`
+        size_x : float, default: :obj:`DEFAULT_SAMPLE_SIZE <MicrostructureInput.DEFAULT_SAMPLE_SIZE>`
             Size (m) of the microstructure sample in the x direction.
             Valid values are between 0.001 and 0.01.
-        size_y : float, default: :obj:`DEFAULT_SAMPLE_SIZE`
+        size_y : float, default: :obj:`DEFAULT_SAMPLE_SIZE <MicrostructureInput.DEFAULT_SAMPLE_SIZE>`
             Size (m) of the microstructure sample in the y direction.
             Valid values are between 0.001 and 0.01.
-        size_z : float, default: :obj:`DEFAULT_SAMPLE_SIZE`
+        size_z : float, default: :obj:`DEFAULT_SAMPLE_SIZE <MicrostructureInput.DEFAULT_SAMPLE_SIZE>`
             Size (m) of the microstructure sample in the z direction.
             Valid values are between 0.001 and 0.01.
-        sensor_dimension : float, default: :obj:`DEFAULT_SENSOR_DIMENSION`
+        sensor_dimension : float, default: :obj:`DEFAULT_SENSOR_DIMENSION <MicrostructureInput.DEFAULT_SENSOR_DIMENSION>`
             Sensor dimension (m) to use for microstructure simulations.
             Valid values are between 0.0001 and 0.001. The values for the
             ``size_x`` and ``size_y`` parameters must be greater than the
             ``sensor_dimension`` parameter by 0.0005. The value for the
             ``size_z`` parameter must be greater than ``sensor_dimension``
             parameter by 0.001.
-        layer_thicknesses : list[float], None
+        layer_thicknesses : list[float], default: None
             Layer thicknesses (m) to use for microstructure simulations.
-            The default is ``None``, in which case
-            ``MachineConstants.DEFAULT_LAYER_THICKNESS`` is used.
-            For more information, see the
-            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
-            class.
-        heater_temperatures : list[float], None
+            If ``None``,
+            :obj:`DEFAULT_LAYER_THICKNESS <MachineConstants.DEFAULT_LAYER_THICKNESS>` is used.
+        heater_temperatures : list[float], default: None
             Heater temperatures (C) to use for microstructure simulations.
-            The default is ``None``, in which case
-            ``MachineConstants.DEFAULT_HEATER_TEMP`` is used.
-            For more information, see the
-            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
-        beam_diameters : list[float], None
-            Beam diameters (m) to use for microstructure simulations. The default is
-            ``None``, in which case ``MachineConstants.DEFAULT_BEAM_DIAMETER`` is used.
-            For more information, see the
-            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
-        start_angles : list[float], None
+            If ``None``,
+            :obj:`DEFAULT_HEATER_TEMP <MachineConstants.DEFAULT_HEATER_TEMP>` is used.
+        beam_diameters : list[float], default: None
+            Beam diameters (m) to use for microstructure simulations. If ``None``,
+            :obj:`DEFAULT_BEAM_DIAMETER <MachineConstants.DEFAULT_BEAM_DIAMETER>` is used.
+        start_angles : list[float], default: None
             Scan angles (deg) for the first layer to use for microstructure simulations.
-            The default is ``None``, in which case ``MachineConstants.DEFAULT_STARTING_LAYER_ANGLE``
-            is used. For more information, see the
-            :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
-        rotation_angles : list[float], None
+            If ``None``,
+            :obj:`DEFAULT_STARTING_LAYER_ANGLE <MachineConstants.DEFAULT_STARTING_LAYER_ANGLE>`
+            is used.
+        rotation_angles : list[float], default: None
             Angles (deg) by which the scan direction is rotated with each layer
             to use for microstructure simulations.
-            If None, ``MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        hatch_spacings : list[float] | None
+            If ``None``, :obj:`DEFAULT_LAYER_ROTATION_ANGLE <MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE>`
+            is used.
+        hatch_spacings : list[float], default: None
             Hatch spacings (m) to use for microstructure simulations.
-            If None, ``MachineConstants.DEFAULT_HATCH_SPACING`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        stripe_widths : list[float] | None
+            If ``None``, :obj:`DEFAULT_HATCH_SPACING <MachineConstants.DEFAULT_HATCH_SPACING>` is used.
+        stripe_widths : list[float], default: None
             Stripe widths (m) to use for microstructure simulations.
-            If None, ``MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH`` is used.
-            See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
-        min_energy_density : float | None
+            If ``None``, :obj:`DEFAULT_SLICING_STRIPE_WIDTH <MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH>`
+            is used.
+        min_energy_density : float, default: None
             The minimum energy density (J/m^3) to use for microstructure simulations.
-            Parameter combinations with an area energy density below this value will
-            not be included.
+            Parameter combinations with an area energy density below this value will not be included.
             Area energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
-        max_energy_density : float | None
+        max_energy_density : float, default: None
             The maximum energy density (J/m^3) to use for microstructure simulations.
-            Parameter combinations with an area energy density above this value will
-            not be included.
+            Parameter combinations with an area energy density above this value will not be included.
             Energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
-        min_build_rate : float | None
+        min_build_rate : float, default: None
             The minimum build rate (m^3/s) to use for microstructure simulations.
-            Parameter combinations with a build rate below this value will
-            not be included.
+            Parameter combinations with a build rate below this value will not be included.
             Build rate is defined as layer thickness * scan speed * hatch spacing.
-        max_build_rate : float | None
+        max_build_rate : float, default: None
             The maximum build rate (m^3/s) to use for microstructure simulations.
-            Parameter combinations with a build rate above this value will
-            not be included.
+            Parameter combinations with a build rate above this value will not be included.
             Build rate is defined as layer thickness * scan speed * hatch spacing.
-        cooling_rate : float | None
+        cooling_rate : float, default: None
             The cooling rate (K/s) to use for microstructure simulations.
-            If None, and ``thermal_gradient``, ``melt_pool_width``, and ``melt_pool_depth``
-            are None, it will be calculated. If None and any of the other three parameters
-            are not None, it will be set to ``MicrostructureInput.DEFAULT_COOLING_RATE``.
-            See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
-        thermal_gradient : float | None
+            If ``None``, and ``thermal_gradient``, ``melt_pool_width``, and ``melt_pool_depth``
+            are ``None``, it will be calculated. If ``None`` and any of the other three parameters
+            are not ``None``, :obj:`DEFAULT_COOLING_RATE <MicrostructureInput.DEFAULT_COOLING_RATE>`
+            will be used.
+        thermal_gradient : float, default: None
             The thermal gradient (K/m) to use for microstructure simulations.
-            If None, and ``cooling_rate``, ``melt_pool_width``, and ``melt_pool_depth``
-            are None, it will be calculated. If None and any of the other three parameters
-            are not None, it will be set to ``MicrostructureInput.DEFAULT_THERMAL_GRADIENT``.
-            See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
-        melt_pool_width : float | None
+            If ``None``, and ``cooling_rate``, ``melt_pool_width``, and ``melt_pool_depth``
+            are ``None``, it will be calculated. If ``None`` and any of the other three parameters
+            are not ``None``, :obj:`DEFAULT_THERMAL_GRADIENT <MicrostructureInput.DEFAULT_THERMAL_GRADIENT>` will be used.
+        melt_pool_width : float, default: None
             The melt pool width (m) to use for microstructure simulations.
-            If None, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_depth``
-            are None, it will be calculated. If None and any of the other three parameters
-            are not None, it will be set to ``MicrostructureInput.DEFAULT_MELT_POOL_WIDTH``.
-            See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
-        melt_pool_depth : float | None
+            If ``None``, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_depth``
+            are ``None``, it will be calculated. If ``None`` and any of the other three parameters
+            are not ``None``, :obj:`DEFAULT_MELT_POOL_WIDTH <MicrostructureInput.DEFAULT_MELT_POOL_WIDTH>`.
+        melt_pool_depth : float, default: None
             The melt pool depth (m) to use for microstructure simulations.
-            If None, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_width``
-            are None, it will be calculated. If None and any of the other three parameters
-            are not None, it will be set to ``MicrostructureInput.DEFAULT_MELT_POOL_DEPTH``.
-            See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
-        random_seed : int | None
-            The random seed to use for microstructure simulations. If None,
+            If ``None``, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_width``
+            are ``None``, it will be calculated. If ``None`` and any of the other three parameters
+            are not ``None``, :obj:`DEFAULT_MELT_POOL_DEPTH <MicrostructureInput.DEFAULT_MELT_POOL_DEPTH>`.
+        random_seed : int, default: None
+            The random seed to use for microstructure simulations. If ``None``,
             an automatically generated random seed will be used.
             Valid values are between 1 and 2^31 - 1.
-        iteration : int, optional
+        iteration : int, default: :obj:`DEFAULT_ITERATION <constants.DEFAULT_ITERATION>`
             The iteration number for this set of simulations.
 
-        priority : int, optional
+        priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             The priority for this set of simulations.
-        """
+        """  # noqa
         lt = (
             layer_thicknesses
             if layer_thicknesses is not None
@@ -1045,8 +1016,11 @@ class ParametricStudy:
 
         Parameters
         ----------
-        summaries : list[SingleBeadSummary, PorositySummary, MicrostructureSummary, SimulationError]
-            List of simulation summaries to use for updating the parametric study.
+        summaries : list[:class:`SingleBeadSummary <ansys.additive.core.SingleBeadSummary>`,
+        :class:`PorositySummary <ansys.additive.core.PorositySummary>`,
+        :class:`MicrostructureSummary <ansys.additive.core.MicrostructureSummary>`,
+        :class:`SimulationError <ansys.additive.core.SimulationError>`]
+             List of simulation summaries to use for updating the parametric study.
         """
         for summary in summaries:
             if isinstance(summary, SingleBeadSummary):
@@ -1134,13 +1108,15 @@ class ParametricStudy:
 
         Parameters
         ----------
-        inputs : list[SingleBeadInput, PorosityInput, MicrostructureInput]
+        inputs : list[:class:`SingleBeadSummary <ansys.additive.core.SingleBeadSummary>`,
+        :class:`PorosityInput <ansys.additive.core.PorosityInput>`,
+        :class:`MicrostructureInput <ansys.additive.core.MicrostructureInput>`]
             List of simulation inputs to add to the parametric study.
 
-        iteration : int, default: :obj:`DEFAULT_ITERATION`
+        iteration : int, default: :obj:`DEFAULT_ITERATION <constants.DEFAULT_ITERATION>`
             Iteration number for the simulation inputs.
 
-        priority : int, default: :obj:`DEFAULT_PRIORITY`
+        priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for the simulations.
         """
         for input in inputs:
@@ -1199,7 +1175,7 @@ class ParametricStudy:
         Parameters
         ----------
         ids : str, list[str]
-            One or more ID field values for the rows to remove.
+            One or more ID values for the simulations to remove.
         """
         if isinstance(ids, str):
             ids = [ids]
@@ -1215,7 +1191,7 @@ class ParametricStudy:
         ids : str, list[str]
             One or more IDs of the simulations to update.
 
-        status : SimulationStatus
+        status : :class:`SimulationStatus <ansys.additive.core.SimulationStatus>`
             Status for the simulations.
         """
         if isinstance(ids, str):
@@ -1242,7 +1218,10 @@ class ParametricStudy:
 
     @save_on_return
     def set_iteration(self, ids: str | list[str], iteration: int):
-        """Set the iteration of simulations in the parametric study.
+        """Set the iteration number of simulations in the parametric study.
+
+        The iteration number is used to track the evolution of a
+        design of experiments. Its use is optional.
 
         Parameters
         ----------
@@ -1262,17 +1241,18 @@ class ParametricStudy:
 
         Parameters
         ----------
-        prefix : str
+        prefix : str, default: None
             Prefix for the ID.
-        id: str
+        id: str, default: None
             ID to use if it is unique. ``id`` is used as the prefix if
             the ID is not unique.
 
         Returns
         -------
         str
-            Unique ID. If ``id`` is unique, it is returned. Otherwise,
-            it is used as a prefix for a unique ID.
+            Unique ID. If the combination of ``prefix`` and ``id`` is unique,
+            it is returned. Otherwise, they are combined and a suffix is added to
+            create a unique ID.
         """
 
         if id is not None and not self._data_frame[ColumnNames.ID].str.match(f"{id}").any():
