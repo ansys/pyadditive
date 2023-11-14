@@ -20,7 +20,7 @@ PyAdditive
    :target: https://pypi.org/project/ansys-additive-core
    :alt: PyPI
 
-.. |codecov| image:: https://codecov.io/gh/pyansys/ansys-additive-core/branch/main/graph/badge.svg
+.. |codecov| image:: https://codecov.io/gh/ansys/pyadditive/branch/main/graph/badge.svg
    :target: https://codecov.io/gh/pyansys/pyadditive
    :alt: Codecov
 
@@ -47,7 +47,7 @@ You can use `pip <https://pypi.org/project/pip/>`_ to install PyAdditive.
 
 .. code:: bash
 
-    pip install ansys-additive-core --index-url=https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
+    pip install ansys-additive-core
 
 To install the latest development version, run these commands:
 
