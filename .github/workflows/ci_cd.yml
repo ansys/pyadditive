@@ -154,7 +154,7 @@ jobs:
           pip install --upgrade build wheel pandoc
           pip install .[doc]
           pip uninstall --yes sphinx-autoapi
-          pip install "sphinx-autoapi @ git+https://github.com/ansys/sphinx-autoapi@feat/single-page-option"
+          pip install "sphinx-autoapi @ git+https://github.com/ansys/sphinx-autoapi@feat/single-page-stable"
 
       # Remove when auto-api is updated
       - name: Build the documentation (HTML)
