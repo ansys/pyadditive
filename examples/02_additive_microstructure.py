@@ -43,23 +43,24 @@ additive = Additive()
 # Select material
 # ---------------
 # Select a material. You can use the
-# :meth:`get_materials_list() <ansys.additive.core.additive.Additive.get_materials_list>`
+# :meth:`materials_list() <ansys.additive.core.additive.Additive.materials_list>`
 # method to obtain a list of available materials.
 
-print(additive.get_materials_list())
+additive.materials_list()
 
 ###############################################################################
 # You can obtain the parameters for a single material by passing a name
 # from the materials list to the
-# :meth:`get_material() <ansys.additive.core.additive.Additive.get_material>`
+# :meth:`material() <ansys.additive.core.additive.Additive.material>`
 # method.
 
-material = additive.get_material("17-4PH")
+material = additive.material("17-4PH")
 
 ###############################################################################
 # Specify machine parameters
 # --------------------------
-# Specify machine parameters by first creating an ``AdditiveMachine`` object
+# Specify machine parameters by first creating an
+# :class:`AdditiveMachine <ansys.additive.core.machine.AdditiveMachine>` object
 # and then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 

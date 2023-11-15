@@ -61,7 +61,7 @@ print(study.file_name)
 # and print a list of available materials prior to selecting one.
 
 additive = Additive()
-print(additive.get_materials_list())
+additive.materials_list()
 material = "IN718"
 
 ###############################################################################

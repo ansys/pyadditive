@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 from enum import IntEnum
-from os.path import exists
+import os
 
 from ansys.api.additive.v0.additive_domain_pb2 import BuildFileMachineType
 
@@ -54,20 +54,20 @@ class BuildFile:
     under a folder.
     """
 
-    def __init__(self, type: MachineType, path: str):
+    def __init__(self, type: MachineType, path: os.PathLike):
         """Initialize a ``BuildFile`` object.
 
         Parameters
         ----------
         type: MachineType
             Type of machine the build file is for.
-        path: str
+        path: os.PathLike
             Path to the build file.
         """
         if not isinstance(type, MachineType):
             raise ValueError("Invalid machine type")
-        if not exists(path):
-            raise ValueError(f"File does not exist, {path}")
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"File does not exist, {path}")
         self._type = type
         self._path = path
 
@@ -107,12 +107,10 @@ class BuildFile:
         return self._path
 
     @path.setter
-    def path(self, value: str):
+    def path(self, value: os.PathLike):
         """Set file path."""
-        if not isinstance(value, str):
-            raise ValueError("Attempted to assign path with invalid value")
-        if not exists(value):
-            raise ValueError(f"File does not exist, {value}")
+        if not os.path.exists(value):
+            raise FileNotFoundError(f"File does not exist, {value}")
         self._path = value
 
 
@@ -127,8 +125,8 @@ class StlFile:
         path: str
             Path to file.
         """
-        if not exists(path):
-            raise ValueError(f"File does not exist, {path}")
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"File does not exist, {path}")
         self._path = path
 
     def __repr__(self):
@@ -151,10 +149,8 @@ class StlFile:
         return self._path
 
     @path.setter
-    def path(self, value: str):
+    def path(self, value: os.PathLike):
         """Set file path."""
-        if not isinstance(value, str):
-            raise ValueError("Attempted to assign path with invalid value")
-        if not exists(value):
-            raise ValueError(f"File does not exist, {value}")
+        if not os.path.exists(value):
+            raise FileNotFoundError(f"File does not exist, {value}")
         self._path = value

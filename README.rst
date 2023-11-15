@@ -20,7 +20,7 @@ PyAdditive
    :target: https://pypi.org/project/ansys-additive-core
    :alt: PyPI
 
-.. |codecov| image:: https://codecov.io/gh/pyansys/ansys-additive-core/branch/main/graph/badge.svg
+.. |codecov| image:: https://codecov.io/gh/ansys/pyadditive/branch/main/graph/badge.svg
    :target: https://codecov.io/gh/pyansys/pyadditive
    :alt: Codecov
 
@@ -36,17 +36,18 @@ PyAdditive
    :target: https://github.com/psf/black
    :alt: Black
 
+Overview
+========
 
 PyAdditive is a Python client library for the `Ansys Additive`_ service.
 
 Installation
 ============
-You can use `pip <https://pypi.org/project/pip/>`_ to install PyAdditive. Until PyAdditive
-is made public, you must use a private PyPI repository. For more information, see `Getting Started`_.
+You can use `pip <https://pypi.org/project/pip/>`_ to install PyAdditive.
 
 .. code:: bash
 
-    pip install ansys-additive-core --index-url=https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
+    pip install ansys-additive-core
 
 To install the latest development version, run these commands:
 
@@ -55,6 +56,8 @@ To install the latest development version, run these commands:
    git clone https://github.com/ansys/pyadditive
    cd pyadditive
    pip install -e .
+
+For more information, see `Getting Started`_.
 
 Basic usage
 ===========
@@ -69,7 +72,7 @@ This code shows how to import PyAdditive and use some basic capabilities:
 
    input = pyadditive.SingleBeadInput(
        machine=pyadditive.AdditiveMachine(),
-       material=additive.get_material("Ti64"),
+       material=additive.material("Ti64"),
        id="bead1",
        bead_length=0.001,  # meters
    )
@@ -80,7 +83,7 @@ For comprehensive usage information, see `Examples`_ in the `PyAdditive Document
 
 Documentation and issues
 ========================
-Documentation for the latest stable release of PyMechanical is hosted at `PyAdditive documentation`_.
+Documentation for the latest stable release of PyAdditive is hosted at `PyAdditive documentation`_.
 
 In the upper right corner of the documentation's title bar, there is an option for switching from
 viewing the documentation for the latest stable release to viewing the documentation for the

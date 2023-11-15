@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-additive-core"
-version = "0.16.dev2"
+version = "0.17.dev0"
 description = "A python client for the Ansys Additive service"
 readme = "README.rst"
 requires-python = ">=3.9,<4"
@@ -22,8 +22,6 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    # TODO: Remove this once we have a public release
-    "Private :: Do Not Upload",
 ]
 
 dependencies = [
@@ -49,39 +47,38 @@ dependencies = [
 tests = [
     "ansys-platform-instancemanagement==1.1.2",
     "dill==0.3.7",
-    "google-api-python-client==2.104.0",
+    "google-api-python-client==2.107.0",
     "googleapis-common-protos==1.61.0",
     "grpcio==1.59.0",
     "grpcio-health-checking==1.48.2",
-    "numpy==1.26.1",
-    "pandas==2.1.1",
-    "panel==1.2.3",
-    "platformdirs==3.11.0",
-    "plotly==5.17.0",
+    "numpy==1.26.2",
+    "pandas==2.1.3",
+    "panel==1.3.1",
+    "platformdirs==4.0.0",
+    "plotly==5.18.0",
     "protobuf==3.20.3",
     "six==1.16.0",
     "tqdm==4.66.1",
     # Test specific dependencies
-    "pytest==7.4.2",
+    "pytest==7.4.3",
     "pytest-cov==4.0.0",
-    "callee==0.3.1",
 ]
 
 doc = [
-    "ansys-sphinx-theme==0.12.3",
+    "ansys-sphinx-theme==0.12.4",
     "enum-tools==0.11.0",
     "jupyter_sphinx==0.4.0",
-    "matplotlib==3.8.0",
+    "matplotlib==3.8.1",
     "numpydoc==1.6.0",
-    "panel==1.2.3",
+    "panel==1.3.1",
     "phantomjs==1.4.1",
     "pypandoc==1.12",
     "pyvista==0.42.3",
-    "selenium==4.14.0",
+    "selenium==4.15.2",
     "sphinx==7.2.6",
     "sphinx-autoapi==3.0.0",
-    # "sphinx-autoapi @ git+https://github.com/ansys/sphinx-autoapi@feat/single-page-option",
-    "sphinx-autodoc-typehints==1.24.0",
+    # "sphinx-autoapi @ git+https://github.com/ansys/sphinx-autoapi@feat/single-page-stable",
+    "sphinx-autodoc-typehints==1.24.1",
     "sphinx-copybutton==0.5.2",
     "sphinx-design==0.5.0",
     "sphinx-gallery==0.14.0",
@@ -122,7 +119,7 @@ show_missing = true
 
 [tool.pytest.ini_options]
 minversion = "7.1"
-addopts = "-ra --cov=ansys.additive.core --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --cov-fail-under 90"
+addopts = "-ra --cov=ansys.additive.core --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --cov-fail-under 96"
 testpaths = ["tests"]
 filterwarnings = ["ignore:::.*protoc_gen_swagger*"]
 

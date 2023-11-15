@@ -45,7 +45,7 @@ def show_table(ps: ParametricStudy, page_size: int = 10):
 
     Parameters
     ----------
-    ps : :class:`ParametricStudy <from ansys.additive.core.parametric_study.ParametricStudy>`
+    ps : :class:`ParametricStudy <ansys.additive.core.parametric_study.ParametricStudy>`
         Parametric study to display.
     page_size : int, 10
         Number of table rows to display per page.

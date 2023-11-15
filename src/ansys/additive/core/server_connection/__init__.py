@@ -19,14 +19,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Server connection definition and utilities."""
 
-from ansys.additive.core.misc import short_uuid
-
-
-def test_short_uuid_returns_string_of_expected_length():
-    # arrange, act
-    result = short_uuid()
-
-    # assert
-    assert isinstance(result, str)
-    assert len(result) == 8
+from ansys.additive.core.server_connection.server_connection import ServerConnection

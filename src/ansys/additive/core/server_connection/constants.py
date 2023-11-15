@@ -19,14 +19,12 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Constants used for server connections."""
 
-from ansys.additive.core.misc import short_uuid
+from pathlib import Path
 
-
-def test_short_uuid_returns_string_of_expected_length():
-    # arrange, act
-    result = short_uuid()
-
-    # assert
-    assert isinstance(result, str)
-    assert len(result) == 8
+LOCALHOST = "127.0.0.1"
+PIM_PRODUCT_NAME = "additive"
+DEFAULT_ANSYS_VERSION = "241"
+ADDITIVE_SERVER_EXE_NAME = "additiveserver"
+ADDITIVE_SERVER_SUBDIR = Path("Additive") / "additiveserver"

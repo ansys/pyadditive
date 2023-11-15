@@ -44,7 +44,7 @@ def porosity_contour_plot(ps: ParametricStudy):
 
     Parameters
     ----------
-    ps : :class:`ParametricStudy <from ansys.additive.core.parametric_study.ParametricStudy>`
+    ps : :class:`ParametricStudy <ansys.additive.core.parametric_study.ParametricStudy>`
         Parametric study to plot.
 
     Returns
