@@ -46,11 +46,11 @@ additive = Additive()
 # Specify tuning inputs
 # ---------------------
 # The :class:`MaterialTuningInput` object contains the paths to the files needed to
-# tune a material. The ``experiment_data_file`` is a CSV file containing the
-# results of single bead experiments. The ``material_parameters_file`` is a JSON
+# tune a material. The ``experiment_data_file`` file is a CSV file containing the
+# results of single bead experiments. The ``material_parameters_file`` file is a JSON
 # file containing the material parameters. The ``thermal_properties_lookup_file``
-# is a CSV file containing the temperature-dependent properties of the material.
-# The ``characteristic_width_lookup_file`` is an optional CSV file containing
+# file is a CSV file containing the temperature-dependent properties of the material.
+# The ``characteristic_width_lookup_file`` file is an optional CSV file containing
 # the melt pool characteristic width at various laser powers and scan speeds.
 # If the characteristic width lookup file is not specified, it is generated
 # during the tuning process.

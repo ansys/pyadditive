@@ -56,7 +56,7 @@ material = additive.material("17-4PH")
 # Specify machine parameters
 # --------------------------
 # Specify machine parameters by first creating an :class:`AdditiveMachine` object
-# then assigning the desired values. All values are in SI units (m, kg, s, K)
+# and then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
 machine = AdditiveMachine()
@@ -114,7 +114,7 @@ input_without_thermal = MicrostructureInput(
 # --------------
 # Use the :meth:`~Additive.simulate` method of the ``additive`` object to run the simulation.
 # The returned object is either a :class:`MicrostructureSummary` object or a
-# :class:`SimulationError`.
+# :class:`SimulationError` object.
 
 summary = additive.simulate(input_with_thermal)
 if isinstance(summary, SimulationError):
@@ -123,10 +123,11 @@ if isinstance(summary, SimulationError):
 ###############################################################################
 # Plot results
 # ------------
-# The :class:`MicrostructureSummary` includes three VTK files, one for each of the
+# The ``summary``` object includes three VTK files, one for each of the
 # XY, XZ, and YZ planes. Each VTK file contains data sets for grain orientation,
-# boundaries, and number. In addition, :class:`MicrostructureSummary`
+# boundaries, and number. In addition, the ``summary`` object
 # includes circle equivalence data and average grain size for each plane.
+# See :class:`MicrostructureSummary` for details.
 
 from matplotlib import colors
 from matplotlib.colors import LinearSegmentedColormap as colorMap

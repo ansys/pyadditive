@@ -71,7 +71,7 @@ material = additive.material("17-4PH")
 # Specify machine parameters
 # --------------------------
 # Specify machine parameters by first creating an :class:`AdditiveMachine` object
-# then assigning the desired values. All values are in SI units (m, kg, s, K)
+# and then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
 machine = AdditiveMachine()
@@ -101,7 +101,7 @@ input = SingleBeadInput(
 # --------------
 # Use the :meth:`~Additive.simulate` method of the ``additive`` object to run the simulation.
 # The returned object is either a :class:`SingleBeadSummary` object containing the input
-# and a :class:`MeltPool` or a :class:`SimulationError`.
+# and a :class:`MeltPool` or a :class:`SimulationError` object.
 
 summary = additive.simulate(input)
 if isinstance(summary, SimulationError):
@@ -110,10 +110,10 @@ if isinstance(summary, SimulationError):
 ###############################################################################
 # Plot melt pool statistics
 # -------------------------
-# Obtain a :class:`Pandas DataFrame <pandas.DataFrame>` containing the melt pool
+# Obtain a :class:`Pandas DataFrame <pandas.DataFrame>` instance containing the melt pool
 # statistics by using the :meth:`~MeltPool.data_frame` method of the ``melt_pool``
 # attribute of the ``summary`` object. The column names for the :class:`~pandas.DataFrame`
-# are described in the documentation for :meth:`~MeltPool.data_frame`. Use the
+# instance are described in the documentation for :meth:`~MeltPool.data_frame`. Use the
 # :meth:`~pandas.DataFrame.plot` method to plot the melt pool dimensions as a function
 # of bead length.
 
@@ -139,7 +139,7 @@ plt.show()
 # -------------------------
 # You can show a table of the melt pool statistics by typing the name of the
 # data frame object and pressing enter. For brevity, the following code
-# uses ``head()`` so that only the first few rows are shown.
+# uses the :meth:`~pandas.DataFrame.head` method so that only the first few rows are shown.
 # Note, if running this example as a Python script, no output is shown.
 
 df.head()

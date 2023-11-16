@@ -51,10 +51,10 @@ additive = Additive()
 ###############################################################################
 # Specify model
 # -------------
-# Specify the geometry model. Currently, PyAdditive supports two types of geometry
-# specifications, :class:`StlFile` and :class:`BuildFile`.
+# Specify the geometry model. PyAdditive supports two types of geometry
+# specifications, the :class:`StlFile` class and the :class:`BuildFile` class.
 #
-# You can download example build and STL files by importing the
+# You can download the example build and STL files by importing the
 # :obj:`~ansys.additive.core.examples` module.
 
 import ansys.additive.core.examples as examples
@@ -85,7 +85,7 @@ material = additive.material("17-4PH")
 # Specify machine parameters
 # --------------------------
 # Specify machine parameters by first creating an :class:`AdditiveMachine` object
-# then assigning the desired values. All values are in SI units (m, kg, s, K)
+# and then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
 machine = AdditiveMachine()
@@ -107,7 +107,7 @@ machine.laser_power = 500  # W
 # Thermal history is simulated for the given geometry over a range of heights
 # in the Z dimension. More than one range can be specified. Each range is specified
 # with a :class:`Range` object. The ranges are assigned to a :class:`CoaxialAverageSensorInputs`
-# object which also includes a sensor radius. The :class:`CoaxialAverageSensorInputs` object
+# object, which also includes a sensor radius. The :class:`CoaxialAverageSensorInputs` object
 # is assigned to a :class:`ThermalHistoryInput` object.
 
 # Values are in meters
@@ -129,7 +129,7 @@ input = ThermalHistoryInput(
 # --------------
 # Use the :meth:`~Additive.simulate` method of the ``additive`` object to run the simulation.
 # The returned object is either a :class:`ThermalHistorySummary` object or a
-# :class:`SimulationError`.
+# :class:`SimulationError` object.
 
 summary = additive.simulate(input)
 if isinstance(summary, SimulationError):

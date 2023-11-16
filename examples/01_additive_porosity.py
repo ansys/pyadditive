@@ -55,7 +55,7 @@ material = additive.material("316L")
 # Specify machine parameters
 # --------------------------
 # Specify machine parameters by first creating an :class:`AdditiveMachine` object
-# then assigning the desired values. All values are in SI units (m, kg, s, K)
+# and then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
 machine = AdditiveMachine()
@@ -91,7 +91,7 @@ input = PorosityInput(
 # Use the :meth:`~Additive.simulate` method of the ``additive`` object to run the simulation.
 # The returned object is either a :class:`PorositySummary` object
 # containing the input and the relative density of the simulated sample or a
-# :class:`SimulationError`.
+# :class:`SimulationError` object.
 
 summary = additive.simulate(input)
 if isinstance(summary, SimulationError):

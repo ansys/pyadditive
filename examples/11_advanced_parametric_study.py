@@ -26,15 +26,15 @@ Parametric study
 This example shows how you can use PyAdditive to perform a parametric study.
 The intended audience is a user who desires to optimize additive machine parameters
 to achieve a specific result. Here, the :class:`ParametricStudy` class is used to
-conduct a parametric study. This is not required but :class:`ParametricStudy`
-provides data management and visualization features which ease the task.
+conduct a parametric study. While this is not required, the :class:`ParametricStudy`
+class provides data management and visualization features that ease the task.
 
 Units are SI (m, kg, s, K) unless otherwise noted.
 """
 ###############################################################################
 # Perform required imports and create a study
 # -------------------------------------------
-# Perform the required import and create a :class:`ParametricStudy`.
+# Perform the required import and create a :class:`ParametricStudy` instance.
 from ansys.additive.core import Additive, SimulationStatus, SimulationType
 from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
 import ansys.additive.core.parametric_study.display as display
@@ -68,10 +68,10 @@ material = "IN718"
 # determine melt pool statistics. Here, the
 # :meth:`~ParametricStudy.generate_single_bead_permutations` method is used to
 # generate single bead simulation permutations. The parameters
-# for :meth:`~ParametricStudy.generate_single_bead_permutations` allow you to
+# for the :meth:`~ParametricStudy.generate_single_bead_permutations` method allow you to
 # specify a range of machine parameters and filter them by energy density. Not all
 # the parameters shown are required. Optional parameters that are not specified
-# will use default values defined in the :class:`MachineConstants` class.
+# use default values defined in the :class:`MachineConstants` class.
 import numpy as np
 
 # Specify a range of laser powers. Valid values are 50 to 700 W.
@@ -114,11 +114,11 @@ display.show_table(study)
 ###############################################################################
 # Skip some simulations
 # ---------------------
-# If you a working with a large parametric study, you may want to skip some
+# If you are working with a large parametric study, you may want to skip some
 # simulations to reduce processing time. To do so, set the simulation status
 # to :obj:`SimulationStatus.SKIP` which is defined in the :class:`SimulationStatus`
-# class. Here, a :class:`~pandas.DataFrame` is obtained, a filter is
-# applied to get a list of simulation IDs, then the status is updated on the
+# class. Here, a :class:`~pandas.DataFrame` object is obtained, a filter is
+# applied to get a list of simulation IDs, and then the status is updated on the
 # simulations with those IDs.
 
 df = study.data_frame()
@@ -133,8 +133,8 @@ display.show_table(study)
 ###############################################################################
 # Run single bead simulations
 # ---------------------------
-# Run the simulations using :meth:`~ParametricStudy.run_simulations`. All simulations
-# with status :obj:`SimulationStatus.PENDING` will be executed.
+# Run the simulations using the :meth:`~ParametricStudy.run_simulations` method. All simulations
+# with a :obj:`SimulationStatus.PENDING` status are executed.
 
 study.run_simulations(additive)
 
@@ -142,16 +142,15 @@ study.run_simulations(additive)
 # Save the study to a CSV file
 # ----------------------------
 # The parametric study is saved with each update in a binary format.
-# For other formats, use the ``to_*`` methods provided by
-# :class:`~pandas.DataFrame`.
+# For other formats, use the ``to_*`` methods provided by the :class:`~pandas.DataFrame` class.
 
 study.data_frame().to_csv("demo-study.csv")
 
 ###############################################################################
 # Load a previously saved study
 # -----------------------------
-# Load a previously saved study using the static method
-# :meth:`ParameticStudy.load() <ParametricStudy.load>`.
+# Load a previously saved study using the static
+# :meth:`ParameticStudy.load() <ParametricStudy.load>` method.
 
 study2 = ParametricStudy.load("demo-study.ps")
 display.show_table(study2)
@@ -159,8 +158,8 @@ display.show_table(study2)
 ###############################################################################
 # Plot single bead results
 # ------------------------
-# Plot the single bead results using
-# :func:`~ansys.additive.core.parametric_study.display.single_bead_eval_plot`.
+# Plot the single bead results using the
+# :func:`~ansys.additive.core.parametric_study.display.single_bead_eval_plot` method.
 
 display.single_bead_eval_plot(study)
 
@@ -174,8 +173,8 @@ display.single_bead_eval_plot(study)
 # single bead results where the ratio of the melt pool reference depth
 # to reference width is within a specified range. Additionally, the simulations
 # are restricted to a minimum build rate, which is calculated as
-# scan speed * layer thickness * hatch spacing. The method
-# :meth:`~ParametricStudy.generate_porosity_permutations` is used to add
+# scan speed * layer thickness * hatch spacing. The
+# :meth:`~ParametricStudy.generate_porosity_permutations` method is used to add
 # porosity simulations to the study.
 
 df = study.data_frame()
@@ -204,15 +203,15 @@ study.generate_porosity_permutations(
 ################################################################################
 # Run porosity simulations
 # ------------------------
-# Run the simulations using :meth:`~ParametricStudy.run_simulations`.
+# Run the simulations using the :meth:`~ParametricStudy.run_simulations` method.
 
 study.run_simulations(additive)
 
 ###############################################################################
 # Plot porosity results
 # ---------------------
-# Plot the porosity simulation results using
-# :func:`~ansys.additive.core.parametric_study.display.porosity_contour_plot`
+# Plot the porosity simulation results using the
+# :func:`~ansys.additive.core.parametric_study.display.porosity_contour_plot` method.
 
 display.porosity_contour_plot(study)
 

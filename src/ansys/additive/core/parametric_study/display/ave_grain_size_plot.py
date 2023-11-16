@@ -44,7 +44,7 @@ max_ags = None
 
 
 def ave_grain_size_plot(ps: ParametricStudy):
-    """Plots average grain size for laser power versus scan speed.
+    """Plot average grain size for laser power versus scan speed.
 
     Parameters
     ----------
