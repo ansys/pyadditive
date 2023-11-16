@@ -56,7 +56,7 @@ def single_bead_eval_plot(ps: ParametricStudy):
     -------
     :class: `panel.Row <panel.Row>`
         Interactive plot.
-    """  # noqa
+    """
     df = __data_frame(ps)
     (
         ht_select,
