@@ -221,9 +221,9 @@ display.porosity_contour_plot(study)
 # Here a set of microstructure simulations is generated using many of the same
 # parameters used for the porosity simulations. The parameters ``cooling_rate``,
 # ``thermal_gradient``, ``melt_pool_width``, and ``melt_pool_depth`` are not
-# specified so they will be calculated. The method
-# :meth:`~ParametricStudy.generate_microstructure_permutations` is used to add
-# microsturture simulations to the study.
+# specified so they are calculated. The
+# :meth:`~ParametricStudy.generate_microstructure_permutations` method is used to add
+# microstructure simulations to the study.
 
 df = study.data_frame()
 df = df[(df[ColumnNames.TYPE] == SimulationType.POROSITY)]
@@ -256,6 +256,7 @@ study.run_simulations(additive)
 # Plot microstructure results
 # ---------------------------
 # Plot and compare the average grain sizes from the microstructure simulations
-# using :func:`~ansys.additive.core.parametric_study.display.ave_grain_size_plot`.
+# using the :func:`~ansys.additive.core.parametric_study.display.ave_grain_size_plot`
+# method.
 
 display.ave_grain_size_plot(study)
