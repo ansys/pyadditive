@@ -148,16 +148,16 @@ class SingleBeadInput:
 class MeltPoolColumnNames:
     """Provides column names for the melt pool data frame."""
 
-    #: Width of melt pool (m).
     WIDTH = "width"
-    #: Depth of melt pool (m).
+    """Width of melt pool (m)."""
     DEPTH = "depth"
-    #: Length of melt pool (m).
+    """Depth of melt pool (m)."""
     LENGTH = "length"
-    #: Width of melt pool at the surface of the base plate (m).
+    """Length of melt pool (m)."""
     REFERENCE_WIDTH = "reference_width"
-    #: Depth of melt pool measured from the surface of the base plate (m).
+    """Width of melt pool at the surface of the base plate (m)."""
     REFERENCE_DEPTH = "reference_depth"
+    """Depth of melt pool measured from the surface of the base plate (m)."""
 
 
 class MeltPool:
