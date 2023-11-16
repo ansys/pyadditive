@@ -49,15 +49,13 @@ from ansys.additive.core import (
 additive = Additive()
 
 ###############################################################################
-# Select model
-# ------------
-# Select the geometry model. Currently, PyAdditive supports
-# two types of geometry specifications,
-# :class:`STLFile <ansys.additive.core.geometry_file.StlFile>` and
-# :class:`BuildFile <ansys.additive.core.geometry_file.BuildFile>`.
+# Specify model
+# -------------
+# Specify the geometry model. PyAdditive supports two types of geometry
+# specifications, the :class:`StlFile` class and the :class:`BuildFile` class.
 #
-# You can download example build and STL files by importing the ``examples``
-# module.
+# You can download the example build and STL files by importing the
+# :obj:`~ansys.additive.core.examples` module.
 
 import ansys.additive.core.examples as examples
 
@@ -72,27 +70,23 @@ build_file = BuildFile(MachineType.SLM, build_file_name)
 ###############################################################################
 # Select material
 # ---------------
-# Select a material. You can use the
-# :meth:`materials_list() <ansys.additive.additive.Additive.materials_list>`
-# method to obtain a list of available materials.
+# Select a material. You can use the :meth:`~Additive.materials_list` method to
+# obtain a list of available materials.
 
 additive.materials_list()
 
 ###############################################################################
 # You can obtain the parameters for a single material by passing a name
-# from the materials list to the
-# :meth:`material() <ansys.additive.additive.Additive.material>`
-# method.
+# from the materials list to the :meth:`~Additive.material` method.
 
 material = additive.material("17-4PH")
 
 ###############################################################################
 # Specify machine parameters
 # --------------------------
-# Specify machine parameters by first creating an
-# :class:`AdditiveMachine <ansys.additive.core.machine.AdditiveMachine>`
-# object then assigning the desired values.
-# All values are in SI units (m, kg, s, K) unless otherwise noted.
+# Specify machine parameters by first creating an :class:`AdditiveMachine` object
+# and then assigning the desired values. All values are in SI units (m, kg, s, K)
+# unless otherwise noted.
 
 machine = AdditiveMachine()
 
@@ -112,13 +106,9 @@ machine.laser_power = 500  # W
 # ---------------------------------------------
 # Thermal history is simulated for the given geometry over a range of heights
 # in the Z dimension. More than one range can be specified. Each range is specified
-# with a :class:`Range <ansys.additive.core.thermal_history.Range>` object.
-# The ranges are assigned to a
-# :class:`CoaxialAverageSensorInputs <ansys.additive.core.thermal_history.CoaxialAverageSensorInputs>`
-# object which also includes a sensor radius. The ``CoaxialAverageSensorInputs`` object
-# is assigned to a
-# :class:`ThermalHistoryInput <ansys.additive.core.thermal_history.ThermalHistoryInput>`
-# object.
+# with a :class:`Range` object. The ranges are assigned to a :class:`CoaxialAverageSensorInputs`
+# object, which also includes a sensor radius. The :class:`CoaxialAverageSensorInputs` object
+# is assigned to a :class:`ThermalHistoryInput` object.
 
 # Values are in meters
 sensor_inputs = CoaxialAverageSensorInputs(
@@ -137,12 +127,9 @@ input = ThermalHistoryInput(
 ###############################################################################
 # Run simulation
 # --------------
-# Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>`
-# method of the ``additive`` object to run the simulation. The returned object is a
-# either a
-# :class:`ThermalHistorySummary <ansys.additive.core.thermal_history.ThemalHistorySummary>`
-# object or a
-# :class:`SimulationError <ansys.additive.core.simulation.SimulationError>`.
+# Use the :meth:`~Additive.simulate` method of the ``additive`` object to run the simulation.
+# The returned object is either a :class:`ThermalHistorySummary` object or a
+# :class:`SimulationError` object.
 
 summary = additive.simulate(input)
 if isinstance(summary, SimulationError):

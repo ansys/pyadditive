@@ -45,14 +45,12 @@ additive = Additive()
 ###############################################################################
 # Specify tuning inputs
 # ---------------------
-# The
-# :class:`MaterialTuningInput <ansys.additive.core.material_tuning.MaterialTuningInput>`
-# object contains the paths to the files needed to
-# tune a material. The ``experiment_data_file`` is a CSV file containing the
-# results of single bead experiments. The ``material_parameters_file`` is a JSON
+# The :class:`MaterialTuningInput` object contains the paths to the files needed to
+# tune a material. The ``experiment_data_file`` file is a CSV file containing the
+# results of single bead experiments. The ``material_parameters_file`` file is a JSON
 # file containing the material parameters. The ``thermal_properties_lookup_file``
-# is a CSV file containing the temperature-dependent properties of the material.
-# The ``characteristic_width_lookup_file`` is an optional CSV file containing
+# file is a CSV file containing the temperature-dependent properties of the material.
+# The ``characteristic_width_lookup_file`` file is an optional CSV file containing
 # the melt pool characteristic width at various laser powers and scan speeds.
 # If the characteristic width lookup file is not specified, it is generated
 # during the tuning process.
@@ -81,16 +79,14 @@ input = MaterialTuningInput(
 ###############################################################################
 # Perform material tuning
 # ------------------------
-# Use the :meth:`tune_material() <ansys.additive.core.additive.Additive.tune_material>`
-# method to perform material tuning.
+# Use the :meth:`~Additive.tune_material` method to perform material tuning.
 
 summary = additive.tune_material(input)
 
 ###############################################################################
 # Review results
 # --------------
-# The :class:`MaterialTuningSummary <ansys.additive.core.material_tuning.MaterialTuningSummary>`
-# object contains the results of the material
+# The :class:`MaterialTuningSummary` object contains the results of the material
 # tuning process. These results are used in follow-on steps to calculate the
 # material parameters needed by PyAdditive. For more information, see the
 # Additive documentation referred to earlier.

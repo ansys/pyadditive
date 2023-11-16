@@ -55,8 +55,8 @@ material_files = examples.download_custom_material()
 ###############################################################################
 # Load custom material files
 # --------------------------
-# Use the :meth:`load_material() <ansys.additive.core.additive.Additive.load_material>`
-# method on the ``additive`` object to load the files defining a custom material.
+# Use the :meth:`~Additive.load_material` method on the ``additive`` object to
+# load the files defining a custom material.
 
 custom_material = additive.load_material(
     parameters_file=material_files.material_parameters_file,

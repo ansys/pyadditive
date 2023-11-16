@@ -45,8 +45,7 @@ pn.extension("plotly")
 
 
 def single_bead_eval_plot(ps: ParametricStudy):
-    """Generate a contour plot of single bead results to determine parametric
-    regions with desirable melt pool statistics.
+    """Generate a heatmap to identify optimal melt pool statistics.
 
     Parameters
     ----------

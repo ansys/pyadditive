@@ -40,27 +40,23 @@ additive = Additive()
 ###############################################################################
 # Select material
 # ---------------
-# Select a material. You can use the
-# :meth:`materials_list() <ansys.additive.core.additive.Additive.materials_list>`
-# method to obtain a list of available materials.
+# Select a material. You can use the :meth:`~Additive.materials_list` method to
+# obtain a list of available materials.
 
 additive.materials_list()
 
 ###############################################################################
 # You can obtain the parameters for a single material by passing a name
-# from the materials list to the
-# :meth:`material() <ansys.additive.core.additive.Additive.material>`
-# method.
+# from the materials list to the :meth:`~Additive.material` method.
 
 material = additive.material("316L")
 
 ###############################################################################
 # Specify machine parameters
 # --------------------------
-# Specify machine parameters by first creating an
-# :class:`AdditiveMachine <ansys.additive.core.machine.AdditiveMachine>` object
-# and then assigning the desired values. All values are in SI units
-# (m, kg, s, K) unless otherwise noted.
+# Specify machine parameters by first creating an :class:`AdditiveMachine` object
+# and then assigning the desired values. All values are in SI units (m, kg, s, K)
+# unless otherwise noted.
 
 machine = AdditiveMachine()
 
@@ -78,8 +74,7 @@ machine.laser_power = 250  # W
 ###############################################################################
 # Specify inputs for porosity simulation
 # --------------------------------------
-# Create a :class:`PorosityInput <ansys.additive.core.porosity.PorosityInput>` object
-# containing the desired simulation parameters.
+# Create a :class:`PorosityInput` object containing the desired simulation parameters.
 
 input = PorosityInput(
     machine=machine,
@@ -93,11 +88,10 @@ input = PorosityInput(
 ###############################################################################
 # Run simulation
 # --------------
-# Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>` method
-# on the ``additive`` object to run the simulation. The returned object is a
-# :class:`PorositySummary <ansys.additive.core.porosity.PorositySummary>` object
+# Use the :meth:`~Additive.simulate` method of the ``additive`` object to run the simulation.
+# The returned object is either a :class:`PorositySummary` object
 # containing the input and the relative density of the simulated sample or a
-# :class:`SimulationError <ansys.additive.core.simulation.SimulationError>`.
+# :class:`SimulationError` object.
 
 summary = additive.simulate(input)
 if isinstance(summary, SimulationError):

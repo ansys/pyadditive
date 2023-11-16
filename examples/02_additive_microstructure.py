@@ -41,25 +41,21 @@ additive = Additive()
 ###############################################################################
 # Select material
 # ---------------
-# Select a material. You can use the
-# :meth:`materials_list() <ansys.additive.core.additive.Additive.materials_list>`
-# method to obtain a list of available materials.
+# Select a material. You can use the :meth:`~Additive.materials_list` method to
+# obtain a list of available materials.
 
 additive.materials_list()
 
 ###############################################################################
 # You can obtain the parameters for a single material by passing a name
-# from the materials list to the
-# :meth:`material() <ansys.additive.core.additive.Additive.material>`
-# method.
+# from the materials list to the :meth:`~Additive.material` method.
 
 material = additive.material("17-4PH")
 
 ###############################################################################
 # Specify machine parameters
 # --------------------------
-# Specify machine parameters by first creating an
-# :class:`AdditiveMachine <ansys.additive.core.machine.AdditiveMachine>` object
+# Specify machine parameters by first creating an :class:`AdditiveMachine` object
 # and then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
@@ -116,10 +112,9 @@ input_without_thermal = MicrostructureInput(
 ###############################################################################
 # Run simulation
 # --------------
-# Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>` method of the
-# ``additive`` object to run the simulation. The returned object is either a
-# :class:`MicrostructureSummary <ansys.additive.core.microstructure.MicrostructureSummary>`
-# object or a :class:`SimulationError <ansys.additive.core.simulation.SimulationError>`.
+# Use the :meth:`~Additive.simulate` method of the ``additive`` object to run the simulation.
+# The returned object is either a :class:`MicrostructureSummary` object or a
+# :class:`SimulationError` object.
 
 summary = additive.simulate(input_with_thermal)
 if isinstance(summary, SimulationError):
@@ -128,11 +123,11 @@ if isinstance(summary, SimulationError):
 ###############################################################################
 # Plot results
 # ------------
-# The :class:`MicrostructureSummary <ansys.additive.core.microstructure.MicrostructureSummary>`
-# includes three VTK files, one for each of the XY, XZ, and YZ planes. Each VTK file
-# contains data sets for grain orientation, boundaries, and number. In addition,
-# :class:`MicrostructureSummary <ansys.additive.core.microstructure.MicrostructureSummary>`
+# The ``summary``` object includes three VTK files, one for each of the
+# XY, XZ, and YZ planes. Each VTK file contains data sets for grain orientation,
+# boundaries, and number. In addition, the ``summary`` object
 # includes circle equivalence data and average grain size for each plane.
+# See :class:`MicrostructureSummary` for details.
 
 from matplotlib import colors
 from matplotlib.colors import LinearSegmentedColormap as colorMap
@@ -144,7 +139,7 @@ import pyvista as pv
 from ansys.additive.core import CircleEquivalenceColumnNames
 
 ###############################################################################
-# Plot grain 2D visualizations
+# Plot 2D grain visualizations
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # Plot the planar data, read VTK data in data set objects, and create a color
 # map to use with the boundary map.
@@ -191,7 +186,7 @@ plot_microstructure(xy, xz, yz, "Orientation_(deg)", "spectral").show(title="Ori
 plot_microstructure(xy, xz, yz, "GrainNumber", None).show(title="Grain Number")
 
 ###############################################################################
-# Plot Grain Statistics
+# Plot grain statistics
 # ^^^^^^^^^^^^^^^^^^^^^
 # Add grain statistic plots to a figure, create a figure for grain statistics,
 # and then plot the figure.

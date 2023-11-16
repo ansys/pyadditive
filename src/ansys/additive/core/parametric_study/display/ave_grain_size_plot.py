@@ -44,7 +44,7 @@ max_ags = None
 
 
 def ave_grain_size_plot(ps: ParametricStudy):
-    """Generates a contour plot of build rate and relative density.
+    """Plot average grain size for laser power versus scan speed.
 
     Parameters
     ----------

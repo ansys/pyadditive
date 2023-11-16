@@ -24,7 +24,8 @@ repos:
     rev: v1.7.5
     hooks:
       - id: docformatter
-        additional_dependencies: [tomli==2.0.1]
+        additional_dependencies: [tomli]
+        args: ["--wrap-summaries", "0"]
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.5
