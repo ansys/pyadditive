@@ -3,8 +3,6 @@
    Provide any documentation specific to your online documentation
    here.
 
-.. vale off
-
 PyAdditive documentation  |version|
 ===================================
 
@@ -24,5 +22,3 @@ PyAdditive documentation  |version|
        {% if build_examples %}
        examples/gallery_examples/index
        {% endif %}
-
-.. vale on

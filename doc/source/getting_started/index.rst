@@ -17,6 +17,8 @@ Starting a session
 
 There are multiple ways to start a session with the PyAdditive client.
 
+.. _ref_starting_a_local_session:
+
 Starting a local session
 ------------------------
 
@@ -236,7 +238,7 @@ System testing on localhost
 ---------------------------
 
 System testing can be done on localhost using the startup method
-described in :ref:`Starting a local session` within a Python script
+described in :ref:`ref_starting_a_local_session` within a Python script
 or Jupyter notebook. The ``examples`` folder of the PyAdditive
 repository contains script files that can be used for testing or
 converted to Jupyter notebooks using

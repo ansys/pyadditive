@@ -229,6 +229,7 @@ else:
 
 BUILD_EXAMPLES = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
 BUILD_EXAMPLES_LONG = True if os.environ.get("BUILD_EXAMPLES_LONG", "true") == "true" else False
+PLOT_GALLERY = True if os.environ.get("PLOT_GALLERY", "true") == "true" else False
 if BUILD_EXAMPLES is True:
     # Necessary to build examples using PyVista
     pyvista.BUILDING_GALLERY = True
@@ -267,7 +268,7 @@ if BUILD_EXAMPLES is True:
         "ignore_pattern": r"\b(" + "|".join(ignore_patterns) + r")\b",
         "thumbnail_size": (350, 350),
         # Set plot_gallery to False for building docs without running examples.
-        # "plot_gallery": False,
+        "plot_gallery": PLOT_GALLERY,
     }
     print(f"sphinx_gallery_conf {sphinx_gallery_conf}")
 

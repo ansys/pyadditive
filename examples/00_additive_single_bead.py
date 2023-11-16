@@ -56,25 +56,21 @@ additive.about()
 ###############################################################################
 # Select material
 # ---------------
-# Select a material. You can use the
-# :meth:`materials_list() <ansys.additive.core.additive.Additive.materials_list>`
-# method to obtain a list of available materials.
+# Select a material. You can use the :meth:`~Additive.materials_list` method to
+# obtain a list of available materials.
 
 additive.materials_list()
 
 ###############################################################################
 # You can obtain the parameters for a single material by passing a name
-# from the materials list to the
-# :meth:`material() <ansys.additive.core.additive.Additive.material>`
-# method.
+# from the materials list to the :meth:`~Additive.material` method.
 
 material = additive.material("17-4PH")
 
 ###############################################################################
 # Specify machine parameters
 # --------------------------
-# Specify machine parameters by first creating an
-# :class:`AdditiveMachine <ansys.additive.core.machine.AdditiveMachine>` object
+# Specify machine parameters by first creating an :class:`AdditiveMachine` object
 # then assigning the desired values. All values are in SI units (m, kg, s, K)
 # unless otherwise noted.
 
@@ -94,8 +90,7 @@ machine.laser_power = 300  # W
 ###############################################################################
 # Specify inputs for single bead simulation
 # -----------------------------------------
-# Create a :class:`SingleBeadInput <ansys.additive.core.single_bead.SingleBeadInput>`
-# object containing the desired simulation parameters.
+# Create a :class:`SingleBeadInput` object containing the desired simulation parameters.
 
 input = SingleBeadInput(
     machine=machine, material=material, id="single-bead-example", bead_length=0.0012  # meters
@@ -104,12 +99,9 @@ input = SingleBeadInput(
 ###############################################################################
 # Run simulation
 # --------------
-# Use the :meth:`simulate() <ansys.additive.core.additive.Additive.simulate>`
-# method of the ``additive`` object to run the simulation. The returned object is a
-# either a :class:`SingleBeadSummary <ansys.additive.core.single_bead.SingleBeadSummary>`
-# object containing the input and a
-# :class:`MeltPool <ansys.additive.core.single_bead.MeltPool>` or a
-# :class:`SimulationError <ansys.additive.core.simulation.SimulationError>`.
+# Use the :meth:`~Additive.simulate` method of the ``additive`` object to run the simulation.
+# The returned object is either a :class:`SingleBeadSummary` object containing the input
+# and a :class:`MeltPool` or a :class:`SimulationError`.
 
 summary = additive.simulate(input)
 if isinstance(summary, SimulationError):
@@ -119,10 +111,11 @@ if isinstance(summary, SimulationError):
 # Plot melt pool statistics
 # -------------------------
 # Obtain a :class:`Pandas DataFrame <pandas.DataFrame>` containing the melt pool
-# statistics by using the :meth:`data_frame() <ansys.additive.core.single_bead.MeltPool.data_frame>`
-# property of the ``melt_pool`` attribute of the ``summary`` object. Use the
-# :meth:`DataFrame.plot() <pandas.DataFrame.plot>` method to plot the melt
-# pool dimensions as a function of bead length.
+# statistics by using the :meth:`~MeltPool.data_frame` method of the ``melt_pool``
+# attribute of the ``summary`` object. The column names for the :class:`~pandas.DataFrame`
+# are described in the documentation for :meth:`~MeltPool.data_frame`. Use the
+# :meth:`~pandas.DataFrame.plot` method to plot the melt pool dimensions as a function
+# of bead length.
 
 df = summary.melt_pool.data_frame().multiply(1e6)  # convert from meters to microns
 df.index *= 1e3  # convert bead length from meters to millimeters
@@ -141,18 +134,16 @@ df.plot(
 )
 plt.show()
 
-
 ###############################################################################
 # List melt pool statistics
 # -------------------------
 # You can show a table of the melt pool statistics by typing the name of the
 # data frame object and pressing enter. For brevity, the following code
 # uses ``head()`` so that only the first few rows are shown.
+# Note, if running this example as a Python script, no output is shown.
 
 df.head()
 
-# .. note::
-#    If running this example as a Python script, no output is shown.
 ###############################################################################
 # Save melt pool statistics
 # -------------------------
