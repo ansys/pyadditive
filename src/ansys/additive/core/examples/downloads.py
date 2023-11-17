@@ -36,12 +36,6 @@ MATERIAL_TUNING_FOLDER = "pyadditive/material_tuning_input"
 CUSTOM_MATERIAL_FOLDER = "pyadditive/custom_material_data"
 
 
-def get_ext(filename):
-    """Extract the extension of the filename."""
-    ext = os.path.splitext(filename)[1].lower()
-    return ext
-
-
 def delete_downloads():
     """Delete all downloaded examples to free space or update the files."""
     shutil.rmtree(EXAMPLES_PATH)
@@ -59,6 +53,7 @@ def decompress(filename, subdir=None) -> str:
     subdir : str, None
         Name of the subdirectory of the ``examples`` directory
         to extract the ZIP file contents to. The default is ``None``.
+
     Returns
     -------
     str
@@ -131,11 +126,11 @@ class MaterialTuningExampleInputFiles:
     experiment_data_file : str
         Path to the experiment data file.
     material_parameters_file : str
-            Path to the material parameters file.
-        thermal_properties_lookup_file : str
-            Path to the thermal properties lookup file.
-        characteristic_width_lookup_file : str
-            Path to the characteristic width lookup file.
+        Path to the material parameters file.
+    thermal_properties_lookup_file : str
+        Path to the thermal properties lookup file.
+    characteristic_width_lookup_file : str
+        Path to the characteristic width lookup file.
     """
 
     def __init__(

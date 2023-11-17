@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from __future__ import annotations
 
 from ansys.api.additive.v0.additive_domain_pb2 import (
     CoaxialAverageSensorInputs as CoaxialAverageSensorInputsMessage,
@@ -37,80 +38,91 @@ from ansys.additive.core.material import AdditiveMaterial
 
 
 class Range:
-    """Defines a parameter that spans a range of values.
+    """Defines a range of values."""
 
-    min: float
-        Minimum value.
-    max: float
-        Maximum value.
-    """
-
-    def __init__(self, **kwargs):
+    def __init__(self, min: float, max: float):
         """Initialize a ``Range`` object."""
-        self.min = 0
-        self.max = 0
-        for key, value in kwargs.items():
-            getattr(self, key)  # raises AttributeError if key not found
-            setattr(self, key, value)
+        self._min = min
+        self._max = max
         if self.min > self.max:
             raise ValueError("Attempted to initialize Range with min greater than max")
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
         for k in self.__dict__:
-            repr += k + ": " + str(getattr(self, k)) + "\n"
+            repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
         return repr
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Range):
             return False
-        for k in self.__dict__:
-            if getattr(self, k) != getattr(other, k):
-                return False
-        return True
+        return self._min == other._min and self._max == other._max
+
+    @property
+    def min(self) -> float:
+        """Minimum value of range."""
+        return self._min
+
+    @property
+    def max(self) -> float:
+        """Maximum value of range."""
+        return self._max
 
     def _to_range_message(self) -> RangeMessage:
-        """Create a ``RangeMessage`` to send to the server based upon this
-        object."""
+        """Transform this object into a RangeMessage to send to the server."""
         return RangeMessage(min=self.min, max=self.max)
 
 
 class CoaxialAverageSensorInputs:
-    """Provides descriptions for coaxial average sensors.
+    """Provides descriptions for coaxial average sensors."""
 
-    radius: float
-        Radius in meters for the circular field of the view of sensor. Valid values
-        are from 5e-5 to 1.5e-2 m (0.05 - 15 mm).
-    z_heights: Range[]
-        Array of ranges in meters along the z axis of the geometry. The simulated
-        sensor follows the scan path for each deposit layer within each range.
-    """
+    MIN_SENSOR_RADIUS = 5e-5
+    """Minimum radius for the circular field of view of sensor (m)."""
+    MAX_SENSOR_RADIUS = 1.5e-2
+    """Maximum radius for the circular field of view of sensor (m)."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, radius: float = MIN_SENSOR_RADIUS, z_heights: list[Range] = None):
         """Initialize a ``CoaxialAverageSensorInputs`` object."""
-        self.radius = 0
-        self.z_heights = []
-        for key, value in kwargs.items():
-            getattr(self, key)  # raises AttributeError if key not found
-            setattr(self, key, value)
-        if self.radius < 0:
-            raise ValueError(
-                "Attempted to initialize CoaxialAverageSensorInputs with negative sensor radius"
-            )
+        self._radius = radius
+        self._z_heights = z_heights if z_heights else []
+        # use setter to validate radius
+        self.radius = radius
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
         for k in self.__dict__:
-            repr += k + ": " + str(getattr(self, k)) + "\n"
+            repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
         return repr
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, CoaxialAverageSensorInputs):
             return False
-        for k in self.__dict__:
-            if getattr(self, k) != getattr(other, k):
-                return False
-        return True
+        return self._radius == other._radius and self._z_heights == other._z_heights
+
+    @property
+    def radius(self) -> float:
+        """Radius of the circular field of the view of the sensor (m).
+
+        Valid values are from :obj:`MIN_SENSOR_RADIUS` to :obj:`MAX_SENSOR_RADIUS`.
+        """
+        return self._radius
+
+    @radius.setter
+    def radius(self, value):
+        if value < self.MIN_SENSOR_RADIUS or value > self.MAX_SENSOR_RADIUS:
+            raise ValueError(
+                f"Radius values must be from {self.MIN_SENSOR_RADIUS} and {self.MAX_SENSOR_RADIUS}."
+            )
+        self._radius = value
+
+    @property
+    def z_heights(self) -> list[Range]:
+        """Array of ranges along the z axis of the geometry (m).
+
+        The simulated sensor follows the scan path for each deposit
+        layer within each range.
+        """
+        return self._z_heights
 
     def _to_coaxial_average_sensor_inputs_message(self) -> CoaxialAverageSensorInputsMessage:
         """Create a coaxial average sensor input message to send to the server
@@ -122,43 +134,30 @@ class CoaxialAverageSensorInputs:
 
 
 class ThermalHistoryInput:
-    """Provides input parameters for microstructure simulation.
+    """Provides input parameters for microstructure simulation."""
 
-    id: string
-        Simulation ID.
-    machine: AdditiveMachine
-        Machine-related parameters.
-    material: AdditiveMaterial
-        Material used during simulation.
-    geometry: StlFile or BuildFile
-        Geometry to use in the simulation.
-    coax_ave_sensor_inputs: :class:`CoaxialAverageSensorInputs`
-        Coaxial average sensor definition.
-    """
-
-    def __init__(self, **kwargs):
-        """Initialize a ``ThermalHistoryInput`` object."""
-        self.id = ""
-        self._geometry = None
-        self.coax_ave_sensor_inputs = CoaxialAverageSensorInputs()
-        self.machine = AdditiveMachine()
-        self.material = AdditiveMaterial()
-        for key, value in kwargs.items():
-            if key == "geometry":
-                self.geometry = value  # call setter
-            else:
-                getattr(self, key)  # raises AttributeError if key not found
-                setattr(self, key, value)
+    def __init__(
+        self,
+        id: str = "",
+        machine: AdditiveMachine = AdditiveMachine(),
+        material: AdditiveMaterial = AdditiveMaterial(),
+        geometry: StlFile | BuildFile = None,
+        coax_ave_sensor_inputs: CoaxialAverageSensorInputs = CoaxialAverageSensorInputs(),
+    ):
+        """Initialize a ThermalHistoryInput object."""
+        self._id = id
+        self._machine = machine
+        self._material = material
+        self._geometry = geometry
+        self._coax_ave_sensor_inputs = coax_ave_sensor_inputs
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
         for k in self.__dict__:
-            if k == "machine" or k == "material":
-                repr += "\n" + k + ": " + str(getattr(self, k))
-            elif k == "_geometry":
-                repr += "geometry: " + str(getattr(self, k)) + "\n"
+            if k == "_machine" or k == "_material":
+                repr += "\n" + k.replace("_", "", 1) + ": " + str(getattr(self, k))
             else:
-                repr += k + ": " + str(getattr(self, k)) + "\n"
+                repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
         return repr
 
     def __eq__(self, other: object) -> bool:
@@ -170,20 +169,54 @@ class ThermalHistoryInput:
         return True
 
     @property
-    def geometry(self):
-        """Part geometry.
+    def id(self) -> str:
+        """User-provided ID for the simulation."""
+        return self._id
 
-        For more information, see the :class:`StlFile`
-        class or the :class:`BuildFile` class.
-        """
+    @id.setter
+    def id(self, value):
+        self._id = value
+
+    @property
+    def machine(self) -> AdditiveMachine:
+        """Machine parameters."""
+        return self._machine
+
+    @machine.setter
+    def machine(self, value):
+        self._machine = value
+
+    @property
+    def material(self) -> AdditiveMaterial:
+        """Material parameters."""
+        return self._material
+
+    @material.setter
+    def material(self, value):
+        self._material = value
+
+    @property
+    def geometry(self) -> StlFile | BuildFile:
+        """Part geometry."""
         return self._geometry
 
     @geometry.setter
     def geometry(self, value):
         """Set geometry."""
         if not isinstance(value, (StlFile, BuildFile)):
-            raise TypeError("ThermalHistoryInput.geometry must be an StlFile of BuildFile")
+            raise TypeError("Geometry must be an StlFile of BuildFile")
         self._geometry = value
+
+    @property
+    def coax_ave_sensor_inputs(self) -> CoaxialAverageSensorInputs:
+        """Coaxial average sensor inputs."""
+        return self._coax_ave_sensor_inputs
+
+    @coax_ave_sensor_inputs.setter
+    def coax_ave_sensor_inputs(self, value):
+        if not isinstance(value, CoaxialAverageSensorInputs):
+            raise TypeError("Coaxial average sensor inputs must be a CoaxialAverageSensorInputs")
+        self._coax_ave_sensor_inputs = value
 
     def _to_simulation_request(self, remote_geometry_path: str) -> SimulationRequest:
         """Convert this object into a simulation request message."""

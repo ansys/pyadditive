@@ -96,14 +96,3 @@ def test_download_custom_material_retrieves_files():
     assert os.path.isfile(material.material_parameters_file)
     assert os.path.isfile(material.thermal_properties_lookup_file)
     assert os.path.isfile(material.characteristic_width_lookup_file)
-
-
-def test_get_ext_returns_expected_extension():
-    # arrange
-    filename = "test.stl"
-
-    # act
-    ext = examples.get_ext(filename)
-
-    # assert
-    assert ext == ".stl"

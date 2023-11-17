@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import math
 import os
 
 from ansys.api.additive.v0.additive_domain_pb2 import BuildFileMachineType
@@ -42,28 +43,13 @@ from ansys.additive.core.thermal_history import (
 )
 
 
-def test_Range_init_returns_expected_value():
-    # arrange, act
-    range = Range()
-
-    # assert
-    assert isinstance(range, Range)
-    assert range.min == 0 and range.max == 0
-
-
 def test_Range_init_with_parameters_returns_expected_value():
     # arrange, act
-    range = Range(min=99, max=100)
+    range = Range(99, 100)
 
     # assert
     assert isinstance(range, Range)
     assert range.min == 99 and range.max == 100
-
-
-def test_Range_init_raises_exception_for_invalid_input():
-    # arrange, act, assert
-    with pytest.raises(AttributeError, match="'Range' object has no attribute 'bogus'") as exc_info:
-        Range(bogus=7)
 
 
 def test_Range_init_raises_exception_for_min_greater_than_max():
@@ -76,11 +62,11 @@ def test_Range_init_raises_exception_for_min_greater_than_max():
 
 def test_Range_eq():
     # arrange
-    range = Range()
-    not_range = Range(min=-1)
+    range = Range(0, 0)
+    not_range = Range(-1, 0)
 
     # act, assert
-    assert range == Range()
+    assert range == Range(0, 0)
     assert range != RangeMessage(min=0, max=0)
     assert range != not_range
 
@@ -112,34 +98,27 @@ def test_CoaxialAverageSensorInputs_init_returns_expected_value():
 
     # assert
     assert isinstance(inputs, CoaxialAverageSensorInputs)
-    assert inputs.radius == 0
+    assert inputs.radius == CoaxialAverageSensorInputs.MIN_SENSOR_RADIUS
     assert inputs.z_heights == []
 
 
 def test_CoaxialAverageSensorInputs_init_with_parameters_returns_expected_value():
     # arrange, act
     z_heights = [Range(min=1, max=2), Range(min=3, max=4)]
-    inputs = CoaxialAverageSensorInputs(radius=1, z_heights=z_heights)
+    radius = 1e-3
+    inputs = CoaxialAverageSensorInputs(radius, z_heights)
 
     # assert
     assert isinstance(inputs, CoaxialAverageSensorInputs)
-    assert inputs.radius == 1
-    assert inputs.z_heights == [Range(min=1, max=2), Range(min=3, max=4)]
-
-
-def test_CoaxialAverageSensorInputs_init_raises_exception_for_invalid_input():
-    # arrange, act, assert
-    with pytest.raises(
-        AttributeError, match="'CoaxialAverageSensorInputs' object has no attribute 'bogus'"
-    ) as exc_info:
-        CoaxialAverageSensorInputs(bogus=7)
+    assert inputs.radius == radius
+    assert inputs.z_heights == z_heights
 
 
 def test_CoaxialAverageSensorInputs_init_raises_exception_for_radius_less_than_zero():
     # arrange, act, assert
     with pytest.raises(
         ValueError,
-        match="Attempted to initialize CoaxialAverageSensorInputs with negative sensor radius",
+        match=f"Radius values must be from {CoaxialAverageSensorInputs.MIN_SENSOR_RADIUS}",
     ) as exc_info:
         CoaxialAverageSensorInputs(radius=-1)
 
@@ -147,16 +126,16 @@ def test_CoaxialAverageSensorInputs_init_raises_exception_for_radius_less_than_z
 def test_CoaxialAverageSensorInputs_eq():
     # arrange
     inputs = CoaxialAverageSensorInputs(
-        radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
+        radius=1e-3, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
     not_inputs = CoaxialAverageSensorInputs()
 
     # act, assert
     assert inputs == CoaxialAverageSensorInputs(
-        radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
+        radius=1e-3, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
     assert inputs != CoaxialAverageSensorInputsMessage(
-        sensor_radius=1, z_heights=[RangeMessage(min=1, max=2), RangeMessage(min=3, max=4)]
+        sensor_radius=1e-3, z_heights=[RangeMessage(min=1, max=2), RangeMessage(min=3, max=4)]
     )
     assert inputs != not_inputs
 
@@ -164,13 +143,13 @@ def test_CoaxialAverageSensorInputs_eq():
 def test_CoaxialAverageSensorInputs_repr():
     # arrange
     inputs = CoaxialAverageSensorInputs(
-        radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
+        radius=1e-3, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
 
     # act, assert
     assert (
         inputs.__repr__()
-        == "CoaxialAverageSensorInputs\nradius: 1\nz_heights: "
+        == "CoaxialAverageSensorInputs\nradius: 0.001\nz_heights: "
         + "[Range\nmin: 1\nmax: 2\n, Range\nmin: 3\nmax: 4\n]\n"
     )
 
@@ -178,14 +157,14 @@ def test_CoaxialAverageSensorInputs_repr():
 def test_CoaxialAverageSensorInputs_coaxial_average_sensor_inputs_message():
     # arrange
     inputs = CoaxialAverageSensorInputs(
-        radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
+        radius=1e-3, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
     # act
     msg = inputs._to_coaxial_average_sensor_inputs_message()
 
     # assert
     assert isinstance(msg, CoaxialAverageSensorInputsMessage)
-    assert msg.sensor_radius == 1
+    assert math.isclose(1e-3, msg.sensor_radius, abs_tol=1e-9)
     assert len(msg.z_heights) == 2
     assert msg.z_heights[0] == RangeMessage(min=1, max=2)
     assert msg.z_heights[1] == RangeMessage(min=3, max=4)
@@ -209,7 +188,7 @@ def test_ThermalHistoryInput_init_with_parameters_creates_expected_object():
     machine.laser_power = 99
     material = AdditiveMaterial(name="vibranium")
     coax_inputs = CoaxialAverageSensorInputs(
-        radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
+        radius=1e-3, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
     stl_file = StlFile(path=os.path.abspath(__file__))
 
@@ -230,16 +209,10 @@ def test_ThermalHistoryInput_init_with_parameters_creates_expected_object():
     assert input.geometry == stl_file
 
 
-def test_ThermalHistoryInput_init_raises_exception_for_invalid_input():
-    # arrange, act, assert
-    with pytest.raises(AttributeError):
-        ThermalHistoryInput(bogus="invalid")
-
-
 def test_ThermalHistoryInput_repr_creates_expected_string():
     # arrange
     coax_inputs = CoaxialAverageSensorInputs(
-        radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
+        radius=1e-3, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
     file_name = os.path.abspath(__file__)
     stl_file = StlFile(path=file_name)
@@ -256,19 +229,6 @@ def test_ThermalHistoryInput_repr_creates_expected_string():
         input.__repr__()
         == "ThermalHistoryInput\n"
         + "id: myId\n"
-        + "geometry: StlFile\n"
-        + f"path: {file_name}\n"
-        + "\n"
-        + "coax_ave_sensor_inputs: CoaxialAverageSensorInputs\n"
-        + "radius: 1\n"
-        + "z_heights: [Range\n"
-        + "min: 1\n"
-        + "max: 2\n"
-        + ", Range\n"
-        + "min: 3\n"
-        + "max: 4\n"
-        + "]\n"
-        + "\n"
         + "\n"
         + "machine: AdditiveMachine\n"
         + "laser_power: 195 W\n"
@@ -317,7 +277,43 @@ def test_ThermalHistoryInput_repr_creates_expected_string():
         + "vaporization_temperature: 0\n"
         + "characteristic_width_data: CharacteristicWidthDataPoint[]\n"
         + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
+        + "geometry: StlFile\n"
+        + f"path: {file_name}\n"
+        + "\n"
+        + "coax_ave_sensor_inputs: CoaxialAverageSensorInputs\n"
+        + "radius: 0.001\n"
+        + "z_heights: [Range\n"
+        + "min: 1\n"
+        + "max: 2\n"
+        + ", Range\n"
+        + "min: 3\n"
+        + "max: 4\n"
+        + "]\n"
+        + "\n"
     )
+
+
+def test_ThermalHistoryInput_setters():
+    # arrange
+    input = ThermalHistoryInput()
+
+    # act
+    input.id = "myId"
+    input.machine = AdditiveMachine(laser_power=99)
+    input.material = AdditiveMaterial(name="vibranium")
+    coax_inputs = CoaxialAverageSensorInputs(
+        radius=1e-3, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
+    )
+    input.coax_ave_sensor_inputs = coax_inputs
+    stl_file = StlFile(path=os.path.abspath(__file__))
+    input.geometry = stl_file
+
+    # assert
+    assert "myId" == input.id
+    assert input.machine.laser_power == 99
+    assert input.material.name == "vibranium"
+    assert input.coax_ave_sensor_inputs == coax_inputs
+    assert input.geometry == stl_file
 
 
 def test_ThermalHistoryInput_eq():
@@ -326,7 +322,7 @@ def test_ThermalHistoryInput_eq():
     machine.laser_power = 99
     material = AdditiveMaterial(name="vibranium")
     coax_inputs = CoaxialAverageSensorInputs(
-        radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
+        radius=1e-3, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
     stl_file = StlFile(path=os.path.abspath(__file__))
 
@@ -367,6 +363,15 @@ def test_ThermalHistoryInput_geometry_setter_raises_exception_for_bad_input():
         input.geometry = "my_geometry.stl"
 
 
+def test_ThermalHistoryInput_coax_ave_sensor_inputs_setter_raises_exception_for_bad_input():
+    # arrange
+    input = ThermalHistoryInput()
+
+    # act, assert
+    with pytest.raises(TypeError):
+        input.coax_ave_sensor_inputs = "invalid_inputs"
+
+
 def test_ThermalHistoryInput__to_simulation_request_with_stl_file_returns_expected_object():
     # arrange
     remote_path = "remote.stl"
@@ -374,7 +379,7 @@ def test_ThermalHistoryInput__to_simulation_request_with_stl_file_returns_expect
     machine.laser_power = 99
     material = AdditiveMaterial(name="vibranium")
     coax_inputs = CoaxialAverageSensorInputs(
-        radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
+        radius=1e-3, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
     stl_file = StlFile(path=os.path.abspath(__file__))
     input = ThermalHistoryInput(
@@ -409,7 +414,7 @@ def test_ThermalHistoryInput__to_simulation_request_assigns_values():
     machine.laser_power = 99
     material = AdditiveMaterial(name="vibranium")
     coax_inputs = CoaxialAverageSensorInputs(
-        radius=1, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
+        radius=1e-3, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
     build_file = BuildFile(type=MachineType.EOS, path=os.path.abspath(__file__))
     input = ThermalHistoryInput(

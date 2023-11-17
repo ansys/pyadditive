@@ -131,6 +131,7 @@ intersphinx_mapping = {
     "pypim": ("https://pypim.docs.pyansys.com/version/stable", None),
     "panel": ("https://panel.holoviz.org/", None),
     "ansys.additive.core": (f"https://additive.docs.pyansys.com/version/{switcher_version}", None),
+    "grpc": ("https://grpc.github.io/grpc/python/", None),
 }
 
 # List of patterns, relative to source directory, that match files and
