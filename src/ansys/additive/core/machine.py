@@ -31,35 +31,35 @@ class MachineConstants:
     """Provides constants for additive manufacturing machine settings."""
 
     DEFAULT_LASER_POWER = 195
-    """Default laser power in Watts."""
+    """Default laser power (W)."""
     MIN_LASER_POWER = 50
-    """Minimum laser power in Watts."""
+    """Minimum laser power (W)."""
     MAX_LASER_POWER = 700
-    """Maximum laser power in Watts."""
+    """Maximum laser power (W)."""
     DEFAULT_SCAN_SPEED = 1.0
-    """Default scan speed in m/s."""
+    """Default scan speed (m/s)."""
     MIN_SCAN_SPEED = 0.35
-    """Minimum scan speed in m/s."""
+    """Minimum scan speed (m/s)."""
     MAX_SCAN_SPEED = 2.5
-    """Maximum scan speed in m/s."""
+    """Maximum scan speed (m/s)."""
     DEFAULT_HEATER_TEMP = 80
-    """Default heater temperature in degrees Celsius."""
+    """Default heater temperature (C)."""
     MIN_HEATER_TEMP = 20
-    """Minimum heater temperature in degrees Celsius."""
+    """Minimum heater temperature (C)."""
     MAX_HEATER_TEMP = 500
-    """Maximum heater temperature in degrees Celsius."""
+    """Maximum heater temperature (C)."""
     DEFAULT_LAYER_THICKNESS = 5e-5
-    """Default layer thickness in meters."""
+    """Default layer thickness (m)."""
     MIN_LAYER_THICKNESS = 1e-5
-    """Minimum layer thickness in meters."""
+    """Minimum layer thickness (m)."""
     MAX_LAYER_THICKNESS = 1e-4
-    """Maximum layer thickness in meters."""
+    """Maximum layer thickness (m)."""
     DEFAULT_BEAM_DIAMETER = 1e-4
-    """Default beam diameter in meters."""
+    """Default beam diameter (m)."""
     MIN_BEAM_DIAMETER = 2e-5
-    """Minimum beam diameter in meters."""
+    """Minimum beam diameter (m)."""
     MAX_BEAM_DIAMETER = 1.4e-4
-    """Maximum beam diameter in meters."""
+    """Maximum beam diameter (m)."""
     DEFAULT_STARTING_LAYER_ANGLE = 57
     """Default starting layer angle in degrees."""
     MIN_STARTING_LAYER_ANGLE = 0
@@ -73,17 +73,17 @@ class MachineConstants:
     MAX_LAYER_ROTATION_ANGLE = 180
     """Maximum layer rotation angle in degrees."""
     DEFAULT_HATCH_SPACING = 1e-4
-    """Default hatch spacing in meters."""
+    """Default hatch spacing (m)."""
     MIN_HATCH_SPACING = 6e-5
-    """Minimum hatch spacing in meters."""
+    """Minimum hatch spacing (m)."""
     MAX_HATCH_SPACING = 2e-4
-    """Maximum hatch spacing in meters."""
+    """Maximum hatch spacing (m)."""
     DEFAULT_SLICING_STRIPE_WIDTH = 0.01
-    """Default slicing stripe width in meters."""
+    """Default slicing stripe width (m)."""
     MIN_SLICING_STRIPE_WIDTH = 0.001
-    """Minimum slicing stripe width in meters."""
+    """Minimum slicing stripe width (m)."""
     MAX_SLICING_STRIPE_WIDTH = 0.1
-    """Maximum slicing stripe width in meters."""
+    """Maximum slicing stripe width (m)."""
 
 
 class AdditiveMachine:
