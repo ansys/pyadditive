@@ -29,41 +29,24 @@ from ansys.additive.core.material import AdditiveMaterial
 
 
 class PorosityInput:
-    """Provides input parameters for porosity simulation.
+    """Provides input parameters for porosity simulation."""
 
-    Parameters
-    ----------
-    id: string
-        User-provided ID for the simulation.
-    size_x: float, DEFAULT_SAMPLE_SIZE
-        Size of the simulated sample in the x dimension (m). Valid values are from
-        0.001 to 0.01.
-    size_y: float, DEFAULT_SAMPLE_SIZE
-        Size of the simulated sample in the y dimension (m). Valid values from 0.001
-        to 0.01.
-    size_z: float, DEFAULT_SAMPLE_SIZE
-        Size of the simulated sample in the z dimension (m). Valid values are from
-        0.001 to 0.01.
-    machine: AdditiveMachine
-        Machine-related parameters.
-    material: AdditiveMaterial
-        Material used during the simulation.
-    """
-
-    #: Default sample size (m) in each dimension.
     DEFAULT_SAMPLE_SIZE = 3e-3
-    __MIN_SAMPLE_SIZE = 1e-3
-    __MAX_SAMPLE_SIZE = 1e-2
+    """Default sample size in each dimension (m)."""
+    MIN_SAMPLE_SIZE = 1e-3
+    """Minimum sample size in each dimension (m)."""
+    MAX_SAMPLE_SIZE = 1e-2
+    """Maximum sample size in each dimension (m)."""
 
     def __init__(
         self,
-        id="",
+        id: str = "",
         *,
-        size_x=DEFAULT_SAMPLE_SIZE,
-        size_y=DEFAULT_SAMPLE_SIZE,
-        size_z=DEFAULT_SAMPLE_SIZE,
-        machine=AdditiveMachine(),
-        material=AdditiveMaterial(),
+        size_x: float = DEFAULT_SAMPLE_SIZE,
+        size_y: float = DEFAULT_SAMPLE_SIZE,
+        size_z: float = DEFAULT_SAMPLE_SIZE,
+        machine: AdditiveMachine = AdditiveMachine(),
+        material: AdditiveMaterial = AdditiveMaterial(),
     ):
         """Initialize a ``PorosityInput`` object."""
         self.id = id
@@ -129,39 +112,42 @@ class PorosityInput:
     def size_x(self):
         """Size (m) of the simulated sample in the x dimension.
 
-        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
+        Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+        :obj:`MAX_SAMPLE_SIZE` value.
         """
         return self._size_x
 
     @size_x.setter
     def size_x(self, value):
-        self.__validate_range(value, self.__MIN_SAMPLE_SIZE, self.__MAX_SAMPLE_SIZE, "size_x")
+        self.__validate_range(value, self.MIN_SAMPLE_SIZE, self.MAX_SAMPLE_SIZE, "size_x")
         self._size_x = value
 
     @property
     def size_y(self):
         """Size (m) of the simulated sample in the y dimension.
 
-        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
+        Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+        :obj:`MAX_SAMPLE_SIZE` value.
         """
         return self._size_y
 
     @size_y.setter
     def size_y(self, value):
-        self.__validate_range(value, self.__MIN_SAMPLE_SIZE, self.__MAX_SAMPLE_SIZE, "size_y")
+        self.__validate_range(value, self.MIN_SAMPLE_SIZE, self.MAX_SAMPLE_SIZE, "size_y")
         self._size_y = value
 
     @property
     def size_z(self):
         """Size (m) of the simulated sample in the z dimension.
 
-        Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
+        Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+        :obj:`MAX_SAMPLE_SIZE` value.
         """
         return self._size_z
 
     @size_z.setter
     def size_z(self, value):
-        self.__validate_range(value, self.__MIN_SAMPLE_SIZE, self.__MAX_SAMPLE_SIZE, "size_z")
+        self.__validate_range(value, self.MIN_SAMPLE_SIZE, self.MAX_SAMPLE_SIZE, "size_z")
         self._size_z = value
 
     def _to_simulation_request(self) -> SimulationRequest:
@@ -177,10 +163,7 @@ class PorosityInput:
 
 
 class PorositySummary:
-    """Provides a summary of a porosity simulation.
-
-    Units are SI unless otherwise noted.
-    """
+    """Provides a summary of a porosity simulation."""
 
     def __init__(
         self,
@@ -196,10 +179,7 @@ class PorositySummary:
 
     @property
     def input(self) -> PorosityInput:
-        """Simulation input.
-
-        For more information, see the :class:`PorosityInput` class.
-        """
+        """Simulation input."""
         return self._input
 
     @property

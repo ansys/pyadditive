@@ -42,57 +42,44 @@ from ansys.additive.core import USER_DATA_PATH, __version__
 from ansys.additive.core.download import download_file
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
-from ansys.additive.core.microstructure import MicrostructureSummary
+from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
 import ansys.additive.core.misc as misc
-from ansys.additive.core.porosity import PorositySummary
+from ansys.additive.core.porosity import PorosityInput, PorositySummary
 from ansys.additive.core.progress_logger import ProgressLogger
 from ansys.additive.core.server_connection import ServerConnection
 from ansys.additive.core.simulation import SimulationError
-from ansys.additive.core.single_bead import SingleBeadSummary
+from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
 from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHistorySummary
 
 
 class Additive:
-    """Provides the client interface to the Additive service.
-
-    You can connect to the Additive server using one of the following
-    methods. The methods are listed in order of precedence.
-        1. If ``channel`` is provided, use it to connect to the server.
-        2. If ``host``, and optionally ``port``, are provided, connect to the server at ``host:port``.
-        3. If running in a :class:`PyPIM <ansys.platform.instancemanagement.pypim>`-
-        enabled cloud environment, launch and connect to an ``additive`` service.
-        4. Use the value of the ``ANSYS_ADDITIVE_ADDRESS`` environment variable if it is defined.
-        The value uses the format ``host:port``.
-        5. Attempt to start the server on localhost and connect to it. For this to work,
-        the Additive portion of the Ansys Structures package from the Ansys unified installation
-        must be installed.
-
+    """Provides the client interface to one or more Additive services.
 
     Parameters
     ----------
     server_connections: list[str, grpc.Channel], None
         List of connection definitions for servers. The list may be a combination of strings and
-        connected ``grpc.Channel``s. Strings use the format ``host:port`` to specify
-        the server IPv4 address.
-    channel: grpc.Channel, None
-        gRPC channel connection to use for communicating with the server. If None, a connection will be
-        established using the host and port parameters. Ignored if ``server_channels``
-        is not ``None``.
-    host: str, None
-        Host name or IPv4 address of the server. Ignored if ``server_channels`` or ``channel``
-        is not ``None``.
-    port: int
-        Port number to use when connecting to the server. Defaults to 50052.
-    nservers: int
-        Number of Additive servers to start and connect to. If running in a
-        :class:`PyPIM <ansys.platform.instancemanagement.pypim>` enabled environment,
-        ``nservers`` ``additive`` services will be started. If running on localhost,
+        connected :class:`grpc.Channel <grpc.Channel>` objects. Strings use the format
+        ``host:port`` to specify the server IPv4 address.
+    channel: grpc.Channel, default: None
+        gRPC channel connection to use for communicating with the server. If the
+        default ``None`` is used, a connection is established using the host and port
+        parameters. This parameter is ignored if the ``server_connections`` parameter
+        is other than ``None``.
+    host: str, default: None
+        Host name or IPv4 address of the server. This parameter is ignored if the
+        ``server_channels`` or ``channel`` parameters is other than ``None``.
+    port: int, default: 50052
+        Port number to use when connecting to the server.
+    nservers: int, default: 1
+        Number of Additive servers to start and connect to.
         ``nservers`` instances of Additive server will be started. For this to work,
-        the Additive portion of the Ansys Structures package must be installed. Ignored if
-        ``server_connections``, ``channel``, or ``host`` is not ``None``.
-    log_level: str
+        the Additive portion of the Ansys Structures package must be installed.
+        This parameter is ignored if the ``server_connections``, ``channel``, or ``host``
+        parameter is other than ``None``.
+    log_level: str, default: "INFO"
         Minimum severity level of messages to log.
-    log_file: str
+    log_file: str, default: ""
         File name to write log messages to.
     """
 
@@ -184,22 +171,31 @@ class Additive:
             for server in self._servers:
                 print(server.status())
 
-    def simulate(self, inputs):
-        """Execute an additive simulation.
+    def simulate(
+        self,
+        inputs: SingleBeadInput | PorosityInput | MicrostructureInput | ThermalHistoryInput | list,
+    ) -> (
+        SingleBeadSummary
+        | PorositySummary
+        | MicrostructureSummary
+        | ThermalHistorySummary
+        | SimulationError
+        | list
+    ):
+        """Execute additive simulations.
 
         Parameters
         ----------
-        inputs: :class:`SingleBeadInput`, :class:`PorosityInput`,
-        :class:`MicrostructureInput`, :class:`ThermalHistoryInput`
-        or a list of these input types
-            Parameters to use for simulations.
+        inputs: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput, list
+            Parameters to use for simulations. A list of inputs may be provided to execute multiple
+            simulations.
 
         Returns
         -------
-        :class:`SingleBeadSummary`, :class:`PorositySummary`,
-        :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`,
-        :class:`SimulationError`, or, if a list of inputs was provided,
-        a list of these types.
+        SingleBeadSummary, PorositySummary, MicrostructureSummary, ThermalHistorySummary, SimulationError,
+        list
+            One or more summaries of simulation results. If a list of inputs is provided, a
+            list is returned.
         """
         if type(inputs) is not list:
             return self._simulate(inputs, self._servers[0], show_progress=True)
@@ -236,7 +232,12 @@ class Additive:
         print("")
         return summaries
 
-    def _simulate(self, input, server: ServerConnection, show_progress: bool = False):
+    def _simulate(
+        self,
+        input: SingleBeadInput | PorosityInput | MicrostructureInput | ThermalHistoryInput,
+        server: ServerConnection,
+        show_progress: bool = False,
+    ):
         """Execute a single simulation.
 
         Parameters
@@ -252,10 +253,8 @@ class Additive:
 
         Returns
         -------
-        One of the follow summary objects:
-        :class:`SingleBeadSummary`, :class:`PorositySummary`,
-        :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`,
-        :class:`SimulationError`
+        SingleBeadSummary, PorositySummary, MicrostructureSummary, ThermalHistorySummary,
+        SimulationError
         """
         logger = None
         if show_progress:
@@ -328,18 +327,18 @@ class Additive:
             Name of the JSON file containing material parameters. For more information, see
             `Create Material Parameters File (.json)
             <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_create_tables.html>`_
-            in the *Additiivate Manufacturing Beta Features* documentation.
+            in the *Additive Manufacturing Beta Features* documentation.
         thermal_lookup_file: str
             Name of the CSV file containing the lookup table for thermal dependent properties.
             For more information, see `Create Material Lookup File (.csv)
             <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_create_mat_lookup.html>`_
-            in the *Additiivate Manufacturing Beta Features* documentation.
+            in the *Additive Manufacturing Beta Features* documentation.
         characteristic_width_lookup_file: str
             Name of the CSV file containing the lookup table for characteristic melt pool width. For
             more information, see
             `Find Characteristic Width Values and Generate Characteristic Width File (.csv)
             <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_find_cw.html>`_
-            in the *Additiivate Manufacturing Beta Features* documentation.
+            in the *Additive Manufacturing Beta Features* documentation.
         """
         material = AdditiveMaterial()
         material._load_parameters(parameters_file)
@@ -352,6 +351,15 @@ class Additive:
     ) -> MaterialTuningSummary:
         """Tune a custom material for use with additive simulations.
 
+        This method performs the same function as the Material Tuning Tool
+        described in
+        `Find Simulation Parameters to Match Simulation to Experiments
+        <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_match_sim_to_exp.html>`_.
+        It is used for one step in the material tuning process. The other steps
+        are described in
+        `Chapter 2: Material Tuning Tool (Beta) to Create User Defined Materials
+        <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_science_BETA_material_tuning_tool.html>`_.
+
         Parameters
         ----------
         input: MaterialTuningInput
@@ -361,7 +369,7 @@ class Additive:
         -------
         MaterialTuningSummary
             Summary of material tuning.
-        """
+        """  # noqa: E501
         if input.id == "":
             input.id = misc.short_uuid()
         if out_dir == USER_DATA_PATH:

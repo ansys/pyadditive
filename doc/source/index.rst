@@ -22,3 +22,4 @@ PyAdditive documentation  |version|
        {% if build_examples %}
        examples/gallery_examples/index
        {% endif %}
+       contributing

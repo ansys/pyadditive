@@ -42,43 +42,60 @@ class MicrostructureInput:
     Units are SI (m, kg, s, K) unless otherwise noted.
     """
 
-    #: Default minimum x, y, z, position coordinate (m).
     DEFAULT_POSITION_COORDINATE = 0
-    __MIN_POSITION_COORDINATE = 0
-    __MAX_POSITION_COORDINATE = 10
-    #: Default sample size (m) in each dimension.
+    """Default X, Y, Z, position coordinate (m)."""
+    MIN_POSITION_COORDINATE = 0
+    """Minimum X, Y, Z, position coordinate (m)."""
+    MAX_POSITION_COORDINATE = 10
+    """Maximum X, Y, Z, position coordinate (m)."""
     DEFAULT_SAMPLE_SIZE = 1.5e-3
-    __MIN_SAMPLE_SIZE = 0.001
-    __MAX_SAMPLE_SIZE = 0.01
-    #: Default sensor dimension (m).
+    """Default sample size in each dimension (m)."""
+    MIN_SAMPLE_SIZE = 0.001
+    """Minimum sample size in each dimension (m)."""
+    MAX_SAMPLE_SIZE = 0.01
+    """Maximum sample size in each dimension (m)."""
     DEFAULT_SENSOR_DIMENSION = 5e-4
-    __MIN_SENSOR_DIMENSION = 1e-4
-    __MAX_SENSOR_DIMENSION = 1e-3
-    __MIN_XY_SIZE_CUSHION = 5e-4
-    __MIN_Z_SIZE_CUSHION = 1e-3
-    #: Default flag value indicating whether to use user provided thermal parameters.
+    """Default sensor dimension (m)."""
+    MIN_SENSOR_DIMENSION = 1e-4
+    """Minimum sensor dimension (m)."""
+    MAX_SENSOR_DIMENSION = 1e-3
+    """Maximum sensor dimension (m)."""
+    MIN_XY_SIZE_CUSHION = 5e-4
+    """Minimum cushion between sensor dimension and sample size in the X and Y dimensions (m)."""
+    MIN_Z_SIZE_CUSHION = 1e-3
+    """Minimum cushion between sensor dimension and sample size in the Z dimension (m)."""
     DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS = False
-    #: Default cooling rate (K/s).
+    """Default flag value indicating whether to use user-provided thermal parameters."""
     DEFAULT_COOLING_RATE = 1e6
-    __MIN_COOLING_RATE = 1e5
-    __MAX_COOLING_RATE = 1e7
-    #: Default thermal gradient (K/m).
+    """Default cooling rate (K/s)."""
+    MIN_COOLING_RATE = 1e5
+    """Minimum cooling rate (K/s)."""
+    MAX_COOLING_RATE = 1e7
+    """Maximum cooling rate (K/s)."""
     DEFAULT_THERMAL_GRADIENT = 1e7
-    __MIN_THERMAL_GRADIENT = 1e5
-    __MAX_THERMAL_GRADIENT = 1e8
-    #: Default melt pool width (m).
+    """Default thermal gradient (K/m)."""
+    MIN_THERMAL_GRADIENT = 1e5
+    """Minimum thermal gradient (K/m)."""
+    MAX_THERMAL_GRADIENT = 1e8
+    """Maximum thermal gradient (K/m)."""
     DEFAULT_MELT_POOL_WIDTH = 1.5e-4
-    __MIN_MELT_POOL_WIDTH = 7.5e-5
-    __MAX_MELT_POOL_WIDTH = 8e-4
-    #: Default melt pool depth (m).
+    """Default melt pool width (m)."""
+    MIN_MELT_POOL_WIDTH = 7.5e-5
+    """Minimum melt pool width (m)."""
+    MAX_MELT_POOL_WIDTH = 8e-4
+    """Maximum melt pool width (m)."""
     DEFAULT_MELT_POOL_DEPTH = 1e-4
-    __MIN_MELT_POOL_DEPTH = 1.5e-5
-    __MAX_MELT_POOL_DEPTH = 8e-4
-    #: The default random seed is outside the range of valid seeds.
-    #: It indicates that the user did not provide a seed.
+    """Default melt pool depth (m)."""
+    MIN_MELT_POOL_DEPTH = 1.5e-5
+    """Minimum melt pool depth (m)."""
+    MAX_MELT_POOL_DEPTH = 8e-4
+    """Maximum melt pool depth (m)."""
     DEFAULT_RANDOM_SEED = 0
-    __MIN_RANDOM_SEED = 1
-    __MAX_RANDOM_SEED = 2**31 - 1
+    """The default random seed, which indicates that a random seed was not provided."""
+    MIN_RANDOM_SEED = 1
+    """Minimum random seed."""
+    MAX_RANDOM_SEED = 2**31 - 1
+    """Maximum random seed."""
 
     def __init__(
         self,
@@ -106,18 +123,18 @@ class MicrostructureInput:
         # and sample_size_* then assign them without calling the setters
         self.__validate_range(
             sensor_dimension,
-            self.__MIN_SENSOR_DIMENSION,
-            self.__MAX_SENSOR_DIMENSION,
+            self.MIN_SENSOR_DIMENSION,
+            self.MAX_SENSOR_DIMENSION,
             "sensor_dimension",
         )
         self.__validate_size(
-            sample_size_x, sensor_dimension, self.__MIN_XY_SIZE_CUSHION, "sample_size_x"
+            sample_size_x, sensor_dimension, self.MIN_XY_SIZE_CUSHION, "sample_size_x"
         )
         self.__validate_size(
-            sample_size_y, sensor_dimension, self.__MIN_XY_SIZE_CUSHION, "sample_size_y"
+            sample_size_y, sensor_dimension, self.MIN_XY_SIZE_CUSHION, "sample_size_y"
         )
         self.__validate_size(
-            sample_size_z, sensor_dimension, self.__MIN_Z_SIZE_CUSHION, "sample_size_z"
+            sample_size_z, sensor_dimension, self.MIN_Z_SIZE_CUSHION, "sample_size_z"
         )
         self._sensor_dimension = sensor_dimension
         self._sample_size_x = sample_size_x
@@ -213,37 +230,49 @@ class MicrostructureInput:
 
     @property
     def sample_min_x(self) -> float:
-        """Minimum x coordinate (m) of the geometry sample."""
+        """Minimum x coordinate of the geometry sample (m).
+
+        Valid values are from the :obj:`MIN_POSITION_COORDINATE` value to
+        the :obj:`MAX_POSITION_COORDINATE` value.
+        """
         return self._sample_min_x
 
     @sample_min_x.setter
     def sample_min_x(self, value: float):
         self.__validate_range(
-            value, self.__MIN_POSITION_COORDINATE, self.__MAX_POSITION_COORDINATE, "sample_min_x"
+            value, self.MIN_POSITION_COORDINATE, self.MAX_POSITION_COORDINATE, "sample_min_x"
         )
         self._sample_min_x = value
 
     @property
     def sample_min_y(self) -> float:
-        """Minimum y coordinate (m) of the geometry sample."""
+        """Minimum y coordinate of the geometry sample (m).
+
+        Valid values are from the :obj:`MIN_POSITION_COORDINATE` value to the
+        :obj:`MAX_POSITION_COORDINATE` value.
+        """
         return self._sample_min_y
 
     @sample_min_y.setter
     def sample_min_y(self, value: float):
         self.__validate_range(
-            value, self.__MIN_POSITION_COORDINATE, self.__MAX_POSITION_COORDINATE, "sample_min_y"
+            value, self.MIN_POSITION_COORDINATE, self.MAX_POSITION_COORDINATE, "sample_min_y"
         )
         self._sample_min_y = value
 
     @property
     def sample_min_z(self) -> float:
-        """Minimum z coordinate (m) of the geometry sample."""
+        """Minimum z coordinate of the geometry sample (m).
+
+        Valid values are from the :obj:`MIN_POSITION_COORDINATE` value to the
+        :obj:`MAX_POSITION_COORDINATE` value.
+        """
         return self._sample_min_z
 
     @sample_min_z.setter
     def sample_min_z(self, value: float):
         self.__validate_range(
-            value, self.__MIN_POSITION_COORDINATE, self.__MAX_POSITION_COORDINATE, "sample_min_z"
+            value, self.MIN_POSITION_COORDINATE, self.MAX_POSITION_COORDINATE, "sample_min_z"
         )
         self._sample_min_z = value
 
@@ -251,17 +280,18 @@ class MicrostructureInput:
     def sample_size_x(self) -> float:
         """Size of the geometry sample in the x direction (m).
 
-        Valid values are from 0.001 to 0.01.
+        Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+        :obj:`MAX_SAMPLE_SIZE` value.
+        When setting the```sample_size_x`` parameter, the value must be greater than the
+        ``sensor_dimension`` value plus the :obj:`MIN_XY_SIZE_CUSHION` value.
         """
         return self._sample_size_x
 
     @sample_size_x.setter
     def sample_size_x(self, value: float):
-        self.__validate_range(
-            value, self.__MIN_SAMPLE_SIZE, self.__MAX_SAMPLE_SIZE, "sample_size_x"
-        )
+        self.__validate_range(value, self.MIN_SAMPLE_SIZE, self.MAX_SAMPLE_SIZE, "sample_size_x")
         self.__validate_size(
-            value, self.sensor_dimension, self.__MIN_XY_SIZE_CUSHION, "sample_size_x"
+            value, self.sensor_dimension, self.MIN_XY_SIZE_CUSHION, "sample_size_x"
         )
         self._sample_size_x = value
 
@@ -269,17 +299,18 @@ class MicrostructureInput:
     def sample_size_y(self) -> float:
         """Size of the geometry sample in the y direction (m).
 
-        Valid values are from 0.001 to 0.01.
+        Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+        :obj:`MAX_SAMPLE_SIZE` value.
+        When setting the ``sample_size_y`` parameter, the value must be greater than the
+        ``sensor_dimension`` value plus the :obj:`MIN_XY_SIZE_CUSHION` value.
         """
         return self._sample_size_y
 
     @sample_size_y.setter
     def sample_size_y(self, value: float):
-        self.__validate_range(
-            value, self.__MIN_SAMPLE_SIZE, self.__MAX_SAMPLE_SIZE, "sample_size_y"
-        )
+        self.__validate_range(value, self.MIN_SAMPLE_SIZE, self.MAX_SAMPLE_SIZE, "sample_size_y")
         self.__validate_size(
-            value, self.sensor_dimension, self.__MIN_XY_SIZE_CUSHION, "sample_size_y"
+            value, self.sensor_dimension, self.MIN_XY_SIZE_CUSHION, "sample_size_y"
         )
         self._sample_size_y = value
 
@@ -287,49 +318,49 @@ class MicrostructureInput:
     def sample_size_z(self) -> float:
         """Size of the geometry sample in the z direction (m).
 
-        Valid values are from 0.001 to 0.01.
+        Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+        :obj:`MAX_SAMPLE_SIZE` value.
+        When setting the ``sample_size_y`` parameter, the value must be greater than the
+        ``sensor_dimension`` value plus the :obj:`MIN_XY_SIZE_CUSHION` value.
         """
         return self._sample_size_z
 
     @sample_size_z.setter
     def sample_size_z(self, value: float):
-        self.__validate_range(
-            value, self.__MIN_SAMPLE_SIZE, self.__MAX_SAMPLE_SIZE, "sample_size_z"
-        )
-        self.__validate_size(
-            value, self.sensor_dimension, self.__MIN_Z_SIZE_CUSHION, "sample_size_z"
-        )
+        self.__validate_range(value, self.MIN_SAMPLE_SIZE, self.MAX_SAMPLE_SIZE, "sample_size_z")
+        self.__validate_size(value, self.sensor_dimension, self.MIN_Z_SIZE_CUSHION, "sample_size_z")
         self._sample_size_z = value
 
     @property
     def sensor_dimension(self) -> float:
         """Dimension of the sensor (m).
 
-        Valid values are from 0.0001 to 0.001.
+        Valid values are from the :obj:`MIN_SENSOR_DIMENSION` value to the
+        :obj:`MAX_SENSOR_DIMENSION` value.
         """
         return self._sensor_dimension
 
     @sensor_dimension.setter
     def sensor_dimension(self, value: float):
         self.__validate_range(
-            value, self.__MIN_SENSOR_DIMENSION, self.__MAX_SENSOR_DIMENSION, "sensor_dimension"
+            value, self.MIN_SENSOR_DIMENSION, self.MAX_SENSOR_DIMENSION, "sensor_dimension"
         )
         size_errors = ""
         try:
             self.__validate_size(
-                self.sample_size_x, value, self.__MIN_XY_SIZE_CUSHION, "sample_size_x"
+                self.sample_size_x, value, self.MIN_XY_SIZE_CUSHION, "sample_size_x"
             )
         except ValueError as e:
             size_errors += str(e) + "\n"
         try:
             self.__validate_size(
-                self.sample_size_y, value, self.__MIN_XY_SIZE_CUSHION, "sample_size_y"
+                self.sample_size_y, value, self.MIN_XY_SIZE_CUSHION, "sample_size_y"
             )
         except ValueError as e:
             size_errors += str(e) + "\n"
         try:
             self.__validate_size(
-                self.sample_size_z, value, self.__MIN_Z_SIZE_CUSHION, "sample_size_z"
+                self.sample_size_z, value, self.MIN_Z_SIZE_CUSHION, "sample_size_z"
             )
         except ValueError as e:
             size_errors += str(e) + "\n"
@@ -357,29 +388,29 @@ class MicrostructureInput:
     def cooling_rate(self) -> float:
         """Material cooling rate (K/s).
 
-        Valid values are from 1e5 to 1e7.
+        Valid values are from the :obj:`MIN_COOLING_RATE` value to the
+        :obj:`MAX_COOLING_RATE` value.
         """
         return self._cooling_rate
 
     @cooling_rate.setter
     def cooling_rate(self, value: float):
-        self.__validate_range(
-            value, self.__MIN_COOLING_RATE, self.__MAX_COOLING_RATE, "cooling_rate"
-        )
+        self.__validate_range(value, self.MIN_COOLING_RATE, self.MAX_COOLING_RATE, "cooling_rate")
         self._cooling_rate = value
 
     @property
     def thermal_gradient(self) -> float:
         """Material thermal gradient (K/m).
 
-        Valid values are from 1e5 to 1e8.
+        Valid values are from the :obj:`MIN_THERMAL_GRADIENT` value to the
+        :obj:`MAX_THERMAL_GRADIENT` value.
         """
         return self._thermal_gradient
 
     @thermal_gradient.setter
     def thermal_gradient(self, value: float):
         self.__validate_range(
-            value, self.__MIN_THERMAL_GRADIENT, self.__MAX_THERMAL_GRADIENT, "thermal_gradient"
+            value, self.MIN_THERMAL_GRADIENT, self.MAX_THERMAL_GRADIENT, "thermal_gradient"
         )
         self._thermal_gradient = value
 
@@ -387,19 +418,17 @@ class MicrostructureInput:
     def melt_pool_width(self) -> float:
         """Melt pool width (m).
 
-        This is the width of the melt pool measured at the top of the powder layer,
-        which corresponds to the ``WIDTH`` value in
-        :class:`MeltPoolColumnNames <ansys.additive.core.single_bead.MeltPoolColumnNames>`
-        class.
+        This is the width of the melt pool measured at the top of the powder layer.
 
-        Valid values are from 7.5e-5 to 8e-4.
+        Valid values are from the :obj:`MIN_MELT_POOL_WIDTH` value to the
+        :obj:`MAX_MELT_POOL_WIDTH` value.
         """
         return self._melt_pool_width
 
     @melt_pool_width.setter
     def melt_pool_width(self, value: float):
         self.__validate_range(
-            value, self.__MIN_MELT_POOL_WIDTH, self.__MAX_MELT_POOL_WIDTH, "melt_pool_width"
+            value, self.MIN_MELT_POOL_WIDTH, self.MAX_MELT_POOL_WIDTH, "melt_pool_width"
         )
         self._melt_pool_width = value
 
@@ -407,19 +436,17 @@ class MicrostructureInput:
     def melt_pool_depth(self) -> float:
         """Melt pool depth (m).
 
-        This is the depth of the melt pool as measured from the top of the powder layer,
-        which corresponds to the ``DEPTH`` value in the
-        :class:`MeltPoolColumnNames <ansys.additive.core.single_bead.MeltPoolColumnNames>`
-        class.
+        This is the depth of the melt pool as measured from the top of the powder layer.
 
-        Valid values are from 1.5e-5 to 8e-4.
+        Valid values are from the :obj:`MIN_MELT_POOL_DEPTH` value to the
+        :obj:`MAX_MELT_POOL_DEPTH` value.
         """
         return self._melt_pool_depth
 
     @melt_pool_depth.setter
     def melt_pool_depth(self, value: float):
         self.__validate_range(
-            value, self.__MIN_MELT_POOL_DEPTH, self.__MAX_MELT_POOL_DEPTH, "melt_pool_depth"
+            value, self.MIN_MELT_POOL_DEPTH, self.MAX_MELT_POOL_DEPTH, "melt_pool_depth"
         )
         self._melt_pool_depth = value
 
@@ -427,13 +454,14 @@ class MicrostructureInput:
     def random_seed(self) -> int:
         """Random seed for the simulation.
 
-        Valid values are from 1 to 4294967295.
+        Valid values are from the :obj:`MIN_RANDOM_SEED` value to the
+        :obj:`MAX_RANDOM_SEED` value.
         """
         return self._random_seed
 
     @random_seed.setter
     def random_seed(self, value: int):
-        self.__validate_range(value, self.__MIN_RANDOM_SEED, self.__MAX_RANDOM_SEED, "random_seed")
+        self.__validate_range(value, self.MIN_RANDOM_SEED, self.MAX_RANDOM_SEED, "random_seed")
         self._random_seed = value
 
     def _to_simulation_request(self) -> SimulationRequest:
@@ -462,23 +490,18 @@ class MicrostructureInput:
 class CircleEquivalenceColumnNames:
     """Provides column names for the circle equivalence data frame."""
 
-    #: Grain number
     GRAIN_NUMBER = "grain_number"
-    #: Area fraction for grain
+    """Grain number."""
     AREA_FRACTION = "area_fraction"
-    #: Grain diameter (µm)
+    """Area fraction for grain."""
     DIAMETER = "diameter_um"
-    #: Orientation angle (degrees)
+    """Grain diameter (µm)."""
     ORIENTATION_ANGLE = "orientation_angle"
+    """Orientation angle (degrees)."""
 
 
 class MicrostructureSummary:
-    """Provides the summary of a microstructure simulation.
-
-    Units are typically SI (m, kg, s, K). However, some of the following
-    values do not use SI units. For more information, see the
-    descriptions.
-    """
+    """Provides the summary of a microstructure simulation."""
 
     def __init__(
         self, input: MicrostructureInput, result: MicrostructureResult, user_data_path: str

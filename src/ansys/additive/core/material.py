@@ -41,15 +41,6 @@ class CharacteristicWidthDataPoint:
     characteristic width lookup table, allowing a given laser speed and
     power to be correlated to a characteristic melt pool width. This
     class represents a single row in the lookup table.
-
-    Parameters
-    ----------
-    laser_power: float
-        Laser power (W).
-    scan_speed: float
-        Laser scan speed (m/s).
-    characteristic_width: float
-        Characteristic melt pool width (m).
     """
 
     def __init__(

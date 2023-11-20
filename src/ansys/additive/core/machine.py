@@ -30,42 +30,60 @@ import ansys.additive.core.conversions as conversions
 class MachineConstants:
     """Provides constants for additive manufacturing machine settings."""
 
-    #: Default laser power in Watts.
     DEFAULT_LASER_POWER = 195
+    """Default laser power (W)."""
     MIN_LASER_POWER = 50
+    """Minimum laser power (W)."""
     MAX_LASER_POWER = 700
-    #: Default scan speed in m/s.
+    """Maximum laser power (W)."""
     DEFAULT_SCAN_SPEED = 1.0
+    """Default scan speed (m/s)."""
     MIN_SCAN_SPEED = 0.35
+    """Minimum scan speed (m/s)."""
     MAX_SCAN_SPEED = 2.5
-    #: Default heater temperature in degrees Celsius.
+    """Maximum scan speed (m/s)."""
     DEFAULT_HEATER_TEMP = 80
+    """Default heater temperature (C)."""
     MIN_HEATER_TEMP = 20
+    """Minimum heater temperature (C)."""
     MAX_HEATER_TEMP = 500
-    #: Default layer thickness in meters.
+    """Maximum heater temperature (C)."""
     DEFAULT_LAYER_THICKNESS = 5e-5
+    """Default layer thickness (m)."""
     MIN_LAYER_THICKNESS = 1e-5
+    """Minimum layer thickness (m)."""
     MAX_LAYER_THICKNESS = 1e-4
-    #: Default beam diameter in meters.
+    """Maximum layer thickness (m)."""
     DEFAULT_BEAM_DIAMETER = 1e-4
+    """Default beam diameter (m)."""
     MIN_BEAM_DIAMETER = 2e-5
+    """Minimum beam diameter (m)."""
     MAX_BEAM_DIAMETER = 1.4e-4
-    #: Default starting layer angle in degrees.
+    """Maximum beam diameter (m)."""
     DEFAULT_STARTING_LAYER_ANGLE = 57
+    """Default starting layer angle (degrees)."""
     MIN_STARTING_LAYER_ANGLE = 0
+    """Minimum starting layer angle (degrees)."""
     MAX_STARTING_LAYER_ANGLE = 180
-    #: Default layer rotation angle in degrees.
+    """Maximum starting layer angle (degrees)."""
     DEFAULT_LAYER_ROTATION_ANGLE = 67
+    """Default layer rotation angle (degrees)."""
     MIN_LAYER_ROTATION_ANGLE = 0
+    """Minimum layer rotation angle (degrees)."""
     MAX_LAYER_ROTATION_ANGLE = 180
-    #: Default hatch spacing in meters.
+    """Maximum layer rotation angle (degrees)."""
     DEFAULT_HATCH_SPACING = 1e-4
+    """Default hatch spacing (m)."""
     MIN_HATCH_SPACING = 6e-5
+    """Minimum hatch spacing (m)."""
     MAX_HATCH_SPACING = 2e-4
-    #: Default slicing stripe width in meters.
+    """Maximum hatch spacing (m)."""
     DEFAULT_SLICING_STRIPE_WIDTH = 0.01
+    """Default slicing stripe width (m)."""
     MIN_SLICING_STRIPE_WIDTH = 0.001
+    """Minimum slicing stripe width (m)."""
     MAX_SLICING_STRIPE_WIDTH = 0.1
+    """Maximum slicing stripe width (m)."""
 
 
 class AdditiveMachine:
@@ -73,8 +91,8 @@ class AdditiveMachine:
     simulations.
 
     Units are SI (m, kg, s, or K) unless otherwise noted. Exceptions
-    include angles, which are in degrees, and the heater temperature,
-    which is in degrees Celsius.
+    include angles, which are (degrees), and the heater temperature,
+    which is (degrees) Celsius.
     """
 
     def __init__(

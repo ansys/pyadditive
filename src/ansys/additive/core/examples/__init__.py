@@ -28,5 +28,4 @@ from ansys.additive.core.examples.downloads import (
     download_custom_material,
     download_material_tuning_input,
     download_small_wedge_slm_build_file,
-    get_ext,
 )

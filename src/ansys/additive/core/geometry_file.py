@@ -42,28 +42,29 @@ class MachineType(IntEnum):
 class BuildFile:
     """Provides the build file description.
 
-    In the context of PyAdditive, a build file is a Zip archive
+    In the context of PyAdditive, a build file is a ZIP archive
     containing:
-        - One part geometry file in STL format.
-        - Zero or more support geometry files in STL format. Support file
-            names must end in ``*_vless.stl`` for volumeless supports and
-            ``*_solid.stl`` for solid supports.
-        - One or more machine instruction files. The number and type of
-            files depend upon the machine type.
+
+    - A part geometry file in STL format.
+    - Zero or more support geometry files in STL format. Support file
+      names must end in ``*_vless.stl`` for volumeless supports and
+      ``*_solid.stl`` for solid supports.
+    - One or more machine instruction files. The number and type of
+      files depend upon the machine type.
+
     These files must be placed in the root of the archive and not
     under a folder.
+
+    Parameters
+    ----------
+    type: MachineType
+        Type of additive machine the build file is for.
+    path: os.PathLike
+        Path to the build file.
     """
 
     def __init__(self, type: MachineType, path: os.PathLike):
-        """Initialize a ``BuildFile`` object.
-
-        Parameters
-        ----------
-        type: MachineType
-            Type of machine the build file is for.
-        path: os.PathLike
-            Path to the build file.
-        """
+        """Initialize a ``BuildFile`` object."""
         if not isinstance(type, MachineType):
             raise ValueError("Invalid machine type")
         if not os.path.exists(path):
@@ -102,8 +103,7 @@ class BuildFile:
 
     @property
     def path(self) -> str:
-        """Path of the ZIP file containing the build instruction file, geometry
-        STL file, and optional support STL files."""
+        """Path of the ZIP file."""
         return self._path
 
     @path.setter
