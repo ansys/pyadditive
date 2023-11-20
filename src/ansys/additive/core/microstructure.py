@@ -63,9 +63,9 @@ class MicrostructureInput:
     MIN_XY_SIZE_CUSHION = 5e-4
     """Minimum cushion between sensor dimension and sample size in the X and Y dimensions (m)."""
     MIN_Z_SIZE_CUSHION = 1e-3
-    """Minimum cushion between sensor dimension and sample size in Z dimension (m)."""
+    """Minimum cushion between sensor dimension and sample size in the Z dimension (m)."""
     DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS = False
-    """Default flag value indicating whether to use user provided thermal parameters."""
+    """Default flag value indicating whether to use user-provided thermal parameters."""
     DEFAULT_COOLING_RATE = 1e6
     """Default cooling rate (K/s)."""
     MIN_COOLING_RATE = 1e5
@@ -91,7 +91,7 @@ class MicrostructureInput:
     MAX_MELT_POOL_DEPTH = 8e-4
     """Maximum melt pool depth (m)."""
     DEFAULT_RANDOM_SEED = 0
-    """The default random seed, indicates that a random seed was not provided."""
+    """The default random seed, which indicates that a random seed was not provided."""
     MIN_RANDOM_SEED = 1
     """Minimum random seed."""
     MAX_RANDOM_SEED = 2**31 - 1
@@ -232,7 +232,8 @@ class MicrostructureInput:
     def sample_min_x(self) -> float:
         """Minimum x coordinate of the geometry sample (m).
 
-        Valid values are from :obj:`MIN_POSITION_COORDINATE` to :obj:`MAX_POSITION_COORDINATE`.
+        Valid values are from the :obj:`MIN_POSITION_COORDINATE` value to
+        the :obj:`MAX_POSITION_COORDINATE` value.
         """
         return self._sample_min_x
 
@@ -247,7 +248,8 @@ class MicrostructureInput:
     def sample_min_y(self) -> float:
         """Minimum y coordinate of the geometry sample (m).
 
-        Valid values are from :obj:`MIN_POSITION_COORDINATE` to :obj:`MAX_POSITION_COORDINATE`.
+        Valid values are from the :obj:`MIN_POSITION_COORDINATE` value to the
+        :obj:`MAX_POSITION_COORDINATE` value.
         """
         return self._sample_min_y
 
@@ -262,7 +264,8 @@ class MicrostructureInput:
     def sample_min_z(self) -> float:
         """Minimum z coordinate of the geometry sample (m).
 
-        Valid values are from :obj:`MIN_POSITION_COORDINATE` to :obj:`MAX_POSITION_COORDINATE`.
+        Valid values are from the :obj:`MIN_POSITION_COORDINATE` value to the
+        :obj:`MAX_POSITION_COORDINATE` value.
         """
         return self._sample_min_z
 
@@ -277,9 +280,10 @@ class MicrostructureInput:
     def sample_size_x(self) -> float:
         """Size of the geometry sample in the x direction (m).
 
-        Valid values are from :obj:`MIN_SAMPLE_SIZE` to :obj:`MAX_SAMPLE_SIZE`.
-        When setting `sample_size_x`, the value must be greater than `sensor_dimension`
-        plus :obj:`MIN_XY_SIZE_CUSHION`.
+        Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+        :obj:`MAX_SAMPLE_SIZE` value.
+        When setting the```sample_size_x`` parameter, the value must be greater than the
+        ``sensor_dimension`` value plus the :obj:`MIN_XY_SIZE_CUSHION` value.
         """
         return self._sample_size_x
 
@@ -295,9 +299,10 @@ class MicrostructureInput:
     def sample_size_y(self) -> float:
         """Size of the geometry sample in the y direction (m).
 
-        Valid values are from :obj:`MIN_SAMPLE_SIZE` to :obj:`MAX_SAMPLE_SIZE`.
-        When setting `sample_size_y`, the value must be greater than `sensor_dimension`
-        plus :obj:`MIN_XY_SIZE_CUSHION`.
+        Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+        :obj:`MAX_SAMPLE_SIZE` value.
+        When setting the ``sample_size_y`` parameter, the value must be greater than the
+        ``sensor_dimension`` value plus the :obj:`MIN_XY_SIZE_CUSHION` value.
         """
         return self._sample_size_y
 
@@ -313,9 +318,10 @@ class MicrostructureInput:
     def sample_size_z(self) -> float:
         """Size of the geometry sample in the z direction (m).
 
-        Valid values are from :obj:`MIN_SAMPLE_SIZE` to :obj:`MAX_SAMPLE_SIZE`.
-        When setting `sample_size_z`, the value must be greater than `sensor_dimension`
-        plus :obj:`MIN_Z_SIZE_CUSHION`.
+        Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+        :obj:`MAX_SAMPLE_SIZE` value.
+        When setting the ``sample_size_y`` parameter, the value must be greater than the
+        ``sensor_dimension`` value plus the :obj:`MIN_XY_SIZE_CUSHION` value.
         """
         return self._sample_size_z
 
@@ -329,7 +335,8 @@ class MicrostructureInput:
     def sensor_dimension(self) -> float:
         """Dimension of the sensor (m).
 
-        Valid values are from :obj:`MIN_SENSOR_DIMENSION` to :obj:`MAX_SENSOR_DIMENSION`.
+        Valid values are from the :obj:`MIN_SENSOR_DIMENSION` value to the
+        :obj:`MAX_SENSOR_DIMENSION` value.
         """
         return self._sensor_dimension
 
@@ -381,7 +388,8 @@ class MicrostructureInput:
     def cooling_rate(self) -> float:
         """Material cooling rate (K/s).
 
-        Valid values are from :obj:`MIN_COOLING_RATE` to :obj:`MAX_COOLING_RATE`.
+        Valid values are from the :obj:`MIN_COOLING_RATE` value to the
+        :obj:`MAX_COOLING_RATE` value.
         """
         return self._cooling_rate
 
@@ -394,7 +402,8 @@ class MicrostructureInput:
     def thermal_gradient(self) -> float:
         """Material thermal gradient (K/m).
 
-        Valid values are from :obj:`MIN_THERMAL_GRADIENT` to :obj:`MAX_THERMAL_GRADIENT`.
+        Valid values are from the :obj:`MIN_THERMAL_GRADIENT` value to the
+        :obj:`MAX_THERMAL_GRADIENT` value.
         """
         return self._thermal_gradient
 
@@ -411,7 +420,8 @@ class MicrostructureInput:
 
         This is the width of the melt pool measured at the top of the powder layer.
 
-        Valid values are from :obj:`MIN_MELT_POOL_WIDTH` to :obj:`MAX_MELT_POOL_WIDTH`.
+        Valid values are from the :obj:`MIN_MELT_POOL_WIDTH` value to the
+        :obj:`MAX_MELT_POOL_WIDTH` value.
         """
         return self._melt_pool_width
 
@@ -428,7 +438,8 @@ class MicrostructureInput:
 
         This is the depth of the melt pool as measured from the top of the powder layer.
 
-        Valid values are from :obj:`MIN_MELT_POOL_DEPTH` to :obj:`MAX_MELT_POOL_DEPTH`.
+        Valid values are from the :obj:`MIN_MELT_POOL_DEPTH` value to the
+        :obj:`MAX_MELT_POOL_DEPTH` value.
         """
         return self._melt_pool_depth
 
@@ -443,7 +454,8 @@ class MicrostructureInput:
     def random_seed(self) -> int:
         """Random seed for the simulation.
 
-        Valid values are from :obj:`MIN_RANDOM_SEED` to :obj:`MAX_RANDOM_SEED`.
+        Valid values are from the :obj:`MIN_RANDOM_SEED` value to the
+        :obj:`MAX_RANDOM_SEED` value.
         """
         return self._random_seed
 
