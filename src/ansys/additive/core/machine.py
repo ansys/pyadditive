@@ -61,17 +61,17 @@ class MachineConstants:
     MAX_BEAM_DIAMETER = 1.4e-4
     """Maximum beam diameter (m)."""
     DEFAULT_STARTING_LAYER_ANGLE = 57
-    """Default starting layer angle in degrees."""
+    """Default starting layer angle (degrees)."""
     MIN_STARTING_LAYER_ANGLE = 0
-    """Minimum starting layer angle in degrees."""
+    """Minimum starting layer angle (degrees)."""
     MAX_STARTING_LAYER_ANGLE = 180
-    """Maximum starting layer angle in degrees."""
+    """Maximum starting layer angle (degrees)."""
     DEFAULT_LAYER_ROTATION_ANGLE = 67
-    """Default layer rotation angle in degrees."""
+    """Default layer rotation angle (degrees)."""
     MIN_LAYER_ROTATION_ANGLE = 0
-    """Minimum layer rotation angle in degrees."""
+    """Minimum layer rotation angle (degrees)."""
     MAX_LAYER_ROTATION_ANGLE = 180
-    """Maximum layer rotation angle in degrees."""
+    """Maximum layer rotation angle (degrees)."""
     DEFAULT_HATCH_SPACING = 1e-4
     """Default hatch spacing (m)."""
     MIN_HATCH_SPACING = 6e-5
@@ -91,8 +91,8 @@ class AdditiveMachine:
     simulations.
 
     Units are SI (m, kg, s, or K) unless otherwise noted. Exceptions
-    include angles, which are in degrees, and the heater temperature,
-    which is in degrees Celsius.
+    include angles, which are (degrees), and the heater temperature,
+    which is (degrees) Celsius.
     """
 
     def __init__(

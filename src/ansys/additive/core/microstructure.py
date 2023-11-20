@@ -49,11 +49,11 @@ class MicrostructureInput:
     MAX_POSITION_COORDINATE = 10
     """Maximum X, Y, Z, position coordinate (m)."""
     DEFAULT_SAMPLE_SIZE = 1.5e-3
-    """Default sample size (m) in each dimension."""
+    """Default sample size in each dimension (m)."""
     MIN_SAMPLE_SIZE = 0.001
-    """Minimum sample size (m) in each dimension."""
+    """Minimum sample size in each dimension (m)."""
     MAX_SAMPLE_SIZE = 0.01
-    """Maximum sample size (m) in each dimension."""
+    """Maximum sample size in each dimension (m)."""
     DEFAULT_SENSOR_DIMENSION = 5e-4
     """Default sensor dimension (m)."""
     MIN_SENSOR_DIMENSION = 1e-4
