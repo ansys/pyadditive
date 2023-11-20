@@ -106,7 +106,8 @@ class SingleBeadInput:
     def bead_length(self) -> float:
         """Length (m) of bead to simulate.
 
-        Valid values are from :obj:`MIN_BEAD_LENGTH` to :obj:`MAX_BEAD_LENGTH` meters.
+        Valid values are from the :obj:`MIN_BEAD_LENGTH` value to the
+        :obj:`MAX_BEAD_LENGTH` value.
         """
         return self._bead_length
 
