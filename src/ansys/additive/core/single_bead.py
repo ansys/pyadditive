@@ -30,7 +30,7 @@ from ansys.additive.core.material import AdditiveMaterial
 
 
 class SingleBeadInput:
-    """Provides input parameters for single bead simulation."""
+    """Provides input parameters for a single bead simulation."""
 
     DEFAULT_BEAD_LENGTH = 3e-3
     """Default bead length (m)."""

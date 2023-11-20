@@ -69,7 +69,7 @@ class Range:
         return self._max
 
     def _to_range_message(self) -> RangeMessage:
-        """Transform this object into a RangeMessage to send to the server."""
+        """Transform this object into a ``RangeMessage`` object to send to the server."""
         return RangeMessage(min=self.min, max=self.max)
 
 
@@ -77,9 +77,9 @@ class CoaxialAverageSensorInputs:
     """Provides descriptions for coaxial average sensors."""
 
     MIN_SENSOR_RADIUS = 5e-5
-    """Minimum radius for the circular field of view of sensor (m)."""
+    """Minimum radius for the circular field of view of the sensor (m)."""
     MAX_SENSOR_RADIUS = 1.5e-2
-    """Maximum radius for the circular field of view of sensor (m)."""
+    """Maximum radius for the circular field of view of the sensor (m)."""
 
     def __init__(self, radius: float = MIN_SENSOR_RADIUS, z_heights: list[Range] = None):
         """Initialize a ``CoaxialAverageSensorInputs`` object."""
@@ -103,7 +103,8 @@ class CoaxialAverageSensorInputs:
     def radius(self) -> float:
         """Radius of the circular field of the view of the sensor (m).
 
-        Valid values are from :obj:`MIN_SENSOR_RADIUS` to :obj:`MAX_SENSOR_RADIUS`.
+        Valid values are from the :obj:`MIN_SENSOR_RADIUS` value to the
+        :obj:`MAX_SENSOR_RADIUS` value.
         """
         return self._radius
 
@@ -144,7 +145,7 @@ class ThermalHistoryInput:
         geometry: StlFile | BuildFile = None,
         coax_ave_sensor_inputs: CoaxialAverageSensorInputs = CoaxialAverageSensorInputs(),
     ):
-        """Initialize a ThermalHistoryInput object."""
+        """Initialize a ``ThermalHistoryInput`` object."""
         self._id = id
         self._machine = machine
         self._material = material
@@ -204,7 +205,7 @@ class ThermalHistoryInput:
     def geometry(self, value):
         """Set geometry."""
         if not isinstance(value, (StlFile, BuildFile)):
-            raise TypeError("Geometry must be an StlFile of BuildFile")
+            raise TypeError("Geometry must be an StlFile or BuildFile.")
         self._geometry = value
 
     @property
@@ -215,7 +216,7 @@ class ThermalHistoryInput:
     @coax_ave_sensor_inputs.setter
     def coax_ave_sensor_inputs(self, value):
         if not isinstance(value, CoaxialAverageSensorInputs):
-            raise TypeError("Coaxial average sensor inputs must be a CoaxialAverageSensorInputs")
+            raise TypeError("Coaxial average sensor inputs must be a 'CoaxialAverageSensorInputs' object.")
         self._coax_ave_sensor_inputs = value
 
     def _to_simulation_request(self, remote_geometry_path: str) -> SimulationRequest:

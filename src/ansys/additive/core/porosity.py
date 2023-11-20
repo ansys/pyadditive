@@ -112,7 +112,8 @@ class PorosityInput:
     def size_x(self):
         """Size (m) of the simulated sample in the x dimension.
 
-        Valid values are from :obj:`MIN_SAMPLE_SIZE` to :obj:`MAX_SAMPLE_SIZE` meters.
+        Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+        :obj:`MAX_SAMPLE_SIZE` value.
         """
         return self._size_x
 
@@ -125,7 +126,8 @@ class PorosityInput:
     def size_y(self):
         """Size (m) of the simulated sample in the y dimension.
 
-        Valid values are from :obj:`MIN_SAMPLE_SIZE` to :obj:`MAX_SAMPLE_SIZE` meters.
+        Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+        :obj:`MAX_SAMPLE_SIZE` value.
         """
         return self._size_y
 
@@ -138,7 +140,8 @@ class PorosityInput:
     def size_z(self):
         """Size (m) of the simulated sample in the z dimension.
 
-        Valid values are from :obj:`MIN_SAMPLE_SIZE` to :obj:`MAX_SAMPLE_SIZE` meters.
+        Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+        :obj:`MAX_SAMPLE_SIZE` value.
         """
         return self._size_z
 
