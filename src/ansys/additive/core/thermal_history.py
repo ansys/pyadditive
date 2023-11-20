@@ -216,7 +216,9 @@ class ThermalHistoryInput:
     @coax_ave_sensor_inputs.setter
     def coax_ave_sensor_inputs(self, value):
         if not isinstance(value, CoaxialAverageSensorInputs):
-            raise TypeError("Coaxial average sensor inputs must be a 'CoaxialAverageSensorInputs' object.")
+            raise TypeError(
+                "Coaxial average sensor inputs must be a 'CoaxialAverageSensorInputs' object."
+            )
         self._coax_ave_sensor_inputs = value
 
     def _to_simulation_request(self, remote_geometry_path: str) -> SimulationRequest:

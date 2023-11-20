@@ -67,8 +67,8 @@ class Additive:
         parameters. This parameter is ignored if the ``server_connections`` parameter
         is other than ``None``.
     host: str, default: None
-        Host name or IPv4 address of the server. This parameter is ignored if the ``server_channels`` or ``channel``
-        parameters is other than ``None``.
+        Host name or IPv4 address of the server. This parameter is ignored if the
+        ``server_channels`` or ``channel`` parameters is other than ``None``.
     port: int, default: 50052
         Port number to use when connecting to the server.
     nservers: int, default: 1
