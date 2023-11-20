@@ -28,7 +28,7 @@ from unittest.mock import ANY, Mock, patch
 
 import pytest
 
-from ansys.additive.core.server_connection.constants import DEFAULT_ANSYS_VERSION
+from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION
 from ansys.additive.core.server_connection.local_server import LocalServer
 
 TEST_VALID_PORT = 1024
@@ -47,9 +47,9 @@ def test_launch_with_invalid_os_raises_exception():
 def test_launch_with_windows_os_and_AWP_ROOT_not_defined_raises_exception():
     # arrange
     orig_ansys_ver = None
-    if f"AWP_ROOT{DEFAULT_ANSYS_VERSION}" in os.environ:
-        orig_ansys_ver = os.environ[f"AWP_ROOT{DEFAULT_ANSYS_VERSION}"]
-        del os.environ[f"AWP_ROOT{DEFAULT_ANSYS_VERSION}"]
+    if f"AWP_ROOT{DEFAULT_PRODUCT_VERSION}" in os.environ:
+        orig_ansys_ver = os.environ[f"AWP_ROOT{DEFAULT_PRODUCT_VERSION}"]
+        del os.environ[f"AWP_ROOT{DEFAULT_PRODUCT_VERSION}"]
     # act, assert
     with pytest.raises(Exception) as excinfo:
         LocalServer.launch(TEST_VALID_PORT)
@@ -57,7 +57,7 @@ def test_launch_with_windows_os_and_AWP_ROOT_not_defined_raises_exception():
 
     # cleanup
     if orig_ansys_ver:
-        os.environ[f"AWP_ROOT{DEFAULT_ANSYS_VERSION}"] = orig_ansys_ver
+        os.environ[f"AWP_ROOT{DEFAULT_PRODUCT_VERSION}"] = orig_ansys_ver
 
 
 @patch("os.name", "posix")
@@ -173,7 +173,8 @@ def test_launch_calls_popen_as_expected_linux(
 @patch("subprocess.Popen")
 def test_launch_raises_exception_if_process_fails_to_start_win(mock_popen, tmp_path: pathlib.Path):
     # arrange
-    os.environ["AWP_ROOT241"] = str(tmp_path)
+    product_version = "NNN"
+    os.environ[f"AWP_ROOT{product_version}"] = str(tmp_path)
     mock_process = Mock()
     attrs = {"poll.return_value": 1}
     mock_process.configure_mock(**attrs)
@@ -184,7 +185,7 @@ def test_launch_raises_exception_if_process_fails_to_start_win(mock_popen, tmp_p
 
     # act, assert
     with pytest.raises(Exception) as excinfo:
-        LocalServer.launch(TEST_VALID_PORT, tmp_path)
+        LocalServer.launch(TEST_VALID_PORT, tmp_path, product_version)
     assert "Server exited with code" in str(excinfo.value)
 
 

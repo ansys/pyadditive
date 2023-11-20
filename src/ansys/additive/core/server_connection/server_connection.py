@@ -34,7 +34,7 @@ from google.protobuf.empty_pb2 import Empty
 import grpc
 
 from ansys.additive.core.server_connection.constants import (
-    DEFAULT_ANSYS_VERSION,
+    DEFAULT_PRODUCT_VERSION,
     LOCALHOST,
     PIM_PRODUCT_NAME,
 )
@@ -77,8 +77,8 @@ class ServerConnection:
     addr: str, None
         IPv4 address of server of the form ``host:port``.
     product_version: str
-        Product version of the Additive server, of the form ``"YYR"``, where ``YY`` is
-        the two-digit year and ``R`` is the release number. For example, the release
+        Version of the Ansys product installation, of the form ``"YYR"``, where ``YY``
+        is the two-digit year and ``R`` is the release number. For example, the release
         2024 R1 would be specified as ``241``. This parameter is only applicable in
         PyPIM environments and on localhost.
     log: logging.Logger, None
@@ -89,7 +89,7 @@ class ServerConnection:
         self,
         channel: grpc.Channel | None = None,
         addr: str | None = None,
-        product_version: str = DEFAULT_ANSYS_VERSION,
+        product_version: str = DEFAULT_PRODUCT_VERSION,
         log: logging.Logger = None,
     ) -> None:
         """Initialize a server connection."""

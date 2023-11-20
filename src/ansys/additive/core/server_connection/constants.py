@@ -25,6 +25,6 @@ from pathlib import Path
 
 LOCALHOST = "127.0.0.1"
 PIM_PRODUCT_NAME = "additive"
-DEFAULT_ANSYS_VERSION = "241"
+DEFAULT_PRODUCT_VERSION = "242"
 ADDITIVE_SERVER_EXE_NAME = "additiveserver"
 ADDITIVE_SERVER_SUBDIR = Path("Additive") / "additiveserver"

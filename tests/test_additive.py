@@ -30,11 +30,14 @@ from unittest.mock import ANY, MagicMock, Mock, call, create_autospec, patch
 from ansys.api.additive import __version__ as api_version
 import ansys.api.additive.v0.about_pb2_grpc
 from ansys.api.additive.v0.additive_domain_pb2 import (
-    MaterialTuningResult,
+    MicrostructureResult,
+    PorosityResult,
     Progress,
     ProgressState,
     ThermalHistoryResult,
 )
+from ansys.api.additive.v0.additive_domain_pb2 import MaterialTuningResult
+from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
 from ansys.api.additive.v0.additive_materials_pb2 import (
     GetMaterialRequest,
     GetMaterialsListResponse,
@@ -52,7 +55,9 @@ from ansys.additive.core import (
     USER_DATA_PATH,
     Additive,
     MicrostructureInput,
+    MicrostructureSummary,
     PorosityInput,
+    PorositySummary,
     SimulationError,
     SingleBeadInput,
     SingleBeadSummary,
@@ -63,19 +68,19 @@ from ansys.additive.core import (
 import ansys.additive.core.additive
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput
-from ansys.additive.core.server_connection import ServerConnection
+from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
 import ansys.additive.core.server_connection.server_connection
 
 from . import test_utils
 
 
-def test_Additive_init_performs_expected_initialization(monkeypatch: pytest.MonkeyPatch):
+def test_Additive_init_calls_connect_to_servers_correctly(monkeypatch: pytest.MonkeyPatch):
     # arrange
     server_connections = ["connection1", "connection2"]
-    channel = grpc.insecure_channel("channel_str")
     host = "hostname"
     port = 12345
     nservers = 3
+    product_version = "123"
 
     mock_server_connections = [Mock(ServerConnection)]
     mock_connect = create_autospec(
@@ -85,10 +90,10 @@ def test_Additive_init_performs_expected_initialization(monkeypatch: pytest.Monk
     monkeypatch.setattr(ansys.additive.core.additive.Additive, "_connect_to_servers", mock_connect)
 
     # act
-    additive = Additive(server_connections, channel, host, port, nservers)
+    additive = Additive(server_connections, host, port, nservers, product_version)
 
     # assert
-    mock_connect.assert_called_with(server_connections, channel, host, port, nservers, ANY)
+    mock_connect.assert_called_with(server_connections, host, port, nservers, product_version, ANY)
     assert additive._servers == mock_server_connections
     assert isinstance(additive._log, logging.Logger)
     assert additive._user_data_path == USER_DATA_PATH
@@ -107,7 +112,6 @@ def test_connect_to_servers_with_server_connections_creates_server_connections(m
     # act
     servers = Additive._connect_to_servers(
         server_connections=connections,
-        channel=channel,
         host=host1,
         port=99999,
         nservers=92,
@@ -123,23 +127,6 @@ def test_connect_to_servers_with_server_connections_creates_server_connections(m
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_connect_to_servers_with_channel_creates_server_connection(mock_connection):
-    # arrange
-    mock_connection.return_value = Mock(ServerConnection)
-    channel = grpc.insecure_channel("target")
-    log = logging.Logger("testlogger")
-
-    # act
-    servers = Additive._connect_to_servers(
-        server_connections=None, channel=channel, host="myhost", port=99999, nservers=99, log=log
-    )
-
-    # assert
-    assert len(servers) == 1
-    mock_connection.assert_called_once_with(channel=channel, log=log)
-
-
-@patch("ansys.additive.core.additive.ServerConnection")
 def test_connect_to_servers_with_host_creates_server_connection(mock_connection):
     # arrange
     mock_connection.return_value = Mock(ServerConnection)
@@ -149,7 +136,7 @@ def test_connect_to_servers_with_host_creates_server_connection(mock_connection)
 
     # act
     servers = Additive._connect_to_servers(
-        server_connections=None, channel=None, host=host, port=port, nservers=99, log=log
+        server_connections=None, host=host, port=port, nservers=99, log=log
     )
 
     # assert
@@ -168,9 +155,7 @@ def test_connect_to_servers_with_env_var_creates_server_connection(
     log = logging.Logger("testlogger")
 
     # act
-    servers = Additive._connect_to_servers(
-        server_connections=None, channel=None, host=None, nservers=99, log=log
-    )
+    servers = Additive._connect_to_servers(server_connections=None, host=None, nservers=99, log=log)
 
     # assert
     assert len(servers) == 1
@@ -186,12 +171,12 @@ def test_connect_to_servers_with_nservers_creates_server_connections(mock_connec
 
     # act
     servers = Additive._connect_to_servers(
-        server_connections=None, channel=None, host=None, nservers=nservers, log=log
+        server_connections=None, host=None, nservers=nservers, log=log
     )
 
     # assert
     assert len(servers) == nservers
-    mock_connection.assert_called_with(log=log)
+    mock_connection.assert_called_with(product_version=DEFAULT_PRODUCT_VERSION, log=log)
 
 
 def test_create_logger_raises_exception_for_invalid_log_level():
@@ -287,6 +272,30 @@ def test_simulate_with_single_input_calls_internal_simulate_once(_, input):
 
 # patch needed for Additive() call
 @patch("ansys.additive.core.additive.ServerConnection")
+def test_simulate_prints_error_message_when_SimulationError_returned(
+    _, capsys: pytest.CaptureFixture[str]
+):
+    # arrange
+    input = SingleBeadInput(material=test_utils.get_test_material())
+    error_msg = "error message"
+    simulation_error = SimulationError(input, error_msg)
+    with patch("ansys.additive.core.additive.Additive._simulate") as _simulate_patch:
+        _simulate_patch.return_value = simulation_error
+    additive = Additive()
+    additive._simulate = _simulate_patch
+
+    # act
+    summaries = additive.simulate([input])
+
+    # assert
+    assert isinstance(summaries[0], SimulationError)
+    captured = capsys.readouterr()
+    assert error_msg in captured.out
+    _simulate_patch.assert_called_once_with(input=input, server=ANY, show_progress=False)
+
+
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
 def test_simulate_with_input_list_calls_internal_simulate_n_times(_):
     # arrange
     with patch("ansys.additive.core.additive.Additive._simulate") as _simulate_patch:
@@ -348,6 +357,51 @@ def test_internal_simulate_with_thermal_history_without_geometry_returns_Simulat
     # assert
     assert isinstance(result, SimulationError)
     assert "The geometry path is not defined in the simulation input" in result.message
+
+
+@pytest.mark.parametrize(
+    "input,result,summary_type",
+    [
+        (SingleBeadInput(), MeltPoolMessage(), SingleBeadSummary),
+        (PorosityInput(), PorosityResult(), PorositySummary),
+        (MicrostructureInput(), MicrostructureResult(), MicrostructureSummary),
+    ],
+)  # patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_internal_simulate_returns_correct_summary(
+    _,
+    input,
+    result,
+    summary_type,
+):
+    # arrange
+    input.material = test_utils.get_test_material()
+    progress_msg = Progress(
+        state=ProgressState.PROGRESS_STATE_COMPLETED,
+        percent_complete=100,
+        message="running",
+        context="simulation",
+    )
+    if isinstance(result, MeltPoolMessage):
+        sim_response = SimulationResponse(id="id", progress=progress_msg, melt_pool=result)
+    elif isinstance(result, PorosityResult):
+        sim_response = SimulationResponse(id="id", progress=progress_msg, porosity_result=result)
+    elif isinstance(result, MicrostructureResult):
+        sim_response = SimulationResponse(
+            id="id", progress=progress_msg, microstructure_result=result
+        )
+    else:
+        assert False, "Invalid result type"
+
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.simulation_stub.Simulate.return_value = [sim_response]
+    additive = Additive()
+
+    # act
+    summary = additive._simulate(input, mock_connection_with_stub)
+
+    # assert
+    assert isinstance(summary, summary_type)
 
 
 @pytest.mark.parametrize(
@@ -633,11 +687,8 @@ def test_tune_material_returns_expected_result(
         ),
     )
 
-    def iterable_response(_):
-        yield response
-
     mock_connection_with_stub = Mock()
-    mock_connection_with_stub.materials_stub.TuneMaterial.side_effect = iterable_response
+    mock_connection_with_stub.materials_stub.TuneMaterial.return_value = [response]
     mock_connection.return_value = mock_connection_with_stub
     additive = Additive()
 

@@ -46,7 +46,7 @@ from ansys.additive.core.microstructure import MicrostructureInput, Microstructu
 import ansys.additive.core.misc as misc
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
 from ansys.additive.core.progress_logger import ProgressLogger
-from ansys.additive.core.server_connection import ServerConnection
+from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
 from ansys.additive.core.simulation import SimulationError
 from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
 from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHistorySummary
@@ -61,11 +61,6 @@ class Additive:
         List of connection definitions for servers. The list may be a combination of strings and
         connected :class:`grpc.Channel <grpc.Channel>` objects. Strings use the format
         ``host:port`` to specify the server IPv4 address.
-    channel: grpc.Channel, default: None
-        gRPC channel connection to use for communicating with the server. If the
-        default ``None`` is used, a connection is established using the host and port
-        parameters. This parameter is ignored if the ``server_connections`` parameter
-        is other than ``None``.
     host: str, default: None
         Host name or IPv4 address of the server. This parameter is ignored if the
         ``server_channels`` or ``channel`` parameters is other than ``None``.
@@ -77,6 +72,11 @@ class Additive:
         the Additive portion of the Ansys Structures package must be installed.
         This parameter is ignored if the ``server_connections``, ``channel``, or ``host``
         parameter is other than ``None``.
+    product_version: str
+        Version of the Ansys product installation, of the form ``"YYR"``, where ``YY``
+        is the two-digit year and ``R`` is the release number. For example, the release
+        2024 R1 would be specified as ``241``. This parameter is only applicable in
+        PyPIM environments and on localhost.
     log_level: str, default: "INFO"
         Minimum severity level of messages to log.
     log_file: str, default: ""
@@ -88,10 +88,10 @@ class Additive:
     def __init__(
         self,
         server_connections: list[str | grpc.Channel] = None,
-        channel: grpc.Channel | None = None,
         host: str | None = None,
         port: int = DEFAULT_ADDITIVE_SERVICE_PORT,
         nservers: int = 1,
+        product_version: str = DEFAULT_PRODUCT_VERSION,
         log_level: str = "INFO",
         log_file: str = "",
     ) -> None:
@@ -100,7 +100,7 @@ class Additive:
         self._log.debug("Logging set to %s", log_level)
 
         self._servers = Additive._connect_to_servers(
-            server_connections, channel, host, port, nservers, self._log
+            server_connections, host, port, nservers, product_version, self._log
         )
 
         # Setup data directory
@@ -134,10 +134,10 @@ class Additive:
     @staticmethod
     def _connect_to_servers(
         server_connections: list[str | grpc.Channel] = None,
-        channel: grpc.Channel | None = None,
         host: str | None = None,
         port: int = DEFAULT_ADDITIVE_SERVICE_PORT,
         nservers: int = 1,
+        product_version: str = DEFAULT_PRODUCT_VERSION,
         log: logging.Logger = None,
     ) -> list[ServerConnection]:
         """Connect to Additive servers, starting them if necessary."""
@@ -148,15 +148,13 @@ class Additive:
                     connections.append(ServerConnection(channel=target, log=log))
                 else:
                     connections.append(ServerConnection(addr=target, log=log))
-        elif channel:
-            connections.append(ServerConnection(channel=channel, log=log))
         elif host:
             connections.append(ServerConnection(addr=f"{host}:{port}", log=log))
         elif os.getenv("ANSYS_ADDITIVE_ADDRESS"):
             connections.append(ServerConnection(addr=os.getenv("ANSYS_ADDITIVE_ADDRESS"), log=log))
         else:
             for _ in range(nservers):
-                connections.append(ServerConnection(log=log))
+                connections.append(ServerConnection(product_version=product_version, log=log))
 
         return connections
 
@@ -198,6 +196,7 @@ class Additive:
             list is returned.
         """
         if type(inputs) is not list:
+            print("Single input")
             return self._simulate(inputs, self._servers[0], show_progress=True)
         else:
             self._validate_inputs(inputs)
@@ -258,7 +257,7 @@ class Additive:
         """
         logger = None
         if show_progress:
-            logger = ProgressLogger("Simulation")
+            logger = ProgressLogger("Simulation")  # pragma: no cover
 
         if input.material == AdditiveMaterial():
             raise ValueError("A material is not assigned to the simulation input")
@@ -273,7 +272,7 @@ class Additive:
             for response in server.simulation_stub.Simulate(request):
                 if response.HasField("progress"):
                     if logger:
-                        logger.log_progress(response.progress)
+                        logger.log_progress(response.progress)  # pragma: no cover
                     if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
                         raise Exception(response.progress.message)
                 if response.HasField("melt_pool"):
@@ -449,7 +448,7 @@ class Additive:
         ):
             remote_geometry_path = response.remote_file_name
             if logger:
-                logger.log_progress(response.progress)
+                logger.log_progress(response.progress)  # pragma: no cover
             if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
                 raise Exception(response.progress.message)
 
@@ -457,7 +456,7 @@ class Additive:
         for response in server.simulation_stub.Simulate(request):
             if response.HasField("progress"):
                 if logger:
-                    logger.log_progress(response.progress)
+                    logger.log_progress(response.progress)  # pragma: no cover
                 if (
                     response.progress.state == ProgressState.PROGRESS_STATE_ERROR
                     and "WARN" not in response.progress.message
