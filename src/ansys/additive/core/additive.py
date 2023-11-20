@@ -62,9 +62,10 @@ class Additive:
         connected :class:`grpc.Channel <grpc.Channel>` objects. Strings use the format
         ``host:port`` to specify the server IPv4 address.
     channel: grpc.Channel, default: None
-        gRPC channel connection to use for communicating with the server. If ``None``, a connection will be
-        established using the host and port parameters. Ignored if ``server_channels``
-        is not ``None``.
+        gRPC channel connection to use for communicating with the server. If the
+        default ``None`` is used, a connection is established using the host and port
+        parameters. This parameter is ignored if the ``server_connections`` parameter
+        is other than ``None``.
     host: str, default: None
         Host name or IPv4 address of the server. Ignored if ``server_channels`` or ``channel``
         is not ``None``.
