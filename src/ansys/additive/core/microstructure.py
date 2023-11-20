@@ -43,11 +43,11 @@ class MicrostructureInput:
     """
 
     DEFAULT_POSITION_COORDINATE = 0
-    """Default x, y, z, position coordinate (m)."""
+    """Default X, Y, Z, position coordinate (m)."""
     MIN_POSITION_COORDINATE = 0
-    """Minimum x, y, z, position coordinate (m)."""
+    """Minimum X, Y, Z, position coordinate (m)."""
     MAX_POSITION_COORDINATE = 10
-    """Maximum x, y, z, position coordinate (m)."""
+    """Maximum X, Y, Z, position coordinate (m)."""
     DEFAULT_SAMPLE_SIZE = 1.5e-3
     """Default sample size (m) in each dimension."""
     MIN_SAMPLE_SIZE = 0.001
