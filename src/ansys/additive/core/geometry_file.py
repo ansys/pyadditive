@@ -64,7 +64,7 @@ class BuildFile:
     """
 
     def __init__(self, type: MachineType, path: os.PathLike):
-        """Initialize a BuildFile object."""
+        """Initialize a ``BuildFile`` object."""
         if not isinstance(type, MachineType):
             raise ValueError("Invalid machine type")
         if not os.path.exists(path):
