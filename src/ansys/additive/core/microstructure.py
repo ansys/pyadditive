@@ -61,7 +61,7 @@ class MicrostructureInput:
     MAX_SENSOR_DIMENSION = 1e-3
     """Maximum sensor dimension (m)."""
     MIN_XY_SIZE_CUSHION = 5e-4
-    """Minimum cushion between sensor dimension and sample size in X and Y dimensions (m)."""
+    """Minimum cushion between sensor dimension and sample size in the X and Y dimensions (m)."""
     MIN_Z_SIZE_CUSHION = 1e-3
     """Minimum cushion between sensor dimension and sample size in Z dimension (m)."""
     DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS = False
