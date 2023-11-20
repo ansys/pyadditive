@@ -194,7 +194,7 @@ class Additive:
         SingleBeadSummary, PorositySummary, MicrostructureSummary, ThermalHistorySummary, SimulationError,
         list
             One or more summaries of simulation results. If a list of inputs is provided, a
-            list will be returned.
+            list is returned.
         """
         if type(inputs) is not list:
             return self._simulate(inputs, self._servers[0], show_progress=True)
