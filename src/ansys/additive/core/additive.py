@@ -74,8 +74,9 @@ class Additive:
     nservers: int, default: 1
         Number of Additive servers to start and connect to.
         ``nservers`` instances of Additive server will be started. For this to work,
-        the Additive portion of the Ansys Structures package must be installed. Ignored if
-        ``server_connections``, ``channel``, or ``host`` is not ``None``.
+        the Additive portion of the Ansys Structures package must be installed.
+        This parameter is ignored if the ``server_connections``, ``channel``, or ``host``
+        parameter is other than ``None``.
     log_level: str, default: "INFO"
         Minimum severity level of messages to log.
     log_file: str, default: ""
