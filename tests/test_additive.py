@@ -68,7 +68,7 @@ from ansys.additive.core import (
 import ansys.additive.core.additive
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput
-from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
+from ansys.additive.core.server_connection import ServerConnection
 import ansys.additive.core.server_connection.server_connection
 
 from . import test_utils
@@ -166,17 +166,22 @@ def test_connect_to_servers_with_env_var_creates_server_connection(
 def test_connect_to_servers_with_nservers_creates_server_connections(mock_connection):
     # arrange
     nservers = 99
+    product_version = "123"
     mock_connection.return_value = Mock(ServerConnection)
     log = logging.Logger("testlogger")
 
     # act
     servers = Additive._connect_to_servers(
-        server_connections=None, host=None, nservers=nservers, log=log
+        server_connections=None,
+        host=None,
+        nservers=nservers,
+        product_version=product_version,
+        log=log,
     )
 
     # assert
     assert len(servers) == nservers
-    mock_connection.assert_called_with(product_version=DEFAULT_PRODUCT_VERSION, log=log)
+    mock_connection.assert_called_with(product_version=product_version, log=log)
 
 
 def test_create_logger_raises_exception_for_invalid_log_level():
