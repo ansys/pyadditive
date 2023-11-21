@@ -808,9 +808,9 @@ class ParametricStudy:
             Valid values are from :obj:`MIN_SENSOR_DIMENSION <MicrostructureInput.MIN_SENSOR_DIMENSION>`
             to :obj:`MAX_SENSOR_DIMENSION <MicrostructureInput.MAX_SENSOR_DIMENSION>`.
             The values for the ``size_x`` and ``size_y`` parameters must be greater than the
-            ``sensor_dimension`` parameter by :obj:`MIN_XY_SIZE_CUSHION <MicrostructureInput.MIN_XY_SIZE_CUSHION>`.
-            The value for the ``size_z`` parameter must be greater than ``sensor_dimension``
-            parameter by :obj:`MIN_Z_SIZE_CUSHION <MicrostructureInput.MIN_Z_SIZE_CUSHION>`.
+            ``sensor_dimension`` parameter by :obj:`MIN_XY_SIZE_CUSHION <MicrostructureInput.MIN_XY_SIZE_CUSHION>`
+            meters. The value for the ``size_z`` parameter must be greater than ``sensor_dimension``
+            parameter by :obj:`MIN_Z_SIZE_CUSHION <MicrostructureInput.MIN_Z_SIZE_CUSHION>` meters.
         layer_thicknesses : list[float], default: None
             Layer thicknesses (m) to use for microstructure simulations.
             If this value is ``None``,
