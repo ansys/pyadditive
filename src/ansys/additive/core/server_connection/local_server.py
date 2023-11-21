@@ -33,7 +33,7 @@ from ansys.additive.core import USER_DATA_PATH
 from ansys.additive.core.server_connection.constants import (
     ADDITIVE_SERVER_EXE_NAME,
     ADDITIVE_SERVER_SUBDIR,
-    DEFAULT_ANSYS_VERSION,
+    DEFAULT_PRODUCT_VERSION,
 )
 
 
@@ -42,7 +42,7 @@ class LocalServer:
 
     @staticmethod
     def launch(
-        port: int, cwd: str = USER_DATA_PATH, product_version: str = DEFAULT_ANSYS_VERSION
+        port: int, cwd: str = USER_DATA_PATH, product_version: str = DEFAULT_PRODUCT_VERSION
     ) -> subprocess.Popen:
         """Launch a local gRPC server for the Additive service.
 
@@ -67,7 +67,7 @@ class LocalServer:
             env_var = (
                 f"AWP_ROOT{product_version}"
                 if product_version
-                else f"AWP_ROOT{DEFAULT_ANSYS_VERSION}"
+                else f"AWP_ROOT{DEFAULT_PRODUCT_VERSION}"
             )
             awp_root = os.environ.get(env_var)
             if not awp_root:

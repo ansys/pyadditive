@@ -38,7 +38,7 @@ def build_rate(
         Laser scan speed.
     layer_thickness : float
         Powder deposit layer thickness.
-    hatch_spacing : float, None
+    hatch_spacing : float, default: None
         Distance between hatch scan lines.
 
     Returns
@@ -73,13 +73,13 @@ def energy_density(
         Laser scan speed.
     layer_thickness : float
         Powder deposit layer thickness.
-    hatch_spacing : float, None
+    hatch_spacing : float, default: None
         Distance between hatch scan lines.
 
     Returns
     -------
     float
-        Volumetric energy density is returned i hatch spacing is provided.
+        Volumetric energy density is returned if hatch spacing is provided.
         Otherwise an area energy density is returned. If input units are W, m/s, m, or m,
         the output units are J/m^3 or J/m^2.
     """
