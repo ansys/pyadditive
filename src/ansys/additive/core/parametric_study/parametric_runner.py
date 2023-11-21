@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import List, Optional, Union
+from __future__ import annotations
 
 import numpy as np
 import pandas as pd
@@ -47,31 +47,30 @@ class ParametricRunner:
     def simulate(
         df: pd.DataFrame,
         additive: Additive,
-        type: Optional[List[SimulationType]] = None,
-        priority: Optional[int] = None,
-    ) -> List[Union[MicrostructureSummary, PorositySummary, SingleBeadSummary]]:
-        """Run the simulations in the parametric study with
-        ``SimulationStatus.PENDING`` in the ``ColumnNames.STATUS`` column.
+        type: list[SimulationType] = None,
+        priority: int = None,
+    ) -> list[SingleBeadSummary, PorositySummary, MicrostructureSummary]:
+        """Run the simulations in the parametric study with ``Status`` equal to ``Pending``.
 
-        Execution order is determined by the values in the ``ColumnNames.PRIORITY`` column.
+        Execution order is determined by the ``Priority`` value assigned to the simulations.
         Lower values are interpreted as having higher priority and are run first.
 
         Parameters
         ----------
         df : pd.DataFrame
             Parametric study data frame.
-        additive: :class:`Additive <ansys.additive.core.additive.Additive>`
+        additive : Additive
             Additive service connection to use for running simulations.
-        type : list, None
+        type : list, default: None
             List of the simulation types to run. The default is ``None``, in which case all
             simulation types are run.
-        priority : int, None
+        priority : int, default: None
             Priority of simulations to run. The default is ``None``, in which case
             all priorities are run.
 
         Returns
         -------
-        List[Union[MicrostructureSummary, PorositySummary, SingleBeadSummary]]
+        list[SingleBeadSummary, PorositySummary, MicrostructureSummary]
             List of simulation summaries.
         """
         if type is None:
