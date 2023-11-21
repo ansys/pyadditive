@@ -118,8 +118,8 @@ class ParametricStudy:
         priority: int | None = None,
     ):
         """Run the simulations in the parametric study with ``Pending`` for
-        their ``Status`` value. Execution order is determined by their
-        ``Priority`` value. Lower values are interpreted as having
+        their ``Status`` values. Execution order is determined by their
+        ``Priority`` values. Lower values are interpreted as having
         higher priority and are run first.
 
         Parameters
@@ -127,10 +127,10 @@ class ParametricStudy:
         additive : Additive
             Additive service connection to use for running simulations.
         type : list[SimulationType], default: None
-            The type of simulations to run. If this value is ``None``,
+            Type of simulations to run. If this value is ``None``,
             all simulation types are run.
         priority : int, default: None
-            The priority of simulations to run. If this value is ``None``,
+            Priority of simulations to run. If this value is ``None``,
             all priorities are run.
         """
         summaries = ParametricRunner.simulate(
@@ -213,7 +213,7 @@ class ParametricStudy:
         """Add summaries of previously executed simulations to the parametric
         study.
 
-        Simulation summaries are created using :meth:`Additive.simulate`.
+        Simulation summaries are created using the :meth:`Additive.simulate` method.
         This method adds new simulations to the parametric study. To update existing
         simulations, use the :meth:`update` method.
 
@@ -851,8 +851,8 @@ class ParametricStudy:
             is used. Valid values are from :obj:`MIN_SLICING_STRIPE_WIDTH <MachineConstants.MIN_SLICING_STRIPE_WIDTH>`
             to :obj:`MAX_SLICING_STRIPE_WIDTH <MachineConstants.MAX_SLICING_STRIPE_WIDTH>`.
         min_energy_density : float, default: None
-            The minimum energy density (J/m^3) to use for microstructure simulations.
-            Parameter combinations with an area energy density below this value will not be included.
+            Minimum energy density (J/m^3) to use for microstructure simulations.
+            Parameter combinations with an area energy density below this value are not included.
             Area energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
         max_energy_density : float, default: None
             The maximum energy density (J/m^3) to use for microstructure simulations.
@@ -869,40 +869,40 @@ class ParametricStudy:
         cooling_rate : float, default: None
             The cooling rate (K/s) to use for microstructure simulations.
             If this value is ``None``, and ``thermal_gradient``, ``melt_pool_width``, and ``melt_pool_depth``
-            are ``None``, it will be calculated. If ``None`` and any of the other three parameters
+            are ``None``, the cooling rate is calculated. If ``None`` and any of the other three parameters
             are not ``None``, :obj:`DEFAULT_COOLING_RATE <MicrostructureInput.DEFAULT_COOLING_RATE>`
-            will be used. Valid values are from :obj:`MIN_COOLING_RATE <MicrostructureInput.MIN_COOLING_RATE>`
+            is used. Valid values are from :obj:`MIN_COOLING_RATE <MicrostructureInput.MIN_COOLING_RATE>`
             to :obj:`MAX_COOLING_RATE <MicrostructureInput.MAX_COOLING_RATE>`.
         thermal_gradient : float, default: None
-            The thermal gradient (K/m) to use for microstructure simulations.
+            Thermal gradient (K/m) to use for microstructure simulations.
             If this value is ``None``, and ``cooling_rate``, ``melt_pool_width``, and ``melt_pool_depth``
-            are ``None``, it will be calculated. If this value is ``None`` and any of the other three parameters
+            are ``None``, the thermal gradient is calculated. If this value is ``None`` and any of the other three parameters
             are not ``None``, :obj:`DEFAULT_THERMAL_GRADIENT <MicrostructureInput.DEFAULT_THERMAL_GRADIENT>`\
-            will be used. Valid values are from :obj:`MIN_THERMAL_GRADIENT <MicrostructureInput.MIN_THERMAL_GRADIENT>`
+           is used. Valid values are from :obj:`MIN_THERMAL_GRADIENT <MicrostructureInput.MIN_THERMAL_GRADIENT>`
             to :obj:`MAX_THERMAL_GRADIENT <MicrostructureInput.MAX_THERMAL_GRADIENT>`.
         melt_pool_width : float, default: None
-            The melt pool width (m) to use for microstructure simulations.
-            If this value is ``None``, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_depth``
-            are ``None``, it will be calculated. If this value is ``None`` and any of the other three parameters
-            are not ``None``, :obj:`DEFAULT_MELT_POOL_WIDTH <MicrostructureInput.DEFAULT_MELT_POOL_WIDTH>`.
+            Melt pool width (m) to use for microstructure simulations.
+            If this value is ``None`` and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_depth``
+            are ``None``, the melt pool is calculated. If this value is ``None`` and any of the other three parameters
+            are not ``None``, :obj:`DEFAULT_MELT_POOL_WIDTH <MicrostructureInput.DEFAULT_MELT_POOL_WIDTH>` is used.
             Valid values are from :obj:`MIN_MELT_POOL_WIDTH <MicrostructureInput.MIN_MELT_POOL_WIDTH>`
             to :obj:`MAX_MELT_POOL_WIDTH <MicrostructureInput.MAX_MELT_POOL_WIDTH>`.
         melt_pool_depth : float, default: None
-            The melt pool depth (m) to use for microstructure simulations.
+            Melt pool depth (m) to use for microstructure simulations.
             If this value is ``None``, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_width``
-            are ``None``, it will be calculated. If this value is ``None`` and any of the other three parameters
-            are not ``None``, :obj:`DEFAULT_MELT_POOL_DEPTH <MicrostructureInput.DEFAULT_MELT_POOL_DEPTH>`.
+            are ``None``, the melt pool depth is calculated. If this value is ``None`` and any of the other three parameters
+            are not ``None``, :obj:`DEFAULT_MELT_POOL_DEPTH <MicrostructureInput.DEFAULT_MELT_POOL_DEPTH>` is used.
             Valid values are from :obj:`MIN_MELT_POOL_DEPTH <MicrostructureInput.MIN_MELT_POOL_DEPTH>`
             to :obj:`MAX_MELT_POOL_DEPTH <MicrostructureInput.MAX_MELT_POOL_DEPTH>`.
         random_seed : int, default: None
             The random seed to use for microstructure simulations. If this value is ``None``,
-            an automatically generated random seed will be used.
+            an automatically generated random seed is used.
             Valid values are from :obj:`MIN_RANDOM_SEED <MicrostructureInput.MIN_RANDOM_SEED>`
             to :obj:`MAX_RANDOM_SEED <MicrostructureInput.MAX_RANDOM_SEED>`.
         iteration : int, default: :obj:`DEFAULT_ITERATION <constants.DEFAULT_ITERATION>`
-            The iteration number for this set of simulations.
+            Iteration number for this set of simulations.
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
-            The priority for this set of simulations.
+            Priority for this set of simulations.
         """  # noqa
         lt = (
             layer_thicknesses
