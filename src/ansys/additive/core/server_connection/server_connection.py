@@ -77,7 +77,7 @@ class ServerConnection:
     addr: str, None
         IPv4 address of server of the form ``host:port``.
     product_version: str
-        Version of the Ansys product installation, of the form ``"YYR"``, where ``YY``
+        Version of the Ansys product installation in the form ``"YYR"``, where ``YY``
         is the two-digit year and ``R`` is the release number. For example, the release
         2024 R1 would be specified as ``241``. This parameter is only applicable in
         PyPIM environments and on localhost.
