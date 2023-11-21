@@ -564,58 +564,58 @@ class ParametricStudy:
             Size (m) of the porosity sample in the z direction.
             Valid values are from :obj:`MIN_SAMPLE_SIZE <PorosityInput.MIN_SAMPLE_SIZE>`
             to :obj:`MAX_SAMPLE_SIZE <PorosityInput.MAX_SAMPLE_SIZE>`.
-        layer_thicknesses : list[float], default None
+        layer_thicknesses : list[float], default: None
             Layer thicknesses (m) to use for porosity simulations.
             If this value is ``None``,
             :obj:`DEFAULT_LAYER_THICKNESS <MachineConstants.DEFAULT_LAYER_THICKNESS>`
             is used. Valid values are from :obj:`MIN_LAYER_THICKNESS <MachineConstants.MIN_LAYER_THICKNESS>`
             to :obj:`MAX_LAYER_THICKNESS <MachineConstants.MAX_LAYER_THICKNESS>`.
-        heater_temperatures : list[float], default None
+        heater_temperatures : list[float], default: None
             Heater temperatures (C) to use for porosity simulations.
             If this value is ``None``,
             :obj:`DEFAULT_HEATER_TEMP <MachineConstants.DEFAULT_HEATER_TEMP>`
             is used. Valid values are from :obj:`MIN_HEATER_TEMP <MachineConstants.MIN_HEATER_TEMP>`
             to :obj:`MAX_HEATER_TEMP <MachineConstants.MAX_HEATER_TEMP>`.
-        beam_diameters : list[float], default None
+        beam_diameters : list[float], default: None
             Beam diameters (m) to use for porosity simulations.
             If this value is ``None``, :obj:`DEFAULT_BEAM_DIAMETER`
             is used. Valid values are from :obj:`MIN_BEAM_DIAMETER <MachineConstants.MIN_BEAM_DIAMETER>`
             to :obj:`MAX_BEAM_DIAMETER <MachineConstants.MAX_BEAM_DIAMETER>`.
-        start_angles : list[float], default None
+        start_angles : list[float], default: None
             Scan angles (deg) for the first layer to use for porosity simulations.
             If this value is ``None``,
             :obj:`DEFAULT_STARTING_LAYER_ANGLE <MachineConstants.DEFAULT_STARTING_LAYER_ANGLE>`
             is used. Valid values are from :obj:`MIN_STARTING_LAYER_ANGLE <MachineConstants.MIN_STARTING_LAYER_ANGLE>`
             to :obj:`MAX_STARTING_LAYER_ANGLE <MachineConstants.MAX_STARTING_LAYER_ANGLE>`.
-        rotation_angles : list[float], default None
+        rotation_angles : list[float], default: None
             Angles (deg) by which the scan direction is rotated with each layer
             to use for porosity simulations. If this value is ``None``,
             :obj:`DEFAULT_LAYER_ROTATION_ANGLE <MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE>`
             is used. Valid values are from :obj:`MIN_LAYER_ROTATION_ANGLE <MachineConstants.MIN_LAYER_ROTATION_ANGLE>`
             to :obj:`MAX_LAYER_ROTATION_ANGLE <MachineConstants.MAX_LAYER_ROTATION_ANGLE>`.
-        hatch_spacings : list[float], default None
+        hatch_spacings : list[float], default: None
             Hatch spacings (m) to use for porosity simulations. If this value is ``None``,
             :obj:`DEFAULT_HATCH_SPACING <MachineConstants.DEFAULT_HATCH_SPACING>` is used.
             Valid values are from :obj:`MIN_HATCH_SPACING <MachineConstants.MIN_HATCH_SPACING>`
             to :obj:`MAX_HATCH_SPACING <MachineConstants.MAX_HATCH_SPACING>`.
-        stripe_widths : list[float], default None
+        stripe_widths : list[float], default: None
             Stripe widths (m) to use for porosity simulations. If this value is ``None``,
             :obj:`DEFAULT_SLICING_STRIPE_WIDTH <MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH>`
             is used. Valid values are from :obj:`MIN_SLICING_STRIPE_WIDTH <MachineConstants.MIN_SLICING_STRIPE_WIDTH>`
             to :obj:`MAX_SLICING_STRIPE_WIDTH <MachineConstants.MAX_SLICING_STRIPE_WIDTH>`.
-        min_energy_density : float, default None
+        min_energy_density : float, default: None
             Minimum energy density (J/m^3) to use for porosity simulations. Parameter combinations
             with an area energy density below this value are not included. Area energy density is
             defined as laser power / (layer thickness * scan speed * hatch spacing).
-        max_energy_density : float, default None
+        max_energy_density : float, default: None
             Maximum energy density (J/m^3) to use for porosity simulations. Parameter combinations
             with an area energy density above this value are not included. Energy density is defined
             as laser power / (layer thickness * scan speed * hatch spacing).
-        min_build_rate : float, default None
+        min_build_rate : float, default: None
             Minimum build rate (m^3/s) to use for porosity simulations. Parameter combinations
             with a build rate below this value are not included. Build rate is defined as
             layer thickness * scan speed * hatch spacing.
-        max_build_rate : float, default None
+        max_build_rate : float, default: None
             Maximum build rate (m^3/s) to use for porosity simulations. Parameter combinations
             with a build rate above this value are not included. Build rate is defined as
             layer thickness * scan speed * hatch spacing.
