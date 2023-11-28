@@ -127,6 +127,19 @@ def test_nsims_per_servers_setter_raises_exception_for_invalid_value(_):
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
+def test_nsims_per_servers_setter_correctly_assigns_valid_value(_):
+    # arrange
+    nsims_per_server = 99
+    additive = Additive()
+
+    # act
+    additive.nsims_per_server = nsims_per_server
+
+    # assert
+    assert additive._nsims_per_server == nsims_per_server
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
 def test_connect_to_servers_with_server_connections_creates_server_connections(mock_connection):
     # arrange
     mock_connection.return_value = Mock(ServerConnection)
