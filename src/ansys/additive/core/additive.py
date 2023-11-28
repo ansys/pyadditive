@@ -89,7 +89,8 @@ class Additive:
         Version of the Ansys product installation in the form ``"YYR"``, where ``YY``
         is the two-digit year and ``R`` is the release number. For example, the release
         2024 R1 would be specified as ``241``. This parameter is only applicable in
-        `PyPIM`_-enabled cloud environments and on localhost.
+        `PyPIM`_-enabled cloud environments and on localhost. Using an empty string
+        or ``None`` uses the default product version.
     log_level: str, default: "INFO"
         Minimum severity level of messages to log.
     log_file: str, default: ""
@@ -133,6 +134,9 @@ class Additive:
         log_file: str = "",
     ) -> None:
         """Initialize server connections."""
+        if product_version is None or product_version == "":
+            product_version = DEFAULT_PRODUCT_VERSION
+
         self._log = Additive._create_logger(log_file, log_level)
         self._log.debug("Logging set to %s", log_level)
 
@@ -212,7 +216,7 @@ class Additive:
         """Print information about the client and server."""
         print(f"Client {__version__}, API version: {api_version}")
         if self._servers is None:
-            print("Not connected to a server")
+            print("Client is not connected to a server.")
             return
         else:
             for server in self._servers:
