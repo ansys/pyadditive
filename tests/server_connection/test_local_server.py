@@ -87,11 +87,11 @@ def test_launch_with_linux_installation_but_invalid_ansys_version_raises_excepti
 @pytest.mark.skipif(os.name != "nt", reason="Test only valid on Windows")
 def test_launch_when_exe_not_found_raises_exception_win():
     # arrange
-    os.environ["AWP_ROOT241"] = "Bogus"
+    os.environ["AWP_ROOT123"] = "Bogus"
 
     # act, assert
     with pytest.raises(FileNotFoundError) as excinfo:
-        LocalServer.launch(TEST_VALID_PORT)
+        LocalServer.launch(TEST_VALID_PORT, product_version="123")
     assert "Cannot find " in str(excinfo.value)
 
 

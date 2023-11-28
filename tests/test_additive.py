@@ -90,13 +90,40 @@ def test_Additive_init_calls_connect_to_servers_correctly(monkeypatch: pytest.Mo
     monkeypatch.setattr(ansys.additive.core.additive.Additive, "_connect_to_servers", mock_connect)
 
     # act
-    additive = Additive(server_connections, host, port, nservers, product_version)
+    additive = Additive(
+        server_connections, host, port, nservers=nservers, product_version=product_version
+    )
 
     # assert
     mock_connect.assert_called_with(server_connections, host, port, nservers, product_version, ANY)
     assert additive._servers == mock_server_connections
     assert isinstance(additive._log, logging.Logger)
     assert additive._user_data_path == USER_DATA_PATH
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_Additive_init_assigns_nsims_per_servers(_):
+    # arrange
+    nsims_per_server = 99
+
+    # act
+    additive_default = Additive()
+    additive = Additive(nsims_per_server=nsims_per_server)
+
+    # assert
+    assert additive_default.nsims_per_server == 1
+    assert additive.nsims_per_server == nsims_per_server
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_nsims_per_servers_setter_raises_exception_for_invalid_value(_):
+    # arrange
+    nsims_per_server = -1
+    additive = Additive()
+
+    # act, assert
+    with pytest.raises(ValueError, match="must be greater than zero"):
+        additive.nsims_per_server = nsims_per_server
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
@@ -324,6 +351,60 @@ def test_simulate_with_input_list_calls_internal_simulate_n_times(_):
     print(_simulate_patch.call_args_list)
     calls = [call(input=i, server=ANY, show_progress=False) for i in inputs]
     _simulate_patch.assert_has_calls(calls, any_order=True)
+
+
+@pytest.mark.parametrize(
+    "inputs, nservers, nsims_per_server, expected_n_threads",
+    [
+        (
+            [
+                SingleBeadInput(id="id1"),
+                PorosityInput(id="id2"),
+                MicrostructureInput(id="id3"),
+                ThermalHistoryInput(id="id4"),
+                SingleBeadInput(id="id5"),
+            ],
+            2,
+            2,
+            4,
+        ),
+        (
+            [
+                SingleBeadInput(id="id1"),
+                PorosityInput(id="id2"),
+                MicrostructureInput(id="id3"),
+                ThermalHistoryInput(id="id4"),
+            ],
+            3,
+            2,
+            4,
+        ),
+    ],
+)
+@patch("ansys.additive.core.additive.ServerConnection")
+@patch("concurrent.futures.ThreadPoolExecutor")
+def test_simulate_with_n_servers_m_sims_per_server_uses_n_x_m_threads(
+    mock_executor, mock_connection, inputs, nservers, nsims_per_server, expected_n_threads
+):
+    # arrange
+    mock_connection.return_value = Mock(ServerConnection)
+
+    def raise_exception(_):
+        raise Exception("exception")
+
+    # mock_executor.return_value = concurrent.futures.ThreadPoolExecutor()
+    mock_executor.side_effect = raise_exception
+    additive = Additive(nservers=nservers, nsims_per_server=nsims_per_server)
+
+    # act
+    try:
+        additive.simulate(inputs)
+    except Exception:
+        pass
+
+    # assert
+    assert mock_connection.call_count == nservers
+    mock_executor.assert_called_once_with(expected_n_threads)
 
 
 # patch needed for Additive() call
