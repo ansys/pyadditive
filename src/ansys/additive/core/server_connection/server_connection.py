@@ -64,7 +64,7 @@ class ServerConnectionStatus:
 class ServerConnection:
     """Provides connection to Additive server.
 
-    If neither ``channel`` nor ``addr`` are provided, an attempt will be
+    If neither ``channel`` nor ``addr`` are provided, an attempt is
     made to start an Additive server and connect to it. Starting a server
     in a cloud environment requires
     `PyPIM <https://pypim.docs.pyansys.com/version/stable/index.html>`_ to be available.
