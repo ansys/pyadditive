@@ -56,7 +56,7 @@ class Additive:
     """Provides the client interface to one or more Additive services.
 
     In a typical cloud environment, a single Additive service with load balancing and
-    auto-scaling is used. The ``Additive`` client would connect to the service via a
+    auto-scaling is used. The ``Additive`` client connects to the service via a
     single connection. However, for atypical environments or when running on localhost,
     the ``Additive`` client can perform crude load balancing by connecting to multiple
     servers and distributing simulations across them. The ``server_connections``,
