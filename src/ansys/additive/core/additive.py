@@ -61,7 +61,7 @@ class Additive:
     the ``Additive`` client can perform crude load balancing by connecting to multiple
     servers and distributing simulations across them. The ``server_connections``,
     ``nsims_per_server``, and ``nservers`` parameters can be used to control the
-    number of servers to connect to and the number of simulations to execute on each
+    number of servers to connect to and the number of simulations to run on each
     server.
 
     Parameters
@@ -76,7 +76,7 @@ class Additive:
     port: int, default: 50052
         Port number to use when connecting to the server.
     nsims_per_server: int, default: 1
-        Number of simultaneous simulations to execute on each server. Each simulation
+        Number of simultaneous simulations to run on each server. Each simulation
         requires a license checkout. If a license is not available, the simulation will
         fail.
     nservers: int, default: 1
@@ -198,12 +198,12 @@ class Additive:
 
     @property
     def nsims_per_server(self) -> int:
-        """Number of simultaneous simulations to execute on each server."""
+        """Number of simultaneous simulations to run on each server."""
         return self._nsims_per_server
 
     @nsims_per_server.setter
     def nsims_per_server(self, value: int) -> None:
-        """Set the number of simultaneous simulations to execute on each server."""
+        """Set the number of simultaneous simulations to run on each server."""
         if value < 1:
             raise ValueError("Number of simulations per server must be greater than zero")
         self._nsims_per_server = value
