@@ -60,7 +60,7 @@ class Additive:
     single connection. However, for atypical environments or when running on localhost,
     the ``Additive`` client can perform crude load balancing by connecting to multiple
     servers and distributing simulations across them. The ``server_connections``,
-    ``nsims_per_server``, and ``nservers`` parameters can be used to control the
+    `, ``nservers``, and ``nsims_per_server` parameters can be used to control the
     number of servers to connect to and the number of simulations to run on each
     server.
 
