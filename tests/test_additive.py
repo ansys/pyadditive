@@ -263,7 +263,7 @@ def test_about_prints_not_connected_message(capsys: pytest.CaptureFixture[str]):
     # assert
     out_str = capsys.readouterr().out
     assert f"Client {__version__}, API version: {api_version}" in out_str
-    assert "Not connected to server" in out_str
+    assert "Not connected to a server" in out_str
 
 
 def test_about_prints_server_status_messages(capsys: pytest.CaptureFixture[str]):

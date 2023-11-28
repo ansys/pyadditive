@@ -212,10 +212,9 @@ class Additive:
         """Print information about the client and server."""
         print(f"Client {__version__}, API version: {api_version}")
         if self._servers is None:
-            print("Not connected to server")
+            print("Not connected to a server")
             return
         else:
-            print("_servers not None")
             for server in self._servers:
                 print(server.status())
 
