@@ -1,6 +1,6 @@
 name: GitHub CI
 on:
-  pull_request:
+  pull_request_target:
   merge_group:
   workflow_dispatch:
   push:
@@ -88,7 +88,6 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           files: .cov/xml
-
 
   doc-build:
     name: "Building library documentation"
