@@ -81,8 +81,8 @@ class ServerConnection:
         Version of the Ansys product installation in the form ``"YYR"``, where ``YY``
         is the two-digit year and ``R`` is the release number. For example, the release
         2024 R1 would be specified as ``241``. This parameter is only applicable in
-        `PyPIM <https://pypim.docs.pyansys.com/version/stable/index.html>`_
-        enabled cloud environments and on localhost.
+        `PyPIM <https://pypim.docs.pyansys.com/version/stable/index.html>`_-enabled
+        cloud environments and on localhost.
     log: logging.Logger, None
         Log to write connection messages to.
     """
