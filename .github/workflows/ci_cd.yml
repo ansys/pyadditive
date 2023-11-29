@@ -14,7 +14,7 @@ env:
   DOCUMENTATION_CNAME: "additive.docs.pyansys.com"
   LIBRARY_NAME: "ansys-additive-core"
   # NOTE: The server needs to stay in a private registry.
-  ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys-internal/additive:24.1.0-alpha10"
+  ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys-internal/additive:24.2.0-alpha1"
   ANSYS_PRODUCT_CONTAINER: "ansys-additive-container"
 
 concurrency:

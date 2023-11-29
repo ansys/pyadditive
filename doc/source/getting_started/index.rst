@@ -100,6 +100,8 @@ Then, run this command to install PyAdditive:
 
    python -m pip install ansys-additive-core
 
+.. _ref_install_in_developer_mode:
+
 Install in developer mode
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 

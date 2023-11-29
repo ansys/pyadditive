@@ -9,21 +9,12 @@ Overall guidance on contributing to a PyAnsys library appears in the
 in the *PyAnsys developer's guide*. Ensure that you are thoroughly familiar
 with this guide before attempting to contribute to PyAdditive.
 
-The following contribution information is specific to PyAdditive.
+Configure your development environment
+--------------------------------------
 
-Clone the repository
---------------------
-
-To clone and install the latest PyAdditive release in development mode, run
-these commands:
-
-.. code::
-
-    git clone https://github.com/ansys/pyadditive
-    cd pyadditive
-    python -m pip install --upgrade pip
-    pip install -e .
-
+For instructions on setting up your development environment, see
+:ref:`ref_getting_started`, particularly the :ref:`ref_install_in_developer_mode`
+section.
 
 Post issues
 -----------

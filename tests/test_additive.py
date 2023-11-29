@@ -68,19 +68,28 @@ from ansys.additive.core import (
 import ansys.additive.core.additive
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput
-from ansys.additive.core.server_connection import ServerConnection
+from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
 import ansys.additive.core.server_connection.server_connection
 
 from . import test_utils
 
 
-def test_Additive_init_calls_connect_to_servers_correctly(monkeypatch: pytest.MonkeyPatch):
+@pytest.mark.parametrize(
+    "in_prod_version, expected_prod_version",
+    [
+        (None, DEFAULT_PRODUCT_VERSION),
+        ("123", "123"),
+        ("", DEFAULT_PRODUCT_VERSION),
+    ],
+)
+def test_Additive_init_calls_connect_to_servers_correctly(
+    monkeypatch: pytest.MonkeyPatch, in_prod_version, expected_prod_version
+):
     # arrange
     server_connections = ["connection1", "connection2"]
     host = "hostname"
     port = 12345
     nservers = 3
-    product_version = "123"
 
     mock_server_connections = [Mock(ServerConnection)]
     mock_connect = create_autospec(
@@ -91,11 +100,13 @@ def test_Additive_init_calls_connect_to_servers_correctly(monkeypatch: pytest.Mo
 
     # act
     additive = Additive(
-        server_connections, host, port, nservers=nservers, product_version=product_version
+        server_connections, host, port, nservers=nservers, product_version=in_prod_version
     )
 
     # assert
-    mock_connect.assert_called_with(server_connections, host, port, nservers, product_version, ANY)
+    mock_connect.assert_called_with(
+        server_connections, host, port, nservers, expected_prod_version, ANY
+    )
     assert additive._servers == mock_server_connections
     assert isinstance(additive._log, logging.Logger)
     assert additive._user_data_path == USER_DATA_PATH
@@ -263,7 +274,7 @@ def test_about_prints_not_connected_message(capsys: pytest.CaptureFixture[str]):
     # assert
     out_str = capsys.readouterr().out
     assert f"Client {__version__}, API version: {api_version}" in out_str
-    assert "Not connected to a server" in out_str
+    assert "Client is not connected to a server." in out_str
 
 
 def test_about_prints_server_status_messages(capsys: pytest.CaptureFixture[str]):
