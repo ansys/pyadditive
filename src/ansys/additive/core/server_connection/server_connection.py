@@ -64,10 +64,11 @@ class ServerConnectionStatus:
 class ServerConnection:
     """Provides connection to Additive server.
 
-    If neither ``channel`` nor ``addr`` are provided, an attempt will be
-    made to start an Additive server and connect to it. If running in a
-    cloud environment, :class:`PyPIM <ansys.platform.instancemanagement.pypim>`
-    must be supported. If running on localhost, the Additive option of the
+    If neither ``channel`` nor ``addr`` are provided, an attempt is
+    made to start an Additive server and connect to it. Starting a server
+    in a cloud environment requires
+    `PyPIM <https://pypim.docs.pyansys.com/version/stable/index.html>`_ to be available.
+    To start a server when running on localhost, the Additive option of the
     Structures package of the Ansys unified installation must be installed.
 
     Parameters
@@ -80,7 +81,8 @@ class ServerConnection:
         Version of the Ansys product installation in the form ``"YYR"``, where ``YY``
         is the two-digit year and ``R`` is the release number. For example, the release
         2024 R1 would be specified as ``241``. This parameter is only applicable in
-        PyPIM environments and on localhost.
+        `PyPIM <https://pypim.docs.pyansys.com/version/stable/index.html>`_-enabled
+        cloud environments and on localhost.
     log: logging.Logger, None
         Log to write connection messages to.
     """

@@ -55,6 +55,15 @@ from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHist
 class Additive:
     """Provides the client interface to one or more Additive services.
 
+    In a typical cloud environment, a single Additive service with load balancing and
+    auto-scaling is used. The ``Additive`` client connects to the service via a
+    single connection. However, for atypical environments or when running on localhost,
+    the ``Additive`` client can perform crude load balancing by connecting to multiple
+    servers and distributing simulations across them. You can use the ``server_connections``,
+    ``nservers``, and ``nsims_per_server` parameters to control the
+    number of servers to connect to and the number of simulations to run on each
+    server.
+
     Parameters
     ----------
     server_connections: list[str, grpc.Channel], None
@@ -66,21 +75,49 @@ class Additive:
         ``server_channels`` or ``channel`` parameters is other than ``None``.
     port: int, default: 50052
         Port number to use when connecting to the server.
+    nsims_per_server: int, default: 1
+        Number of simultaneous simulations to run on each server. Each simulation
+        requires a license checkout. If a license is not available, the simulation
+        fails.
     nservers: int, default: 1
-        Number of Additive servers to start and connect to.
-        ``nservers`` instances of Additive server will be started. For this to work,
-        the Additive portion of the Ansys Structures package must be installed.
-        This parameter is ignored if the ``server_connections``, ``channel``, or ``host``
-        parameter is other than ``None``.
+        Number of Additive servers to start and connect to. This parameter is only
+        applicable in `PyPIM`_-enabled cloud environments and on localhost. For
+        this to work on localhost, the Additive portion of the Ansys Structures
+        package must be installed. This parameter is ignored if the ``server_connections``
+        parameter or ``host`` parameter is other than ``None``.
     product_version: str
         Version of the Ansys product installation in the form ``"YYR"``, where ``YY``
         is the two-digit year and ``R`` is the release number. For example, the release
         2024 R1 would be specified as ``241``. This parameter is only applicable in
-        PyPIM environments and on localhost.
+        `PyPIM`_-enabled cloud environments and on localhost. Using an empty string
+        or ``None`` uses the default product version.
     log_level: str, default: "INFO"
         Minimum severity level of messages to log.
     log_file: str, default: ""
         File name to write log messages to.
+
+    Examples
+    --------
+    Connect to a list of servers. Multiple connections to the same host are permitted.
+
+    >>> additive = Additive(server_connections=["localhost:50052", "localhost:50052", "myserver:50052"])
+
+    Connect to a single server using the host name and port number.
+
+    >>> additive = Additive(host="additive.ansys.com", port=12345)
+
+    Start and connect to two servers on localhost or in a
+    `PyPIM`_-enabled cloud environment. Allow each server to run two
+    simultaneous simulations.
+
+    >>> additive = Additive(nsims_per_server=2, nservers=2)
+
+    Start a single server on localhost or in a `PyPIM`_-enabled cloud environment.
+    Use version 2024 R1 of the Ansys product installation.
+
+    >>> additive = Additive(product_version="241")
+
+    .. _PyPIM: https://pypim.docs.pyansys.com/version/stable/index.html
     """
 
     DEFAULT_ADDITIVE_SERVICE_PORT = 50052
@@ -90,18 +127,23 @@ class Additive:
         server_connections: list[str | grpc.Channel] = None,
         host: str | None = None,
         port: int = DEFAULT_ADDITIVE_SERVICE_PORT,
+        nsims_per_server: int = 1,
         nservers: int = 1,
         product_version: str = DEFAULT_PRODUCT_VERSION,
         log_level: str = "INFO",
         log_file: str = "",
     ) -> None:
         """Initialize server connections."""
+        if product_version is None or product_version == "":
+            product_version = DEFAULT_PRODUCT_VERSION
+
         self._log = Additive._create_logger(log_file, log_level)
         self._log.debug("Logging set to %s", log_level)
 
         self._servers = Additive._connect_to_servers(
             server_connections, host, port, nservers, product_version, self._log
         )
+        self._nsims_per_server = nsims_per_server
 
         # Setup data directory
         self._user_data_path = USER_DATA_PATH
@@ -158,14 +200,25 @@ class Additive:
 
         return connections
 
+    @property
+    def nsims_per_server(self) -> int:
+        """Number of simultaneous simulations to run on each server."""
+        return self._nsims_per_server
+
+    @nsims_per_server.setter
+    def nsims_per_server(self, value: int) -> None:
+        """Set the number of simultaneous simulations to run on each server."""
+        if value < 1:
+            raise ValueError("Number of simulations per server must be greater than zero.")
+        self._nsims_per_server = value
+
     def about(self) -> None:
         """Print information about the client and server."""
         print(f"Client {__version__}, API version: {api_version}")
         if self._servers is None:
-            print("Not connected to server")
+            print("Client is not connected to a server.")
             return
         else:
-            print("_servers not None")
             for server in self._servers:
                 print(server.status())
 
@@ -206,7 +259,8 @@ class Additive:
             f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Completed 0 of {len(inputs)} simulations",
             end="",
         )
-        with concurrent.futures.ThreadPoolExecutor(len(self._servers)) as executor:
+        threads = min(len(inputs), len(self._servers) * self._nsims_per_server)
+        with concurrent.futures.ThreadPoolExecutor(threads) as executor:
             futures = []
             for i, input in enumerate(inputs):
                 server_id = i % len(self._servers)
