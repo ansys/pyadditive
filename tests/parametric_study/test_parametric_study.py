@@ -1279,6 +1279,7 @@ def test_format_version_returns_proper_version(tmp_path: pytest.TempPathFactory)
     assert study.format_version == ps.FORMAT_VERSION
 
 
+@pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
 def test_update_format_updates_version_1_to_latest(tmp_path: pytest.TempPathFactory):
     # arrange
     v1_file = tmp_path / "version1.ps"

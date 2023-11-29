@@ -81,9 +81,10 @@ class ParametricStudy:
         if study_path.suffix != ".ps":
             study_path = pathlib.Path(str(study_path) + ".ps")
         if study_path.exists():
-            self = ParametricStudy.load(study_path)
+            self.__dict__ = ParametricStudy.load(study_path).__dict__
         else:
             self._init_new_study(study_path)
+        print(f"Saving parametric study to {self.file_name}")
 
     def _init_new_study(self, study_path: pathlib.Path):
         self._file_name = study_path
@@ -91,7 +92,19 @@ class ParametricStudy:
         self._data_frame = pd.DataFrame(columns=columns)
         self._format_version = FORMAT_VERSION
         self.save(self.file_name)
-        print(f"Saving parametric study to {self.file_name}")
+
+    @classmethod
+    def _new(cls, study_path: pathlib.Path):
+        """Create a new parametric study.
+
+        Parameters
+        ----------
+        study_path: pathlib.Path
+            Path to the study file.
+        """
+        study = cls.__new__(cls)
+        study._init_new_study(study_path)
+        return study
 
     @property
     def format_version(self) -> int:
@@ -220,8 +233,7 @@ class ParametricStudy:
         if not isinstance(study, ParametricStudy):
             raise ValueError(f"{file_name} is not a parametric study.")
 
-        if save_file_name is not None:
-            study.file_name = save_file_name
+        study.file_name = save_file_name if save_file_name is not None else file_name
         study = ParametricStudy.update_format(study)
         return study
 
@@ -1391,6 +1403,6 @@ class ParametricStudy:
             )
             version = 2
 
-        new_study = ParametricStudy(study.file_name)
+        new_study = ParametricStudy._new(study.file_name)
         new_study._data_frame = df
         return new_study
