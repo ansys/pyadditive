@@ -74,7 +74,7 @@ class ParametricStudy:
         Parameters
         ----------
         file_name: str, os.PathLike
-            Name of file study will be written to. If the file exists, it is
+            Name of the file the parametric study is written to. If the file exists, it is
             loaded and updated to the latest version of the file format.
         """
         study_path = pathlib.Path(file_name).absolute()
@@ -194,11 +194,11 @@ class ParametricStudy:
         Parameters
         ----------
         file_name : str, os.PathLike
-            Name of file to load the parametric study from. If ``save_file_name``
+            Name of the parametric study file to load. If ``save_file_name``
             is not specified, this file is overwritten when the parametric
             study is updated.
         save_file_name : str, os.PathLike, default: None
-            Name of file to save the parametric study to. If this value is
+            Name of the file the parametric study is saved to. If this value is
             ``None``, the ``file_name`` parameter is used.
 
         Returns
