@@ -9,6 +9,7 @@ on:
     branches:
       - main
 
+
 env:
   MAIN_PYTHON_VERSION: "3.10"
   DOCUMENTATION_CNAME: "additive.docs.pyansys.com"
