@@ -68,26 +68,48 @@ def save_on_return(func):
 class ParametricStudy:
     """Provides data storage and utility methods for a parametric study."""
 
-    def __init__(self, study_name: str, study_dir: str | os.PathLike = "."):
+    def __init__(self, file_name: str | os.PathLike):
         """Initialize the parametric study.
 
         Parameters
         ----------
-        study_name: str
-            Name of study.
-        study_dir: str, os.PathLike, default: "."
-            Directory where study will be stored.
+        file_name: str, os.PathLike
+            Name of the file the parametric study is written to. If the file exists, it is
+            loaded and updated to the latest version of the file format.
         """
-        self._file_name = pathlib.Path(study_dir).absolute() / f"{study_name}.ps"
+        study_path = pathlib.Path(file_name).absolute()
+        if study_path.suffix != ".ps":
+            study_path = pathlib.Path(str(study_path) + ".ps")
+        if study_path.exists():
+            self.__dict__ = ParametricStudy.load(study_path).__dict__
+        else:
+            self._init_new_study(study_path)
+        print(f"Saving parametric study to {self.file_name}")
+
+    def _init_new_study(self, study_path: pathlib.Path):
+        self._file_name = study_path
         columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
         self._data_frame = pd.DataFrame(columns=columns)
+        self._format_version = FORMAT_VERSION
         self.save(self.file_name)
-        print(f"Saving parametric study to {self.file_name}")
+
+    @classmethod
+    def _new(cls, study_path: pathlib.Path):
+        """Create a new parametric study.
+
+        Parameters
+        ----------
+        study_path: pathlib.Path
+            Path to the study file.
+        """
+        study = cls.__new__(cls)
+        study._init_new_study(study_path)
+        return study
 
     @property
     def format_version(self) -> int:
         """Version of the parametric study file format."""
-        return FORMAT_VERSION
+        return self._format_version
 
     @property
     def file_name(self) -> os.PathLike:
@@ -151,17 +173,33 @@ class ParametricStudy:
         """
 
         pathlib.Path(file_name).parent.mkdir(parents=True, exist_ok=True)
+        if self.file_name != file_name:
+            # Save to a new file. Copy the current study and update the file name.
+            ps = ParametricStudy.load(self.file_name, file_name)
+        else:
+            ps = self
         with open(file_name, "wb") as f:
-            dill.dump(self, f)
+            dill.dump(ps, f)
 
     @staticmethod
-    def load(file_name) -> ParametricStudy:
+    def load(
+        file_name: str | os.PathLike, save_file_name: str | os.PathLike = None
+    ) -> ParametricStudy:
         """Load a parametric study from a file.
+
+        Loaded parametric studies are automatically updated to the latest
+        version of the file format unless the ``save_file_name`` parameter
+        is specified.
 
         Parameters
         ----------
         file_name : str, os.PathLike
-            Name of file to load the parametric study from.
+            Name of the parametric study file to load. If ``save_file_name``
+            is not specified, this file is overwritten when the parametric
+            study is updated.
+        save_file_name : str, os.PathLike, default: None
+            Name of the file the parametric study is saved to. If this value is
+            ``None``, the ``file_name`` parameter is used.
 
         Returns
         -------
@@ -195,13 +233,8 @@ class ParametricStudy:
         if not isinstance(study, ParametricStudy):
             raise ValueError(f"{file_name} is not a parametric study.")
 
-        if hasattr(study, "format_version") and study.format_version > FORMAT_VERSION:
-            raise ValueError(
-                f"Unsupported version, study version = {study.format_version},"
-                + "current supported versions up to {FORMAT_VERSION}."
-            )
-
-        study.file_name = file_name
+        study.file_name = save_file_name if save_file_name is not None else file_name
+        study = ParametricStudy.update_format(study)
         return study
 
     @save_on_return
@@ -1303,9 +1336,7 @@ class ParametricStudy:
         Returns
         -------
         str
-            Unique ID. If the combination of ``prefix`` and ``id`` is unique,
-            it is returned. Otherwise, they are combined and a suffix is added to
-            create a unique ID.
+            Unique ID.
         """
 
         if id is not None and not self._data_frame[ColumnNames.ID].str.match(f"{id}").any():
@@ -1320,3 +1351,58 @@ class ParametricStudy:
     def clear(self):
         """Remove all permutations from the parametric study."""
         self._data_frame = self._data_frame[0:0]
+
+    @staticmethod
+    def update_format(study: ParametricStudy) -> ParametricStudy:
+        """Update a parametric study to the latest format version.
+
+        Parameters
+        ----------
+        study : ParametricStudy
+            Parametric study to update.
+
+        Returns
+        -------
+        ParametricStudy
+            Updated parametric study.
+        """
+
+        # The format_version property was implemented incorrectly in version 1.
+        # Check the column names to determine if the study is version 1.
+        if "Heater Temp (°C)" in study.data_frame().columns:
+            version = 1
+        else:
+            version = study.format_version
+
+        if version > FORMAT_VERSION:
+            raise ValueError(
+                f"Unsupported version, study version = {version},"
+                + "latest supported version is {FORMAT_VERSION}."
+            )
+
+        if version == FORMAT_VERSION:
+            return study
+
+        print("Updating parametric study to latest version.")
+
+        df = study.data_frame()
+        if version < 2:
+            df = df.rename(
+                columns={
+                    "Heater Temp (°C)": ColumnNames.HEATER_TEMPERATURE,
+                    "Start Angle (°)": ColumnNames.START_ANGLE,
+                    "Rotation Angle (°)": ColumnNames.ROTATION_ANGLE,
+                    "Cooling Rate (°K/s)": ColumnNames.COOLING_RATE,
+                    "Thermal Gradient (°K/m)": ColumnNames.THERMAL_GRADIENT,
+                    "XY Average Grain Size (µm)": ColumnNames.XY_AVERAGE_GRAIN_SIZE,
+                    "XZ Average Grain Size (µm)": ColumnNames.XZ_AVERAGE_GRAIN_SIZE,
+                    "YZ Average Grain Size (µm)": ColumnNames.YZ_AVERAGE_GRAIN_SIZE,
+                    "Melt Pool Length/Width (m)": ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH,
+                    "Melt Pool Ref Depth/Width (m)": ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH,
+                }
+            )
+            version = 2
+
+        new_study = ParametricStudy._new(study.file_name)
+        new_study._data_frame = df
+        return new_study

@@ -282,7 +282,7 @@ def test_create_microstructure_input_assigns_defaults_for_nans():
 
 def test_simulate_sorts_by_priority(tmp_path: pytest.TempPathFactory):
     # arrange
-    study = ps.ParametricStudy("test_study", tmp_path)
+    study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
@@ -303,7 +303,7 @@ def test_simulate_sorts_by_priority(tmp_path: pytest.TempPathFactory):
 
 def test_simulate_filters_by_priority(tmp_path: pytest.TempPathFactory):
     # arrange
-    study = ps.ParametricStudy("test_study", tmp_path)
+    study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
@@ -324,7 +324,7 @@ def test_simulate_filters_by_priority(tmp_path: pytest.TempPathFactory):
 
 def test_simulate_filters_by_single_simulation_type(tmp_path: pytest.TempPathFactory):
     # arrange
-    study = ps.ParametricStudy("test_study", tmp_path)
+    study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
@@ -345,7 +345,7 @@ def test_simulate_filters_by_single_simulation_type(tmp_path: pytest.TempPathFac
 
 def test_simulate_filters_by_simulation_type_list(tmp_path: pytest.TempPathFactory):
     # arrange
-    study = ps.ParametricStudy("test_study", tmp_path)
+    study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
@@ -370,7 +370,7 @@ def test_simulate_filters_by_simulation_type_list(tmp_path: pytest.TempPathFacto
 
 def test_simulate_skips_simulations_with_missing_materials(tmp_path: pytest.TempPathFactory):
     # arrange
-    study = ps.ParametricStudy("test_study", tmp_path)
+    study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
     sb = SingleBeadInput(id="test_1", material=material)
     p = PorosityInput(id="test_2", material=material)
