@@ -82,3 +82,7 @@ License: MIT
 Files: tox.ini
 Copyright: 2023 ANSYS, Inc. and/or its affiliates.
 License: MIT
+
+Files: codecov.yml
+Copyright: 2023 ANSYS, Inc. and/or its affiliates.
+License: MIT
