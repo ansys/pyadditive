@@ -43,13 +43,13 @@ class SimulationStatus:
     """Provides simulation status values."""
 
     PENDING = "Pending"
-    """Simulation is awaiting execution."""
+    """Simulation is waiting to run."""
     COMPLETED = "Completed"
-    """Simulation was executed."""
+    """Simulation was run."""
     ERROR = "Error"
     """Simulation errored."""
     SKIP = "Skip"
-    """Do not execute this simulation, only applies to parametric studies."""
+    """Do not run this simulation, only applies to parametric studies."""
 
 
 class SimulationError:
