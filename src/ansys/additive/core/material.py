@@ -689,7 +689,13 @@ class AdditiveMaterial:
 
     @property
     def support_yield_strength_ratio(self) -> float:
-        """Factor to reduce the yield strength and elastic modulus of the support material."""
+        """Knockdown factor that is used to adjust the strength of the support material in comparison to the solid material.
+
+        The factor is multiplied by the support material's yield
+        strength and elastic modulus. A value of 1.0, for example,
+        results in support strength equal to the solid material, whereas
+        0.5 is half the strength of the solid material.
+        """  # noqa: E501
         return self._support_yield_strength_ratio
 
     @support_yield_strength_ratio.setter
