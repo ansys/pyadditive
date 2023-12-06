@@ -31,15 +31,17 @@ except ModuleNotFoundError:  # pragma: no cover
 
 __version__ = importlib_metadata.version(__name__.replace(".", "-"))
 
-APP_NAME = "pyadditive"
-COMPANY_NAME = "Ansys Inc"
+__APP_NAME = "pyadditive"
+__COMPANY_NAME = "Ansys Inc"
 
 # Setup data directory
-USER_DATA_PATH = platformdirs.user_data_dir(APP_NAME, COMPANY_NAME)
+USER_DATA_PATH = platformdirs.user_data_dir(__APP_NAME, __COMPANY_NAME)
+"""Storage path for user data."""
 if not os.path.exists(USER_DATA_PATH):  # pragma: no cover
     os.makedirs(USER_DATA_PATH)
 
 EXAMPLES_PATH = os.path.join(USER_DATA_PATH, "examples")
+"""Storage path for example data."""
 if not os.path.exists(EXAMPLES_PATH):  # pragma: no cover
     os.makedirs(EXAMPLES_PATH)
 

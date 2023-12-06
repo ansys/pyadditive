@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Provides data storage and utilities to perform a parametric study."""
 
 from __future__ import annotations
 
@@ -121,8 +122,7 @@ class ParametricStudy:
         self._file_name = pathlib.Path(value)
 
     def data_frame(self) -> pd.DataFrame:
-        """Return a :class:`DataFrame <pandas.DataFrame>` representing the
-        parametric study.
+        """Return a :class:`DataFrame <pandas.DataFrame>` containing the study simulations.
 
         For the column names used in the returned data frame, see
         the :class:`ColumnNames <constants.ColumnNames>` class.
@@ -139,8 +139,9 @@ class ParametricStudy:
         type: list[SimulationType] | None = None,
         priority: int | None = None,
     ):
-        """Run the simulations in the parametric study with ``Pending`` for
-        their ``Status`` values. Execution order is determined by their
+        """Run the simulations with ``Pending`` for their ``Status`` values.
+
+        Execution order is determined by the simulations
         ``Priority`` values. Lower values are interpreted as having
         higher priority and are run first.
 
@@ -243,8 +244,7 @@ class ParametricStudy:
         summaries: list[SingleBeadSummary | PorositySummary | MicrostructureSummary],
         iteration: int = DEFAULT_ITERATION,
     ):
-        """Add summaries of previously executed simulations to the parametric
-        study.
+        """Add summaries of executed simulations to the parametric study.
 
         Simulation summaries are created using the :meth:`Additive.simulate` method.
         This method adds new simulations to the parametric study. To update existing
@@ -1103,7 +1103,8 @@ class ParametricStudy:
         """Update the results of simulations in the parametric study.
 
         This method updates values for existing simulations in the parametric study. To add
-        completed simulations, use the :meth:`add_summaries` method instead.
+        completed simulations, use the :meth:`add_summaries` method instead. This method is
+        automatically called by the :meth:`run_simulations` method when simulations are completed.
 
         Parameters
         ----------

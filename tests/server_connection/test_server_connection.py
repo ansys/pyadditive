@@ -32,7 +32,7 @@ from google.protobuf.empty_pb2 import Empty
 import grpc
 import pytest
 
-from ansys.additive.core.server_connection.constants import LOCALHOST, PIM_PRODUCT_NAME
+from ansys.additive.core.server_connection.constants import LOCALHOST, PYPIM_PRODUCT_NAME
 import ansys.additive.core.server_connection.local_server
 import ansys.additive.core.server_connection.server_connection
 from ansys.additive.core.server_connection.server_connection import (
@@ -143,7 +143,7 @@ def test_init_connects_with_pypim(monkeypatch):
     assert isinstance(server.simulation_stub, SimulationServiceStub)
     assert isinstance(server._about_stub, AboutServiceStub)
     mock_client.create_instance.assert_called_with(
-        product_name=PIM_PRODUCT_NAME, product_version="123"
+        product_name=PYPIM_PRODUCT_NAME, product_version="123"
     )
 
 

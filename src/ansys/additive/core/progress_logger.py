@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Provides logging and progress."""
 
 import logging
 from os import getenv
@@ -28,7 +29,7 @@ from tqdm import tqdm
 
 
 class ProgressLogger:
-    """Provides for progress logging."""
+    """Provides for logging and progress reporting."""
 
     def __init__(self, name: str = None) -> None:
         """Initialize a ``ProgressLogger`` object.
@@ -43,11 +44,11 @@ class ProgressLogger:
         self._last_context = "Initializing"
 
     def log_progress(self, progress: Progress):
-        """Log progress.
+        """Report progress and possibly emit a log message.
 
         Parameters
         ----------
-        progress: :class:`Progress <Progress>`
+        progress: Progress
             Latest progress.
         """
         if getenv("GENERATING_DOCS"):

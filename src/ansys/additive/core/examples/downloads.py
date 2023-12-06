@@ -19,8 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""Provides functions for downloading sample datasets from the PyAdditive
-repository."""
+"""Provides functions for downloading sample datasets from the PyAdditive repository."""
 from http.client import HTTPMessage
 import os
 import shutil
@@ -30,10 +29,15 @@ import zipfile
 from ansys.additive.core import EXAMPLES_PATH
 
 EXAMPLES_URI = "https://github.com/ansys/example-data/raw/master"
+"""URI for the example data repository."""
 PARTS_FOLDER = "pyadditive/part-only"
+"""Folder containing example parts."""
 BUILD_FILES_FOLDER = "pyadditive/buildfiles"
+"""Folder containing example build files."""
 MATERIAL_TUNING_FOLDER = "pyadditive/material_tuning_input"
+"""Folder containing example material tuning input files."""
 CUSTOM_MATERIAL_FOLDER = "pyadditive/custom_material_data"
+"""Folder containing example custom material data files."""
 
 
 def delete_downloads():
@@ -119,18 +123,18 @@ def download_small_wedge_slm_build_file():
 
 
 class MaterialTuningExampleInputFiles:
-    """Holds the example inputs for the material tuning process.
+    """Container for the example material tuning process inputs.
 
     Parameters
     ----------
     experiment_data_file : str
-        Path to the experiment data file.
+        Path to the experiment data file (CSV).
     material_parameters_file : str
-        Path to the material parameters file.
+        Path to the material parameters file (JSON).
     thermal_properties_lookup_file : str
-        Path to the thermal properties lookup file.
+        Path to the thermal properties lookup file (CSV).
     characteristic_width_lookup_file : str
-        Path to the characteristic width lookup file.
+        Path to the characteristic width lookup file (CSV).
     """
 
     def __init__(
@@ -148,18 +152,22 @@ class MaterialTuningExampleInputFiles:
 
     @property
     def experiment_data_file(self):
+        """Path to the experiment data file (CSV).)"""
         return self._experiment_data_file
 
     @property
     def material_parameters_file(self):
+        """Path to the material parameters file (JSON)."""
         return self._material_parameters_file
 
     @property
     def thermal_properties_lookup_file(self):
+        """Path to the thermal properties lookup file (CSV)."""
         return self._thermal_properties_lookup_file
 
     @property
     def characteristic_width_lookup_file(self):
+        """Path to the characteristic width lookup file (CSV)."""
         return self._characteristic_width_lookup_file
 
 

@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Provides a container for machine parameters."""
 import math
 
 from ansys.api.additive.v0.additive_domain_pb2 import MachineSettings as MachineMessage
@@ -87,8 +87,7 @@ class MachineConstants:
 
 
 class AdditiveMachine:
-    """Provides the additive manufacturing machine settings used during
-    simulations.
+    """Provides the additive manufacturing machine settings used during simulations.
 
     Units are SI (m, kg, s, or K) unless otherwise noted. Exceptions
     include angles, which are (degrees), and the heater temperature,

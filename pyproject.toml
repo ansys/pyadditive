@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-additive-core"
-version = "0.17.dev5"
+version = "0.17.dev6"
 description = "A Python client for the Ansys Additive service"
 readme = "README.rst"
 requires-python = ">=3.9,<4"
@@ -119,7 +119,7 @@ show_missing = true
 
 [tool.pytest.ini_options]
 minversion = "7.1"
-addopts = "-ra --cov=ansys.additive.core --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --cov-fail-under 95"
+addopts = "-ra --cov=ansys.additive.core --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --cov-fail-under 100"
 testpaths = ["tests"]
 filterwarnings = ["ignore:::.*protoc_gen_swagger*"]
 
@@ -127,6 +127,5 @@ filterwarnings = ["ignore:::.*protoc_gen_swagger*"]
 ignore-semiprivate = true
 ignore-private = true
 ignore-setters = true
-ignore-module = true
 ignore-magic = true
 verbose = 1

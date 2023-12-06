@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Provides a plot for average grain size."""
 
 from __future__ import annotations
 
@@ -48,12 +49,12 @@ def ave_grain_size_plot(ps: ParametricStudy):
 
     Parameters
     ----------
-    ps : :class:`ParametricStudy <ansys.additive.core.parametric_study.ParametricStudy>`
+    ps : :class:`ParametricStudy`
         Parametric study to plot.
 
     Returns
     -------
-    :class: `panel.Row <panel.Row>`
+    panel.Row
         Interactive plot.
     """
     global min_ags, max_ags
