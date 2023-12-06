@@ -44,12 +44,12 @@ def porosity_contour_plot(ps: ParametricStudy):
 
     Parameters
     ----------
-    ps : :class:`ParametricStudy`
+    ps : ParametricStudy
         Parametric study to plot.
 
     Returns
     -------
-    :class: `panel.Row <panel.Row>`
+    panel.Row
         Interactive plot.
     """
     df = __data_frame(ps)

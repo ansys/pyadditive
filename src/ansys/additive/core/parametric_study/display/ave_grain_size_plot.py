@@ -49,7 +49,7 @@ def ave_grain_size_plot(ps: ParametricStudy):
 
     Parameters
     ----------
-    ps : :class:`ParametricStudy`
+    ps : ParametricStudy
         Parametric study to plot.
 
     Returns

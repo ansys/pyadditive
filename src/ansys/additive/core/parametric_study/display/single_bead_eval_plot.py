@@ -49,12 +49,12 @@ def single_bead_eval_plot(ps: ParametricStudy):
 
     Parameters
     ----------
-    ps : :class:`ParametricStudy <ansys.additive.core.parametric_study.ParametricStudy>`
+    ps : ParametricStudy
         Parametric study to plot.
 
     Returns
     -------
-    :class: `panel.Row <panel.Row>`
+    panel.Row
         Interactive plot.
     """
     df = __data_frame(ps)
