@@ -129,8 +129,8 @@ class MaterialTuningExampleInputFiles:
     ----------
     experiment_data_file : str
         Path to the experiment data file (CSV).
-    material_parameters_file : str
-        Path to the material parameters file (JSON).
+    material_configuration_file : str
+        Path to the material configuration file (JSON).
     thermal_properties_lookup_file : str
         Path to the thermal properties lookup file (CSV).
     characteristic_width_lookup_file : str
@@ -140,13 +140,13 @@ class MaterialTuningExampleInputFiles:
     def __init__(
         self,
         experiment_data_file: str,
-        material_parameters_file: str,
+        material_configuration_file: str,
         thermal_properties_lookup_file: str,
         characteristic_width_lookup_file: str,
     ):
         """Initialize a ``MaterialTuningInputs`` object."""
         self._experiment_data_file = experiment_data_file
-        self._material_parameters_file = material_parameters_file
+        self._material_configuration_file = material_configuration_file
         self._thermal_properties_lookup_file = thermal_properties_lookup_file
         self._characteristic_width_lookup_file = characteristic_width_lookup_file
 
@@ -156,9 +156,9 @@ class MaterialTuningExampleInputFiles:
         return self._experiment_data_file
 
     @property
-    def material_parameters_file(self):
-        """Path to the material parameters file (JSON)."""
-        return self._material_parameters_file
+    def material_configuration_file(self):
+        """Path to the material configuration file (JSON)."""
+        return self._material_configuration_file
 
     @property
     def thermal_properties_lookup_file(self):
@@ -178,9 +178,9 @@ def download_material_tuning_input() -> MaterialTuningExampleInputFiles:
     experiment_data_file = os.path.join(extract_dir, "experiment_data.csv")
     if not os.path.isfile(experiment_data_file):
         raise FileNotFoundError("Failed to download experiment data file")
-    material_parameters_file = os.path.join(extract_dir, "material_parameters.json")
-    if not os.path.isfile(material_parameters_file):
-        raise FileNotFoundError("Failed to download material parameters file")
+    material_configuration_file = os.path.join(extract_dir, "material_parameters.json")
+    if not os.path.isfile(material_configuration_file):
+        raise FileNotFoundError("Failed to download material configuration file")
     thermal_lookup_file = os.path.join(extract_dir, "thermal_lookup.csv")
     if not os.path.isfile(thermal_lookup_file):
         raise FileNotFoundError("Failed to download thermal lookup file")
@@ -189,7 +189,7 @@ def download_material_tuning_input() -> MaterialTuningExampleInputFiles:
         raise FileNotFoundError("Failed to download characteristic width lookup file")
     return MaterialTuningExampleInputFiles(
         experiment_data_file,
-        material_parameters_file,
+        material_configuration_file,
         thermal_lookup_file,
         characteristic_width_lookup_file,
     )
@@ -200,8 +200,8 @@ class CustomMaterialExampleFiles:
 
     Parameters
     ----------
-    material_parameters_file : str
-        Path to the material parameters file.
+    material_configuration_file : str
+        Path to the material configuration file.
     thermal_properties_lookup_file : str
         Path to the thermal properties lookup file.
     characteristic_width_lookup_file : str
@@ -210,20 +210,20 @@ class CustomMaterialExampleFiles:
 
     def __init__(
         self,
-        material_parameters_file: str,
+        material_configuration_file: str,
         thermal_properties_lookup_file: str,
         characteristic_width_lookup_file: str,
     ):
         """Initialize a ``CustomMaterialExampleFiles`` object."""
 
-        self._material_parameters_file = material_parameters_file
+        self._material_configuration_file = material_configuration_file
         self._thermal_properties_lookup_file = thermal_properties_lookup_file
         self._characteristic_width_lookup_file = characteristic_width_lookup_file
 
     @property
-    def material_parameters_file(self):
-        """Path to the material parameters file."""
-        return self._material_parameters_file
+    def material_configuration_file(self):
+        """Path to the material configuration file."""
+        return self._material_configuration_file
 
     @property
     def thermal_properties_lookup_file(self):
@@ -240,9 +240,9 @@ def download_custom_material() -> CustomMaterialExampleFiles:
     """Download the files describing a custom material."""
     zip_file = _download_file("custom_material_data.zip", CUSTOM_MATERIAL_FOLDER)[0]
     extract_dir = decompress(zip_file, "custom_material_data")
-    material_parameters_file = os.path.join(extract_dir, "material_parameters.json")
-    if not os.path.isfile(material_parameters_file):
-        raise FileNotFoundError("Failed to download material parameters file")
+    material_configuration_file = os.path.join(extract_dir, "material_parameters.json")
+    if not os.path.isfile(material_configuration_file):
+        raise FileNotFoundError("Failed to download material configuration file")
     thermal_lookup_file = os.path.join(extract_dir, "thermal_lookup.csv")
     if not os.path.isfile(thermal_lookup_file):
         raise FileNotFoundError("Failed to download thermal lookup file")
@@ -250,7 +250,7 @@ def download_custom_material() -> CustomMaterialExampleFiles:
     if not os.path.isfile(characteristic_width_lookup_file):
         raise FileNotFoundError("Failed to download characteristic width lookup file")
     return CustomMaterialExampleFiles(
-        material_parameters_file,
+        material_configuration_file,
         thermal_lookup_file,
         characteristic_width_lookup_file,
     )

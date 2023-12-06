@@ -378,7 +378,7 @@ class Additive:
         ----------
         parameters_file: str
             Name of the JSON file containing material parameters. For more information, see
-            `Create Material Parameters File (.json)
+            `Create Material Configuration File (.json)
             <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_create_tables.html>`_
             in the *Additive Manufacturing Beta Features* documentation.
         thermal_lookup_file: str

@@ -40,7 +40,7 @@ class MaterialTuningInput:
         ID for this set of tuning simulations.
     experiment_data_file: str
         Name of the CSV file containing the experimental results data.
-    material_parameters_file: str
+    material_configuration_file: str
         Name of the JSON file containing the material parameters.
     thermal_properties_lookup_file: str
         Name of the CSV file containing a lookup table for thermal-dependent properties.
@@ -66,7 +66,7 @@ class MaterialTuningInput:
         *,
         id: str,
         experiment_data_file: str,
-        material_parameters_file: str,
+        material_configuration_file: str,
         thermal_properties_lookup_file: str,
         characteristic_width_lookup_file: str = None,
         allowable_error: float = 0.05,
@@ -77,8 +77,8 @@ class MaterialTuningInput:
 
         if not os.path.isfile(experiment_data_file):
             raise FileNotFoundError(f"File not found: {experiment_data_file}")
-        if not os.path.isfile(material_parameters_file):
-            raise FileNotFoundError(f"File not found: {material_parameters_file}")
+        if not os.path.isfile(material_configuration_file):
+            raise FileNotFoundError(f"File not found: {material_configuration_file}")
         if not os.path.isfile(thermal_properties_lookup_file):
             raise FileNotFoundError(f"File not found: {thermal_properties_lookup_file}")
         if characteristic_width_lookup_file and not os.path.isfile(
@@ -89,7 +89,7 @@ class MaterialTuningInput:
         self.allowable_error = allowable_error
         self.max_iterations = max_iterations
         self.experiment_data_file = experiment_data_file
-        self.material_parameters_file = material_parameters_file
+        self.material_configuration_file = material_configuration_file
         self.thermal_properties_lookup_file = thermal_properties_lookup_file
         self.characteristic_width_lookup_file = characteristic_width_lookup_file
         self.base_plate_temperature = base_plate_temperature
@@ -103,7 +103,7 @@ class MaterialTuningInput:
         )
         with open(self.experiment_data_file, "rb") as f:
             input.experiment_data = f.read()
-        with open(self.material_parameters_file, "rb") as f:
+        with open(self.material_configuration_file, "rb") as f:
             input.material_parameters = f.read()
         with open(self.thermal_properties_lookup_file, "rb") as f:
             input.thermal_properties_lookup = f.read()
