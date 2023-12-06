@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Provides interactive plot of porosity results."""
 
 from __future__ import annotations
 
@@ -43,19 +44,17 @@ pn.extension("plotly")
 
 
 def porosity_eval_plot(ps: ParametricStudy):
-    """Generate a heat map plot of porosity results to determine parametric
-    regions with desirable relative density statistics.
+    """Generate a heat map plot of porosity results to determine parametric regions with desirable relative density statistics.
 
     Parameters
     ----------
-    ps : :class:`ParametricStudy <from ansys.additive.core.parametric_study.ParametricStudy>`
-        Parametric study to plot.
+    ps : ParametricStudy to plot.
 
     Returns
     -------
     :class: `panel.Row <panel.Row>`
         Interactive plot.
-    """
+    """  # noqa
     df = __data_frame(ps)
     (
         ht_select,
