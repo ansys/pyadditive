@@ -38,8 +38,6 @@ from ._common_controls import _common_controls
 
 # global variables
 _range_slider = None
-_poi_select = None
-_last_poi = None
 
 pn.extension("plotly")
 
@@ -63,18 +61,22 @@ def porosity_eval_plot(ps: ParametricStudy):
         ht_select,
         lt_select,
         bd_select,
+        sa_select,
+        ra_select,
         hs_select,
-        _poi_select,
+        sw_select,
         _range_slider,
     ) = __init_controls(df)
     side_bar = pn.Column(
         pn.Spacer(height=50),
-        _poi_select,
         _range_slider,
         lt_select,
         ht_select,
         bd_select,
+        sa_select,
+        ra_select,
         hs_select,
+        sw_select,
         width=200,
     )
     plot_view = pn.bind(
@@ -83,8 +85,10 @@ def porosity_eval_plot(ps: ParametricStudy):
         ht_select,
         lt_select,
         bd_select,
+        sa_select,
+        ra_select,
         hs_select,
-        _poi_select,
+        sw_select,
         _range_slider,
     )
     plot = pn.Row(
@@ -116,30 +120,24 @@ def __data_frame(ps: ParametricStudy) -> pd.DataFrame:
 
 
 def __init_controls(df: pd.DataFrame):
-    global _range_slider, _poi_select, _last_poi
+    global _range_slider
 
     (
         ht_select,
         lt_select,
         bd_select,
-        _,  # sa_select
-        _,  # ra_select
+        sa_select,
+        ra_select,
         hs_select,
-        _,  # sw_select
+        sw_select,
     ) = _common_controls(df)
-    _poi_select = pn.widgets.Select(
-        name="Relative density of Interest",
-        sizing_mode="stretch_width",
-        options={
-            "Relative Density": ColumnNames.RELATIVE_DENSITY,
-        },
-    ).servable()
-    range_end = df[_poi_select.value].max()
+    range_end = 1.0
     _range_slider = pn.widgets.RangeSlider(
-        name="Range",
+        name="Relative density",
+        sizing_mode="stretch_width",
         start=0,
         end=range_end,
-        value=(0.375 * range_end, range_end),
+        value=(0.85 * range_end, 1.0 * range_end),
         step=0.01,
         bar_color="green",
     ).servable()
@@ -147,8 +145,10 @@ def __init_controls(df: pd.DataFrame):
         ht_select,
         lt_select,
         bd_select,
+        sa_select,
+        ra_select,
         hs_select,
-        _poi_select,
+        sw_select,
         _range_slider,
     )
 
@@ -169,20 +169,15 @@ def __update_plot(
     ht: float,
     lt: float,
     bd: float,
+    sa: float,
+    ra: float,
     hs: float,
-    poi: str,
+    sw: float,
     range: tuple[float, float],
 ) -> go.Figure:
-    global _range_slider, _last_poi
-    if poi != _last_poi:
-        _range_slider.end = df[poi].max()
-        _range_slider.value = (0.375 * _range_slider.end, 0.75 * _range_slider.end)
-        _last_poi = poi
-        range = _range_slider.value
-
     fig = go.Figure()
 
-    x, y, z = __contour_data(df, ht, lt, bd, hs, poi, range)
+    x, y, z = __contour_data(df, ht, lt, bd, sa, ra, hs, sw, range)
     contour = go.Heatmap(
         x=x,
         y=y,
@@ -195,7 +190,7 @@ def __update_plot(
     )
     fig.add_trace(contour)
 
-    scatter_x, scatter_y, z_scatter = __scatter_data(df, ht, lt, bd, hs, poi)
+    scatter_x, scatter_y, z_scatter = __scatter_data(df, ht, lt, bd, sa, ra, hs, sw, range)
     scatter = go.Scatter(
         x=scatter_x,
         y=scatter_y,
@@ -233,18 +228,23 @@ def __contour_data(
     ht: float,
     lt: float,
     bd: float,
+    sa: float,
+    ra: float,
     hs: float,
-    poi: str,
+    sw: float,
     range: tuple[float, float],
 ) -> tuple[list, list, list]:
-    """Get lists of scan speed, laser power, and parameter of interest
+    """Get lists of scan speed, laser power, and relative density
     values."""
 
     idx = df[
         (df[ColumnNames.LAYER_THICKNESS] == lt)
         & (df[ColumnNames.BEAM_DIAMETER] == bd)
         & (df[ColumnNames.HEATER_TEMPERATURE] == ht)
+        & (df[ColumnNames.START_ANGLE] == sa)
+        & (df[ColumnNames.ROTATION_ANGLE] == ra)
         & (df[ColumnNames.HATCH_SPACING] == hs)
+        & (df[ColumnNames.STRIPE_WIDTH] == sw)
     ].index
 
     df = df.loc[
@@ -252,7 +252,7 @@ def __contour_data(
         [
             ColumnNames.LASER_POWER,
             ColumnNames.SCAN_SPEED,
-            poi,
+            ColumnNames.RELATIVE_DENSITY,
         ],
     ]
     df.sort_values(
@@ -262,7 +262,7 @@ def __contour_data(
     speeds = df[ColumnNames.SCAN_SPEED].unique()
     powers = df[ColumnNames.LASER_POWER].unique()
     z_vals = []
-    z_max = df[poi].max()
+    z_max = df[ColumnNames.RELATIVE_DENSITY].max()
     if math.isclose(z_max, 0, abs_tol=1e-5):
         z_max = 1
     min_range = range[0]
@@ -274,14 +274,14 @@ def __contour_data(
                 len(
                     df.loc[
                         (df[ColumnNames.LASER_POWER] == p) & (df[ColumnNames.SCAN_SPEED] == v),
-                        poi,
+                        ColumnNames.RELATIVE_DENSITY,
                     ].values
                 )
                 > 0
             ):
                 z = df.loc[
                     (df[ColumnNames.LASER_POWER] == p) & (df[ColumnNames.SCAN_SPEED] == v),
-                    poi,
+                    ColumnNames.RELATIVE_DENSITY,
                 ].values[0]
                 z = round(z, 2)
                 if z >= min_range and z <= max_range:
@@ -295,18 +295,29 @@ def __contour_data(
 
 
 def __scatter_data(
-    df: pd.DataFrame, ht: float, lt: float, bd: float, hs: float, poi: str
+    df: pd.DataFrame,
+    ht: float,
+    lt: float,
+    bd: float,
+    sa: float,
+    ra: float,
+    hs: float,
+    sw: float,
+    float,
 ) -> tuple[list, list, list]:
     idx = df[
         (df[ColumnNames.LAYER_THICKNESS] == lt)
         & (df[ColumnNames.HEATER_TEMPERATURE] == ht)
         & (df[ColumnNames.BEAM_DIAMETER] == bd)
+        & (df[ColumnNames.START_ANGLE] == sa)
+        & (df[ColumnNames.ROTATION_ANGLE] == ra)
         & (df[ColumnNames.HATCH_SPACING] == hs)
-        & (~df[poi].isna())
+        & (df[ColumnNames.STRIPE_WIDTH] == sw)
+        & (~df[ColumnNames.RELATIVE_DENSITY].isna())
     ].index
     scatter_x = df.loc[idx, ColumnNames.SCAN_SPEED].tolist()
     scatter_y = df.loc[idx, ColumnNames.LASER_POWER].tolist()
-    scatter_z = df.loc[idx, poi].tolist()
+    scatter_z = df.loc[idx, ColumnNames.RELATIVE_DENSITY].tolist()
     return (
         scatter_x,
         scatter_y,
