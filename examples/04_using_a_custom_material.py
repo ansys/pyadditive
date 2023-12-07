@@ -59,7 +59,7 @@ material_files = examples.download_custom_material()
 # load the files defining a custom material.
 
 custom_material = additive.load_material(
-    parameters_file=material_files.material_parameters_file,
+    parameters_file=material_files.material_configuration_file,
     thermal_lookup_file=material_files.thermal_properties_lookup_file,
     characteristic_width_lookup_file=material_files.characteristic_width_lookup_file,
 )

@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Provides common definitions and classes for simulations."""
 from typing import Union
 
 from ansys.additive.core.microstructure import MicrostructureInput
@@ -31,25 +31,25 @@ from ansys.additive.core.thermal_history import ThermalHistoryInput
 class SimulationType:
     """Provides simulation types."""
 
-    #: Single bead simulation.
     SINGLE_BEAD = "SingleBead"
-    #: Porosity simulation.
+    """Single bead simulation."""
     POROSITY = "Porosity"
-    #: Microstructure simulation.
+    """Porosity simulation."""
     MICROSTRUCTURE = "Microstructure"
+    """Microstructure simulation."""
 
 
 class SimulationStatus:
-    """Simulation status values."""
+    """Provides simulation status values."""
 
-    #: Simulation is awaiting execution.
     PENDING = "Pending"
-    #: Simulation was executed.
+    """Simulation is waiting to run."""
     COMPLETED = "Completed"
-    #: Simulation errored.
+    """Simulation was run."""
     ERROR = "Error"
-    #: Do not execute this simulation. Only applies to parametric studies.
+    """Simulation errored."""
     SKIP = "Skip"
+    """Do not run this simulation, only applies to parametric studies."""
 
 
 class SimulationError:
@@ -60,6 +60,7 @@ class SimulationError:
         input: Union[SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput],
         message: str,
     ):
+        """Initialize a ``SimulationError`` object."""
         self._input = input
         self._message = message
 

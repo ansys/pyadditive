@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""Provides for interacting with the Additive service."""
+"""Provides a client for interacting with the Additive service."""
 
 from __future__ import annotations
 
@@ -60,7 +60,7 @@ class Additive:
     single connection. However, for atypical environments or when running on localhost,
     the ``Additive`` client can perform crude load balancing by connecting to multiple
     servers and distributing simulations across them. You can use the ``server_connections``,
-    ``nservers``, and ``nsims_per_server` parameters to control the
+    ``nservers``, and ``nsims_per_server`` parameters to control the
     number of servers to connect to and the number of simulations to run on each
     server.
 
@@ -378,7 +378,7 @@ class Additive:
         ----------
         parameters_file: str
             Name of the JSON file containing material parameters. For more information, see
-            `Create Material Parameters File (.json)
+            `Create Material Configuration File (.json)
             <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_create_tables.html>`_
             in the *Additive Manufacturing Beta Features* documentation.
         thermal_lookup_file: str

@@ -24,7 +24,12 @@
 from pathlib import Path
 
 LOCALHOST = "127.0.0.1"
-PIM_PRODUCT_NAME = "additive"
+"""IP address for localhost."""
+PYPIM_PRODUCT_NAME = "additive"
+"""Product name for the Additive server in a PyPIM environment."""
 DEFAULT_PRODUCT_VERSION = "242"
+"""Default Ansys product version to use for the Additive server."""
 ADDITIVE_SERVER_EXE_NAME = "additiveserver"
+"""Name of the Additive server executable."""
 ADDITIVE_SERVER_SUBDIR = Path("Additive") / "additiveserver"
+"""Subdirectory for the Additive server in the Ansys installation directory."""

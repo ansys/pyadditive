@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Provides a class to run parametric study simulations."""
 from __future__ import annotations
 
 import numpy as np
@@ -43,6 +43,8 @@ from ansys.additive.core.parametric_study.constants import ColumnNames
 
 
 class ParametricRunner:
+    """Provides methods to run parametric study simulations."""
+
     @staticmethod
     def simulate(
         df: pd.DataFrame,

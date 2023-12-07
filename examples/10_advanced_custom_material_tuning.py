@@ -47,7 +47,7 @@ additive = Additive()
 # ---------------------
 # The :class:`MaterialTuningInput` object contains the paths to the files needed to
 # tune a material. The ``experiment_data_file`` file is a CSV file containing the
-# results of single bead experiments. The ``material_parameters_file`` file is a JSON
+# results of single bead experiments. The ``material_configuration_file`` file is a JSON
 # file containing the material parameters. The ``thermal_properties_lookup_file``
 # file is a CSV file containing the temperature-dependent properties of the material.
 # The ``characteristic_width_lookup_file`` file is an optional CSV file containing
@@ -68,7 +68,7 @@ input_files = examples.download_material_tuning_input()
 input = MaterialTuningInput(
     id="custom-material-tuning",
     experiment_data_file=input_files.experiment_data_file,
-    material_parameters_file=input_files.material_parameters_file,
+    material_configuration_file=input_files.material_configuration_file,
     thermal_properties_lookup_file=input_files.thermal_properties_lookup_file,
     characteristic_width_lookup_file=input_files.characteristic_width_lookup_file,
     allowable_error=0.05,  # allowable difference, as a ratio, between experimental and simulated results

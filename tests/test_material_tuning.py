@@ -45,14 +45,14 @@ def test_MaterialTuningInput_init_assigns_defaults():
     input = MaterialTuningInput(
         id="id",
         experiment_data_file=file_path,
-        material_parameters_file=file_path,
+        material_configuration_file=file_path,
         thermal_properties_lookup_file=file_path,
     )
 
     # assert
     assert input.id == "id"
     assert input.experiment_data_file == file_path
-    assert input.material_parameters_file == file_path
+    assert input.material_configuration_file == file_path
     assert input.thermal_properties_lookup_file == file_path
     assert input.characteristic_width_lookup_file is None
     assert input.allowable_error == 0.05
@@ -100,7 +100,7 @@ def test_MaterialTuningInput_init_raises_exception_for_missing_file(
         MaterialTuningInput(
             id="id",
             experiment_data_file=exp_file,
-            material_parameters_file=mat_file,
+            material_configuration_file=mat_file,
             thermal_properties_lookup_file=therm_file,
             characteristic_width_lookup_file=cw_file,
         )
@@ -113,7 +113,7 @@ def test_MaterialTuningInput_str_returns_expected_string():
     input = MaterialTuningInput(
         id="id",
         experiment_data_file=file_path,
-        material_parameters_file=file_path,
+        material_configuration_file=file_path,
         thermal_properties_lookup_file=file_path,
     )
 
@@ -127,7 +127,7 @@ def test_MaterialTuningInput_str_returns_expected_string():
         "allowable_error: 0.05\n"
         "max_iterations: 15\n"
         "experiment_data_file: {}\n"
-        "material_parameters_file: {}\n"
+        "material_configuration_file: {}\n"
         "thermal_properties_lookup_file: {}\n"
         "characteristic_width_lookup_file: None\n"
         "base_plate_temperature: 353.15\n".format(file_path, file_path, file_path)
@@ -141,7 +141,7 @@ def test_to_request_creates_expected_TuneMaterialRequest():
     input = MaterialTuningInput(
         id="id",
         experiment_data_file=file_path,
-        material_parameters_file=file_path,
+        material_configuration_file=file_path,
         thermal_properties_lookup_file=file_path,
         characteristic_width_lookup_file=file_path,
         allowable_error=1,
@@ -171,14 +171,14 @@ def test_MaterialTuningInput_eq():
     input = MaterialTuningInput(
         id="id",
         experiment_data_file=file_name,
-        material_parameters_file=file_name,
+        material_configuration_file=file_name,
         thermal_properties_lookup_file=file_name,
     )
 
     not_input = MaterialTuningInput(
         id="not_id",
         experiment_data_file=file_name,
-        material_parameters_file=file_name,
+        material_configuration_file=file_name,
         thermal_properties_lookup_file=file_name,
     )
 
@@ -186,7 +186,7 @@ def test_MaterialTuningInput_eq():
     assert input == MaterialTuningInput(
         id="id",
         experiment_data_file=file_name,
-        material_parameters_file=file_name,
+        material_configuration_file=file_name,
         thermal_properties_lookup_file=file_name,
     )
     assert input != MaterialTuningInputMessage()
@@ -205,7 +205,7 @@ def test_MaterialTuningSummary_init_creates_expected_object():
     input = MaterialTuningInput(
         id="id",
         experiment_data_file=file_name,
-        material_parameters_file=file_name,
+        material_configuration_file=file_name,
         thermal_properties_lookup_file=file_name,
     )
 
@@ -246,7 +246,7 @@ def test_MaterialTuningSummary_init_raises_type_error_for_invalid_message(invali
     valid_input = MaterialTuningInput(
         id="id",
         experiment_data_file=file_name,
-        material_parameters_file=file_name,
+        material_configuration_file=file_name,
         thermal_properties_lookup_file=file_name,
     )
     # act, assert
@@ -263,7 +263,7 @@ def test_MaterialTuningSummary_str_returns_expected_string():
     input = MaterialTuningInput(
         id="id",
         experiment_data_file=file_name,
-        material_parameters_file=file_name,
+        material_configuration_file=file_name,
         thermal_properties_lookup_file=file_name,
     )
     tmp = tempfile.TemporaryDirectory()
@@ -285,7 +285,7 @@ def test_MaterialTuningSummary_str_returns_expected_string():
         "allowable_error: 0.05\n"
         "max_iterations: 15\n"
         "experiment_data_file: {}\n"
-        "material_parameters_file: {}\n"
+        "material_configuration_file: {}\n"
         "thermal_properties_lookup_file: {}\n"
         "characteristic_width_lookup_file: None\n"
         "base_plate_temperature: 353.15\n\n"

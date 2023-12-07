@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Provides input and result summary containers for microstructure simulations."""
 import math
 import os
 
@@ -371,13 +371,11 @@ class MicrostructureInput:
 
     @property
     def use_provided_thermal_parameters(self) -> bool:
-        """Flag indicating if the ``cooling_rate``, ``thermal_gradient``,
-        ``melt_pool_depth``, and ``melt_pool_width`` parameters have been
-        provided by the user.
+        """Flag indicating if the ``cooling_rate``, ``thermal_gradient``, ``melt_pool_depth``, and ``melt_pool_width`` parameters have been provided by the user.
 
         If the value is ``False``, these values
         will be calculated. Default is ``False``.
-        """
+        """  # noqa: E501
         return self._use_provided_thermal_parameters
 
     @use_provided_thermal_parameters.setter
@@ -556,20 +554,17 @@ class MicrostructureSummary:
 
     @property
     def xy_vtk(self) -> str:
-        """Path to the VTK file containing the 2-D grain structure data in the
-        XY plane."""
+        """Path to the VTK file containing the 2-D grain structure data in the XY plane."""
         return self._xy_vtk
 
     @property
     def xz_vtk(self) -> str:
-        """Path to the VTK file containing the 2-D grain structure data in the
-        XZ plane."""
+        """Path to the VTK file containing the 2-D grain structure data in the XZ plane."""
         return self._xz_vtk
 
     @property
     def yz_vtk(self) -> str:
-        """Path to the VTK file containing the 2-D grain structure data in the
-        YZ plane."""
+        """Path to the VTK file containing the 2-D grain structure data in the YZ plane."""
         return self._yz_vtk
 
     @property

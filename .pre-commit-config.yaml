@@ -61,7 +61,7 @@ repos:
     rev: 1.5.0
     hooks:
       - id: interrogate
-        args: [-vv, -m, -p, -M, -S, -s, -n, --fail-under=95]
+        args: [-vv, -m, -p, -S, -s, -n, --fail-under=100]
         files: src
 
   - repo: https://github.com/ansys/pre-commit-hooks

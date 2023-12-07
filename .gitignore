@@ -81,6 +81,7 @@ doc/source/examples
 _autosummary/
 doc/_build
 doc/source/api
+doc/source/sg_execution_times.rst
 
 # PyBuilder
 .pybuilder/

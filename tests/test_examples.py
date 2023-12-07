@@ -80,7 +80,7 @@ def test_download_material_tuning_input_retrieves_files():
 
     # assert
     assert os.path.isfile(inputs.experiment_data_file)
-    assert os.path.isfile(inputs.material_parameters_file)
+    assert os.path.isfile(inputs.material_configuration_file)
     assert os.path.isfile(inputs.thermal_properties_lookup_file)
     assert os.path.isfile(inputs.characteristic_width_lookup_file)
 
@@ -93,6 +93,6 @@ def test_download_custom_material_retrieves_files():
     material = examples.download_custom_material()
 
     # assert
-    assert os.path.isfile(material.material_parameters_file)
+    assert os.path.isfile(material.material_configuration_file)
     assert os.path.isfile(material.thermal_properties_lookup_file)
     assert os.path.isfile(material.characteristic_width_lookup_file)

@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Provides input and result summary containers for porosity simulations."""
 from ansys.api.additive.v0.additive_domain_pb2 import PorosityInput as PorosityInputMessage
 from ansys.api.additive.v0.additive_domain_pb2 import PorosityResult
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
@@ -82,7 +82,7 @@ class PorosityInput:
             raise ValueError("{} must be between {} and {}.".format(name, min, max))
 
     @property
-    def id(self):
+    def id(self) -> str:
         """User-provided ID for the simulation."""
         return self._id
 
@@ -91,7 +91,7 @@ class PorosityInput:
         self._id = value
 
     @property
-    def machine(self):
+    def machine(self) -> AdditiveMachine:
         """Machine-related parameters."""
         return self._machine
 
@@ -100,7 +100,7 @@ class PorosityInput:
         self._machine = value
 
     @property
-    def material(self):
+    def material(self) -> AdditiveMaterial:
         """Material used during the simulation."""
         return self._material
 
@@ -109,7 +109,7 @@ class PorosityInput:
         self._material = value
 
     @property
-    def size_x(self):
+    def size_x(self) -> float:
         """Size (m) of the simulated sample in the x dimension.
 
         Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
@@ -123,7 +123,7 @@ class PorosityInput:
         self._size_x = value
 
     @property
-    def size_y(self):
+    def size_y(self) -> float:
         """Size (m) of the simulated sample in the y dimension.
 
         Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
@@ -137,7 +137,7 @@ class PorosityInput:
         self._size_y = value
 
     @property
-    def size_z(self):
+    def size_z(self) -> float:
         """Size (m) of the simulated sample in the z dimension.
 
         Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
@@ -170,6 +170,7 @@ class PorositySummary:
         input: PorosityInput,
         result: PorosityResult,
     ):
+        """Initialize a ``PorositySummary`` object."""
         if not isinstance(input, PorosityInput):
             raise ValueError("Invalid input type passed to init, " + self.__class__.__name__)
         if not isinstance(result, PorosityResult):
@@ -184,8 +185,7 @@ class PorositySummary:
 
     @property
     def relative_density(self) -> float:
-        """Ratio of the density of the simulated sample to a completely solid
-        sample."""
+        """Ratio of the density of the simulated sample to a completely solid sample."""
         return self._relative_density
 
     def __repr__(self):

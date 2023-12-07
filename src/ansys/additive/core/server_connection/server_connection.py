@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Provides definitions and untilities for connecting to the Additive server."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -36,7 +36,7 @@ import grpc
 from ansys.additive.core.server_connection.constants import (
     DEFAULT_PRODUCT_VERSION,
     LOCALHOST,
-    PIM_PRODUCT_NAME,
+    PYPIM_PRODUCT_NAME,
 )
 from ansys.additive.core.server_connection.local_server import LocalServer
 from ansys.additive.core.server_connection.network_utils import create_channel
@@ -57,8 +57,11 @@ class ServerConnectionStatus:
     """
 
     connected: bool
+    """True if server is connected."""
     channel_str: str = None
+    """Hostname and port of server connection in the form ``host:port``."""
     metadata: dict = None
+    """Server metadata."""
 
 
 class ServerConnection:
@@ -109,7 +112,7 @@ class ServerConnection:
             elif pypim.is_configured():
                 pim = pypim.connect()
                 self._server_instance = pim.create_instance(
-                    product_name=PIM_PRODUCT_NAME, product_version=product_version
+                    product_name=PYPIM_PRODUCT_NAME, product_version=product_version
                 )
                 self._log.info("Waiting for server to initialize")
                 self._server_instance.wait_for_ready()

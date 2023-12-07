@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Provides plots and interactive interfaces for parametric study results."""
 
 from .ave_grain_size_plot import ave_grain_size_plot
 from .porosity_contour_plot import porosity_contour_plot

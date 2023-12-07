@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Provides input and result summary containers for single bead simulations."""
 from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
 from ansys.api.additive.v0.additive_domain_pb2 import SingleBeadInput as SingleBeadInputMessage
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest

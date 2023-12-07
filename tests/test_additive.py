@@ -671,7 +671,7 @@ def test_tune_material_raises_exception_if_output_path_exists(_, tmp_path: pathl
         experiment_data_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "experimental_data.csv"
         ),
-        material_parameters_file=test_utils.get_test_file_path(
+        material_configuration_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "material-data.json"
         ),
         thermal_properties_lookup_file=test_utils.get_test_file_path(
@@ -693,7 +693,7 @@ def test_tune_material_raises_exception_for_progress_error(mock_connection, tmp_
         experiment_data_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "experimental_data.csv"
         ),
-        material_parameters_file=test_utils.get_test_file_path(
+        material_configuration_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "material-data.json"
         ),
         thermal_properties_lookup_file=test_utils.get_test_file_path(
@@ -741,7 +741,7 @@ def test_tune_material_filters_progress_messages(
         experiment_data_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "experimental_data.csv"
         ),
-        material_parameters_file=test_utils.get_test_file_path(
+        material_configuration_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "material-data.json"
         ),
         thermal_properties_lookup_file=test_utils.get_test_file_path(
@@ -778,7 +778,7 @@ def test_tune_material_returns_expected_result(
         experiment_data_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "experimental_data.csv"
         ),
-        material_parameters_file=test_utils.get_test_file_path(
+        material_configuration_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "material-data.json"
         ),
         thermal_properties_lookup_file=test_utils.get_test_file_path(

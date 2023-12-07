@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Provides data storage and utility methods for a parametric study."""
 from ansys.additive.core.parametric_study.constants import (
     DEFAULT_ITERATION,
     DEFAULT_PRIORITY,

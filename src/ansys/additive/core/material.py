@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Provides a container for material parameters."""
 import collections
 import csv
 import json
@@ -449,8 +449,7 @@ class AdditiveMaterial:
 
     @property
     def anisotropic_strain_coefficient_parallel(self) -> float:
-        """Multiplier on the predicted strain in the direction that the laser
-        is scanning for the major fill rasters."""
+        """Multiplier on the predicted strain in the direction that the laser is scanning for the major fill rasters."""  # noqa: E501
         return self._anisotropic_strain_coefficient_parallel
 
     @anisotropic_strain_coefficient_parallel.setter
@@ -460,9 +459,7 @@ class AdditiveMaterial:
 
     @property
     def anisotropic_strain_coefficient_perpendicular(self) -> float:
-        """Multiplier on the predicted strain orthogonal to the direction that
-        the laser is scanning for the major fill rasters and in the plane of
-        the surface of the build plate."""
+        """Multiplier on the predicted strain orthogonal to the direction that the laser is scanning for the major fill rasters and in the plane of the surface of the build plate."""  # noqa: E501
         return self._anisotropic_strain_coefficient_perpendicular
 
     @anisotropic_strain_coefficient_perpendicular.setter
@@ -492,9 +489,7 @@ class AdditiveMaterial:
 
     @property
     def hardening_factor(self) -> float:
-        """Factor relating the elastic modulus to the tangent modulus for
-        plasticity simulations (tangent modulus = elastic modulus * hardening
-        factor)."""
+        """Factor relating the elastic modulus to the tangent modulus for plasticity simulations (tangent modulus = elastic modulus * hardening factor)."""  # noqa: E501
         return self._hardening_factor
 
     @hardening_factor.setter
@@ -504,8 +499,7 @@ class AdditiveMaterial:
 
     @property
     def liquidus_temperature(self) -> float:
-        """Minimum temperature (K) at which the material is completely
-        liquid."""
+        """Minimum temperature (K) at which the material is completely liquid."""
         return self._liquidus_temperature
 
     @liquidus_temperature.setter
@@ -535,8 +529,7 @@ class AdditiveMaterial:
 
     @property
     def nucleation_constant_bulk(self) -> float:
-        """Controls the homogeneous nucleation rate (in bulk of the
-        microstructure simulation domain) during solidification (1/m^2/K^2)."""
+        """Controls the homogeneous nucleation rate (in bulk of the microstructure simulation domain) during solidification (1/m^2/K^2)."""  # noqa: E501
         return self._nucleation_constant_bulk
 
     @nucleation_constant_bulk.setter
@@ -546,8 +539,7 @@ class AdditiveMaterial:
 
     @property
     def nucleation_constant_interface(self) -> float:
-        """Heterogeneous nucleation rate (on existing solid interfaces) during
-        solidification (1/m/K^2)."""
+        """Heterogeneous nucleation rate (on existing solid interfaces) during solidification (1/m/K^2)."""  # noqa: E501
         return self._nucleation_constant_interface
 
     @nucleation_constant_interface.setter
@@ -637,8 +629,7 @@ class AdditiveMaterial:
 
     @property
     def purging_gas_convection_coefficient(self) -> float:
-        """Convection coefficient between the solid and gas during
-        processing."""
+        """Convection coefficient between the solid and gas during build."""
         return self._purging_gas_convection_coefficient
 
     @purging_gas_convection_coefficient.setter
@@ -658,8 +649,7 @@ class AdditiveMaterial:
 
     @property
     def solid_specific_heat_at_room_temperature(self) -> float:
-        """Specific heat of bulk material at room temperature, 298 K
-        (J/kg/K)."""
+        """Specific heat of bulk material at room temperature, 298 K (J/kg/K)."""
         return self._solid_specific_heat_at_room_temperature
 
     @solid_specific_heat_at_room_temperature.setter
@@ -669,8 +659,7 @@ class AdditiveMaterial:
 
     @property
     def solid_thermal_conductivity_at_room_temperature(self) -> float:
-        """Thermal conductivity of bulk material at room temperature, 298 K
-        (W/m/K)."""
+        """Thermal conductivity of bulk material at room temperature, 298 K (W/m/K)."""
         return self._solid_thermal_conductivity_at_room_temperature
 
     @solid_thermal_conductivity_at_room_temperature.setter
@@ -680,8 +669,7 @@ class AdditiveMaterial:
 
     @property
     def solidus_temperature(self) -> float:
-        """Maximum temperature (K) at which the material is completely
-        solid."""
+        """Maximum temperature (K) at which the material is completely solid."""
         return self._solidus_temperature
 
     @solidus_temperature.setter
@@ -701,8 +689,13 @@ class AdditiveMaterial:
 
     @property
     def support_yield_strength_ratio(self) -> float:
-        """Factor to reduce the yield strength and elastic modulus of the
-        support material."""
+        """Knockdown factor that is used to adjust the strength of the support material in comparison to the solid material.
+
+        The factor is multiplied by the support material's yield
+        strength and elastic modulus. A value of 1.0, for example,
+        results in support strength equal to the solid material, whereas
+        0.5 is half the strength of the solid material.
+        """  # noqa: E501
         return self._support_yield_strength_ratio
 
     @support_yield_strength_ratio.setter
@@ -722,8 +715,7 @@ class AdditiveMaterial:
 
     @property
     def vaporization_temperature(self) -> float:
-        """Temperature (K) at which the material has completely changed from
-        liquid to vapor."""
+        """Temperature (K) at which the material has completely changed from liquid to vapor."""
         return self._vaporization_temperature
 
     @vaporization_temperature.setter
