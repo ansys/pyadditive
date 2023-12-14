@@ -2,6 +2,10 @@
   description: Something isn't working
   color: d42a34
 
+- name: blocked
+  description: Cannot address this till other issues are solved first
+  color: e0b063
+
 - name: dependencies
   description: Related with project dependencies
   color: ffc0cb
@@ -12,7 +16,7 @@
 
 - name: enhancement
   description: New features or code improvements
-  color: FFD827
+  color: ffD827
 
 - name: good first issue
   description: Easy to solve for newcomers
