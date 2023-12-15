@@ -138,12 +138,16 @@ class ParametricStudy:
         additive: Additive,
         type: list[SimulationType] | None = None,
         priority: int | None = None,
+        iteration: int | None = None,
     ):
         """Run the simulations with ``Pending`` for their ``Status`` values.
 
         Execution order is determined by the simulations
         ``Priority`` values. Lower values are interpreted as having
         higher priority and are run first.
+
+        If the ''Iteration'' value is specified, only simulations with the 
+        specified iteration number are run.
 
         Parameters
         ----------
@@ -155,12 +159,16 @@ class ParametricStudy:
         priority : int, default: None
             Priority of simulations to run. If this value is ``None``,
             all priorities are run.
+        iteration : int, default: None
+            Iteration number of simulations to run. If this value is ``None``,
+            all iterations are run.
         """
         summaries = ParametricRunner.simulate(
             self.data_frame(),
             additive,
             type=type,
             priority=priority,
+            iteration=iteration,
         )
         self.update(summaries)
 

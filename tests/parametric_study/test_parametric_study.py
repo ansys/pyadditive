@@ -25,6 +25,7 @@ import platform
 import shutil
 from unittest.mock import PropertyMock, create_autospec, patch
 import uuid
+import pdb
 
 from ansys.api.additive.v0.additive_domain_pb2 import (
     GrainStatistics,
@@ -1161,6 +1162,46 @@ def test_run_simulations_calls_simulate_correctly(monkeypatch, tmp_path: pytest.
     # assert
     pd.testing.assert_frame_equal(patched_simulate.call_args[0][0], study.data_frame())
     assert patched_simulate.call_args[0][1] == mock_additive
+
+
+def test_run_simulations_with_priority_calls_simulate_correctly(monkeypatch, tmp_path: pytest.TempPathFactory):
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    sb1 = SingleBeadInput(id="test_1")
+    sb2 = SingleBeadInput(id="test_2")
+    sb3 = SingleBeadInput(id="test_3")
+    study.add_inputs([sb1], priority=1)
+    study.add_inputs([sb2], priority=2)
+    study.add_inputs([sb3], priority=3)
+    mock_additive = create_autospec(Additive)
+    # mock_additive.material.return_value = material
+    patched_simulate = create_autospec(ParametricRunner.simulate, return_value=[])
+    monkeypatch.setattr(ParametricRunner, "simulate", patched_simulate)
+
+    # act
+    study.run_simulations(mock_additive, priority=2)
+
+    # assert
+    assert patched_simulate.call_args[1]['priority'] == 2
+
+
+def test_run_simulations_with_iteration_calls_simulate_correctly(monkeypatch, tmp_path: pytest.TempPathFactory):
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    sb1 = SingleBeadInput(id="test_1")
+    sb2 = SingleBeadInput(id="test_2")
+    sb3 = SingleBeadInput(id="test_3")
+    study.add_inputs([sb1], iteration=1)
+    study.add_inputs([sb2], iteration=2)
+    study.add_inputs([sb3], iteration=3)
+    mock_additive = create_autospec(Additive)
+    # mock_additive.material.return_value = material
+    patched_simulate = create_autospec(ParametricRunner.simulate, return_value=[])
+    monkeypatch.setattr(ParametricRunner, "simulate", patched_simulate)
+
+    # act
+    study.run_simulations(mock_additive, iteration=2)
+
+    # assert
+    assert patched_simulate.call_args[1]['iteration'] == 2
 
 
 def test_remove_deletes_multiple_rows_from_dataframe(tmp_path: pytest.TempPathFactory):

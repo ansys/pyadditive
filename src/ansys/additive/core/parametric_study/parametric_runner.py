@@ -51,11 +51,15 @@ class ParametricRunner:
         additive: Additive,
         type: list[SimulationType] = None,
         priority: int = None,
+        iteration: int = None
     ) -> list[SingleBeadSummary, PorositySummary, MicrostructureSummary]:
         """Run the simulations in the parametric study with ``Status`` equal to ``Pending``.
 
         Execution order is determined by the ``Priority`` value assigned to the simulations.
         Lower values are interpreted as having higher priority and are run first.
+
+        If the ''Iteration'' value is specified, only simulations with the specified iteration 
+        number are run.
 
         Parameters
         ----------
@@ -69,6 +73,9 @@ class ParametricRunner:
         priority : int, default: None
             Priority of simulations to run. The default is ``None``, in which case
             all priorities are run.
+        iteration : int, default: None
+            Iteration number of simulations to run. The default is ``None``, in which case
+            all iterations are run.
 
         Returns
         -------
@@ -91,6 +98,11 @@ class ParametricRunner:
             view = view[view[ColumnNames.PRIORITY] == priority]
         view = view.sort_values(by=ColumnNames.PRIORITY, ascending=True)
 
+        if iteration is not None:
+            view = df[
+            (df[ColumnNames.ITERATION] == iteration)
+        ]
+            
         inputs = []
         # NOTICE: We use iterrows() instead of itertuples() here to
         # access values by column name
