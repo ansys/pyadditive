@@ -322,6 +322,27 @@ def test_simulate_filters_by_priority(tmp_path: pytest.TempPathFactory):
     mock_additive.simulate.assert_called_once_with(inputs)
 
 
+def test_simulate_filters_by_iteration(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    material = AdditiveMaterial(name="test_material")
+    sb1 = SingleBeadInput(id="iteration_1", material=material)
+    sb2 = SingleBeadInput(id="iteration_2", material=material)
+    sb3 = SingleBeadInput(id="iteration_3", material=material)
+    study.add_inputs([sb1], iteration=1)
+    study.add_inputs([sb2], iteration=2)
+    study.add_inputs([sb3], iteration=3)
+    inputs = [sb2]
+    mock_additive = create_autospec(Additive)
+    mock_additive.material.return_value = material
+
+    # act
+    pr.simulate(study.data_frame(), mock_additive, iteration=2)
+
+    # assert
+    mock_additive.simulate.assert_called_once_with(inputs)
+
+
 def test_simulate_filters_by_single_simulation_type(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
