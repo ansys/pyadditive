@@ -146,9 +146,6 @@ class ParametricStudy:
         ``Priority`` values. Lower values are interpreted as having
         higher priority and are run first.
 
-        If the ''Iteration'' value is specified, only simulations with the 
-        specified iteration number are run.
-
         Parameters
         ----------
         additive : Additive
