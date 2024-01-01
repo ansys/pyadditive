@@ -60,7 +60,7 @@ tests = [
     "six==1.16.0",
     "tqdm==4.66.1",
     # Test specific dependencies
-    "pytest==7.4.3",
+    "pytest==7.4.4",
     "pytest-cov==4.0.0",
 ]
 
