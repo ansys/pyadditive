@@ -1,13 +1,13 @@
-# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of
-# this software and associated documentation files (the "Software"), to deal in
-# the Software without restriction, including without limitation the rights to
-# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-# of the Software, and to permit persons to whom the Software is furnished to do
-# so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
@@ -37,10 +37,10 @@ from ansys.api.additive.v0.additive_domain_pb2 import AdditiveMaterial as Materi
 class CharacteristicWidthDataPoint:
     """Provides the container for a characteristic width data point.
 
-    Additive material definitions include a file containing a
-    characteristic width lookup table, allowing a given laser speed and
-    power to be correlated to a characteristic melt pool width. This
-    class represents a single row in the lookup table.
+    Additive material definitions include a file containing a characteristic width
+    lookup table, allowing a given laser speed and power to be correlated to a
+    characteristic melt pool width. This class represents a single row in the lookup
+    table.
     """
 
     def __init__(
@@ -129,10 +129,9 @@ class CharacteristicWidthDataPoint:
 class ThermalPropertiesDataPoint:
     """Provides the container for temperature-dependent properties.
 
-    Additive material definitions include a file containing a lookup
-    table describing the material's thermal properties at different
-    temperatures. This class represents a single row in the lookup
-    table.
+    Additive material definitions include a file containing a lookup table describing
+    the material's thermal properties at different temperatures. This class represents a
+    single row in the lookup table.
 
     Units are SI (m, kg, s, K) unless otherwise noted.
     """

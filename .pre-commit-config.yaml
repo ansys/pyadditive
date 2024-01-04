@@ -25,7 +25,7 @@ repos:
     hooks:
       - id: docformatter
         additional_dependencies: [tomli]
-        args: ["--wrap-summaries", "0"]
+        args: ["--wrap-summaries", "0", "-i", "--black"]
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.5
@@ -65,8 +65,6 @@ repos:
         files: src
 
   - repo: https://github.com/ansys/pre-commit-hooks
-    rev: v0.1.2
+    rev: v0.2.4
     hooks:
       - id: add-license-headers
-        args:
-          - --loc=./
