@@ -75,7 +75,7 @@ jobs:
         uses: ansys/actions/tests-pytest@v5
 
       - name: Upload Coverage Results
-        if: matrix.python-version == ${{ env.MAIN_PYTHON_VERSION }}
+        if: (matrix.python-version == env.MAIN_PYTHON_VERSION) && (runner.os == 'Linux')
         uses: actions/upload-artifact@v4
         with:
           name: coverage-html
@@ -84,7 +84,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
-        if: matrix.os == 'ubuntu-latest'
+        if: (matrix.python-version == env.MAIN_PYTHON_VERSION) && (runner.os == 'Linux')
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
