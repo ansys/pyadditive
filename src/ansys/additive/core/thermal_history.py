@@ -1,13 +1,13 @@
-# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of
-# this software and associated documentation files (the "Software"), to deal in
-# the Software without restriction, including without limitation the rights to
-# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-# of the Software, and to permit persons to whom the Software is furnished to do
-# so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
@@ -121,8 +121,8 @@ class CoaxialAverageSensorInputs:
     def z_heights(self) -> list[Range]:
         """Array of ranges along the z axis of the geometry (m).
 
-        The simulated sensor follows the scan path for each deposit
-        layer within each range.
+        The simulated sensor follows the scan path for each deposit layer within each
+        range.
         """
         return self._z_heights
 
@@ -270,7 +270,7 @@ class ThermalHistorySummary:
     def coax_ave_output_folder(self) -> str:
         """Path to the folder containing the coaxial average sensor results.
 
-        Results consist of VTK files, one per deposit layer, containing
-        the thermal history of the scan pattern.
+        Results consist of VTK files, one per deposit layer, containing the thermal
+        history of the scan pattern.
         """
         return self._coax_ave_output_folder
