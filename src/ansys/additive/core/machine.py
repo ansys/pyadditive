@@ -1,13 +1,13 @@
-# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of
-# this software and associated documentation files (the "Software"), to deal in
-# the Software without restriction, including without limitation the rights to
-# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-# of the Software, and to permit persons to whom the Software is furnished to do
-# so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
@@ -89,9 +89,8 @@ class MachineConstants:
 class AdditiveMachine:
     """Provides the additive manufacturing machine settings used during simulations.
 
-    Units are SI (m, kg, s, or K) unless otherwise noted. Exceptions
-    include angles, which are (degrees), and the heater temperature,
-    which is (degrees) Celsius.
+    Units are SI (m, kg, s, or K) unless otherwise noted. Exceptions include angles,
+    which are (degrees), and the heater temperature, which is (degrees) Celsius.
     """
 
     def __init__(
@@ -215,8 +214,8 @@ class AdditiveMachine:
         """Width (m) of the laser on the powder or substrate surface defined
         using the D4σ beam diameter definition.
 
-        Usually this value is provided by the machine manufacturer. It
-        is sometimes called the laser spot diameter.
+        Usually this value is provided by the machine manufacturer. It is sometimes
+        called the laser spot diameter.
 
         Valid values are from 2e-5 to 1.4e-4 m (20 and 140 µm).
         """
@@ -236,9 +235,8 @@ class AdditiveMachine:
     def starting_layer_angle(self) -> float:
         """Angle (°) to scan the first layer at.
 
-        The angle is measured counterclockwise from the X axis, such
-        that a value of 90° results in scan lines parallel to the Y
-        axis.
+        The angle is measured counterclockwise from the X axis, such that a value of 90°
+        results in scan lines parallel to the Y axis.
 
         Valid values are from 0 to 180°.
         """
@@ -277,9 +275,8 @@ class AdditiveMachine:
         """Distance (m) between adjacent scan vectors, or hatches, when
         rastering back and forth with the laser.
 
-        Hatch spacing should allow for a slight overlap of scan vector
-        tracks such that some of the material re-melts to ensure full
-        coverage of solid material.
+        Hatch spacing should allow for a slight overlap of scan vector tracks such that
+        some of the material re-melts to ensure full coverage of solid material.
 
         Valid values are from 6e-5 to 2e-4 m (0.06 and 0.2 mm).
         """
