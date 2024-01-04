@@ -11,6 +11,14 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     labels:
       - "maintenance"
+    assignees:
+      - "pyansys-ci-bot"
+    commit-message:
+      prefix: "MAINT"
+    groups:
+      actions:
+        patterns:
+          - "*"
