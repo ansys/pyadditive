@@ -3,14 +3,44 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     labels:
       - "maintenance"
       - "dependencies"
+    ignore:
+      - dependency-name: "grpcio"
+    assignees:
+      - "pyansys-ci-bot"
+    commit-message:
+      prefix: "MAINT"
+    groups:
+      grpc-deps:
+        patterns:
+          - "google*"
+          - "grpc*"
+          - "protobuf"
+      docs-deps:
+        patterns:
+          - "*sphinx*"
+          - "*jupy*"
+          - "ipyvtklink"
+          - "myst-parser"
+          - "nbconvert"
+          - "notebook"
+          - "numpydoc"
+          - "panel"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     labels:
       - "maintenance"
+    assignees:
+      - "pyansys-ci-bot"
+    commit-message:
+      prefix: "MAINT"
+    groups:
+      actions:
+        patterns:
+          - "*"
