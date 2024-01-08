@@ -1,5 +1,52 @@
 # Changelog
 
+## PyAdditive 0.17.0
+
+### Breaking Changes
+
+* The parameter `material_parameters_file` of `MaterialTuningInput` class has been changed to  `material_configuration_file`.
+* The `Additive` class `__init__` method no longer has a `channel` parameter.
+
+### New Features
+
+* Add heatmap for porosity results of parametric study @ABDULKHADERKHAN in [#185](https://github.com/ansys/pyadditive/pull/185)
+* Add number of simulations per server parameter to `Additive` class @pkrull-ansys in [#177](https://github.com/ansys/pyadditive/pull/177)
+* Add product version parameter to `Additive` class  @pkrull-ansys in [#170](https://github.com/ansys/pyadditive/pull/170)
+
+### Doc Improvements
+* Several grammar and link corrections @pkrull-ansys in [#158](https://github.com/ansys/pyadditive/pull/158), [#160](https://github.com/ansys/pyadditive/pull/160)[#164](https://github.com/ansys/pyadditive/pull/164), [#184](https://github.com/ansys/pyadditive/pull/184)
+
+### Contributors
+
+* Peter Krull - <peter.krull@ansys.com>
+* Abdul Khader Khan - <abdulkhader.khan@ansys.com>
+* Kathy Pippert - <kathy.pippert@ansys.com>
+* Julie O'Hara - <julie.ohara@ansys.com>
+
+## PyAdditive 0.16.0
+
+### Breaking Changes
+
+* The `get_materials_list()` and `get_material()` methods of the `Additive` class have been renamed to [`materials_list()`](https://additive.docs.pyansys.com/version/stable/api/ansys/additive/core/additive/index.html#additive.materials_list) and
+[`material()`](https://additive.docs.pyansys.com/version/stable/api/ansys/additive/core/additive/index.html#additive.material).
+
+### New Features
+
+* Use a heatmap instead of a contour plot for single bead evaluation plot by @pkrull-ansys in [#126](https://github.com/ansys/pyadditive/pull/126).
+* Allow multiple additive server connections by @pkrull-ansys in [#143](https://github.com/ansys/pyadditive/pull/143).
+
+### Bug Fixes
+
+* Read parametric study files created on an alternate OS by @pkrull-ansys in [#128](https://github.com/ansys/pyadditive/pull/128).
+* Make connecting to the server more robust by @pkrull-ansys in [#133](https://github.com/ansys/pyadditive/pull/133).
+
+### Doc Improvements
+* Update docs and build pipeline for public release by @pkrull-ansys in [#136](https://github.com/ansys/pyadditive/pull/136).
+
+### Contributors
+
+* Peter Krull - <peter.krull@ansys.com>
+
 ## PyAdditive 0.15.0, 2023-10-09
 
 ### New Features
