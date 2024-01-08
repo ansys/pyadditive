@@ -1,5 +1,17 @@
 # Changelog
 
+## PyAdditive 0.18.0
+
+### Breaking Changes
+
+### New Features
+
+### Bug Fixes
+
+### Doc Improvements
+
+### Contributors
+
 ## PyAdditive 0.17.0
 
 ### Breaking Changes
