@@ -60,6 +60,7 @@ from ansys.additive.core.microstructure import (
     MicrostructureSummary,
 )
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
+from ansys.additive.core.progress_logger import LOG
 from ansys.additive.core.simulation import SimulationError, SimulationStatus, SimulationType
 from ansys.additive.core.single_bead import (
     MeltPool,
