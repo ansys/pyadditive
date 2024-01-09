@@ -1,5 +1,20 @@
 # Changelog
 
+## PyAdditive 0.18.dev1
+
+### Breaking Changes
+
+### New Features
+* Add separate logging class
+
+### Bug Fixes
+
+### Doc Improvements
+
+### Contributors
+* Peter Krull - <peter.krull@ansys.com>
+* Safee Rehman - <safee.rehman@ansys.com>
+
 ## PyAdditive 0.18.0
 
 ### Breaking Changes

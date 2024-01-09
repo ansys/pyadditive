@@ -31,33 +31,29 @@ import ansys.additive.core.progress_logger as logger
 LOG_LEVELS = {"CRITICAL": 50, "ERROR": 40, "WARNING": 30, "INFO": 20, "DEBUG": 10}
 
 
-def test_global_logger_exist():
-    """Test for checking the accurate naming of the general Logger instance."""
+@pytest.fixture(autouse=True)
+def run_before_and_after_tests():
+    # setup code
+    default_level = LOG.logger.level
+    yield
+    # teardown code
+    LOG.logger.setLevel(default_level)
 
+
+def test_global_logger_exists():
     assert isinstance(LOG.logger, deflogging.Logger)
     assert LOG.logger.name == "PyAdditive_global"
 
 
-def test_global_logger_has_handlers():
-    """Test for checking that the general Logger has file_handlers and sdtout
-    file_handlers implemented."""
-
+def test_global_logger_has_only_stdout_handler_enabled_by_default():
     assert hasattr(LOG, "file_handler")
     assert hasattr(LOG, "std_out_handler")
     assert LOG.logger.hasHandlers
-    assert LOG.file_handler or LOG.std_out_handler
+    assert not LOG.file_handler
+    assert LOG.std_out_handler
 
 
-def test_global_logger_logging(caplog: pytest.LogCaptureFixture):
-    """Testing the global PyAdditive logger capabilities. Forcing minimum logging level to
-    Debug, adding a message with different logging levels, checking the output and
-    restoring to original level.
-
-    Parameters
-    ----------
-    caplog : pytest.LogCaptureFixture
-        Fixture for capturing logs.
-    """
+def test_global_logger_logging_with_level_debug(caplog: pytest.LogCaptureFixture):
     LOG.logger.setLevel("DEBUG")
     LOG.std_out_handler.setLevel("DEBUG")
     for each_log_name, each_log_number in LOG_LEVELS.items():
@@ -66,156 +62,48 @@ def test_global_logger_logging(caplog: pytest.LogCaptureFixture):
         # Make sure we are using the right logger, the right level and message.
         assert caplog.record_tuples[-1] == ("PyAdditive_global", each_log_number, msg)
 
-    #  Set back to default level == ERROR
-    LOG.logger.setLevel("ERROR")
-    LOG.std_out_handler.setLevel("ERROR")
-
 
 def test_global_logger_level_mode():
     """Checking that the Logger levels are stored as integer values and that the default
-    value (unless changed) is ERROR."""
+    value (unless changed) is ERROR.
+
+    Update test if default value is changed.
+    """
     assert isinstance(LOG.logger.level, int)
     assert LOG.logger.level == logger.logging.ERROR
 
 
-def test_global_methods_with_log_level_debug(caplog: pytest.LogCaptureFixture):
-    """Testing global logger methods for printing out different log messages, from DEBUG to
-    CRITICAL.
-
-    Parameters
-    ----------
-    caplog : pytest.LogCaptureFixture
-        Fixture for capturing logs.
-    """
-    LOG.logger.setLevel("DEBUG")
-    LOG.std_out_handler.setLevel("DEBUG")
-
-    msg = f"This is a debug message"
-    LOG.debug(msg)
-    assert msg in caplog.text
-    assert "DEBUG" in caplog.text
-
-    msg = f"This is an info message"
-    LOG.info(msg)
-    assert msg in caplog.text
-    assert "INFO" in caplog.text
-
-    msg = f"This is a warning message"
-    LOG.warning(msg)
-    assert msg in caplog.text
-    assert "WARNING" in caplog.text
-
-    msg = f"This is an error message"
-    LOG.error(msg)
-    assert msg in caplog.text
-    assert "ERROR" in caplog.text
-
-    msg = f"This is a critical message"
-    LOG.critical(msg)
-    assert msg in caplog.text
-    assert "CRITICAL" in caplog.text
-
-    msg = f'This is a 30 message using "log"'
-    LOG.log(30, msg)
-    assert msg in caplog.text
-
-    #  Set back to default level == ERROR
-    LOG.logger.setLevel("ERROR")
-    LOG.std_out_handler.setLevel("ERROR")
+@pytest.mark.parametrize(
+    "level",
+    [
+        deflogging.DEBUG,
+        deflogging.INFO,
+        deflogging.WARN,
+        deflogging.ERROR,
+        deflogging.CRITICAL,
+    ],
+)
+def test_global_logger_debug_levels(level: int, caplog: pytest.LogCaptureFixture):
+    with caplog.at_level(level, LOG.logger.name):  # changing root logger level:
+        for each_log_name, each_log_number in LOG_LEVELS.items():
+            msg = f"This is a message of type {each_log_name}."
+            LOG.logger.log(each_log_number, msg)
+            # Make sure we are using the right logger, the right level and message.
+            if each_log_number >= level:
+                assert caplog.record_tuples[-1] == (
+                    "PyAdditive_global",
+                    each_log_number,
+                    msg,
+                )
+            else:
+                assert caplog.record_tuples[-1] != (
+                    "PyAdditive_global",
+                    each_log_number,
+                    msg,
+                )
 
 
-def test_global_methods_with_log_level_warning(caplog: pytest.LogCaptureFixture):
-    """Testing global logger methods for printing out different log messages, from DEBUG to
-    CRITICAL.
-
-    Parameters
-    ----------
-    caplog : pytest.LogCaptureFixture
-        Fixture for capturing logs.
-    """
-    LOG.logger.setLevel("WARNING")
-    LOG.std_out_handler.setLevel("WARNING")
-
-    msg = f"This is a debug message"
-    LOG.debug(msg)
-    assert msg not in caplog.text
-
-    msg = f"This is an info message"
-    LOG.info(msg)
-    assert msg not in caplog.text
-
-    msg = f"This is a warning message"
-    LOG.warning(msg)
-    assert msg in caplog.text
-
-    msg = f"This is an error message"
-    LOG.error(msg)
-    assert msg in caplog.text
-
-    msg = f"This is a critical message"
-    LOG.critical(msg)
-    assert msg in caplog.text
-
-    msg = f'This is a 30 message using "log"'
-    LOG.log(30, msg)
-    assert msg in caplog.text
-
-    #  Set back to default level == ERROR
-    LOG.logger.setLevel("ERROR")
-    LOG.std_out_handler.setLevel("ERROR")
-
-
-def test_global_methods_with_log_level_critical(caplog: pytest.LogCaptureFixture):
-    """Testing global logger methods for printing out different log messages, from DEBUG to
-    CRITICAL.
-
-    Parameters
-    ----------
-    caplog : pytest.LogCaptureFixture
-        Fixture for capturing logs.
-    """
-    LOG.logger.setLevel("CRITICAL")
-    LOG.std_out_handler.setLevel("CRITICAL")
-
-    msg = f"This is a debug message"
-    LOG.debug(msg)
-    assert msg not in caplog.text
-
-    msg = f"This is an info message"
-    LOG.info(msg)
-    assert msg not in caplog.text
-
-    msg = f"This is a warning message"
-    LOG.warning(msg)
-    assert msg not in caplog.text
-
-    msg = f"This is an error message"
-    LOG.error(msg)
-    assert msg not in caplog.text
-
-    msg = f"This is a critical message"
-    LOG.critical(msg)
-    assert msg in caplog.text
-
-    msg = f'This is a 30 message using "log"'
-    LOG.log(30, msg)
-    assert msg not in caplog.text
-
-    #  Set back to default level == ERROR
-    LOG.logger.setLevel("ERROR")
-    LOG.std_out_handler.setLevel("ERROR")
-
-
-def test_log_to_file(tmp_path_factory: pytest.TempPathFactory):
-    """Testing writing to log file.
-
-    Since the default loglevel of LOG is error, debug are not normally recorded to it.
-
-    Parameters
-    ----------
-    tmp_path_factory  : pytest.TempdirFactory
-        Fixture for accessing a temporal directory (erased after test execution).
-    """
+def test_global_logger_log_to_file(tmp_path_factory: pytest.TempPathFactory):
     file_path = tmp_path_factory.mktemp("log_files") / "instance.log"
     file_msg_error = "This is a error message"
     file_msg_debug = "This is a debug message"
