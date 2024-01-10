@@ -47,6 +47,7 @@ if not os.path.exists(EXAMPLES_PATH):  # pragma: no cover
 
 from ansys.additive.core.additive import Additive
 from ansys.additive.core.geometry_file import BuildFile, MachineType, StlFile
+from ansys.additive.core.logger import LOG
 from ansys.additive.core.machine import AdditiveMachine, MachineConstants
 from ansys.additive.core.material import (
     AdditiveMaterial,
