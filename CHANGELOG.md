@@ -1,6 +1,6 @@
 # Changelog
 
-## PyAdditive 0.18.dev1
+## PyAdditive 0.18.0
 
 ### Breaking Changes
 
@@ -14,18 +14,6 @@
 ### Contributors
 * Peter Krull - <peter.krull@ansys.com>
 * Safee Rehman - <safee.rehman@ansys.com>
-
-## PyAdditive 0.18.0
-
-### Breaking Changes
-
-### New Features
-
-### Bug Fixes
-
-### Doc Improvements
-
-### Contributors
 
 ## PyAdditive 0.17.0
 
