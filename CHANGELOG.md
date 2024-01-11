@@ -5,12 +5,15 @@
 ### Breaking Changes
 
 ### New Features
+* Add separate logging class
 
 ### Bug Fixes
 
 ### Doc Improvements
 
 ### Contributors
+* Peter Krull - <peter.krull@ansys.com>
+* Safee Rehman - <safee.rehman@ansys.com>
 
 ## PyAdditive 0.17.0
 
