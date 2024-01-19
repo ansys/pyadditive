@@ -24,6 +24,7 @@
 from __future__ import annotations
 
 from functools import wraps
+import math
 import os
 import pathlib
 import platform
@@ -106,6 +107,31 @@ class ParametricStudy:
         study = cls.__new__(cls)
         study._init_new_study(study_path)
         return study
+
+    def import_csv_study(self, file_name: str | os.PathLike):
+        """Import a csv file into the parametric study.
+
+        file_name: str, os.PathLike
+             Name of the csv file the simulation parameters are written to.
+        """
+        csv_path = pathlib.Path(file_name).absolute()
+        if not csv_path.exists():
+            raise ValueError(f"{csv_path} does not exist.")
+
+        if csv_path.suffix != ".csv":
+            raise ValueError(f"{csv_path} is not a csv file.")
+
+        main_columns = [
+            getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")
+        ]
+        csv_study = pd.read_csv(csv_path, index_col=0, nrows=0)
+        if all([set(csv_study.columns) == set(main_columns)]):
+            print(f"{csv_path} has the correct columns.")
+            csv_study = pd.read_csv(csv_path, index_col=0)
+        else:
+            raise ValueError(f"{csv_path} does not have the correct columns.")
+
+        self.add_simulations_from_imported_csv(csv_study)
 
     @property
     def format_version(self) -> int:
@@ -1211,6 +1237,7 @@ class ParametricStudy:
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for the simulations.
         """
+        duplicate_inputs = 0
         for input in inputs:
             dict = {}
             if isinstance(input, SingleBeadInput):
@@ -1256,9 +1283,40 @@ class ParametricStudy:
             dict[ColumnNames.HATCH_SPACING] = input.machine.hatch_spacing
             dict[ColumnNames.STRIPE_WIDTH] = input.machine.slicing_stripe_width
 
-            self._data_frame = pd.concat(
-                [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
-            )
+            if not self._check_for_duplicate_inputs(pd.Series(dict)):
+                self._data_frame = pd.concat(
+                    [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
+                )
+            else:
+                duplicate_inputs += 1
+                print(f"Skipping duplicate simulation input: {input}")
+
+        if duplicate_inputs > 0:
+            print("Skipped duplicate simulation inputs.")
+
+        return duplicate_inputs
+
+    def _check_for_duplicate_inputs(self, row: pd.Series):
+        """Check if a simulation input is already in the parametric study.
+
+        Parameters
+        ----------
+        row : pd.Series
+            Row of a CSV file containing the simulation input.
+        """
+        remove_labels = [
+            ColumnNames.ID,
+            ColumnNames.ITERATION,
+            ColumnNames.PRIORITY,
+            ColumnNames.STATUS,
+        ]
+        compare_list = row.index.tolist()
+        for label in remove_labels:
+            compare_list.remove(label)
+        for _, existing_row in self.data_frame().iterrows():
+            if row[compare_list].equals(existing_row[compare_list]):
+                return True
+        return False
 
     @save_on_return
     def remove(self, ids: str | list[str]):
@@ -1412,3 +1470,198 @@ class ParametricStudy:
         new_study = ParametricStudy._new(study.file_name)
         new_study._data_frame = df
         return new_study
+
+    @save_on_return
+    def add_simulations_from_imported_csv(self, csv_study: pd.DataFrame):
+        """Add simulations from an imported CSV file to the parametric study.
+
+        Parameters
+        ----------
+        csv_study : pd.DataFrame
+            Data frame of the csv file containing simulations to be added to the parametric study.
+        """
+        if self._check_for_unique_material(csv_study):
+            for _, csv_study_row in csv_study.iterrows():
+                if csv_study_row[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
+                    (
+                        row_simulation_input,
+                        row_iteration,
+                        row_priority,
+                    ) = self._create_single_bead_input_from_imported_csv(csv_study_row)
+                elif csv_study_row[ColumnNames.TYPE] == SimulationType.POROSITY:
+                    (
+                        row_simulation_input,
+                        row_iteration,
+                        row_priority,
+                    ) = self._create_porosity_input_from_imported_csv(csv_study_row)
+                elif csv_study_row[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE:
+                    (
+                        row_simulation_input,
+                        row_iteration,
+                        row_priority,
+                    ) = self._create_microstructure_input_from_imported_csv(csv_study_row)
+                else:
+                    raise TypeError(f"Invalid simulation input type: {type(csv_study_row)}")
+                self.add_inputs(
+                    inputs=[row_simulation_input], iteration=row_iteration, priority=row_priority
+                )
+
+    def _check_for_unique_material(self, data_frame: pd.DataFrame = None):
+        """Check if the same material is used for all simulations in the parametric study.
+
+        Parameters
+        csv_study : pd.DataFrame
+            Data frame of the csv file containing simulations to be added to the parametric study.
+        """
+        df_material = self.data_frame()[ColumnNames.MATERIAL].unique()
+        csv_materials = data_frame[ColumnNames.MATERIAL].unique()
+        if len(df_material) == 1 and len(csv_materials) == 1 and df_material[0] == csv_materials[0]:
+            return True
+        elif len(df_material) == 0 and len(csv_materials) == 1:
+            return True
+        else:
+            raise ValueError(
+                "Multiple materials found in the parametric study. Please use a single material."
+            )
+
+    def _create_single_bead_input_from_imported_csv(self, csv_study_row: pd.Series):
+        """Create a single bead input from a row of a CSV file.
+
+        Parameters
+        ----------
+        csv_study_row : pd.Series
+            Row of a CSV file containing the simulation input.
+        """
+        try:
+            test_iteration = csv_study_row[ColumnNames.ITERATION]
+            test_priority = csv_study_row[ColumnNames.PRIORITY]
+            test_machine = AdditiveMachine(
+                laser_power=csv_study_row[ColumnNames.LASER_POWER],
+                scan_speed=csv_study_row[ColumnNames.SCAN_SPEED],
+                heater_temperature=csv_study_row[ColumnNames.HEATER_TEMPERATURE],
+                layer_thickness=csv_study_row[ColumnNames.LAYER_THICKNESS],
+                beam_diameter=csv_study_row[ColumnNames.BEAM_DIAMETER],
+            )
+
+            test_material = AdditiveMaterial(
+                name=str(csv_study_row[ColumnNames.MATERIAL]),
+            )
+            test_bead_length = csv_study_row[ColumnNames.SINGLE_BEAD_LENGTH]
+
+            test_single_bead_input = SingleBeadInput(
+                bead_length=test_bead_length, machine=test_machine, material=test_material
+            )
+        except ValueError as e:
+            print(f"Invalid parameter combination: {e}")
+
+        return test_single_bead_input, test_iteration, test_priority
+
+    def _create_porosity_input_from_imported_csv(self, csv_study_row: pd.Series):
+        """Create a porosity input from a row of a CSV file.
+
+        Parameters
+        ----------
+        simulation_input : pd.Series
+            Row of a CSV file containing the simulation input.
+        """
+
+        try:
+            test_iteration = csv_study_row[ColumnNames.ITERATION]
+            test_priority = csv_study_row[ColumnNames.PRIORITY]
+            test_machine = AdditiveMachine(
+                laser_power=csv_study_row[ColumnNames.LASER_POWER],
+                scan_speed=csv_study_row[ColumnNames.SCAN_SPEED],
+                heater_temperature=csv_study_row[ColumnNames.HEATER_TEMPERATURE],
+                layer_thickness=csv_study_row[ColumnNames.LAYER_THICKNESS],
+                beam_diameter=csv_study_row[ColumnNames.BEAM_DIAMETER],
+                starting_layer_angle=csv_study_row[ColumnNames.START_ANGLE],
+                layer_rotation_angle=csv_study_row[ColumnNames.ROTATION_ANGLE],
+                hatch_spacing=csv_study_row[ColumnNames.HATCH_SPACING],
+                slicing_stripe_width=csv_study_row[ColumnNames.STRIPE_WIDTH],
+            )
+
+            test_material = AdditiveMaterial(
+                name=str(csv_study_row[ColumnNames.MATERIAL]),
+            )
+
+            test_porosity_input = PorosityInput(
+                size_x=csv_study_row[ColumnNames.POROSITY_SIZE_X],
+                size_y=csv_study_row[ColumnNames.POROSITY_SIZE_Y],
+                size_z=csv_study_row[ColumnNames.POROSITY_SIZE_Z],
+                machine=test_machine,
+                material=test_material,
+            )
+        except ValueError as e:
+            print(f"Invalid parameter combination: {e}")
+
+        return test_porosity_input, test_iteration, test_priority
+
+    def _create_microstructure_input_from_imported_csv(self, csv_study_row: pd.Series):
+        """Create a microstructure input from a row of a CSV file.
+
+        Parameters
+        ----------
+        csv_study_row : pd.Series
+            Row of a CSV file containing the simulation input.
+
+            HOW TO USE PROVIDED THERMAL PARAMETERS:??
+        """
+        try:
+            test_iteration = csv_study_row[ColumnNames.ITERATION]
+            test_priority = csv_study_row[ColumnNames.PRIORITY]
+            test_machine = AdditiveMachine(
+                laser_power=csv_study_row[ColumnNames.LASER_POWER],
+                scan_speed=csv_study_row[ColumnNames.SCAN_SPEED],
+                heater_temperature=csv_study_row[ColumnNames.HEATER_TEMPERATURE],
+                layer_thickness=csv_study_row[ColumnNames.LAYER_THICKNESS],
+                beam_diameter=csv_study_row[ColumnNames.BEAM_DIAMETER],
+                starting_layer_angle=csv_study_row[ColumnNames.START_ANGLE],
+                layer_rotation_angle=csv_study_row[ColumnNames.ROTATION_ANGLE],
+                hatch_spacing=csv_study_row[ColumnNames.HATCH_SPACING],
+                slicing_stripe_width=csv_study_row[ColumnNames.STRIPE_WIDTH],
+            )
+
+            test_material = AdditiveMaterial(
+                name=str(csv_study_row[ColumnNames.MATERIAL]),
+            )
+
+            test_cooling_rate = csv_study_row[ColumnNames.COOLING_RATE]
+            test_thermal_gradient = csv_study_row[ColumnNames.THERMAL_GRADIENT]
+            test_melt_pool_width = csv_study_row[ColumnNames.MICRO_MELT_POOL_WIDTH]
+            test_melt_pool_depth = csv_study_row[ColumnNames.MICRO_MELT_POOL_DEPTH]
+            test_random_seed = csv_study_row[ColumnNames.RANDOM_SEED]
+
+            if (
+                math.isnan(test_cooling_rate)
+                or math.isnan(test_thermal_gradient)
+                or math.isnan(test_melt_pool_width)
+                or math.isnan(test_melt_pool_depth)
+            ):
+                test_use_provided_thermal_parameters = False
+            else:
+                test_use_provided_thermal_parameters = True
+
+            if math.isnan(test_random_seed):
+                test_random_seed = 0
+
+            test_microstructure_input = MicrostructureInput(
+                sample_min_x=csv_study_row[ColumnNames.MICRO_MIN_X],
+                sample_min_y=csv_study_row[ColumnNames.MICRO_MIN_Y],
+                sample_min_z=csv_study_row[ColumnNames.MICRO_MIN_Z],
+                sample_size_x=csv_study_row[ColumnNames.MICRO_SIZE_X],
+                sample_size_y=csv_study_row[ColumnNames.MICRO_SIZE_Y],
+                sample_size_z=csv_study_row[ColumnNames.MICRO_SIZE_Z],
+                sensor_dimension=csv_study_row[ColumnNames.MICRO_SENSOR_DIM],
+                use_provided_thermal_parameters=test_use_provided_thermal_parameters,
+                cooling_rate=test_cooling_rate,
+                thermal_gradient=test_thermal_gradient,
+                melt_pool_width=test_melt_pool_width,
+                melt_pool_depth=test_melt_pool_depth,
+                random_seed=test_random_seed,
+                machine=test_machine,
+                material=test_material,
+            )
+        except ValueError as e:
+            print(f"Invalid parameter combination: {e}")
+
+        return test_microstructure_input, test_iteration, test_priority

@@ -193,6 +193,8 @@ class MicrostructureInput:
     def __validate_range(value, min, max, name):
         if value < min or value > max:
             raise ValueError("{} must be between {} and {}.".format(name, min, max))
+        elif math.isnan(value):
+            raise ValueError("{} must be a number.".format(name))
 
     @staticmethod
     def __validate_size(size_value, sensor_value, cushion, name):

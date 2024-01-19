@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides input and result summary containers for single bead simulations."""
+import math
+
 from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
 from ansys.api.additive.v0.additive_domain_pb2 import SingleBeadInput as SingleBeadInputMessage
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
@@ -74,6 +76,8 @@ class SingleBeadInput:
     def __validate_range(self, value, min, max, name):
         if value < min or value > max:
             raise ValueError("{} must be between {} and {}.".format(name, min, max))
+        elif math.isnan(value):
+            raise ValueError("{} must be a number.".format(name))
 
     @property
     def id(self) -> str:

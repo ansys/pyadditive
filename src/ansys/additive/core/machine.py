@@ -141,6 +141,8 @@ class AdditiveMachine:
     def __validate_range(self, value, min, max, name):
         if value < min or value > max:
             raise ValueError("{} must be between {} and {}.".format(name, min, max))
+        elif math.isnan(value):
+            raise ValueError("{} must be a number.".format(name))
 
     @property
     def laser_power(self) -> float:

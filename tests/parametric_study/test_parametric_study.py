@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import os
+import pathlib
 import platform
 import shutil
 from unittest.mock import PropertyMock, create_autospec, patch
@@ -151,6 +152,128 @@ def test_save_and_load_returns_original_object(tmp_path: pytest.TempPathFactory)
     assert study.data_frame().equals(study2.data_frame())
     assert study2.file_name == test_path
     assert study.file_name == study_name
+
+
+def test_import_csv_study_raises_exception_when_file_not_csv(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study_name = "test_study"
+    not_csv_file = test_utils.get_test_file_path(pathlib.Path("csv") / "not_a_csv.txt")
+    # act, assert
+    study = ps.ParametricStudy(tmp_path / study_name)
+    with pytest.raises(ValueError, match="is not a csv file."):
+        study.import_csv_study(not_csv_file)
+
+
+def test_import_csv_study_raises_exception_when_file_does_not_exist(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study_name = "test_study"
+    filename = tmp_path / study_name
+    # act, assert
+    study = ps.ParametricStudy(tmp_path / study_name)
+    with pytest.raises(ValueError, match="does not exist"):
+        study.import_csv_study(filename)
+
+
+def test_import_csv_study_raises_exception_when_file_does_not_have_correct_headers(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study_name = "test_study"
+    incorrect_csv_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "incorrect-test-study.csv"
+    )
+    # act, assert
+    study = ps.ParametricStudy(tmp_path / study_name)
+    with pytest.raises(ValueError, match="does not have the correct columns"):
+        study.import_csv_study(incorrect_csv_file)
+
+
+def test_import_csv_study_adds_simulations_to_new_study(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study_name = "test_study"
+    single_bead_demo_csv_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "single-bead-test-study.csv"
+    )
+    # act, assert
+    study = ps.ParametricStudy(tmp_path / study_name)
+    study.import_csv_study(single_bead_demo_csv_file)
+    assert len(study.data_frame()) == 5
+    assert len(study.data_frame()[ps.ColumnNames.LASER_POWER].unique()) == 5
+
+
+def test_import_csv_study_adds_simulations_of_different_input_types_to_new_study(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study_name = "test_study"
+    single_bead_demo_csv_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "single-bead-test-study.csv"
+    )
+    porosity_demo_csv_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "porosity-test-study.csv"
+    )
+    microstructure_demo_csv_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "microstructure-test-study.csv"
+    )
+    # act, assert
+    study = ps.ParametricStudy(tmp_path / study_name)
+    study.import_csv_study(single_bead_demo_csv_file)
+    study.import_csv_study(porosity_demo_csv_file)
+    study.import_csv_study(microstructure_demo_csv_file)
+    assert len(study.data_frame()) == 15
+
+
+def test_import_csv_study_adds_simulations_to_existing_study(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study_name = "test_study"
+    single_bead_demo_csv_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "single-bead-test-study.csv"
+    )
+    # act, assert
+    study = ps.ParametricStudy(tmp_path / study_name)
+    powers = [50, 250, 700]
+    scan_speeds = [0.35]
+
+    # act
+    study.generate_porosity_permutations(
+        material_name="material",
+        laser_powers=powers,
+        scan_speeds=scan_speeds,
+    )
+
+    # act
+    study.import_csv_study(single_bead_demo_csv_file)
+    assert len(study.data_frame()) == 8
+
+
+def test_import_csv_study_skips_simulations_with_different_materials(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study_name = "test_study"
+    single_bead_demo_csv_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "single-bead-test-study.csv"
+    )
+    # act, assert
+    study = ps.ParametricStudy(tmp_path / study_name)
+    powers = [50, 700]
+    scan_speeds = [0.35]
+
+    # act
+    study.generate_porosity_permutations(
+        material_name="test_material",
+        laser_powers=powers,
+        scan_speeds=scan_speeds,
+    )
+
+    # act
+    with pytest.raises(
+        ValueError,
+        match="Multiple materials found in the parametric study. Please use a single material",
+    ):
+        study.import_csv_study(single_bead_demo_csv_file)
 
 
 def test_add_summaries_with_porosity_summary_adds_row(tmp_path: pytest.TempPathFactory):
@@ -1143,6 +1266,105 @@ def test_add_inputs_assigns_unspecified_microstructure_params_correctly(
     assert np.isnan(df.loc[0, ps.ColumnNames.RANDOM_SEED])
 
 
+def test_add_inputs_skips_adding_entries_with_same_ids_and_default_params(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    input1 = SingleBeadInput(id="test_id1")
+    input2 = SingleBeadInput(id="test_id1")
+
+    # act
+    study.add_inputs([input1])
+    study.add_inputs([input2])
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+
+
+def test_add_inputs_adds_entries_with_same_ids_and_different_params(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    machine = AdditiveMachine()
+    material = test_utils.get_test_material()
+
+    input1 = SingleBeadInput(
+        id="id",
+        bead_length=0.001,
+        machine=machine,
+        material=material,
+    )
+
+    input2 = SingleBeadInput(
+        id="id",
+        bead_length=0.01,
+        machine=machine,
+        material=material,
+    )
+
+    # act
+    study.add_inputs([input1])
+    study.add_inputs([input2])
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 2
+
+
+def test_add_inputs_skips_adding_entries_with_different_iteration_and_default_params(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    input1 = SingleBeadInput(id="test_id1")
+    input2 = SingleBeadInput(id="test_id2")
+
+    # act
+    study.add_inputs([input1], iteration=1)
+    study.add_inputs([input2], iteration=2)
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+
+
+def test_add_inputs_skips_adding_entries_with_different_priority_and_default_params(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    input1 = SingleBeadInput(id="test_id1")
+    input2 = SingleBeadInput(id="test_id1")
+
+    # act
+    study.add_inputs([input1], priority=1)
+    study.add_inputs([input2], priority=2)
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+
+
+def test_add_inputs_skips_adding_entries_with_different_status_and_default_params(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    input1 = SingleBeadInput(id="test_id1")
+    input2 = SingleBeadInput(id="test_id1")
+
+    # act
+    study.add_inputs([input1], status=SimulationStatus.PENDING)
+    study.add_inputs([input2], status=SimulationStatus.ERROR)
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+
+
 def test_run_simulations_calls_simulate_correctly(monkeypatch, tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
@@ -1211,7 +1433,7 @@ def test_remove_deletes_multiple_rows_from_dataframe(tmp_path: pytest.TempPathFa
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     for i in range(4):
-        study.add_inputs([SingleBeadInput(id=f"test_id_{i}")])
+        study.add_inputs([SingleBeadInput(id=f"test_id_{i}", bead_length=0.001 * (i + 1))])
     df1 = study.data_frame()
     ids = ["test_id_0", "test_id_1"]
 
@@ -1229,7 +1451,7 @@ def test_remove_deletes_single_row_from_dataframe(tmp_path: pytest.TempPathFacto
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     for i in range(4):
-        study.add_inputs([SingleBeadInput(id=f"test_id_{i}")])
+        study.add_inputs([SingleBeadInput(id=f"test_id_{i}", bead_length=0.001 * (i + 1))])
     df1 = study.data_frame()
 
     # act

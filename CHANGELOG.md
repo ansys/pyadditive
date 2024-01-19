@@ -6,6 +6,7 @@
 
 ### New Features
 * Add separate logging class
+* Add capability to import a csv file containing a parametric study
 
 ### Bug Fixes
 
