@@ -355,6 +355,179 @@ def test_add_summaries_with_unknown_summaries_raises_error(tmp_path: pytest.Temp
         study.add_summaries([unknown_summary])
 
 
+def test_add_summaries_removes_duplicate_entries(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    machine = AdditiveMachine()
+    material = test_utils.get_test_material()
+    input = PorosityInput(
+        id="id1",
+        size_x=1e-3,
+        size_y=2e-3,
+        size_z=3e-3,
+        machine=machine,
+        material=material,
+    )
+    result = PorosityResult(
+        void_ratio=10,
+        powder_ratio=11,
+        solid_ratio=12,
+    )
+    summary = PorositySummary(input, result)
+
+    # act
+    study.add_summaries([summary], iteration=1)
+    study.add_summaries([summary], iteration=2)
+
+    # assert
+    df = study.data_frame()
+    assert len(study.data_frame()) == 1
+
+
+@pytest.mark.parametrize(
+    "input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP), (SimulationStatus.ERROR)]
+)
+def test_add_summaries_overwrites_duplicate_entries_with_simulation_status_completed(
+    input_status,
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    machine = AdditiveMachine()
+    material = test_utils.get_test_material()
+    input_sb_1 = SingleBeadInput(
+        id="sb_id_1",
+        bead_length=0.01,
+        machine=machine,
+        material=material,
+    )
+    melt_pool_msg = test_utils.get_test_melt_pool_message()
+    summary = SingleBeadSummary(input_sb_1, melt_pool_msg)
+    expected_build_rate = build_rate(
+        machine.scan_speed,
+        machine.layer_thickness,
+    )
+    median_mp = summary.melt_pool.data_frame().median()
+    expected_dw = (
+        median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]
+        / median_mp[MeltPoolColumnNames.REFERENCE_WIDTH]
+        if median_mp[MeltPoolColumnNames.REFERENCE_WIDTH]
+        else np.nan
+    )
+    expected_lw = (
+        median_mp[MeltPoolColumnNames.LENGTH] / median_mp[MeltPoolColumnNames.WIDTH]
+        if median_mp[MeltPoolColumnNames.WIDTH]
+        else np.nan
+    )
+
+    # act
+    study.add_inputs([input_sb_1], iteration=2, status=input_status)
+    study.add_summaries([summary], iteration=1)
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+    row = study.data_frame().iloc[0]
+    assert row[ps.ColumnNames.ITERATION] == 1
+    assert row[ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
+    assert row[ps.ColumnNames.MATERIAL] == material.name
+    assert row[ps.ColumnNames.HEATER_TEMPERATURE] == machine.heater_temperature
+    assert row[ps.ColumnNames.LAYER_THICKNESS] == machine.layer_thickness
+    assert row[ps.ColumnNames.BEAM_DIAMETER] == machine.beam_diameter
+    assert row[ps.ColumnNames.LASER_POWER] == machine.laser_power
+    assert row[ps.ColumnNames.SCAN_SPEED] == machine.scan_speed
+    assert row[ps.ColumnNames.HATCH_SPACING] == machine.hatch_spacing
+    assert row[ps.ColumnNames.START_ANGLE] == machine.starting_layer_angle
+    assert row[ps.ColumnNames.ROTATION_ANGLE] == machine.layer_rotation_angle
+    assert row[ps.ColumnNames.STRIPE_WIDTH] == machine.slicing_stripe_width
+    assert row[ps.ColumnNames.TYPE] == SimulationType.SINGLE_BEAD
+    assert row[ps.ColumnNames.BUILD_RATE] == expected_build_rate
+    assert row[ps.ColumnNames.ENERGY_DENSITY] == machine.laser_power / expected_build_rate
+    assert row[ps.ColumnNames.SINGLE_BEAD_LENGTH] == 0.01
+    assert row[ps.ColumnNames.MELT_POOL_DEPTH] == median_mp[MeltPoolColumnNames.DEPTH]
+    assert row[ps.ColumnNames.MELT_POOL_WIDTH] == median_mp[MeltPoolColumnNames.WIDTH]
+    assert row[ps.ColumnNames.MELT_POOL_LENGTH] == median_mp[MeltPoolColumnNames.LENGTH]
+    assert (
+        row[ps.ColumnNames.MELT_POOL_REFERENCE_DEPTH]
+        == median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]
+    )
+    assert (
+        row[ps.ColumnNames.MELT_POOL_REFERENCE_WIDTH]
+        == median_mp[MeltPoolColumnNames.REFERENCE_WIDTH]
+    )
+    assert row[ps.ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] == expected_dw
+    assert row[ps.ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] == expected_lw
+
+
+def test_add_summaries_overwrites_duplicate_completed_simulations_with_newer_entry(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    machine = AdditiveMachine()
+    material = test_utils.get_test_material()
+    input1 = PorosityInput(
+        id="id_1",
+        size_x=1e-3,
+        size_y=2e-3,
+        size_z=3e-3,
+        machine=machine,
+        material=material,
+    )
+    input2 = PorosityInput(
+        id="id_2",
+        size_x=1e-3,
+        size_y=2e-3,
+        size_z=3e-3,
+        machine=machine,
+        material=material,
+    )
+    result1 = PorosityResult(
+        void_ratio=11,
+        powder_ratio=12,
+        solid_ratio=13,
+    )
+    result2 = PorosityResult(
+        void_ratio=10,
+        powder_ratio=11,
+        solid_ratio=12,
+    )
+    expected_build_rate = build_rate(
+        machine.scan_speed, machine.layer_thickness, machine.hatch_spacing
+    )
+    summary1 = PorositySummary(input1, result1)
+    summary2 = PorositySummary(input2, result2)
+
+    # act
+    study.add_summaries([summary1], iteration=1)
+    study.add_summaries([summary2], iteration=2)
+
+    # assert
+    df = study.data_frame()
+    assert len(study.data_frame()) == 1
+    row = study.data_frame().iloc[0]
+    assert row[ps.ColumnNames.ITERATION] == 2
+    assert row[ps.ColumnNames.ID] == "id_2"
+    assert row[ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
+    assert row[ps.ColumnNames.MATERIAL] == material.name
+    assert row[ps.ColumnNames.HEATER_TEMPERATURE] == machine.heater_temperature
+    assert row[ps.ColumnNames.LAYER_THICKNESS] == machine.layer_thickness
+    assert row[ps.ColumnNames.BEAM_DIAMETER] == machine.beam_diameter
+    assert row[ps.ColumnNames.LASER_POWER] == machine.laser_power
+    assert row[ps.ColumnNames.SCAN_SPEED] == machine.scan_speed
+    assert row[ps.ColumnNames.HATCH_SPACING] == machine.hatch_spacing
+    assert row[ps.ColumnNames.START_ANGLE] == machine.starting_layer_angle
+    assert row[ps.ColumnNames.ROTATION_ANGLE] == machine.layer_rotation_angle
+    assert row[ps.ColumnNames.STRIPE_WIDTH] == machine.slicing_stripe_width
+    assert row[ps.ColumnNames.TYPE] == SimulationType.POROSITY
+    assert row[ps.ColumnNames.BUILD_RATE] == expected_build_rate
+    assert row[ps.ColumnNames.ENERGY_DENSITY] == machine.laser_power / expected_build_rate
+    assert row[ps.ColumnNames.POROSITY_SIZE_X] == 1e-3
+    assert row[ps.ColumnNames.POROSITY_SIZE_Y] == 2e-3
+    assert row[ps.ColumnNames.POROSITY_SIZE_Z] == 3e-3
+    assert row[ps.ColumnNames.RELATIVE_DENSITY] == 12
+
+
 def test_generate_single_bead_permutations_creates_permutations(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
@@ -1143,6 +1316,110 @@ def test_add_inputs_assigns_unspecified_microstructure_params_correctly(
     assert np.isnan(df.loc[0, ps.ColumnNames.RANDOM_SEED])
 
 
+@pytest.mark.parametrize(
+    "input_status, expected_len",
+    [
+        (SimulationStatus.PENDING, 3),
+        (SimulationStatus.SKIP, 3),
+        (SimulationStatus.ERROR, 0),
+        (SimulationStatus.COMPLETED, 0),
+    ],
+)
+def test_add_inputs_only_adds_entries_with_simulation_status_pending_or_skip(
+    input_status, expected_len, tmp_path: pytest.TempPathFactory
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    inputs = [
+        SingleBeadInput(id="test_id_1"),
+        PorosityInput(id="test_id_2"),
+        MicrostructureInput(id="test_id_3"),
+    ]
+
+    # act
+    study.add_inputs(inputs, status=input_status)
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == expected_len
+
+
+@pytest.mark.parametrize("input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP)])
+def test_add_inputs_overwrites_duplicate_entries_by_keeping_earlier_entry(
+    input_status, tmp_path: pytest.TempPathFactory
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    input_sb_1 = SingleBeadInput(id="sb_id_1", bead_length=0.001)
+    input_p_1 = PorosityInput(id="p_id_1", size_x=0.001, size_y=0.001, size_z=0.001)
+    input_m_1 = MicrostructureInput(
+        id="m_id_1", sample_size_x=0.001, sample_size_y=0.001, sample_size_z=0.002
+    )
+    input_sb_1_duplicate = SingleBeadInput(id="sb_id_1_d", bead_length=0.001)
+    input_p_1_duplicate = PorosityInput(id="p_id_1_d", size_x=0.001, size_y=0.001, size_z=0.001)
+    input_m_1_duplicate = MicrostructureInput(
+        id="m_id_1_d", sample_size_x=0.001, sample_size_y=0.001, sample_size_z=0.002
+    )
+
+    input1 = [input_sb_1, input_p_1, input_m_1]
+    input1_d = [input_sb_1_duplicate, input_p_1_duplicate, input_m_1_duplicate]
+
+    study.add_inputs(input1, iteration=1, priority=1, status=input_status)
+
+    # act
+    study.add_inputs(input1_d, iteration=1, priority=1, status=input_status)
+
+    # assert
+
+    df = study.data_frame()
+    assert len(df) == 3
+    assert df.loc[0, ps.ColumnNames.ID].values[0] == "sb_id_1"
+    assert df.loc[0, ps.ColumnNames.ID].values[1] == "p_id_1"
+    assert df.loc[0, ps.ColumnNames.ID].values[2] == "m_id_1"
+
+
+@pytest.mark.parametrize("input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP)])
+def test_add_inputs_overwrites_duplicate_entries_with_priority_to_simulation_status_pending(
+    input_status, tmp_path: pytest.TempPathFactory
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    input_sb_1 = SingleBeadInput(id="sb_id_1")
+    input_sb_2 = SingleBeadInput(id="sb_id_2")
+
+    # act
+    study.add_inputs([input_sb_1], status=SimulationStatus.PENDING)
+    study.add_inputs([input_sb_2], status=input_status)
+
+    # assert
+    df = study.data_frame()
+    assert len(df) == 1
+    assert df.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.PENDING
+    assert df.loc[0, ps.ColumnNames.ID] == "sb_id_1"
+
+
+@pytest.mark.parametrize("input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP)])
+def test_add_inputs_does_not_overwrite_simulation_with_status_completed(
+    input_status, tmp_path: pytest.TempPathFactory
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    input_sb_1 = SingleBeadInput(id="sb_id_1")
+    melt_pool_msg = test_utils.get_test_melt_pool_message()
+    summary = SingleBeadSummary(input_sb_1, melt_pool_msg)
+
+    # act
+    study.add_summaries([summary], iteration=1)
+    study.add_inputs([input_sb_1], iteration=1, status=input_status)
+
+    # assert
+    df = study.data_frame()
+
+    assert len(df) == 1
+    assert df.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
+    assert df.loc[0, ps.ColumnNames.ID] == "sb_id_1"
+
+
 def test_run_simulations_calls_simulate_correctly(monkeypatch, tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
@@ -1211,7 +1488,7 @@ def test_remove_deletes_multiple_rows_from_dataframe(tmp_path: pytest.TempPathFa
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     for i in range(4):
-        study.add_inputs([SingleBeadInput(id=f"test_id_{i}")])
+        study.add_inputs([SingleBeadInput(id=f"test_id_{i}", bead_length=(i + 1) * 0.001)])
     df1 = study.data_frame()
     ids = ["test_id_0", "test_id_1"]
 
@@ -1229,7 +1506,7 @@ def test_remove_deletes_single_row_from_dataframe(tmp_path: pytest.TempPathFacto
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     for i in range(4):
-        study.add_inputs([SingleBeadInput(id=f"test_id_{i}")])
+        study.add_inputs([SingleBeadInput(id=f"test_id_{i}", bead_length=(i + 1) * 0.001)])
     df1 = study.data_frame()
 
     # act

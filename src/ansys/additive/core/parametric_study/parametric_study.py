@@ -33,6 +33,7 @@ import numpy as np
 import pandas as pd
 
 from ansys.additive.core import (
+    LOG,
     Additive,
     AdditiveMachine,
     AdditiveMaterial,
@@ -255,6 +256,9 @@ class ParametricStudy:
         This method adds new simulations to the parametric study. To update existing
         simulations, use the :meth:`update` method.
 
+        Duplicate simulations are automatically removed/updated from the parametric
+        study.
+
         Parameters
         ----------
         summaries : list[SingleBeadSummary, PorositySummary, MicrostructureSummary]
@@ -271,6 +275,7 @@ class ParametricStudy:
                 self._add_microstructure_summary(summary, iteration)
             else:
                 raise TypeError(f"Unknown summary type: {type(summary)}")
+        self._remove_duplicate_entries(overwrite=True)
 
     def _add_single_bead_summary(
         self, summary: SingleBeadSummary, iteration: int = DEFAULT_ITERATION
@@ -1200,6 +1205,9 @@ class ParametricStudy:
     ):
         """Add new simulations to the parametric study.
 
+        Duplicate simulations are automatically removed/updated from the parametric
+        study.
+
         Parameters
         ----------
         inputs : list[SingleBeadInput, PorosityInput, MicrostructureInput]
@@ -1210,55 +1218,234 @@ class ParametricStudy:
 
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for the simulations.
+
+        status : SimulationStatus, default: :obj:`SimulationStatus.PENDING`
+            Valid types are :obj:`SimulationStatus.PENDING` and :obj:`SimulationStatus.SKIP`.
         """
-        for input in inputs:
-            dict = {}
-            if isinstance(input, SingleBeadInput):
-                dict[ColumnNames.TYPE] = SimulationType.SINGLE_BEAD
-                dict[ColumnNames.SINGLE_BEAD_LENGTH] = input.bead_length
-            elif isinstance(input, PorosityInput):
-                dict[ColumnNames.TYPE] = SimulationType.POROSITY
-                dict[ColumnNames.POROSITY_SIZE_X] = input.size_x
-                dict[ColumnNames.POROSITY_SIZE_Y] = input.size_y
-                dict[ColumnNames.POROSITY_SIZE_Z] = input.size_z
-            elif isinstance(input, MicrostructureInput):
-                dict[ColumnNames.TYPE] = SimulationType.MICROSTRUCTURE
-                dict[ColumnNames.MICRO_MIN_X] = input.sample_min_x
-                dict[ColumnNames.MICRO_MIN_Y] = input.sample_min_y
-                dict[ColumnNames.MICRO_MIN_Z] = input.sample_min_z
-                dict[ColumnNames.MICRO_SIZE_X] = input.sample_size_x
-                dict[ColumnNames.MICRO_SIZE_Y] = input.sample_size_y
-                dict[ColumnNames.MICRO_SIZE_Z] = input.sample_size_z
-                dict[ColumnNames.MICRO_SENSOR_DIM] = input.sensor_dimension
-                if input.use_provided_thermal_parameters:
-                    dict[ColumnNames.COOLING_RATE] = input.cooling_rate
-                    dict[ColumnNames.THERMAL_GRADIENT] = input.thermal_gradient
-                    dict[ColumnNames.MICRO_MELT_POOL_WIDTH] = input.melt_pool_width
-                    dict[ColumnNames.MICRO_MELT_POOL_DEPTH] = input.melt_pool_depth
-                if input.random_seed != MicrostructureInput.DEFAULT_RANDOM_SEED:
-                    dict[ColumnNames.RANDOM_SEED] = input.random_seed
-            else:
-                print(f"Invalid simulation input type: {type(input)}")
-                continue
+        if status == SimulationStatus.SKIP or status == SimulationStatus.PENDING:
+            for input in inputs:
+                dict = {}
+                if isinstance(input, SingleBeadInput):
+                    dict[ColumnNames.TYPE] = SimulationType.SINGLE_BEAD
+                    dict[ColumnNames.SINGLE_BEAD_LENGTH] = input.bead_length
+                elif isinstance(input, PorosityInput):
+                    dict[ColumnNames.TYPE] = SimulationType.POROSITY
+                    dict[ColumnNames.POROSITY_SIZE_X] = input.size_x
+                    dict[ColumnNames.POROSITY_SIZE_Y] = input.size_y
+                    dict[ColumnNames.POROSITY_SIZE_Z] = input.size_z
+                elif isinstance(input, MicrostructureInput):
+                    dict[ColumnNames.TYPE] = SimulationType.MICROSTRUCTURE
+                    dict[ColumnNames.MICRO_MIN_X] = input.sample_min_x
+                    dict[ColumnNames.MICRO_MIN_Y] = input.sample_min_y
+                    dict[ColumnNames.MICRO_MIN_Z] = input.sample_min_z
+                    dict[ColumnNames.MICRO_SIZE_X] = input.sample_size_x
+                    dict[ColumnNames.MICRO_SIZE_Y] = input.sample_size_y
+                    dict[ColumnNames.MICRO_SIZE_Z] = input.sample_size_z
+                    dict[ColumnNames.MICRO_SENSOR_DIM] = input.sensor_dimension
+                    if input.use_provided_thermal_parameters:
+                        dict[ColumnNames.COOLING_RATE] = input.cooling_rate
+                        dict[ColumnNames.THERMAL_GRADIENT] = input.thermal_gradient
+                        dict[ColumnNames.MICRO_MELT_POOL_WIDTH] = input.melt_pool_width
+                        dict[ColumnNames.MICRO_MELT_POOL_DEPTH] = input.melt_pool_depth
+                    if input.random_seed != MicrostructureInput.DEFAULT_RANDOM_SEED:
+                        dict[ColumnNames.RANDOM_SEED] = input.random_seed
+                else:
+                    print(f"Invalid simulation input type: {type(input)}")
+                    continue
 
-            dict[ColumnNames.ITERATION] = iteration
-            dict[ColumnNames.PRIORITY] = priority
-            dict[ColumnNames.ID] = self._create_unique_id(id=input.id)
-            dict[ColumnNames.STATUS] = status
-            dict[ColumnNames.MATERIAL] = input.material.name
-            dict[ColumnNames.LASER_POWER] = input.machine.laser_power
-            dict[ColumnNames.SCAN_SPEED] = input.machine.scan_speed
-            dict[ColumnNames.LAYER_THICKNESS] = input.machine.layer_thickness
-            dict[ColumnNames.BEAM_DIAMETER] = input.machine.beam_diameter
-            dict[ColumnNames.HEATER_TEMPERATURE] = input.machine.heater_temperature
-            dict[ColumnNames.START_ANGLE] = input.machine.starting_layer_angle
-            dict[ColumnNames.ROTATION_ANGLE] = input.machine.layer_rotation_angle
-            dict[ColumnNames.HATCH_SPACING] = input.machine.hatch_spacing
-            dict[ColumnNames.STRIPE_WIDTH] = input.machine.slicing_stripe_width
+                dict[ColumnNames.ITERATION] = iteration
+                dict[ColumnNames.PRIORITY] = priority
+                dict[ColumnNames.ID] = self._create_unique_id(id=input.id)
+                dict[ColumnNames.STATUS] = status
+                dict[ColumnNames.MATERIAL] = input.material.name
+                dict[ColumnNames.LASER_POWER] = input.machine.laser_power
+                dict[ColumnNames.SCAN_SPEED] = input.machine.scan_speed
+                dict[ColumnNames.LAYER_THICKNESS] = input.machine.layer_thickness
+                dict[ColumnNames.BEAM_DIAMETER] = input.machine.beam_diameter
+                dict[ColumnNames.HEATER_TEMPERATURE] = input.machine.heater_temperature
+                dict[ColumnNames.START_ANGLE] = input.machine.starting_layer_angle
+                dict[ColumnNames.ROTATION_ANGLE] = input.machine.layer_rotation_angle
+                dict[ColumnNames.HATCH_SPACING] = input.machine.hatch_spacing
+                dict[ColumnNames.STRIPE_WIDTH] = input.machine.slicing_stripe_width
 
-            self._data_frame = pd.concat(
-                [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
+                self._data_frame = pd.concat(
+                    [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
+                )
+            self._remove_duplicate_entries(overwrite=False)
+        else:
+            LOG.debug(f"Cannot add inputs with simulation status type: {status}")
+
+    @save_on_return
+    def _remove_duplicate_entries(self, overwrite: bool = False) -> int:
+        """Remove or update duplicate simulations from the parametric study.
+
+        For duplicate removal, the following rules are applied:
+        - Order of priority: completed > pending > skip > error
+        - A subset of input columns are used to check for duplicates as per simulation type
+        - Completed simulations will overwrite pending, skip and error simulations
+        - Completed simulations will be only overwritten by newer completed simulations
+
+        Parameters
+        ----------
+        overwrite : bool, default: False
+            If True, drop duplicates and keep the latest entry.
+            If False, drop duplicates and keep the earlier entry.
+
+        Returns
+        -------
+        int
+            The number of duplicate simulations removed.
+        """
+        sorted_df = pd.DataFrame(
+            columns=[getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
+        )
+        duplicates_removed_df = pd.DataFrame(
+            columns=[getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
+        )
+        current_df = self.data_frame()
+
+        if len(current_df) == 0:
+            return 0
+
+        # Sort as per status so that completed simulations are not overwritten by the ones lower in the list
+        if len(current_df[current_df[ColumnNames.STATUS] == SimulationStatus.COMPLETED]) > 0:
+            sorted_df = pd.concat(
+                [
+                    sorted_df,
+                    current_df[current_df[ColumnNames.STATUS] == SimulationStatus.COMPLETED],
+                ],
+                ignore_index=True,
             )
+        if len(current_df[current_df[ColumnNames.STATUS] == SimulationStatus.PENDING]) > 0:
+            sorted_df = pd.concat(
+                [sorted_df, current_df[current_df[ColumnNames.STATUS] == SimulationStatus.PENDING]],
+                ignore_index=True,
+            )
+        if len(current_df[current_df[ColumnNames.STATUS] == SimulationStatus.SKIP]) > 0:
+            sorted_df = pd.concat(
+                [sorted_df, current_df[current_df[ColumnNames.STATUS] == SimulationStatus.SKIP]],
+                ignore_index=True,
+            )
+        if len(current_df[current_df[ColumnNames.STATUS] == SimulationStatus.ERROR]) > 0:
+            sorted_df = pd.concat(
+                [sorted_df, current_df[current_df[ColumnNames.STATUS] == SimulationStatus.ERROR]],
+                ignore_index=True,
+            )
+
+        # Common columns to check for duplicates
+        common_params = [
+            ColumnNames.MATERIAL,
+            ColumnNames.HEATER_TEMPERATURE,
+            ColumnNames.LAYER_THICKNESS,
+            ColumnNames.BEAM_DIAMETER,
+            ColumnNames.LASER_POWER,
+            ColumnNames.SCAN_SPEED,
+            ColumnNames.TYPE,
+        ]
+
+        # Additional columns to check for duplicates as per simulation type
+        sb_params = common_params + [ColumnNames.SINGLE_BEAD_LENGTH]
+
+        porosity_params = common_params + [
+            ColumnNames.START_ANGLE,
+            ColumnNames.ROTATION_ANGLE,
+            ColumnNames.HATCH_SPACING,
+            ColumnNames.STRIPE_WIDTH,
+            ColumnNames.POROSITY_SIZE_X,
+            ColumnNames.POROSITY_SIZE_Y,
+            ColumnNames.POROSITY_SIZE_Z,
+        ]
+
+        microstructure_params = common_params + [
+            ColumnNames.START_ANGLE,
+            ColumnNames.ROTATION_ANGLE,
+            ColumnNames.HATCH_SPACING,
+            ColumnNames.STRIPE_WIDTH,
+            ColumnNames.MICRO_MIN_X,
+            ColumnNames.MICRO_MIN_Y,
+            ColumnNames.MICRO_MIN_Z,
+            ColumnNames.MICRO_SIZE_X,
+            ColumnNames.MICRO_SIZE_Y,
+            ColumnNames.MICRO_SIZE_Z,
+            ColumnNames.MICRO_SENSOR_DIM,
+            ColumnNames.COOLING_RATE,
+            ColumnNames.THERMAL_GRADIENT,
+            ColumnNames.MICRO_MELT_POOL_DEPTH,
+            ColumnNames.MICRO_MELT_POOL_WIDTH,
+            ColumnNames.RANDOM_SEED,
+        ]
+
+        try:
+            single_bead_df = sorted_df[sorted_df[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD]
+            porosity_df = sorted_df[sorted_df[ColumnNames.TYPE] == SimulationType.POROSITY]
+            microstructure_df = sorted_df[
+                sorted_df[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE
+            ]
+
+            if overwrite:
+                # Drop duplicates and keep the latest completed simulation entry in case of adding a
+                # completed simulation when using add_summaries.
+                # Simulation status further narrows down subset of columns to check.
+                single_bead_df.drop_duplicates(
+                    subset=sb_params + [ColumnNames.STATUS],
+                    ignore_index=True,
+                    keep="last",
+                    inplace=True,
+                )
+                porosity_df.drop_duplicates(
+                    subset=porosity_params + [ColumnNames.STATUS],
+                    ignore_index=True,
+                    keep="last",
+                    inplace=True,
+                )
+                microstructure_df.drop_duplicates(
+                    subset=microstructure_params + [ColumnNames.STATUS],
+                    ignore_index=True,
+                    keep="last",
+                    inplace=True,
+                )
+
+            # Drop duplicates and keep the earlier entry in case of adding a pending/skip simulation
+            # when using add_inputs.
+            # Completed simulations will remain as is since they are already sorted and are higher
+            # up in the list.
+            if len(single_bead_df) > 0:
+                duplicates_removed_df = pd.concat(
+                    [
+                        duplicates_removed_df,
+                        single_bead_df.drop_duplicates(
+                            subset=sb_params, ignore_index=True, keep="first"
+                        ),
+                    ]
+                )
+            if len(porosity_df) > 0:
+                duplicates_removed_df = pd.concat(
+                    [
+                        duplicates_removed_df,
+                        porosity_df.drop_duplicates(
+                            subset=porosity_params, ignore_index=True, keep="first"
+                        ),
+                    ]
+                )
+            if len(microstructure_df) > 0:
+                duplicates_removed_df = pd.concat(
+                    [
+                        duplicates_removed_df,
+                        microstructure_df.drop_duplicates(
+                            subset=microstructure_params, ignore_index=True, keep="first"
+                        ),
+                    ]
+                )
+            if duplicates_removed_df.__len__() < current_df.__len__():
+                self._data_frame = duplicates_removed_df
+                LOG.debug(
+                    f"Removed {current_df.__len__()-duplicates_removed_df.__len__()} duplicate simulation(s)."
+                )
+            else:
+                LOG.debug("No duplicate simulations found.")
+            return current_df.__len__() - duplicates_removed_df.__len__()
+        except Exception as e:
+            LOG.error(f"Error removing duplicate simulations: {e}")
 
     @save_on_return
     def remove(self, ids: str | list[str]):
