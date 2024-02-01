@@ -46,7 +46,7 @@ dependencies = [
 [project.optional-dependencies]
 tests = [
     "ansys-platform-instancemanagement==1.1.2",
-    "dill==0.3.7",
+    "dill==0.3.8",
     "google-api-python-client==2.116.0",
     "googleapis-common-protos==1.62.0",
     "grpcio==1.60.0",
