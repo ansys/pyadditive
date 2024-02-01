@@ -9,6 +9,8 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
 
 env:
   MAIN_PYTHON_VERSION: "3.10"
