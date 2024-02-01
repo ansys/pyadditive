@@ -1394,56 +1394,35 @@ class ParametricStudy:
             # Drop duplicates and keep the latest completed simulation entry in case of adding a
             # completed simulation when using add_summaries.
             # Simulation status further narrows down subset of columns to check.
-            single_bead_df.drop_duplicates(
-                subset=sb_params + [ColumnNames.STATUS],
-                ignore_index=True,
-                keep="last",
-                inplace=True,
-            )
-            porosity_df.drop_duplicates(
-                subset=porosity_params + [ColumnNames.STATUS],
-                ignore_index=True,
-                keep="last",
-                inplace=True,
-            )
-            microstructure_df.drop_duplicates(
-                subset=microstructure_params + [ColumnNames.STATUS],
-                ignore_index=True,
-                keep="last",
-                inplace=True,
-            )
+
+            for df, params in zip(
+                [single_bead_df, porosity_df, microstructure_df],
+                [sb_params, porosity_params, microstructure_params],
+            ):
+                df.drop_duplicates(
+                    subset=params + [ColumnNames.STATUS],
+                    ignore_index=True,
+                    keep="last",
+                    inplace=True,
+                )
 
         # Drop duplicates and keep the earlier entry in case of adding a pending/skip simulation
         # when using add_inputs.
         # Completed simulations will remain as is since they are already sorted and are higher
         # up in the list.
-        if len(single_bead_df) > 0:
-            duplicates_removed_df = pd.concat(
-                [
-                    duplicates_removed_df,
-                    single_bead_df.drop_duplicates(
-                        subset=sb_params, ignore_index=True, keep="first"
-                    ),
-                ]
-            )
-        if len(porosity_df) > 0:
-            duplicates_removed_df = pd.concat(
-                [
-                    duplicates_removed_df,
-                    porosity_df.drop_duplicates(
-                        subset=porosity_params, ignore_index=True, keep="first"
-                    ),
-                ]
-            )
-        if len(microstructure_df) > 0:
-            duplicates_removed_df = pd.concat(
-                [
-                    duplicates_removed_df,
-                    microstructure_df.drop_duplicates(
-                        subset=microstructure_params, ignore_index=True, keep="first"
-                    ),
-                ]
-            )
+
+        for df, params in zip(
+            [single_bead_df, porosity_df, microstructure_df],
+            [sb_params, porosity_params, microstructure_params],
+        ):
+            if len(df) > 0:
+                duplicates_removed_df = pd.concat(
+                    [
+                        duplicates_removed_df,
+                        df.drop_duplicates(subset=params, ignore_index=True, keep="first"),
+                    ]
+                )
+
         self._data_frame = duplicates_removed_df
         if len(duplicates_removed_df) < len(current_df):
             LOG.debug(
