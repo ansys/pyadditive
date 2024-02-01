@@ -355,6 +355,35 @@ def test_add_summaries_with_unknown_summaries_raises_error(tmp_path: pytest.Temp
         study.add_summaries([unknown_summary])
 
 
+def test_add_summaries_returns_correct_number_of_added_summaries(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    machine = AdditiveMachine()
+    material = test_utils.get_test_material()
+    input = PorosityInput(
+        id="id",
+        size_x=1e-3,
+        size_y=2e-3,
+        size_z=3e-3,
+        machine=machine,
+        material=material,
+    )
+    result = PorosityResult(
+        void_ratio=10,
+        powder_ratio=11,
+        solid_ratio=12,
+    )
+    summary = PorositySummary(input, result)
+
+    # act
+    added = study.add_summaries([summary], iteration=99)
+    re_added = study.add_summaries([summary], iteration=99)
+
+    # assert
+    assert added == 1
+    assert re_added == 0
+
+
 def test_add_summaries_removes_duplicate_entries(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
@@ -380,13 +409,10 @@ def test_add_summaries_removes_duplicate_entries(tmp_path: pytest.TempPathFactor
     study.add_summaries([summary], iteration=2)
 
     # assert
-    df = study.data_frame()
     assert len(study.data_frame()) == 1
 
 
-@pytest.mark.parametrize(
-    "input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP), (SimulationStatus.ERROR)]
-)
+@pytest.mark.parametrize("input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP)])
 def test_add_summaries_overwrites_duplicate_entries_with_simulation_status_completed(
     input_status,
     tmp_path: pytest.TempPathFactory,
@@ -1156,6 +1182,30 @@ def test_add_inputs_does_not_create_new_rows_for_invalid_input(tmp_path: pytest.
     assert len(df) == 0
 
 
+def test_add_inputs_returns_correct_number_of_added_inputs(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    inputs = [
+        SingleBeadInput(id="test_id_1"),
+        PorosityInput(id="test_id_2"),
+        MicrostructureInput(id="test_id_3"),
+    ]
+    invalid_inputs = [
+        "invalid input",
+        "another one",
+    ]
+
+    # act
+    added = study.add_inputs(inputs)
+    re_added = study.add_inputs(inputs)
+    invalid_added = study.add_inputs(invalid_inputs)
+
+    # assert
+    assert added == 3
+    assert re_added == 0
+    assert invalid_added == 0
+
+
 def test_add_inputs_assigns_common_params_correctly(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
@@ -1321,8 +1371,6 @@ def test_add_inputs_assigns_unspecified_microstructure_params_correctly(
     [
         (SimulationStatus.PENDING, 3),
         (SimulationStatus.SKIP, 3),
-        (SimulationStatus.ERROR, 0),
-        (SimulationStatus.COMPLETED, 0),
     ],
 )
 def test_add_inputs_only_adds_entries_with_simulation_status_pending_or_skip(
@@ -1344,6 +1392,29 @@ def test_add_inputs_only_adds_entries_with_simulation_status_pending_or_skip(
     assert len(df) == expected_len
 
 
+@pytest.mark.parametrize(
+    "input_status, expected_len",
+    [
+        (SimulationStatus.COMPLETED, 3),
+        (SimulationStatus.ERROR, 3),
+    ],
+)
+def test_add_inputs_raises_error_with_simulation_status_completed_or_error(
+    input_status, expected_len, tmp_path: pytest.TempPathFactory
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    inputs = [
+        SingleBeadInput(id="test_id_1"),
+        PorosityInput(id="test_id_2"),
+        MicrostructureInput(id="test_id_3"),
+    ]
+
+    # act, assert
+    with pytest.raises(ValueError, match="Invalid simulation status"):
+        study.add_inputs(inputs, status=input_status)
+
+
 @pytest.mark.parametrize("input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP)])
 def test_add_inputs_overwrites_duplicate_entries_by_keeping_earlier_entry(
     input_status, tmp_path: pytest.TempPathFactory
@@ -1361,13 +1432,17 @@ def test_add_inputs_overwrites_duplicate_entries_by_keeping_earlier_entry(
         id="m_id_1_d", sample_size_x=0.001, sample_size_y=0.001, sample_size_z=0.002
     )
 
-    input1 = [input_sb_1, input_p_1, input_m_1]
-    input1_d = [input_sb_1_duplicate, input_p_1_duplicate, input_m_1_duplicate]
-
-    study.add_inputs(input1, iteration=1, priority=1, status=input_status)
+    inputs = [
+        input_sb_1,
+        input_p_1,
+        input_m_1,
+        input_sb_1_duplicate,
+        input_p_1_duplicate,
+        input_m_1_duplicate,
+    ]
 
     # act
-    study.add_inputs(input1_d, iteration=1, priority=1, status=input_status)
+    study.add_inputs(inputs, iteration=1, priority=1, status=input_status)
 
     # assert
 
