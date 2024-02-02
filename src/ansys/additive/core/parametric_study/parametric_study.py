@@ -265,7 +265,7 @@ class ParametricStudy:
         summaries : list[SingleBeadSummary, PorositySummary, MicrostructureSummary]
             List of simulation result summaries to add to the parametric study.
         iteration : int, default: :obj:`DEFAULT_ITERATION`
-            Iteration number for the new simulations.
+            Iteration number(s) for the new simulation(s).
 
         Returns
         -------
