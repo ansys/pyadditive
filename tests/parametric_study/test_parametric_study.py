@@ -1411,7 +1411,7 @@ def test_add_inputs_raises_error_with_simulation_status_completed_or_error(
     ]
 
     # act, assert
-    with pytest.raises(ValueError, match="Invalid simulation status"):
+    with pytest.raises(ValueError, match="Simulation status must be"):
         study.add_inputs(inputs, status=input_status)
 
 

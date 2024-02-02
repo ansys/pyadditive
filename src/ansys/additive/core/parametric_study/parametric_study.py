@@ -257,9 +257,8 @@ class ParametricStudy:
         This method adds new simulations to the parametric study. To update existing
         simulations, use the :meth:`update` method.
 
-        A summary that matches an existing simulation will update the results for
-        that simulation if the results do not exist.
-        If the results exist, the summary will be overwritten.
+        A summary that matches an existing simulation will overwrite the results for
+        that simulation.
 
         Parameters
         ----------
@@ -273,21 +272,16 @@ class ParametricStudy:
         int
             Number of new simulations added to the parametric study.
         """
-        num_added = 0
         for summary in summaries:
             if isinstance(summary, SingleBeadSummary):
                 self._add_single_bead_summary(summary, iteration)
-                num_added += 1
             elif isinstance(summary, PorositySummary):
                 self._add_porosity_summary(summary, iteration)
-                num_added += 1
             elif isinstance(summary, MicrostructureSummary):
                 self._add_microstructure_summary(summary, iteration)
-                num_added += 1
             else:
                 raise TypeError(f"Unknown summary type: {type(summary)}")
-        num_removed = self._remove_duplicate_entries(overwrite=True)
-        return num_added - num_removed
+        return len(summaries) - self._remove_duplicate_entries(overwrite=True)
 
     def _add_single_bead_summary(
         self, summary: SingleBeadSummary, iteration: int = DEFAULT_ITERATION
@@ -1236,65 +1230,65 @@ class ParametricStudy:
         Returns
         -------
         int
-            The number of inputs added to the parametric study.
+            The number of simulations added to the parametric study.
         """
+        if status not in [SimulationStatus.SKIP, SimulationStatus.PENDING]:
+            raise ValueError(
+                f"Simulation status must be '{SimulationStatus.PENDING}' or '{SimulationStatus.SKIP}'"
+            )
         num_added = 0
-        if status == SimulationStatus.SKIP or status == SimulationStatus.PENDING:
-            for input in inputs:
-                dict = {}
-                if isinstance(input, SingleBeadInput):
-                    dict[ColumnNames.TYPE] = SimulationType.SINGLE_BEAD
-                    dict[ColumnNames.SINGLE_BEAD_LENGTH] = input.bead_length
-                    num_added += 1
-                elif isinstance(input, PorosityInput):
-                    dict[ColumnNames.TYPE] = SimulationType.POROSITY
-                    dict[ColumnNames.POROSITY_SIZE_X] = input.size_x
-                    dict[ColumnNames.POROSITY_SIZE_Y] = input.size_y
-                    dict[ColumnNames.POROSITY_SIZE_Z] = input.size_z
-                    num_added += 1
-                elif isinstance(input, MicrostructureInput):
-                    dict[ColumnNames.TYPE] = SimulationType.MICROSTRUCTURE
-                    dict[ColumnNames.MICRO_MIN_X] = input.sample_min_x
-                    dict[ColumnNames.MICRO_MIN_Y] = input.sample_min_y
-                    dict[ColumnNames.MICRO_MIN_Z] = input.sample_min_z
-                    dict[ColumnNames.MICRO_SIZE_X] = input.sample_size_x
-                    dict[ColumnNames.MICRO_SIZE_Y] = input.sample_size_y
-                    dict[ColumnNames.MICRO_SIZE_Z] = input.sample_size_z
-                    dict[ColumnNames.MICRO_SENSOR_DIM] = input.sensor_dimension
-                    if input.use_provided_thermal_parameters:
-                        dict[ColumnNames.COOLING_RATE] = input.cooling_rate
-                        dict[ColumnNames.THERMAL_GRADIENT] = input.thermal_gradient
-                        dict[ColumnNames.MICRO_MELT_POOL_WIDTH] = input.melt_pool_width
-                        dict[ColumnNames.MICRO_MELT_POOL_DEPTH] = input.melt_pool_depth
-                    if input.random_seed != MicrostructureInput.DEFAULT_RANDOM_SEED:
-                        dict[ColumnNames.RANDOM_SEED] = input.random_seed
-                    num_added += 1
-                else:
-                    print(f"Invalid simulation input type: {type(input)}")
-                    continue
+        for input in inputs:
+            dict = {}
+            if isinstance(input, SingleBeadInput):
+                dict[ColumnNames.TYPE] = SimulationType.SINGLE_BEAD
+                dict[ColumnNames.SINGLE_BEAD_LENGTH] = input.bead_length
+                num_added += 1
+            elif isinstance(input, PorosityInput):
+                dict[ColumnNames.TYPE] = SimulationType.POROSITY
+                dict[ColumnNames.POROSITY_SIZE_X] = input.size_x
+                dict[ColumnNames.POROSITY_SIZE_Y] = input.size_y
+                dict[ColumnNames.POROSITY_SIZE_Z] = input.size_z
+                num_added += 1
+            elif isinstance(input, MicrostructureInput):
+                dict[ColumnNames.TYPE] = SimulationType.MICROSTRUCTURE
+                dict[ColumnNames.MICRO_MIN_X] = input.sample_min_x
+                dict[ColumnNames.MICRO_MIN_Y] = input.sample_min_y
+                dict[ColumnNames.MICRO_MIN_Z] = input.sample_min_z
+                dict[ColumnNames.MICRO_SIZE_X] = input.sample_size_x
+                dict[ColumnNames.MICRO_SIZE_Y] = input.sample_size_y
+                dict[ColumnNames.MICRO_SIZE_Z] = input.sample_size_z
+                dict[ColumnNames.MICRO_SENSOR_DIM] = input.sensor_dimension
+                if input.use_provided_thermal_parameters:
+                    dict[ColumnNames.COOLING_RATE] = input.cooling_rate
+                    dict[ColumnNames.THERMAL_GRADIENT] = input.thermal_gradient
+                    dict[ColumnNames.MICRO_MELT_POOL_WIDTH] = input.melt_pool_width
+                    dict[ColumnNames.MICRO_MELT_POOL_DEPTH] = input.melt_pool_depth
+                if input.random_seed != MicrostructureInput.DEFAULT_RANDOM_SEED:
+                    dict[ColumnNames.RANDOM_SEED] = input.random_seed
+                num_added += 1
+            else:
+                print(f"Invalid simulation input type: {type(input)}")
+                continue
 
-                dict[ColumnNames.ITERATION] = iteration
-                dict[ColumnNames.PRIORITY] = priority
-                dict[ColumnNames.ID] = self._create_unique_id(id=input.id)
-                dict[ColumnNames.STATUS] = status
-                dict[ColumnNames.MATERIAL] = input.material.name
-                dict[ColumnNames.LASER_POWER] = input.machine.laser_power
-                dict[ColumnNames.SCAN_SPEED] = input.machine.scan_speed
-                dict[ColumnNames.LAYER_THICKNESS] = input.machine.layer_thickness
-                dict[ColumnNames.BEAM_DIAMETER] = input.machine.beam_diameter
-                dict[ColumnNames.HEATER_TEMPERATURE] = input.machine.heater_temperature
-                dict[ColumnNames.START_ANGLE] = input.machine.starting_layer_angle
-                dict[ColumnNames.ROTATION_ANGLE] = input.machine.layer_rotation_angle
-                dict[ColumnNames.HATCH_SPACING] = input.machine.hatch_spacing
-                dict[ColumnNames.STRIPE_WIDTH] = input.machine.slicing_stripe_width
+            dict[ColumnNames.ITERATION] = iteration
+            dict[ColumnNames.PRIORITY] = priority
+            dict[ColumnNames.ID] = self._create_unique_id(id=input.id)
+            dict[ColumnNames.STATUS] = status
+            dict[ColumnNames.MATERIAL] = input.material.name
+            dict[ColumnNames.LASER_POWER] = input.machine.laser_power
+            dict[ColumnNames.SCAN_SPEED] = input.machine.scan_speed
+            dict[ColumnNames.LAYER_THICKNESS] = input.machine.layer_thickness
+            dict[ColumnNames.BEAM_DIAMETER] = input.machine.beam_diameter
+            dict[ColumnNames.HEATER_TEMPERATURE] = input.machine.heater_temperature
+            dict[ColumnNames.START_ANGLE] = input.machine.starting_layer_angle
+            dict[ColumnNames.ROTATION_ANGLE] = input.machine.layer_rotation_angle
+            dict[ColumnNames.HATCH_SPACING] = input.machine.hatch_spacing
+            dict[ColumnNames.STRIPE_WIDTH] = input.machine.slicing_stripe_width
 
-                self._data_frame = pd.concat(
-                    [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
-                )
-                num_removed = self._remove_duplicate_entries(overwrite=False)
-                num_added -= num_removed
-        else:
-            raise ValueError(f"Invalid simulation status: {status}")
+            self._data_frame = pd.concat(
+                [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
+            )
+            num_added -= self._remove_duplicate_entries(overwrite=False)
         return num_added
 
     @save_on_return
@@ -1317,7 +1311,7 @@ class ParametricStudy:
         # - Sort simulatiuons by priority in the following order: completed > pending > skip > error
         # - Select a subset of input columns based on simulation type to check for duplicates
         # - Completed simulations will overwrite pending, skip and error simulations
-        # - Completed simulations will be overwritten by newer completed simulations
+        # - Completed simulations will be overwritten by newer completed simulations if overwrite is True
 
         column_names = [
             getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")
@@ -1424,13 +1418,9 @@ class ParametricStudy:
                 )
 
         self._data_frame = duplicates_removed_df
-        if len(duplicates_removed_df) < len(current_df):
-            LOG.debug(
-                f"Removed {len(current_df)-len(duplicates_removed_df)} duplicate simulation(s)."
-            )
-        else:
-            LOG.debug("No duplicate simulations found.")
-        return len(current_df) - len(duplicates_removed_df)
+        n_removed = len(current_df) - len(duplicates_removed_df)
+        LOG.debug(f"Removed {n_removed} duplicate simulation(s).")
+        return n_removed
 
     @save_on_return
     def remove(self, ids: str | list[str]):
