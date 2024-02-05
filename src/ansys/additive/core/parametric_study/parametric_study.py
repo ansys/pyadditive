@@ -1267,8 +1267,7 @@ class ParametricStudy:
                     dict[ColumnNames.RANDOM_SEED] = input.random_seed
                 num_added += 1
             else:
-                print(f"Invalid simulation input type: {type(input)}")
-                continue
+                raise TypeError(f"Invalid simulation input type: {type(input)}")
 
             dict[ColumnNames.ITERATION] = iteration
             dict[ColumnNames.PRIORITY] = priority

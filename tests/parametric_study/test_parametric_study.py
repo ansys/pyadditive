@@ -1166,7 +1166,7 @@ def test_add_inputs_creates_new_rows(tmp_path: pytest.TempPathFactory):
     assert len(df) == 3
 
 
-def test_add_inputs_does_not_create_new_rows_for_invalid_input(tmp_path: pytest.TempPathFactory):
+def test_add_inputs_raises_error_for_invalid_input(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     inputs = [
@@ -1174,12 +1174,9 @@ def test_add_inputs_does_not_create_new_rows_for_invalid_input(tmp_path: pytest.
         "another one",
     ]
 
-    # act
-    study.add_inputs(inputs)
-
-    # assert
-    df = study.data_frame()
-    assert len(df) == 0
+    # act, assert
+    with pytest.raises(TypeError, match="Invalid simulation input type"):
+        study.add_inputs(inputs, status=SimulationStatus.PENDING)
 
 
 def test_add_inputs_returns_correct_number_of_added_inputs(tmp_path: pytest.TempPathFactory):
@@ -1190,20 +1187,14 @@ def test_add_inputs_returns_correct_number_of_added_inputs(tmp_path: pytest.Temp
         PorosityInput(id="test_id_2"),
         MicrostructureInput(id="test_id_3"),
     ]
-    invalid_inputs = [
-        "invalid input",
-        "another one",
-    ]
 
     # act
     added = study.add_inputs(inputs)
     re_added = study.add_inputs(inputs)
-    invalid_added = study.add_inputs(invalid_inputs)
 
     # assert
     assert added == 3
     assert re_added == 0
-    assert invalid_added == 0
 
 
 def test_add_inputs_assigns_common_params_correctly(tmp_path: pytest.TempPathFactory):
