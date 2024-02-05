@@ -326,9 +326,9 @@ def test_simulate_filters_by_iteration(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb1 = SingleBeadInput(id="iteration_1", material=material)
-    sb2 = SingleBeadInput(id="iteration_2", material=material)
-    sb3 = SingleBeadInput(id="iteration_3", material=material)
+    sb1 = SingleBeadInput(id="iteration_1", material=material, bead_length=0.001)
+    sb2 = SingleBeadInput(id="iteration_2", material=material, bead_length=0.002)
+    sb3 = SingleBeadInput(id="iteration_3", material=material, bead_length=0.003)
     study.add_inputs([sb1], iteration=1)
     study.add_inputs([sb2], iteration=2)
     study.add_inputs([sb3], iteration=3)

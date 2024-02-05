@@ -6,6 +6,7 @@
 
 ### New Features
 * Add separate logging class
+* Update parametric study to check for duplicate entries
 
 ### Bug Fixes
 
