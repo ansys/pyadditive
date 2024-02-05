@@ -33,6 +33,7 @@ import numpy as np
 import pandas as pd
 
 from ansys.additive.core import (
+    LOG,
     Additive,
     AdditiveMachine,
     AdditiveMaterial,
@@ -60,8 +61,9 @@ def save_on_return(func):
 
     @wraps(func)
     def wrap(self, *args, **kwargs):
-        func(self, *args, **kwargs)
+        result = func(self, *args, **kwargs)
         self.save(self.file_name)
+        return result
 
     return wrap
 
@@ -248,12 +250,15 @@ class ParametricStudy:
         self,
         summaries: list[SingleBeadSummary | PorositySummary | MicrostructureSummary],
         iteration: int = DEFAULT_ITERATION,
-    ):
+    ) -> int:
         """Add summaries of executed simulations to the parametric study.
 
         Simulation summaries are created using the :meth:`Additive.simulate` method.
         This method adds new simulations to the parametric study. To update existing
         simulations, use the :meth:`update` method.
+
+        A summary that matches an existing simulation will overwrite the results for
+        that simulation.
 
         Parameters
         ----------
@@ -261,6 +266,11 @@ class ParametricStudy:
             List of simulation result summaries to add to the parametric study.
         iteration : int, default: :obj:`DEFAULT_ITERATION`
             Iteration number for the new simulations.
+
+        Returns
+        -------
+        int
+            Number of new simulations added to the parametric study.
         """
         for summary in summaries:
             if isinstance(summary, SingleBeadSummary):
@@ -271,6 +281,7 @@ class ParametricStudy:
                 self._add_microstructure_summary(summary, iteration)
             else:
                 raise TypeError(f"Unknown summary type: {type(summary)}")
+        return len(summaries) - self._remove_duplicate_entries(overwrite=True)
 
     def _add_single_bead_summary(
         self, summary: SingleBeadSummary, iteration: int = DEFAULT_ITERATION
@@ -1197,8 +1208,10 @@ class ParametricStudy:
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
         status: SimulationStatus = SimulationStatus.PENDING,
-    ):
+    ) -> int:
         """Add new simulations to the parametric study.
+
+        If the input matches an existing simulation, the input will be ignored.
 
         Parameters
         ----------
@@ -1210,7 +1223,19 @@ class ParametricStudy:
 
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for the simulations.
+
+        status : SimulationStatus, default: :obj:`SimulationStatus.PENDING`
+            Valid types are :obj:`SimulationStatus.PENDING` and :obj:`SimulationStatus.SKIP`.
+
+        Returns
+        -------
+        int
+            The number of simulations added to the parametric study.
         """
+        if status not in [SimulationStatus.SKIP, SimulationStatus.PENDING]:
+            raise ValueError(
+                f"Simulation status must be '{SimulationStatus.PENDING}' or '{SimulationStatus.SKIP}'"
+            )
         for input in inputs:
             dict = {}
             if isinstance(input, SingleBeadInput):
@@ -1238,8 +1263,7 @@ class ParametricStudy:
                 if input.random_seed != MicrostructureInput.DEFAULT_RANDOM_SEED:
                     dict[ColumnNames.RANDOM_SEED] = input.random_seed
             else:
-                print(f"Invalid simulation input type: {type(input)}")
-                continue
+                raise TypeError(f"Invalid simulation input type: {type(input)}")
 
             dict[ColumnNames.ITERATION] = iteration
             dict[ColumnNames.PRIORITY] = priority
@@ -1259,6 +1283,138 @@ class ParametricStudy:
             self._data_frame = pd.concat(
                 [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
             )
+        return len(inputs) - self._remove_duplicate_entries(overwrite=False)
+
+    @save_on_return
+    def _remove_duplicate_entries(self, overwrite: bool = False) -> int:
+        """Remove or update duplicate simulations from the parametric study.
+
+        Parameters
+        ----------
+        overwrite : bool, default: False
+            If True, drop duplicates and keep the latest entry.
+            If False, drop duplicates and keep the earlier entry.
+
+        Returns
+        -------
+        int
+            The number of duplicate simulations removed.
+        """
+
+        # For duplicate removal, the following rules are applied:
+        # - Sort simulatiuons by priority in the following order: completed > pending > skip > error
+        # - Select a subset of input columns based on simulation type to check for duplicates
+        # - Completed simulations will overwrite pending, skip and error simulations
+        # - Completed simulations will be overwritten by newer completed simulations if overwrite is True
+
+        column_names = [
+            getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")
+        ]
+        sorted_df = pd.DataFrame(columns=column_names)
+        duplicates_removed_df = pd.DataFrame(columns=column_names)
+        current_df = self.data_frame()
+
+        if len(current_df) == 0:
+            return 0
+
+        # Filter and arrange as per status so that completed simulations are not overwritten by the
+        # ones lower in the list
+        for status in [
+            SimulationStatus.COMPLETED,
+            SimulationStatus.PENDING,
+            SimulationStatus.SKIP,
+            SimulationStatus.ERROR,
+        ]:
+            if len(current_df[current_df[ColumnNames.STATUS] == status]) > 0:
+                sorted_df = pd.concat(
+                    [sorted_df, current_df[current_df[ColumnNames.STATUS] == status]],
+                    ignore_index=True,
+                )
+
+        # Common columns to check for duplicates
+        common_params = [
+            ColumnNames.MATERIAL,
+            ColumnNames.HEATER_TEMPERATURE,
+            ColumnNames.LAYER_THICKNESS,
+            ColumnNames.BEAM_DIAMETER,
+            ColumnNames.LASER_POWER,
+            ColumnNames.SCAN_SPEED,
+            ColumnNames.TYPE,
+        ]
+
+        # Additional columns to check for duplicates as per simulation type
+        sb_params = common_params + [ColumnNames.SINGLE_BEAD_LENGTH]
+
+        porosity_params = common_params + [
+            ColumnNames.START_ANGLE,
+            ColumnNames.ROTATION_ANGLE,
+            ColumnNames.HATCH_SPACING,
+            ColumnNames.STRIPE_WIDTH,
+            ColumnNames.POROSITY_SIZE_X,
+            ColumnNames.POROSITY_SIZE_Y,
+            ColumnNames.POROSITY_SIZE_Z,
+        ]
+
+        microstructure_params = common_params + [
+            ColumnNames.START_ANGLE,
+            ColumnNames.ROTATION_ANGLE,
+            ColumnNames.HATCH_SPACING,
+            ColumnNames.STRIPE_WIDTH,
+            ColumnNames.MICRO_MIN_X,
+            ColumnNames.MICRO_MIN_Y,
+            ColumnNames.MICRO_MIN_Z,
+            ColumnNames.MICRO_SIZE_X,
+            ColumnNames.MICRO_SIZE_Y,
+            ColumnNames.MICRO_SIZE_Z,
+            ColumnNames.MICRO_SENSOR_DIM,
+            ColumnNames.COOLING_RATE,
+            ColumnNames.THERMAL_GRADIENT,
+            ColumnNames.MICRO_MELT_POOL_DEPTH,
+            ColumnNames.MICRO_MELT_POOL_WIDTH,
+            ColumnNames.RANDOM_SEED,
+        ]
+
+        single_bead_df = sorted_df[sorted_df[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD]
+        porosity_df = sorted_df[sorted_df[ColumnNames.TYPE] == SimulationType.POROSITY]
+        microstructure_df = sorted_df[sorted_df[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE]
+
+        if overwrite:
+            # Drop duplicates and keep the latest completed simulation entry in case of adding a
+            # completed simulation when using add_summaries.
+            # Simulation status further narrows down subset of columns to check.
+
+            for df, params in zip(
+                [single_bead_df, porosity_df, microstructure_df],
+                [sb_params, porosity_params, microstructure_params],
+            ):
+                df.drop_duplicates(
+                    subset=params + [ColumnNames.STATUS],
+                    ignore_index=True,
+                    keep="last",
+                    inplace=True,
+                )
+
+        # Drop duplicates and keep the earlier entry in case of adding a pending/skip simulation
+        # when using add_inputs.
+        # Completed simulations will remain as is since they are already sorted and are higher
+        # up in the list.
+
+        for df, params in zip(
+            [single_bead_df, porosity_df, microstructure_df],
+            [sb_params, porosity_params, microstructure_params],
+        ):
+            if len(df) > 0:
+                duplicates_removed_df = pd.concat(
+                    [
+                        duplicates_removed_df,
+                        df.drop_duplicates(subset=params, ignore_index=True, keep="first"),
+                    ]
+                )
+
+        self._data_frame = duplicates_removed_df
+        n_removed = len(current_df) - len(duplicates_removed_df)
+        LOG.debug(f"Removed {n_removed} duplicate simulation(s).")
+        return n_removed
 
     @save_on_return
     def remove(self, ids: str | list[str]):
