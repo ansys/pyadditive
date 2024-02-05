@@ -1236,19 +1236,16 @@ class ParametricStudy:
             raise ValueError(
                 f"Simulation status must be '{SimulationStatus.PENDING}' or '{SimulationStatus.SKIP}'"
             )
-        num_added = 0
         for input in inputs:
             dict = {}
             if isinstance(input, SingleBeadInput):
                 dict[ColumnNames.TYPE] = SimulationType.SINGLE_BEAD
                 dict[ColumnNames.SINGLE_BEAD_LENGTH] = input.bead_length
-                num_added += 1
             elif isinstance(input, PorosityInput):
                 dict[ColumnNames.TYPE] = SimulationType.POROSITY
                 dict[ColumnNames.POROSITY_SIZE_X] = input.size_x
                 dict[ColumnNames.POROSITY_SIZE_Y] = input.size_y
                 dict[ColumnNames.POROSITY_SIZE_Z] = input.size_z
-                num_added += 1
             elif isinstance(input, MicrostructureInput):
                 dict[ColumnNames.TYPE] = SimulationType.MICROSTRUCTURE
                 dict[ColumnNames.MICRO_MIN_X] = input.sample_min_x
@@ -1265,7 +1262,6 @@ class ParametricStudy:
                     dict[ColumnNames.MICRO_MELT_POOL_DEPTH] = input.melt_pool_depth
                 if input.random_seed != MicrostructureInput.DEFAULT_RANDOM_SEED:
                     dict[ColumnNames.RANDOM_SEED] = input.random_seed
-                num_added += 1
             else:
                 raise TypeError(f"Invalid simulation input type: {type(input)}")
 
@@ -1287,8 +1283,7 @@ class ParametricStudy:
             self._data_frame = pd.concat(
                 [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
             )
-            num_added -= self._remove_duplicate_entries(overwrite=False)
-        return num_added
+        return len(inputs) - self._remove_duplicate_entries(overwrite=False)
 
     @save_on_return
     def _remove_duplicate_entries(self, overwrite: bool = False) -> int:
