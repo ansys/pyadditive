@@ -24,6 +24,7 @@
 from __future__ import annotations
 
 from functools import wraps
+import math
 import os
 import pathlib
 import platform
@@ -108,6 +109,34 @@ class ParametricStudy:
         study = cls.__new__(cls)
         study._init_new_study(study_path)
         return study
+
+    def import_csv_study(self, file_name: str | os.PathLike) -> list:
+        """Import a parametric study from a CSV file.
+
+        Parameters
+        ----------
+        file_name: str, os.PathLike
+            Name of the csv file containing the simulation parameters.
+
+        For the column names used in the returned data frame, see
+        the :class:`ColumnNames <constants.ColumnNames>` class.
+
+        Returns
+        -------
+        list
+            List of error messages of any simulations that have invalid
+            input parameters.
+        """
+
+        file_path = pathlib.Path(file_name).absolute()
+        if not file_path.exists():
+            raise ValueError(f"{file_name} does not exist.")
+
+        columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
+        if all([set(pd.read_csv(file_path, index_col=0, nrows=0).columns) == set(columns)]):
+            return self.add_simulations_from_data_frame(pd.read_csv(file_path, index_col=0))
+        else:
+            raise ValueError(f"{file_name} does not have the expected columns.")
 
     @property
     def format_version(self) -> int:
@@ -1568,3 +1597,213 @@ class ParametricStudy:
         new_study = ParametricStudy._new(study.file_name)
         new_study._data_frame = df
         return new_study
+
+    @save_on_return
+    def add_simulations_from_data_frame(self, df: pd.DataFrame) -> list:
+        """Add simulations from an imported CSV file to the parametric study.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Data frame of the csv file containing simulations to be added to the parametric study.
+
+        Returns
+        -------
+        list
+            List of error messages for invalid simulations.
+        """
+
+        # check valid inputs
+        drop_indices, error_list = [], []
+        allowed_status = [
+            SimulationStatus.COMPLETED,
+            SimulationStatus.PENDING,
+            SimulationStatus.SKIP,
+        ]
+        for index, row in df.iterrows():
+            valid = False
+            if row[ColumnNames.STATUS] in allowed_status:
+                if row[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
+                    valid, error = self._test_single_bead_input(row)
+                elif row[ColumnNames.TYPE] == SimulationType.POROSITY:
+                    valid, error = self._test_porosity_input(row)
+                elif row[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE:
+                    valid, error = self._test_microstructure_input(row)
+                else:
+                    valid, error = False, f"Invalid simulation input type: {row[ColumnNames.TYPE]}."
+            else:
+                valid, error = (
+                    False,
+                    f"""Simulations with status {row[ColumnNames.STATUS]} will not """
+                    f"""be added to the parametric study.""",
+                )
+            if not valid:
+                drop_indices.append(index)
+                error_list.append(error)
+
+        # drop invalid inputs
+        df = df.drop(drop_indices)
+
+        # add simulations to the parametric study and drop duplicates
+        for status, overwrite in [
+            (SimulationStatus.COMPLETED, True),
+            (SimulationStatus.PENDING, False),
+            (SimulationStatus.SKIP, False),
+        ]:
+            if len(df[df[ColumnNames.STATUS] == status]) > 0:
+                self._data_frame = pd.concat(
+                    [self._data_frame, df[df[ColumnNames.STATUS] == status]],
+                    ignore_index=True,
+                )
+                self._remove_duplicate_entries(overwrite=overwrite)
+
+        return error_list
+
+    def _test_single_bead_input(self, row: pd.Series) -> tuple[bool, str]:
+        """Test a single bead input from a row of a CSV file for valid input parameters.
+
+        Parameters
+        ----------
+        row : pd.Series
+            Row of a CSV file containing the simulation input.
+
+        Returns
+        -------
+        tuple[bool, str]
+            bool, True if the single bead input is valid, False otherwise.
+            string, Error message if the single bead input is invalid.
+        """
+        try:
+            test_machine = AdditiveMachine(
+                laser_power=row[ColumnNames.LASER_POWER],
+                scan_speed=row[ColumnNames.SCAN_SPEED],
+                heater_temperature=row[ColumnNames.HEATER_TEMPERATURE],
+                layer_thickness=row[ColumnNames.LAYER_THICKNESS],
+                beam_diameter=row[ColumnNames.BEAM_DIAMETER],
+            )
+
+            test_material = AdditiveMaterial(
+                name=str(row[ColumnNames.MATERIAL]),
+            )
+            test_bead_length = row[ColumnNames.SINGLE_BEAD_LENGTH]
+
+            test_single_bead_input = SingleBeadInput(
+                bead_length=test_bead_length, machine=test_machine, material=test_material
+            )
+            return (True, "")
+        except ValueError as e:
+            return (False, (f"Invalid parameter combination: {e}"))
+
+    def _test_porosity_input(self, row: pd.Series) -> tuple[bool, str]:
+        """Create a porosity input from a row of a CSV file for valid input parameters.
+
+        Parameters
+        ----------
+        row : pd.Series
+            Row of a CSV file containing the simulation input.
+
+        Returns
+        -------
+        tuple[bool, str]
+            bool, True if the porosity input is valid, False otherwise.
+            string, Error message if the porosity input is invalid.
+        """
+
+        try:
+            test_machine = AdditiveMachine(
+                laser_power=row[ColumnNames.LASER_POWER],
+                scan_speed=row[ColumnNames.SCAN_SPEED],
+                heater_temperature=row[ColumnNames.HEATER_TEMPERATURE],
+                layer_thickness=row[ColumnNames.LAYER_THICKNESS],
+                beam_diameter=row[ColumnNames.BEAM_DIAMETER],
+                starting_layer_angle=row[ColumnNames.START_ANGLE],
+                layer_rotation_angle=row[ColumnNames.ROTATION_ANGLE],
+                hatch_spacing=row[ColumnNames.HATCH_SPACING],
+                slicing_stripe_width=row[ColumnNames.STRIPE_WIDTH],
+            )
+
+            test_material = AdditiveMaterial(
+                name=str(row[ColumnNames.MATERIAL]),
+            )
+
+            test_porosity_input = PorosityInput(
+                size_x=row[ColumnNames.POROSITY_SIZE_X],
+                size_y=row[ColumnNames.POROSITY_SIZE_Y],
+                size_z=row[ColumnNames.POROSITY_SIZE_Z],
+                machine=test_machine,
+                material=test_material,
+            )
+            return (True, "")
+        except ValueError as e:
+            return (False, (f"Invalid parameter combination: {e}"))
+
+    def _test_microstructure_input(self, row: pd.Series) -> tuple[bool, str]:
+        """Create a microstructure input from a row of a CSV file for valid input parameters.
+
+        Parameters
+        ----------
+        row : pd.Series
+            Row of a CSV file containing the simulation input.
+
+        Returns
+        -------
+        tuple[bool, str]
+            bool, True if the microstructure input is valid, False otherwise.
+            string, Error message if the microstructure input is invalid.
+        """
+        try:
+            test_machine = AdditiveMachine(
+                laser_power=row[ColumnNames.LASER_POWER],
+                scan_speed=row[ColumnNames.SCAN_SPEED],
+                heater_temperature=row[ColumnNames.HEATER_TEMPERATURE],
+                layer_thickness=row[ColumnNames.LAYER_THICKNESS],
+                beam_diameter=row[ColumnNames.BEAM_DIAMETER],
+                starting_layer_angle=row[ColumnNames.START_ANGLE],
+                layer_rotation_angle=row[ColumnNames.ROTATION_ANGLE],
+                hatch_spacing=row[ColumnNames.HATCH_SPACING],
+                slicing_stripe_width=row[ColumnNames.STRIPE_WIDTH],
+            )
+
+            test_material = AdditiveMaterial(
+                name=str(row[ColumnNames.MATERIAL]),
+            )
+
+            test_cooling_rate = row[ColumnNames.COOLING_RATE]
+            test_thermal_gradient = row[ColumnNames.THERMAL_GRADIENT]
+            test_melt_pool_width = row[ColumnNames.MICRO_MELT_POOL_WIDTH]
+            test_melt_pool_depth = row[ColumnNames.MICRO_MELT_POOL_DEPTH]
+            test_random_seed = row[ColumnNames.RANDOM_SEED]
+
+            if (
+                math.isnan(test_cooling_rate)
+                or math.isnan(test_thermal_gradient)
+                or math.isnan(test_melt_pool_width)
+                or math.isnan(test_melt_pool_depth)
+            ):
+                test_use_provided_thermal_parameters = False
+            else:
+                test_use_provided_thermal_parameters = True
+
+            if math.isnan(test_random_seed):
+                test_random_seed = 0
+
+            test_microstructure_input = MicrostructureInput(
+                sample_min_x=row[ColumnNames.MICRO_MIN_X],
+                sample_min_y=row[ColumnNames.MICRO_MIN_Y],
+                sample_min_z=row[ColumnNames.MICRO_MIN_Z],
+                sample_size_x=row[ColumnNames.MICRO_SIZE_X],
+                sample_size_y=row[ColumnNames.MICRO_SIZE_Y],
+                sample_size_z=row[ColumnNames.MICRO_SIZE_Z],
+                sensor_dimension=row[ColumnNames.MICRO_SENSOR_DIM],
+                use_provided_thermal_parameters=test_use_provided_thermal_parameters,
+                cooling_rate=test_cooling_rate,
+                thermal_gradient=test_thermal_gradient,
+                melt_pool_width=test_melt_pool_width,
+                melt_pool_depth=test_melt_pool_depth,
+                random_seed=test_random_seed,
+                machine=test_machine,
+                material=test_material,
+            )
+            return (True, "")
+        except ValueError as e:
+            return (False, (f"Invalid parameter combination: {e}"))

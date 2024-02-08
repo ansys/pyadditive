@@ -191,6 +191,8 @@ class MicrostructureInput:
 
     @staticmethod
     def __validate_range(value, min, max, name):
+        if math.isnan(value):
+            raise ValueError("{} must be a number.".format(name))
         if value < min or value > max:
             raise ValueError("{} must be between {} and {}.".format(name, min, max))
 

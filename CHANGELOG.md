@@ -7,6 +7,7 @@
 ### New Features
 * Add separate logging class
 * Update parametric study to check for duplicate entries
+* Capability to import a csv file containing a parametric study
 
 ### Bug Fixes
 
