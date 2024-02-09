@@ -1745,18 +1745,26 @@ def test_import_csv_study_raises_exception_when_file_does_not_exist(
     # arrange
     study_name = "test_study"
     filename = tmp_path / study_name
-    # act, assert
+
+    # act
     study = ps.ParametricStudy(tmp_path / study_name)
+
+    # assert
     with pytest.raises(ValueError, match="does not exist"):
         study.import_csv_study(filename)
 
 
-def test_import_csv_study_raises_exception_when_file_is_not_a_csv(tmp_path: pytest.TempPathFactory):
+def test_import_csv_study_raises_exception_when_file_is_not_a_csv(
+    tmp_path: pytest.TempPathFactory,
+):
     # arrange
     study_name = "test_study"
     filename = __file__
-    # act, assert
+
+    # act
     study = ps.ParametricStudy(tmp_path / study_name)
+
+    # assert
     with pytest.raises(ValueError, match="does not have the expected columns"):
         study.import_csv_study(filename)
 
@@ -1769,8 +1777,11 @@ def test_import_csv_study_raises_exception_when_file_does_not_have_correct_heade
     incorrect_headers_file = test_utils.get_test_file_path(
         pathlib.Path("csv") / "incorrect-headers.csv"
     )
-    # act, assert
+
+    # act
     study = ps.ParametricStudy(tmp_path / study_name)
+
+    # assert
     with pytest.raises(ValueError, match="does not have the expected columns"):
         study.import_csv_study(incorrect_headers_file)
 
@@ -1781,9 +1792,12 @@ def test_import_csv_study_adds_simulations_to_new_study(tmp_path: pytest.TempPat
     single_bead_demo_csv_file = test_utils.get_test_file_path(
         pathlib.Path("csv") / "single-bead-test-study.csv"
     )
-    # act, assert
+    # act
     study = ps.ParametricStudy(tmp_path / study_name)
-    study.import_csv_study(single_bead_demo_csv_file)
+    errors = study.import_csv_study(single_bead_demo_csv_file)
+
+    # assert
+    assert len(errors) == 0
     assert len(study.data_frame()) == 5
     assert len(study.data_frame()[ps.ColumnNames.LASER_POWER].unique()) == 5
 
@@ -1802,11 +1816,15 @@ def test_import_csv_study_adds_simulations_of_multiple_input_types_to_new_study(
     microstructure_demo_csv_file = test_utils.get_test_file_path(
         pathlib.Path("csv") / "microstructure-test-study.csv"
     )
-    # act, assert
+
+    # act
     study = ps.ParametricStudy(tmp_path / study_name)
-    study.import_csv_study(single_bead_demo_csv_file)
-    study.import_csv_study(porosity_demo_csv_file)
-    study.import_csv_study(microstructure_demo_csv_file)
+    errors = study.import_csv_study(single_bead_demo_csv_file)
+    errors += study.import_csv_study(porosity_demo_csv_file)
+    errors += study.import_csv_study(microstructure_demo_csv_file)
+
+    # assert
+    assert len(errors) == 0
     assert len(study.data_frame()) == 15
 
 
@@ -1816,12 +1834,9 @@ def test_import_csv_study_adds_simulations_to_existing_study(tmp_path: pytest.Te
     single_bead_demo_csv_file = test_utils.get_test_file_path(
         pathlib.Path("csv") / "single-bead-test-study.csv"
     )
-    # act, assert
     study = ps.ParametricStudy(tmp_path / study_name)
     powers = [50, 250, 700]
     scan_speeds = [0.35]
-
-    # act
     study.generate_porosity_permutations(
         material_name="material",
         laser_powers=powers,
@@ -1830,6 +1845,8 @@ def test_import_csv_study_adds_simulations_to_existing_study(tmp_path: pytest.Te
 
     # act
     study.import_csv_study(single_bead_demo_csv_file)
+
+    # assert
     assert len(study.data_frame()) == 8
 
 
@@ -1839,11 +1856,13 @@ def test_import_csv_study_adds_simulations_to_existing_study(tmp_path: pytest.Te
         ("completed-test-study.csv", True),
         ("pending-test-study.csv", False),
         ("skip-test-study.csv", False),
+        ("error-test-study.csv", False),
     ],
 )
 def test_import_csv_study_calls_remove_duplicates_entries_correctly(
     monkeypatch, file_name, argument, tmp_path: pytest.TempPathFactory
 ):
+    # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     csv_file = test_utils.get_test_file_path(pathlib.Path("csv") / file_name)
     patched_simulate = create_autospec(
@@ -1864,36 +1883,76 @@ def test_import_csv_study_drops_duplicates_with_correct_simulation_status_heirar
     # arrange
     study_name = "test_study"
     duplicate_rows_file = test_utils.get_test_file_path(pathlib.Path("csv") / "duplicate-rows.csv")
-    # act, assert
     study = ps.ParametricStudy(tmp_path / study_name)
+
+    # act
     study.import_csv_study(duplicate_rows_file)
+
+    # assert
     df = study.data_frame()
-    assert len(df) == 3
+    assert len(df) == 4
     assert df.iloc[0][ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
     assert df.iloc[0][ps.ColumnNames.ID] == "sb_c_d"
     assert df.iloc[1][ps.ColumnNames.STATUS] == SimulationStatus.PENDING
     assert df.iloc[1][ps.ColumnNames.ID] == "sb_p"
     assert df.iloc[2][ps.ColumnNames.STATUS] == SimulationStatus.SKIP
     assert df.iloc[2][ps.ColumnNames.ID] == "sb_s"
+    assert df.iloc[3][ps.ColumnNames.STATUS] == SimulationStatus.ERROR
+    assert df.iloc[3][ps.ColumnNames.ID] == "sb_e"
 
 
-@pytest.mark.parametrize(
-    "index, error_message",
-    [
-        (0, "Invalid parameter combination"),
-        (1, "Simulations with status Error will not be added to the parametric study"),
-        (2, "Invalid simulation input type: invalid"),
-    ],
-)
-def test_import_csv_study_does_not_add_invalid_simulations_and_returns_expected_error_list(
-    index, error_message, tmp_path: pytest.TempPathFactory
+def test_import_csv_study_does_not_add_simulations_with_invalid_inputs_and_returns_expected_error(
+    tmp_path: pytest.TempPathFactory,
 ):
     # arrange
     study_name = "test_study"
     invalid_input_parameters_file = test_utils.get_test_file_path(
         pathlib.Path("csv") / "invalid-input-parameter.csv"
     )
-    # act, assert
+
+    # act
     study = ps.ParametricStudy(tmp_path / study_name)
     error_list = study.import_csv_study(invalid_input_parameters_file)
-    assert error_message in error_list[index]
+
+    # assert
+    assert len(error_list) == 25
+    for error_message in error_list:
+        assert "Invalid parameter combination" in error_message
+
+
+def test_import_csv_study_does_not_add_simulations_with_nan_inputs_and_returns_expected_error(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study_name = "test_study"
+    nan_input_parameters_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "nan-input-parameter.csv"
+    )
+
+    # act
+    study = ps.ParametricStudy(tmp_path / study_name)
+    error_list = study.import_csv_study(nan_input_parameters_file)
+
+    # assert
+    assert len(error_list) == 25
+    for error_message in error_list:
+        assert "must be a number" in error_message
+
+
+def test_import_csv_study_does_not_add_simulations_with_invalid_status_or_type_and_returns_expected_error(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study_name = "test_study"
+    invalid_type_status_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "invalid-type-status.csv"
+    )
+
+    # act
+    study = ps.ParametricStudy(tmp_path / study_name)
+    error_list = study.import_csv_study(invalid_type_status_file)
+
+    # assert
+    assert len(error_list) == 2
+    assert "Invalid simulation type" in error_list[0]
+    assert "Invalid simulation status" in error_list[1]

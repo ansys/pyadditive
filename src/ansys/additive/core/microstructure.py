@@ -198,6 +198,8 @@ class MicrostructureInput:
 
     @staticmethod
     def __validate_size(size_value, sensor_value, cushion, name):
+        if math.isnan(size_value):
+            raise ValueError("{} must be a number.".format(name))
         if size_value - sensor_value < cushion:
             raise ValueError(
                 "{} must be at least {} larger than sensor_dimension.".format(name, cushion)
