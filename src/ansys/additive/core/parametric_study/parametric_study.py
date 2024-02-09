@@ -1651,12 +1651,12 @@ class ParametricStudy:
 
         return error_list
 
-    def _validate_input(self, row: pd.Series):
+    def _validate_input(self, input: pd.Series):
         """Test input from a row of a CSV file for valid input parameters.
 
         Parameters
         ----------
-        row : pd.Series
+        input : pd.Series
             Row of a CSV file containing the simulation input.
 
         Returns
@@ -1672,43 +1672,43 @@ class ParametricStudy:
                 SimulationType.POROSITY,
                 SimulationType.MICROSTRUCTURE,
             ]
-            if row[ColumnNames.TYPE] in allowed_types:
-                if row[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
-                    if np.isnan(row[ColumnNames.START_ANGLE]):
-                        row[ColumnNames.START_ANGLE] = MachineConstants.DEFAULT_STARTING_LAYER_ANGLE
-                    if np.isnan(row[ColumnNames.ROTATION_ANGLE]):
-                        row[
-                            ColumnNames.ROTATION_ANGLE
-                        ] = MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE
-                    if np.isnan(row[ColumnNames.HATCH_SPACING]):
-                        row[ColumnNames.HATCH_SPACING] = MachineConstants.DEFAULT_HATCH_SPACING
-                    if np.isnan(row[ColumnNames.STRIPE_WIDTH]):
-                        row[
-                            ColumnNames.STRIPE_WIDTH
-                        ] = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH
-            else:
-                return (False, f"Invalid simulation type: {row[ColumnNames.TYPE]}.")
+            if input[ColumnNames.TYPE] not in allowed_types:
+                return (False, f"Invalid simulation type: {input[ColumnNames.TYPE]}.")
+
+            # convert nan to default values only for single bead simulations
+            # for other simulation types, nan values are not allowed
+            if input[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
+                if np.isnan(input[ColumnNames.START_ANGLE]):
+                    input[ColumnNames.START_ANGLE] = MachineConstants.DEFAULT_STARTING_LAYER_ANGLE
+                if np.isnan(input[ColumnNames.ROTATION_ANGLE]):
+                    input[
+                        ColumnNames.ROTATION_ANGLE
+                    ] = MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE
+                if np.isnan(input[ColumnNames.HATCH_SPACING]):
+                    input[ColumnNames.HATCH_SPACING] = MachineConstants.DEFAULT_HATCH_SPACING
+                if np.isnan(input[ColumnNames.STRIPE_WIDTH]):
+                    input[ColumnNames.STRIPE_WIDTH] = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH
 
             machine = AdditiveMachine(
-                laser_power=row[ColumnNames.LASER_POWER],
-                scan_speed=row[ColumnNames.SCAN_SPEED],
-                heater_temperature=row[ColumnNames.HEATER_TEMPERATURE],
-                layer_thickness=row[ColumnNames.LAYER_THICKNESS],
-                beam_diameter=row[ColumnNames.BEAM_DIAMETER],
-                starting_layer_angle=row[ColumnNames.START_ANGLE],
-                layer_rotation_angle=row[ColumnNames.ROTATION_ANGLE],
-                hatch_spacing=row[ColumnNames.HATCH_SPACING],
-                slicing_stripe_width=row[ColumnNames.STRIPE_WIDTH],
+                laser_power=input[ColumnNames.LASER_POWER],
+                scan_speed=input[ColumnNames.SCAN_SPEED],
+                heater_temperature=input[ColumnNames.HEATER_TEMPERATURE],
+                layer_thickness=input[ColumnNames.LAYER_THICKNESS],
+                beam_diameter=input[ColumnNames.BEAM_DIAMETER],
+                starting_layer_angle=input[ColumnNames.START_ANGLE],
+                layer_rotation_angle=input[ColumnNames.ROTATION_ANGLE],
+                hatch_spacing=input[ColumnNames.HATCH_SPACING],
+                slicing_stripe_width=input[ColumnNames.STRIPE_WIDTH],
             )
 
-            material = AdditiveMaterial(name=str(row[ColumnNames.MATERIAL]))
+            material = AdditiveMaterial(name=str(input[ColumnNames.MATERIAL]))
 
-            if row[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
-                valid, error = self._validate_single_bead_input(machine, material, row)
-            if row[ColumnNames.TYPE] == SimulationType.POROSITY:
-                valid, error = self._validate_porosity_input(machine, material, row)
-            if row[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE:
-                valid, error = self._validate_microstructure_input(machine, material, row)
+            if input[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
+                valid, error = self._validate_single_bead_input(machine, material, input)
+            if input[ColumnNames.TYPE] == SimulationType.POROSITY:
+                valid, error = self._validate_porosity_input(machine, material, input)
+            if input[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE:
+                valid, error = self._validate_microstructure_input(machine, material, input)
             if not valid:
                 return (False, error)
             return (True, "")
@@ -1717,20 +1717,20 @@ class ParametricStudy:
             return (False, (f"Invalid parameter combination: {e}"))
 
     def _validate_single_bead_input(
-        self, machine: AdditiveMachine, material: AdditiveMaterial, row: pd.Series
+        self, machine: AdditiveMachine, material: AdditiveMaterial, input: pd.Series
     ) -> tuple[bool, str]:
-        """Test a single bead input from a row of a CSV file for valid input parameters.
+        """Validate that a single bead input can be created.
 
         Parameters
         ----------
-        row : pd.Series
-            Row of a CSV file containing the simulation input.
+        input : pd.Series
+            Single bead simulation input.
 
         machine : AdditiveMachine
-            Additive machine object to use for testing the single bead input.
+            Additive machine object to use for validating the single bead input.
 
         material : AdditiveMaterial
-            Additive material object to use for testing the single bead input.
+            Additive material object to use for validating the single bead input.
 
         Returns
         -------
@@ -1739,7 +1739,7 @@ class ParametricStudy:
             string, Error message if the single bead input is invalid.
         """
         try:
-            test_bead_length = row[ColumnNames.SINGLE_BEAD_LENGTH]
+            test_bead_length = input[ColumnNames.SINGLE_BEAD_LENGTH]
 
             test_single_bead_input = SingleBeadInput(
                 bead_length=test_bead_length, machine=machine, material=material
@@ -1749,20 +1749,20 @@ class ParametricStudy:
             return (False, (f"Invalid parameter combination: {e}"))
 
     def _validate_porosity_input(
-        self, machine: AdditiveMachine, material: AdditiveMaterial, row: pd.Series
+        self, machine: AdditiveMachine, material: AdditiveMaterial, input: pd.Series
     ) -> tuple[bool, str]:
-        """Create a porosity input from a row of a CSV file for valid input parameters.
+        """Validate that a porosity input can be created.
 
         Parameters
         ----------
-        row : pd.Series
-            Row of a CSV file containing the simulation input.
+        input : pd.Series
+            Porosity simulation input.
 
         machine : AdditiveMachine
-            Additive machine object to use for testing the porosity input.
+            Additive machine object to use for validating the porosity input.
 
         material : AdditiveMaterial
-            Additive material object to use for testing the porosity input.
+            Additive material object to use for validating the porosity input.
 
         Returns
         -------
@@ -1773,9 +1773,9 @@ class ParametricStudy:
 
         try:
             test_porosity_input = PorosityInput(
-                size_x=row[ColumnNames.POROSITY_SIZE_X],
-                size_y=row[ColumnNames.POROSITY_SIZE_Y],
-                size_z=row[ColumnNames.POROSITY_SIZE_Z],
+                size_x=input[ColumnNames.POROSITY_SIZE_X],
+                size_y=input[ColumnNames.POROSITY_SIZE_Y],
+                size_z=input[ColumnNames.POROSITY_SIZE_Z],
                 machine=machine,
                 material=material,
             )
@@ -1784,20 +1784,20 @@ class ParametricStudy:
             return (False, (f"Invalid parameter combination: {e}"))
 
     def _validate_microstructure_input(
-        self, machine: AdditiveMachine, material: AdditiveMaterial, row: pd.Series
+        self, machine: AdditiveMachine, material: AdditiveMaterial, input: pd.Series
     ) -> tuple[bool, str]:
-        """Create a microstructure input from a row of a CSV file for valid input parameters.
+        """Validate that a microstructure input can be created.
 
         Parameters
         ----------
-        row : pd.Series
-            Row of a CSV file containing the simulation input.
+        input : pd.Series
+            Microstructure simulation input.
 
         machine : AdditiveMachine
-            Additive machine object to use for testing the microstructure input.
+            Additive machine object to use for validating the microstructure input.
 
         material : AdditiveMaterial
-            Additive material object to use for testing the microstructure input.
+            Additive material object to use for validating the microstructure input.
 
         Returns
         -------
@@ -1806,11 +1806,11 @@ class ParametricStudy:
             string, Error message if the microstructure input is invalid.
         """
         try:
-            test_cooling_rate = row[ColumnNames.COOLING_RATE]
-            test_thermal_gradient = row[ColumnNames.THERMAL_GRADIENT]
-            test_melt_pool_width = row[ColumnNames.MICRO_MELT_POOL_WIDTH]
-            test_melt_pool_depth = row[ColumnNames.MICRO_MELT_POOL_DEPTH]
-            test_random_seed = row[ColumnNames.RANDOM_SEED]
+            test_cooling_rate = input[ColumnNames.COOLING_RATE]
+            test_thermal_gradient = input[ColumnNames.THERMAL_GRADIENT]
+            test_melt_pool_width = input[ColumnNames.MICRO_MELT_POOL_WIDTH]
+            test_melt_pool_depth = input[ColumnNames.MICRO_MELT_POOL_DEPTH]
+            test_random_seed = input[ColumnNames.RANDOM_SEED]
 
             if (
                 math.isnan(test_cooling_rate)
@@ -1823,13 +1823,13 @@ class ParametricStudy:
                 test_use_provided_thermal_parameters = True
 
             test_microstructure_input = MicrostructureInput(
-                sample_min_x=row[ColumnNames.MICRO_MIN_X],
-                sample_min_y=row[ColumnNames.MICRO_MIN_Y],
-                sample_min_z=row[ColumnNames.MICRO_MIN_Z],
-                sample_size_x=row[ColumnNames.MICRO_SIZE_X],
-                sample_size_y=row[ColumnNames.MICRO_SIZE_Y],
-                sample_size_z=row[ColumnNames.MICRO_SIZE_Z],
-                sensor_dimension=row[ColumnNames.MICRO_SENSOR_DIM],
+                sample_min_x=input[ColumnNames.MICRO_MIN_X],
+                sample_min_y=input[ColumnNames.MICRO_MIN_Y],
+                sample_min_z=input[ColumnNames.MICRO_MIN_Z],
+                sample_size_x=input[ColumnNames.MICRO_SIZE_X],
+                sample_size_y=input[ColumnNames.MICRO_SIZE_Y],
+                sample_size_z=input[ColumnNames.MICRO_SIZE_Z],
+                sensor_dimension=input[ColumnNames.MICRO_SENSOR_DIM],
                 use_provided_thermal_parameters=test_use_provided_thermal_parameters,
                 cooling_rate=test_cooling_rate,
                 thermal_gradient=test_thermal_gradient,
