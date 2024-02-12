@@ -1719,7 +1719,7 @@ class ParametricStudy:
     def _validate_single_bead_input(
         self, machine: AdditiveMachine, material: AdditiveMaterial, input: pd.Series
     ) -> tuple[bool, str]:
-        """Validate that a single bead input can be created.
+        """Validate single bead simulation input values.
 
         Parameters
         ----------
@@ -1751,7 +1751,7 @@ class ParametricStudy:
     def _validate_porosity_input(
         self, machine: AdditiveMachine, material: AdditiveMaterial, input: pd.Series
     ) -> tuple[bool, str]:
-        """Validate that a porosity input can be created.
+        """Validate porosity simulation input values.
 
         Parameters
         ----------
@@ -1786,7 +1786,7 @@ class ParametricStudy:
     def _validate_microstructure_input(
         self, machine: AdditiveMachine, material: AdditiveMaterial, input: pd.Series
     ) -> tuple[bool, str]:
-        """Validate that a microstructure input can be created.
+        """Validate microstructure simulation input values.
 
         Parameters
         ----------
