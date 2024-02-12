@@ -163,6 +163,19 @@ def test_PorosityInput_setters_raise_expected_errors():
         input.size_z = 1.1e-2
 
 
+def test_PorosityInput_setters_raise_expected_error_for_nan_values():
+    # arrange
+    input = PorosityInput()
+
+    # act, assert
+    with pytest.raises(ValueError, match="size_x must be a number."):
+        input.size_x = float("nan")
+    with pytest.raises(ValueError, match="size_y must be a number."):
+        input.size_y = float("nan")
+    with pytest.raises(ValueError, match="size_z must be a number."):
+        input.size_z = float("nan")
+
+
 def test_PorosityInput_repr_returns_expected_string():
     # arrange
     input = PorosityInput(id="myId")

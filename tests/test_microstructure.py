@@ -331,6 +331,37 @@ def test_MicrostructureInput_setters_raise_ValueError_for_values_out_of_range():
         input.random_seed = 2**32
 
 
+def test_MicrostructureInput_setters_raise_ValueError_for_nan_values():
+    # arrange
+    input = MicrostructureInput()
+
+    # act & assert
+    with pytest.raises(ValueError, match="sample_min_x must be a number"):
+        input.sample_min_x = float("nan")
+    with pytest.raises(ValueError, match="sample_min_y must be a number"):
+        input.sample_min_y = float("nan")
+    with pytest.raises(ValueError, match="sample_min_z must be a number"):
+        input.sample_min_z = float("nan")
+    with pytest.raises(ValueError, match="sample_size_x must be a number"):
+        input.sample_size_x = float("nan")
+    with pytest.raises(ValueError, match="sample_size_y must be a number"):
+        input.sample_size_y = float("nan")
+    with pytest.raises(ValueError, match="sample_size_z must be a number"):
+        input.sample_size_z = float("nan")
+    with pytest.raises(ValueError, match="sensor_dimension must be a number"):
+        input.sensor_dimension = float("nan")
+    with pytest.raises(ValueError, match="cooling_rate must be a number"):
+        input.cooling_rate = float("nan")
+    with pytest.raises(ValueError, match="thermal_gradient must be a number"):
+        input.thermal_gradient = float("nan")
+    with pytest.raises(ValueError, match="melt_pool_width must be a number"):
+        input.melt_pool_width = float("nan")
+    with pytest.raises(ValueError, match="melt_pool_depth must be a number"):
+        input.melt_pool_depth = float("nan")
+    with pytest.raises(ValueError, match="random_seed must be a number"):
+        input.random_seed = float("nan")
+
+
 def test_MicrostructureInput_size_validation_raises_ValueError_for_values_out_of_range():
     # arrange
     input = MicrostructureInput(
