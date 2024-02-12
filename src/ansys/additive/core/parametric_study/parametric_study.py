@@ -24,6 +24,7 @@
 from __future__ import annotations
 
 from functools import wraps
+import math
 import os
 import pathlib
 import platform
@@ -33,6 +34,7 @@ import numpy as np
 import pandas as pd
 
 from ansys.additive.core import (
+    LOG,
     Additive,
     AdditiveMachine,
     AdditiveMaterial,
@@ -60,8 +62,9 @@ def save_on_return(func):
 
     @wraps(func)
     def wrap(self, *args, **kwargs):
-        func(self, *args, **kwargs)
+        result = func(self, *args, **kwargs)
         self.save(self.file_name)
+        return result
 
     return wrap
 
@@ -106,6 +109,35 @@ class ParametricStudy:
         study = cls.__new__(cls)
         study._init_new_study(study_path)
         return study
+
+    def import_csv_study(self, file_name: str | os.PathLike) -> list[str]:
+        """Import a parametric study from a CSV file.
+
+        Parameters
+        ----------
+        file_name: str, os.PathLike
+            Name of the csv file containing the simulation parameters.
+
+        For the column names used in the returned data frame, see
+        the :class:`ColumnNames <constants.ColumnNames>` class.
+
+        Returns
+        -------
+        list[str]
+            List of error messages of any simulations that have invalid
+            input parameters.
+        """
+
+        file_path = pathlib.Path(file_name).absolute()
+        if not file_path.exists():
+            raise ValueError(f"{file_name} does not exist.")
+
+        # The first column of the CSV file is expected to be the index column.
+        columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
+        if all([set(pd.read_csv(file_path, index_col=0, nrows=0).columns) == set(columns)]):
+            return self.add_simulations_from_data_frame(pd.read_csv(file_path, index_col=0))
+        else:
+            raise ValueError(f"{file_name} does not have the expected columns.")
 
     @property
     def format_version(self) -> int:
@@ -248,12 +280,15 @@ class ParametricStudy:
         self,
         summaries: list[SingleBeadSummary | PorositySummary | MicrostructureSummary],
         iteration: int = DEFAULT_ITERATION,
-    ):
+    ) -> int:
         """Add summaries of executed simulations to the parametric study.
 
         Simulation summaries are created using the :meth:`Additive.simulate` method.
         This method adds new simulations to the parametric study. To update existing
         simulations, use the :meth:`update` method.
+
+        A summary that matches an existing simulation will overwrite the results for
+        that simulation.
 
         Parameters
         ----------
@@ -261,6 +296,11 @@ class ParametricStudy:
             List of simulation result summaries to add to the parametric study.
         iteration : int, default: :obj:`DEFAULT_ITERATION`
             Iteration number for the new simulations.
+
+        Returns
+        -------
+        int
+            Number of new simulations added to the parametric study.
         """
         for summary in summaries:
             if isinstance(summary, SingleBeadSummary):
@@ -271,6 +311,7 @@ class ParametricStudy:
                 self._add_microstructure_summary(summary, iteration)
             else:
                 raise TypeError(f"Unknown summary type: {type(summary)}")
+        return len(summaries) - self._remove_duplicate_entries(overwrite=True)
 
     def _add_single_bead_summary(
         self, summary: SingleBeadSummary, iteration: int = DEFAULT_ITERATION
@@ -1197,8 +1238,10 @@ class ParametricStudy:
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
         status: SimulationStatus = SimulationStatus.PENDING,
-    ):
+    ) -> int:
         """Add new simulations to the parametric study.
+
+        If the input matches an existing simulation, the input will be ignored.
 
         Parameters
         ----------
@@ -1210,7 +1253,19 @@ class ParametricStudy:
 
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for the simulations.
+
+        status : SimulationStatus, default: :obj:`SimulationStatus.PENDING`
+            Valid types are :obj:`SimulationStatus.PENDING` and :obj:`SimulationStatus.SKIP`.
+
+        Returns
+        -------
+        int
+            The number of simulations added to the parametric study.
         """
+        if status not in [SimulationStatus.SKIP, SimulationStatus.PENDING]:
+            raise ValueError(
+                f"Simulation status must be '{SimulationStatus.PENDING}' or '{SimulationStatus.SKIP}'"
+            )
         for input in inputs:
             dict = {}
             if isinstance(input, SingleBeadInput):
@@ -1238,8 +1293,7 @@ class ParametricStudy:
                 if input.random_seed != MicrostructureInput.DEFAULT_RANDOM_SEED:
                     dict[ColumnNames.RANDOM_SEED] = input.random_seed
             else:
-                print(f"Invalid simulation input type: {type(input)}")
-                continue
+                raise TypeError(f"Invalid simulation input type: {type(input)}")
 
             dict[ColumnNames.ITERATION] = iteration
             dict[ColumnNames.PRIORITY] = priority
@@ -1259,6 +1313,138 @@ class ParametricStudy:
             self._data_frame = pd.concat(
                 [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
             )
+        return len(inputs) - self._remove_duplicate_entries(overwrite=False)
+
+    @save_on_return
+    def _remove_duplicate_entries(self, overwrite: bool = False) -> int:
+        """Remove or update duplicate simulations from the parametric study.
+
+        Parameters
+        ----------
+        overwrite : bool, default: False
+            If True, drop duplicates and keep the latest entry.
+            If False, drop duplicates and keep the earlier entry.
+
+        Returns
+        -------
+        int
+            The number of duplicate simulations removed.
+        """
+
+        # For duplicate removal, the following rules are applied:
+        # - Sort simulatiuons by priority in the following order: completed > pending > skip > error
+        # - Select a subset of input columns based on simulation type to check for duplicates
+        # - Completed simulations will overwrite pending, skip and error simulations
+        # - Completed simulations will be overwritten by newer completed simulations if overwrite is True
+
+        column_names = [
+            getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")
+        ]
+        sorted_df = pd.DataFrame(columns=column_names)
+        duplicates_removed_df = pd.DataFrame(columns=column_names)
+        current_df = self.data_frame()
+
+        if len(current_df) == 0:
+            return 0
+
+        # Filter and arrange as per status so that completed simulations are not overwritten by the
+        # ones lower in the list
+        for status in [
+            SimulationStatus.COMPLETED,
+            SimulationStatus.PENDING,
+            SimulationStatus.SKIP,
+            SimulationStatus.ERROR,
+        ]:
+            if len(current_df[current_df[ColumnNames.STATUS] == status]) > 0:
+                sorted_df = pd.concat(
+                    [sorted_df, current_df[current_df[ColumnNames.STATUS] == status]],
+                    ignore_index=True,
+                )
+
+        # Common columns to check for duplicates
+        common_params = [
+            ColumnNames.MATERIAL,
+            ColumnNames.HEATER_TEMPERATURE,
+            ColumnNames.LAYER_THICKNESS,
+            ColumnNames.BEAM_DIAMETER,
+            ColumnNames.LASER_POWER,
+            ColumnNames.SCAN_SPEED,
+            ColumnNames.TYPE,
+        ]
+
+        # Additional columns to check for duplicates as per simulation type
+        sb_params = common_params + [ColumnNames.SINGLE_BEAD_LENGTH]
+
+        porosity_params = common_params + [
+            ColumnNames.START_ANGLE,
+            ColumnNames.ROTATION_ANGLE,
+            ColumnNames.HATCH_SPACING,
+            ColumnNames.STRIPE_WIDTH,
+            ColumnNames.POROSITY_SIZE_X,
+            ColumnNames.POROSITY_SIZE_Y,
+            ColumnNames.POROSITY_SIZE_Z,
+        ]
+
+        microstructure_params = common_params + [
+            ColumnNames.START_ANGLE,
+            ColumnNames.ROTATION_ANGLE,
+            ColumnNames.HATCH_SPACING,
+            ColumnNames.STRIPE_WIDTH,
+            ColumnNames.MICRO_MIN_X,
+            ColumnNames.MICRO_MIN_Y,
+            ColumnNames.MICRO_MIN_Z,
+            ColumnNames.MICRO_SIZE_X,
+            ColumnNames.MICRO_SIZE_Y,
+            ColumnNames.MICRO_SIZE_Z,
+            ColumnNames.MICRO_SENSOR_DIM,
+            ColumnNames.COOLING_RATE,
+            ColumnNames.THERMAL_GRADIENT,
+            ColumnNames.MICRO_MELT_POOL_DEPTH,
+            ColumnNames.MICRO_MELT_POOL_WIDTH,
+            ColumnNames.RANDOM_SEED,
+        ]
+
+        single_bead_df = sorted_df[sorted_df[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD]
+        porosity_df = sorted_df[sorted_df[ColumnNames.TYPE] == SimulationType.POROSITY]
+        microstructure_df = sorted_df[sorted_df[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE]
+
+        if overwrite:
+            # Drop duplicates and keep the latest completed simulation entry in case of adding a
+            # completed simulation when using add_summaries.
+            # Simulation status further narrows down subset of columns to check.
+
+            for df, params in zip(
+                [single_bead_df, porosity_df, microstructure_df],
+                [sb_params, porosity_params, microstructure_params],
+            ):
+                df.drop_duplicates(
+                    subset=params + [ColumnNames.STATUS],
+                    ignore_index=True,
+                    keep="last",
+                    inplace=True,
+                )
+
+        # Drop duplicates and keep the earlier entry in case of adding a pending/skip simulation
+        # when using add_inputs.
+        # Completed simulations will remain as is since they are already sorted and are higher
+        # up in the list.
+
+        for df, params in zip(
+            [single_bead_df, porosity_df, microstructure_df],
+            [sb_params, porosity_params, microstructure_params],
+        ):
+            if len(df) > 0:
+                duplicates_removed_df = pd.concat(
+                    [
+                        duplicates_removed_df,
+                        df.drop_duplicates(subset=params, ignore_index=True, keep="first"),
+                    ]
+                )
+
+        self._data_frame = duplicates_removed_df
+        n_removed = len(current_df) - len(duplicates_removed_df)
+        LOG.debug(f"Removed {n_removed} duplicate simulation(s).")
+        return n_removed
 
     @save_on_return
     def remove(self, ids: str | list[str]):
@@ -1412,3 +1598,247 @@ class ParametricStudy:
         new_study = ParametricStudy._new(study.file_name)
         new_study._data_frame = df
         return new_study
+
+    @save_on_return
+    def add_simulations_from_data_frame(self, df: pd.DataFrame) -> list[str]:
+        """Add simulations from an imported CSV file to the parametric study.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Data frame of the csv file containing simulations to be added to the parametric study.
+
+        Returns
+        -------
+        list[str]
+            List of error messages for invalid simulations.
+        """
+
+        # check valid inputs
+        drop_indices, error_list = [], []
+        allowed_status = [
+            SimulationStatus.COMPLETED,
+            SimulationStatus.PENDING,
+            SimulationStatus.SKIP,
+            SimulationStatus.ERROR,
+        ]
+        for index, row in df.iterrows():
+            valid = False
+            if row[ColumnNames.STATUS] in allowed_status:
+                valid, error = self._validate_input(row)
+            else:
+                valid, error = (False, f"Invalid simulation status {row[ColumnNames.STATUS]}")
+            if not valid:
+                drop_indices.append(index)
+                error_list.append(error)
+
+        # drop invalid inputs
+        df = df.drop(drop_indices)
+
+        # add simulations to the parametric study and drop duplicates
+        for status, overwrite in [
+            (SimulationStatus.COMPLETED, True),
+            (SimulationStatus.PENDING, False),
+            (SimulationStatus.SKIP, False),
+            (SimulationStatus.ERROR, False),
+        ]:
+            if len(df[df[ColumnNames.STATUS] == status]) > 0:
+                self._data_frame = pd.concat(
+                    [self._data_frame, df[df[ColumnNames.STATUS] == status]],
+                    ignore_index=True,
+                )
+                self._remove_duplicate_entries(overwrite=overwrite)
+
+        return error_list
+
+    def _validate_input(self, input: pd.Series):
+        """Test input from a row of a CSV file for valid input parameters.
+
+        Parameters
+        ----------
+        input : pd.Series
+            Row of a CSV file containing the simulation input.
+
+        Returns
+        -------
+        tuple[bool, str]
+            bool, True if the input is valid, False otherwise.
+            string, Error message if the input is invalid.
+        """
+
+        try:
+            allowed_types = [
+                SimulationType.SINGLE_BEAD,
+                SimulationType.POROSITY,
+                SimulationType.MICROSTRUCTURE,
+            ]
+            if input[ColumnNames.TYPE] not in allowed_types:
+                return (False, f"Invalid simulation type: {input[ColumnNames.TYPE]}.")
+
+            # convert nan to default values only for single bead simulations
+            # for other simulation types, nan values are not allowed
+            if input[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
+                if np.isnan(input[ColumnNames.START_ANGLE]):
+                    input[ColumnNames.START_ANGLE] = MachineConstants.DEFAULT_STARTING_LAYER_ANGLE
+                if np.isnan(input[ColumnNames.ROTATION_ANGLE]):
+                    input[
+                        ColumnNames.ROTATION_ANGLE
+                    ] = MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE
+                if np.isnan(input[ColumnNames.HATCH_SPACING]):
+                    input[ColumnNames.HATCH_SPACING] = MachineConstants.DEFAULT_HATCH_SPACING
+                if np.isnan(input[ColumnNames.STRIPE_WIDTH]):
+                    input[ColumnNames.STRIPE_WIDTH] = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH
+
+            machine = AdditiveMachine(
+                laser_power=input[ColumnNames.LASER_POWER],
+                scan_speed=input[ColumnNames.SCAN_SPEED],
+                heater_temperature=input[ColumnNames.HEATER_TEMPERATURE],
+                layer_thickness=input[ColumnNames.LAYER_THICKNESS],
+                beam_diameter=input[ColumnNames.BEAM_DIAMETER],
+                starting_layer_angle=input[ColumnNames.START_ANGLE],
+                layer_rotation_angle=input[ColumnNames.ROTATION_ANGLE],
+                hatch_spacing=input[ColumnNames.HATCH_SPACING],
+                slicing_stripe_width=input[ColumnNames.STRIPE_WIDTH],
+            )
+
+            material = AdditiveMaterial(name=str(input[ColumnNames.MATERIAL]))
+
+            if input[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
+                valid, error = self._validate_single_bead_input(machine, material, input)
+            if input[ColumnNames.TYPE] == SimulationType.POROSITY:
+                valid, error = self._validate_porosity_input(machine, material, input)
+            if input[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE:
+                valid, error = self._validate_microstructure_input(machine, material, input)
+            if not valid:
+                return (False, error)
+            return (True, "")
+
+        except ValueError as e:
+            return (False, (f"Invalid parameter combination: {e}"))
+
+    def _validate_single_bead_input(
+        self, machine: AdditiveMachine, material: AdditiveMaterial, input: pd.Series
+    ) -> tuple[bool, str]:
+        """Validate single bead simulation input values.
+
+        Parameters
+        ----------
+        input : pd.Series
+            Single bead simulation input.
+
+        machine : AdditiveMachine
+            Additive machine object to use for validating the single bead input.
+
+        material : AdditiveMaterial
+            Additive material object to use for validating the single bead input.
+
+        Returns
+        -------
+        tuple[bool, str]
+            bool, True if the single bead input is valid, False otherwise.
+            string, Error message if the single bead input is invalid.
+        """
+        try:
+            test_bead_length = input[ColumnNames.SINGLE_BEAD_LENGTH]
+
+            test_single_bead_input = SingleBeadInput(
+                bead_length=test_bead_length, machine=machine, material=material
+            )
+            return (True, "")
+        except ValueError as e:
+            return (False, (f"Invalid parameter combination: {e}"))
+
+    def _validate_porosity_input(
+        self, machine: AdditiveMachine, material: AdditiveMaterial, input: pd.Series
+    ) -> tuple[bool, str]:
+        """Validate porosity simulation input values.
+
+        Parameters
+        ----------
+        input : pd.Series
+            Porosity simulation input.
+
+        machine : AdditiveMachine
+            Additive machine object to use for validating the porosity input.
+
+        material : AdditiveMaterial
+            Additive material object to use for validating the porosity input.
+
+        Returns
+        -------
+        tuple[bool, str]
+            bool, True if the porosity input is valid, False otherwise.
+            string, Error message if the porosity input is invalid.
+        """
+
+        try:
+            test_porosity_input = PorosityInput(
+                size_x=input[ColumnNames.POROSITY_SIZE_X],
+                size_y=input[ColumnNames.POROSITY_SIZE_Y],
+                size_z=input[ColumnNames.POROSITY_SIZE_Z],
+                machine=machine,
+                material=material,
+            )
+            return (True, "")
+        except ValueError as e:
+            return (False, (f"Invalid parameter combination: {e}"))
+
+    def _validate_microstructure_input(
+        self, machine: AdditiveMachine, material: AdditiveMaterial, input: pd.Series
+    ) -> tuple[bool, str]:
+        """Validate microstructure simulation input values.
+
+        Parameters
+        ----------
+        input : pd.Series
+            Microstructure simulation input.
+
+        machine : AdditiveMachine
+            Additive machine object to use for validating the microstructure input.
+
+        material : AdditiveMaterial
+            Additive material object to use for validating the microstructure input.
+
+        Returns
+        -------
+        tuple[bool, str]
+            bool, True if the microstructure input is valid, False otherwise.
+            string, Error message if the microstructure input is invalid.
+        """
+        try:
+            test_cooling_rate = input[ColumnNames.COOLING_RATE]
+            test_thermal_gradient = input[ColumnNames.THERMAL_GRADIENT]
+            test_melt_pool_width = input[ColumnNames.MICRO_MELT_POOL_WIDTH]
+            test_melt_pool_depth = input[ColumnNames.MICRO_MELT_POOL_DEPTH]
+            test_random_seed = input[ColumnNames.RANDOM_SEED]
+
+            if (
+                math.isnan(test_cooling_rate)
+                or math.isnan(test_thermal_gradient)
+                or math.isnan(test_melt_pool_width)
+                or math.isnan(test_melt_pool_depth)
+            ):
+                test_use_provided_thermal_parameters = False
+            else:
+                test_use_provided_thermal_parameters = True
+
+            test_microstructure_input = MicrostructureInput(
+                sample_min_x=input[ColumnNames.MICRO_MIN_X],
+                sample_min_y=input[ColumnNames.MICRO_MIN_Y],
+                sample_min_z=input[ColumnNames.MICRO_MIN_Z],
+                sample_size_x=input[ColumnNames.MICRO_SIZE_X],
+                sample_size_y=input[ColumnNames.MICRO_SIZE_Y],
+                sample_size_z=input[ColumnNames.MICRO_SIZE_Z],
+                sensor_dimension=input[ColumnNames.MICRO_SENSOR_DIM],
+                use_provided_thermal_parameters=test_use_provided_thermal_parameters,
+                cooling_rate=test_cooling_rate,
+                thermal_gradient=test_thermal_gradient,
+                melt_pool_width=test_melt_pool_width,
+                melt_pool_depth=test_melt_pool_depth,
+                random_seed=test_random_seed,
+                machine=machine,
+                material=material,
+            )
+            return (True, "")
+        except ValueError as e:
+            return (False, (f"Invalid parameter combination: {e}"))

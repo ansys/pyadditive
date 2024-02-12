@@ -171,6 +171,28 @@ def test_range_check_raises_exception_for_invalid_value():
         AdditiveMachine(slicing_stripe_width=0.11)
 
 
+def test_range_check_raises_exception_for_nan_value():
+    # arrange, act, assert
+    with pytest.raises(ValueError, match="laser_power must be a number"):
+        AdditiveMachine(laser_power=float("nan"))
+    with pytest.raises(ValueError, match="scan_speed must be a number"):
+        AdditiveMachine(scan_speed=float("nan"))
+    with pytest.raises(ValueError, match="heater_temperature must be a number"):
+        AdditiveMachine(heater_temperature=float("nan"))
+    with pytest.raises(ValueError, match="layer_thickness must be a number"):
+        AdditiveMachine(layer_thickness=float("nan"))
+    with pytest.raises(ValueError, match="beam_diameter must be a number"):
+        AdditiveMachine(beam_diameter=float("nan"))
+    with pytest.raises(ValueError, match="starting_layer_angle must be a number"):
+        AdditiveMachine(starting_layer_angle=float("nan"))
+    with pytest.raises(ValueError, match="layer_rotation_angle must be a number"):
+        AdditiveMachine(layer_rotation_angle=float("nan"))
+    with pytest.raises(ValueError, match="hatch_spacing must be a number"):
+        AdditiveMachine(hatch_spacing=float("nan"))
+    with pytest.raises(ValueError, match="slicing_stripe_width must be a number"):
+        AdditiveMachine(slicing_stripe_width=float("nan"))
+
+
 def test_setters_set_correct_values():
     # arrange
     machine = AdditiveMachine()

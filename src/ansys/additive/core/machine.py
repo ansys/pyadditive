@@ -139,6 +139,8 @@ class AdditiveMachine:
         return True
 
     def __validate_range(self, value, min, max, name):
+        if math.isnan(value):
+            raise ValueError("{} must be a number.".format(name))
         if value < min or value > max:
             raise ValueError("{} must be between {} and {}.".format(name, min, max))
 
