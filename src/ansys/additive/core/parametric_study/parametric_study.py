@@ -24,6 +24,7 @@
 from __future__ import annotations
 
 from functools import wraps
+import math
 import os
 import pathlib
 import platform
@@ -108,6 +109,35 @@ class ParametricStudy:
         study = cls.__new__(cls)
         study._init_new_study(study_path)
         return study
+
+    def import_csv_study(self, file_name: str | os.PathLike) -> list[str]:
+        """Import a parametric study from a CSV file.
+
+        Parameters
+        ----------
+        file_name: str, os.PathLike
+            Name of the csv file containing the simulation parameters.
+
+        For the column names used in the returned data frame, see
+        the :class:`ColumnNames <constants.ColumnNames>` class.
+
+        Returns
+        -------
+        list[str]
+            List of error messages of any simulations that have invalid
+            input parameters.
+        """
+
+        file_path = pathlib.Path(file_name).absolute()
+        if not file_path.exists():
+            raise ValueError(f"{file_name} does not exist.")
+
+        # The first column of the CSV file is expected to be the index column.
+        columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
+        if all([set(pd.read_csv(file_path, index_col=0, nrows=0).columns) == set(columns)]):
+            return self.add_simulations_from_data_frame(pd.read_csv(file_path, index_col=0))
+        else:
+            raise ValueError(f"{file_name} does not have the expected columns.")
 
     @property
     def format_version(self) -> int:
@@ -1568,3 +1598,247 @@ class ParametricStudy:
         new_study = ParametricStudy._new(study.file_name)
         new_study._data_frame = df
         return new_study
+
+    @save_on_return
+    def add_simulations_from_data_frame(self, df: pd.DataFrame) -> list[str]:
+        """Add simulations from an imported CSV file to the parametric study.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Data frame of the csv file containing simulations to be added to the parametric study.
+
+        Returns
+        -------
+        list[str]
+            List of error messages for invalid simulations.
+        """
+
+        # check valid inputs
+        drop_indices, error_list = [], []
+        allowed_status = [
+            SimulationStatus.COMPLETED,
+            SimulationStatus.PENDING,
+            SimulationStatus.SKIP,
+            SimulationStatus.ERROR,
+        ]
+        for index, row in df.iterrows():
+            valid = False
+            if row[ColumnNames.STATUS] in allowed_status:
+                valid, error = self._validate_input(row)
+            else:
+                valid, error = (False, f"Invalid simulation status {row[ColumnNames.STATUS]}")
+            if not valid:
+                drop_indices.append(index)
+                error_list.append(error)
+
+        # drop invalid inputs
+        df = df.drop(drop_indices)
+
+        # add simulations to the parametric study and drop duplicates
+        for status, overwrite in [
+            (SimulationStatus.COMPLETED, True),
+            (SimulationStatus.PENDING, False),
+            (SimulationStatus.SKIP, False),
+            (SimulationStatus.ERROR, False),
+        ]:
+            if len(df[df[ColumnNames.STATUS] == status]) > 0:
+                self._data_frame = pd.concat(
+                    [self._data_frame, df[df[ColumnNames.STATUS] == status]],
+                    ignore_index=True,
+                )
+                self._remove_duplicate_entries(overwrite=overwrite)
+
+        return error_list
+
+    def _validate_input(self, input: pd.Series):
+        """Test input from a row of a CSV file for valid input parameters.
+
+        Parameters
+        ----------
+        input : pd.Series
+            Row of a CSV file containing the simulation input.
+
+        Returns
+        -------
+        tuple[bool, str]
+            bool, True if the input is valid, False otherwise.
+            string, Error message if the input is invalid.
+        """
+
+        try:
+            allowed_types = [
+                SimulationType.SINGLE_BEAD,
+                SimulationType.POROSITY,
+                SimulationType.MICROSTRUCTURE,
+            ]
+            if input[ColumnNames.TYPE] not in allowed_types:
+                return (False, f"Invalid simulation type: {input[ColumnNames.TYPE]}.")
+
+            # convert nan to default values only for single bead simulations
+            # for other simulation types, nan values are not allowed
+            if input[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
+                if np.isnan(input[ColumnNames.START_ANGLE]):
+                    input[ColumnNames.START_ANGLE] = MachineConstants.DEFAULT_STARTING_LAYER_ANGLE
+                if np.isnan(input[ColumnNames.ROTATION_ANGLE]):
+                    input[
+                        ColumnNames.ROTATION_ANGLE
+                    ] = MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE
+                if np.isnan(input[ColumnNames.HATCH_SPACING]):
+                    input[ColumnNames.HATCH_SPACING] = MachineConstants.DEFAULT_HATCH_SPACING
+                if np.isnan(input[ColumnNames.STRIPE_WIDTH]):
+                    input[ColumnNames.STRIPE_WIDTH] = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH
+
+            machine = AdditiveMachine(
+                laser_power=input[ColumnNames.LASER_POWER],
+                scan_speed=input[ColumnNames.SCAN_SPEED],
+                heater_temperature=input[ColumnNames.HEATER_TEMPERATURE],
+                layer_thickness=input[ColumnNames.LAYER_THICKNESS],
+                beam_diameter=input[ColumnNames.BEAM_DIAMETER],
+                starting_layer_angle=input[ColumnNames.START_ANGLE],
+                layer_rotation_angle=input[ColumnNames.ROTATION_ANGLE],
+                hatch_spacing=input[ColumnNames.HATCH_SPACING],
+                slicing_stripe_width=input[ColumnNames.STRIPE_WIDTH],
+            )
+
+            material = AdditiveMaterial(name=str(input[ColumnNames.MATERIAL]))
+
+            if input[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
+                valid, error = self._validate_single_bead_input(machine, material, input)
+            if input[ColumnNames.TYPE] == SimulationType.POROSITY:
+                valid, error = self._validate_porosity_input(machine, material, input)
+            if input[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE:
+                valid, error = self._validate_microstructure_input(machine, material, input)
+            if not valid:
+                return (False, error)
+            return (True, "")
+
+        except ValueError as e:
+            return (False, (f"Invalid parameter combination: {e}"))
+
+    def _validate_single_bead_input(
+        self, machine: AdditiveMachine, material: AdditiveMaterial, input: pd.Series
+    ) -> tuple[bool, str]:
+        """Validate single bead simulation input values.
+
+        Parameters
+        ----------
+        input : pd.Series
+            Single bead simulation input.
+
+        machine : AdditiveMachine
+            Additive machine object to use for validating the single bead input.
+
+        material : AdditiveMaterial
+            Additive material object to use for validating the single bead input.
+
+        Returns
+        -------
+        tuple[bool, str]
+            bool, True if the single bead input is valid, False otherwise.
+            string, Error message if the single bead input is invalid.
+        """
+        try:
+            test_bead_length = input[ColumnNames.SINGLE_BEAD_LENGTH]
+
+            test_single_bead_input = SingleBeadInput(
+                bead_length=test_bead_length, machine=machine, material=material
+            )
+            return (True, "")
+        except ValueError as e:
+            return (False, (f"Invalid parameter combination: {e}"))
+
+    def _validate_porosity_input(
+        self, machine: AdditiveMachine, material: AdditiveMaterial, input: pd.Series
+    ) -> tuple[bool, str]:
+        """Validate porosity simulation input values.
+
+        Parameters
+        ----------
+        input : pd.Series
+            Porosity simulation input.
+
+        machine : AdditiveMachine
+            Additive machine object to use for validating the porosity input.
+
+        material : AdditiveMaterial
+            Additive material object to use for validating the porosity input.
+
+        Returns
+        -------
+        tuple[bool, str]
+            bool, True if the porosity input is valid, False otherwise.
+            string, Error message if the porosity input is invalid.
+        """
+
+        try:
+            test_porosity_input = PorosityInput(
+                size_x=input[ColumnNames.POROSITY_SIZE_X],
+                size_y=input[ColumnNames.POROSITY_SIZE_Y],
+                size_z=input[ColumnNames.POROSITY_SIZE_Z],
+                machine=machine,
+                material=material,
+            )
+            return (True, "")
+        except ValueError as e:
+            return (False, (f"Invalid parameter combination: {e}"))
+
+    def _validate_microstructure_input(
+        self, machine: AdditiveMachine, material: AdditiveMaterial, input: pd.Series
+    ) -> tuple[bool, str]:
+        """Validate microstructure simulation input values.
+
+        Parameters
+        ----------
+        input : pd.Series
+            Microstructure simulation input.
+
+        machine : AdditiveMachine
+            Additive machine object to use for validating the microstructure input.
+
+        material : AdditiveMaterial
+            Additive material object to use for validating the microstructure input.
+
+        Returns
+        -------
+        tuple[bool, str]
+            bool, True if the microstructure input is valid, False otherwise.
+            string, Error message if the microstructure input is invalid.
+        """
+        try:
+            test_cooling_rate = input[ColumnNames.COOLING_RATE]
+            test_thermal_gradient = input[ColumnNames.THERMAL_GRADIENT]
+            test_melt_pool_width = input[ColumnNames.MICRO_MELT_POOL_WIDTH]
+            test_melt_pool_depth = input[ColumnNames.MICRO_MELT_POOL_DEPTH]
+            test_random_seed = input[ColumnNames.RANDOM_SEED]
+
+            if (
+                math.isnan(test_cooling_rate)
+                or math.isnan(test_thermal_gradient)
+                or math.isnan(test_melt_pool_width)
+                or math.isnan(test_melt_pool_depth)
+            ):
+                test_use_provided_thermal_parameters = False
+            else:
+                test_use_provided_thermal_parameters = True
+
+            test_microstructure_input = MicrostructureInput(
+                sample_min_x=input[ColumnNames.MICRO_MIN_X],
+                sample_min_y=input[ColumnNames.MICRO_MIN_Y],
+                sample_min_z=input[ColumnNames.MICRO_MIN_Z],
+                sample_size_x=input[ColumnNames.MICRO_SIZE_X],
+                sample_size_y=input[ColumnNames.MICRO_SIZE_Y],
+                sample_size_z=input[ColumnNames.MICRO_SIZE_Z],
+                sensor_dimension=input[ColumnNames.MICRO_SENSOR_DIM],
+                use_provided_thermal_parameters=test_use_provided_thermal_parameters,
+                cooling_rate=test_cooling_rate,
+                thermal_gradient=test_thermal_gradient,
+                melt_pool_width=test_melt_pool_width,
+                melt_pool_depth=test_melt_pool_depth,
+                random_seed=test_random_seed,
+                machine=machine,
+                material=material,
+            )
+            return (True, "")
+        except ValueError as e:
+            return (False, (f"Invalid parameter combination: {e}"))
