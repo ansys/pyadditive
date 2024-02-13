@@ -10,6 +10,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   label-syncer:
     name: Syncer
@@ -23,9 +27,6 @@ jobs:
   labeler:
     name: Set labels
     needs: [label-syncer]
-    permissions:
-      contents: read
-      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       # Label based on modified files
