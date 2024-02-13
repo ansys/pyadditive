@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  package: read
 
 env:
   MAIN_PYTHON_VERSION: "3.10"
