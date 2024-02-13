@@ -1615,7 +1615,7 @@ class ParametricStudy:
         """
 
         # check valid inputs
-        drop_indices, error_list = [], []
+        drop_indices, error_list, duplicates = list(), list(), int()
         allowed_status = [
             SimulationStatus.COMPLETED,
             SimulationStatus.PENDING,
@@ -1647,8 +1647,10 @@ class ParametricStudy:
                     [self._data_frame, df[df[ColumnNames.STATUS] == status]],
                     ignore_index=True,
                 )
-                self._remove_duplicate_entries(overwrite=overwrite)
+                duplicates += self._remove_duplicate_entries(overwrite=overwrite)
 
+        if duplicates:
+            error_list.append(f"Removed {duplicates} duplicate simulation(s).")
         return error_list
 
     def _validate_input(self, input: pd.Series):

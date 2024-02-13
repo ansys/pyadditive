@@ -1865,9 +1865,7 @@ def test_import_csv_study_calls_remove_duplicates_entries_correctly(
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     csv_file = test_utils.get_test_file_path(pathlib.Path("csv") / file_name)
-    patched_simulate = create_autospec(
-        ps.ParametricStudy._remove_duplicate_entries, return_value=[]
-    )
+    patched_simulate = create_autospec(ps.ParametricStudy._remove_duplicate_entries, return_value=0)
     monkeypatch.setattr(ps.ParametricStudy, "_remove_duplicate_entries", patched_simulate)
 
     # act
@@ -1886,7 +1884,7 @@ def test_import_csv_study_drops_duplicates_with_correct_simulation_status_heirar
     study = ps.ParametricStudy(tmp_path / study_name)
 
     # act
-    study.import_csv_study(duplicate_rows_file)
+    errors = study.import_csv_study(duplicate_rows_file)
 
     # assert
     df = study.data_frame()
@@ -1899,6 +1897,8 @@ def test_import_csv_study_drops_duplicates_with_correct_simulation_status_heirar
     assert df.iloc[2][ps.ColumnNames.ID] == "sb_s"
     assert df.iloc[3][ps.ColumnNames.STATUS] == SimulationStatus.ERROR
     assert df.iloc[3][ps.ColumnNames.ID] == "sb_e"
+    assert len(errors) == 1
+    assert "Removed 4 duplicate simulation(s)." in errors[0]
 
 
 def test_import_csv_study_does_not_add_simulations_with_invalid_inputs_and_returns_expected_error(

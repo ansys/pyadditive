@@ -152,7 +152,8 @@ study.data_frame().to_csv("demo-study.csv")
 # Import a study from a CSV file using the :meth:`ParametricStudy.import_csv_study` method.
 # The CSV file must contain the same columns as the parametric study data frame.
 # The :meth:`ParametricStudy.import_csv_study` method will return a list of errors for each
-# simulation that failed to import. All other valid simulations will be added to the study.
+# simulation that failed to import and the number of duplicate simulations removed (if any).
+# All other valid simulations will be added to the study.
 
 study2 = ParametricStudy("demo-csv-study.ps")
 errors = study2.import_csv_study("demo-study.csv")

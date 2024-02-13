@@ -12,6 +12,7 @@
 ### Bug Fixes
 
 ### Doc Improvements
+* Updated parametric study examples to show importing a study from a csv file in [#252]https://github.com/ansys/pyadditive/pull/252/
 
 ### Contributors
 * Peter Krull - <peter.krull@ansys.com>
