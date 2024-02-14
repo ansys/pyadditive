@@ -25,7 +25,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "ansys-api-additive==1.5.0",
+    "ansys-api-additive==1.6.4",
     "ansys-platform-instancemanagement>=1.1.1",
     "dill>=0.3.7",
     "google-api-python-client>=1.7.11",
@@ -47,7 +47,7 @@ dependencies = [
 tests = [
     "ansys-platform-instancemanagement==1.1.2",
     "dill==0.3.8",
-    "google-api-python-client==2.117.0",
+    "google-api-python-client==2.118.0",
     "googleapis-common-protos==1.62.0",
     "grpcio==1.60.0",
     "grpcio-health-checking==1.48.2",
@@ -58,14 +58,14 @@ tests = [
     "plotly==5.18.0",
     "protobuf==4.25.2",
     "six==1.16.0",
-    "tqdm==4.66.1",
+    "tqdm==4.66.2",
     # Test specific dependencies
     "pytest==8.0.0",
     "pytest-cov==4.0.0",
 ]
 
 doc = [
-    "ansys-sphinx-theme==0.13.3",
+    "ansys-sphinx-theme==0.13.4",
     "enum-tools==0.11.0",
     "jupyter_sphinx==0.5.3",
     "matplotlib==3.8.2",
