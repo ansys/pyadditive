@@ -1615,7 +1615,8 @@ class ParametricStudy:
         """
 
         # check valid inputs
-        drop_indices, error_list, duplicates = list(), list(), int()
+        drop_indices, error_list = list(), list()
+        duplicates = 0
         allowed_status = [
             SimulationStatus.COMPLETED,
             SimulationStatus.PENDING,
