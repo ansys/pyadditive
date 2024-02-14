@@ -147,13 +147,26 @@ study.run_simulations(additive)
 study.data_frame().to_csv("demo-study.csv")
 
 ###############################################################################
+# Import a study from a CSV file
+# ------------------------------
+# Import a study from a CSV file using the :meth:`ParametricStudy.import_csv_study` method.
+# The CSV file must contain the same columns as the parametric study data frame.
+# The :meth:`ParametricStudy.import_csv_study` method will return a list of errors for each
+# simulation that failed to import and the number of duplicate simulations removed (if any).
+# All other valid simulations will be added to the study.
+
+study2 = ParametricStudy("demo-csv-study.ps")
+errors = study2.import_csv_study("demo-study.csv")
+display.show_table(study2)
+
+###############################################################################
 # Load a previously saved study
 # -----------------------------
 # Load a previously saved study using the static
 # :meth:`ParameticStudy.load() <ParametricStudy.load>` method.
 
-study2 = ParametricStudy.load("demo-study.ps")
-display.show_table(study2)
+study3 = ParametricStudy.load("demo-study.ps")
+display.show_table(study3)
 
 ###############################################################################
 # Plot single bead results
