@@ -277,8 +277,7 @@ class ThermalPropertiesDataPoint:
 
 
 class AdditiveMaterial:
-    """Provides the container for material properties used during additive
-    manufacturing simulation."""
+    """Provides the container for material properties used during additive manufacturing simulation."""
 
     def __init__(
         self,

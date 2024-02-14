@@ -12,10 +12,12 @@
 ### Bug Fixes
 
 ### Doc Improvements
+* Fixed summary doc strings (material and single bead)
 
 ### Contributors
 * Peter Krull - <peter.krull@ansys.com>
 * Safee Rehman - <safee.rehman@ansys.com>
+* Julie O'Hara - <julie.ohara@ansys.com>
 
 ## PyAdditive 0.17.0
 
