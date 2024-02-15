@@ -316,3 +316,5 @@ def test_SingleBeadInput_setters_raise_expected_errors():
         input.bead_length = 0.5e-3
     with pytest.raises(ValueError):
         input.bead_length = 1.1e-2
+    with pytest.raises(ValueError, match="bead_length must be a number"):
+        input.bead_length = float("nan")

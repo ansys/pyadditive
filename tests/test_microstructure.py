@@ -331,6 +331,32 @@ def test_MicrostructureInput_setters_raise_ValueError_for_values_out_of_range():
         input.random_seed = 2**32
 
 
+@pytest.mark.parametrize(
+    "field",
+    [
+        "sample_min_x",
+        "sample_min_y",
+        "sample_min_z",
+        "sample_size_x",
+        "sample_size_y",
+        "sample_size_z",
+        "sensor_dimension",
+        "cooling_rate",
+        "thermal_gradient",
+        "melt_pool_width",
+        "melt_pool_depth",
+        "random_seed",
+    ],
+)
+def test_MicrostructureInput_setters_raise_ValueError_for_nan_values(field):
+    # arrange
+    input = MicrostructureInput()
+
+    # act & assert
+    with pytest.raises(ValueError, match=field + " must be a number"):
+        setattr(input, field, float("nan"))
+
+
 def test_MicrostructureInput_size_validation_raises_ValueError_for_values_out_of_range():
     # arrange
     input = MicrostructureInput(
