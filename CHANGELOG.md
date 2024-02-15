@@ -13,6 +13,7 @@
 
 ### Doc Improvements
 * Updated parametric study examples to show importing a study from a csv file in [#259]https://github.com/ansys/pyadditive/pull/259/
+* Add license warning to Getting started page [#262](https://github.com/ansys/pyadditive/issues/262)
 
 ### Contributors
 * Peter Krull - <peter.krull@ansys.com>
