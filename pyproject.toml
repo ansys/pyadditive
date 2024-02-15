@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-additive-core"
-version = "0.18.dev4"
+version = "0.18.dev5"
 description = "A Python client for the Ansys Additive service"
 readme = "README.rst"
 requires-python = ">=3.9,<4"
@@ -110,9 +110,7 @@ src_paths = ["doc", "src", "tests"]
 
 [tool.coverage.run]
 source = ["ansys.additive.core"]
-omit = [
-    "*/parametric_study/display/*",
-] # TODO: Remove this once unit tests are added for these files
+omit = ["*/parametric_study/display/*"] # TODO: Remove this once unit tests are added for these files
 
 [tool.coverage.report]
 show_missing = true
