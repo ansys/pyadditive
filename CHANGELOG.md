@@ -1,5 +1,10 @@
 # Changelog
 
+## PyAdditive 0.17.1
+
+### Doc Improvements
+* Add license warning to Getting started page [#262](https://github.com/ansys/pyadditive/issues/262)
+
 ## PyAdditive 0.17.0
 
 ### Breaking Changes

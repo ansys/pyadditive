@@ -64,9 +64,9 @@ repos:
         args: [-vv, -m, -p, -S, -s, -n, --fail-under=100]
         files: src
 
-  - repo: https://github.com/ansys/pre-commit-hooks
-    rev: v0.1.2
-    hooks:
-      - id: add-license-headers
-        args:
-          - --loc=./
+  # - repo: https://github.com/ansys/pre-commit-hooks
+  #   rev: v0.1.2
+  #   hooks:
+  #     - id: add-license-headers
+  #       args:
+  #         - --loc=./
