@@ -1650,7 +1650,7 @@ class ParametricStudy:
                 )
                 duplicates += self._remove_duplicate_entries(overwrite=overwrite)
 
-        if duplicates:
+        if duplicates > 0:
             error_list.append(f"Removed {duplicates} duplicate simulation(s).")
         return error_list
 
