@@ -21,6 +21,22 @@
 * Safee Rehman - <safee.rehman@ansys.com>
 * Julie O'Hara - <julie.ohara@ansys.com>
 
+## PyAdditive 0.17.2
+
+### Doc Improvements
+* Use print statement for material list in examples [#269](https://github.com/ansys/pyadditive/issues/269)
+
+### Contributors
+* Peter Krull - <peter.krull@ansys.com>
+
+## PyAdditive 0.17.1
+
+### Doc Improvements
+* Add license warning to Getting started page [#262](https://github.com/ansys/pyadditive/issues/262)
+
+### Contributors
+* Peter Krull - <peter.krull@ansys.com>
+
 ## PyAdditive 0.17.0
 
 ### Breaking Changes
