@@ -65,8 +65,8 @@ repos:
         files: src
 
   # - repo: https://github.com/ansys/pre-commit-hooks
-  #   rev: v0.1.2
+  #   rev: v0.2.9
   #   hooks:
   #     - id: add-license-headers
   #       args:
-  #         - --loc=./
+  #         - --start_year=2023

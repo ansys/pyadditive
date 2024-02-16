@@ -59,13 +59,13 @@ additive.about()
 # Select a material. You can use the :meth:`~Additive.materials_list` method to
 # obtain a list of available materials.
 
-additive.materials_list()
+print("Available material names: {}".format(additive.materials_list()))
 
 ###############################################################################
 # You can obtain the parameters for a single material by passing a name
 # from the materials list to the :meth:`~Additive.material` method.
 
-material = additive.material("17-4PH")
+material = additive.material("IN718")
 
 ###############################################################################
 # Specify machine parameters
