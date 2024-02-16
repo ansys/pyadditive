@@ -195,7 +195,6 @@ Consider using a virtual environment for the installation.
 
 
 Testing
-=======
 
 This project takes advantage of `tox`_. This tool automates common
 development tasks (similar to Makefile), but it is oriented towards Python
