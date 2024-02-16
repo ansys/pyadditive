@@ -142,8 +142,7 @@ class MeltPoolColumnNames:
 
 
 class MeltPool:
-    """Contains the melt pool size dimensions for each time step during a
-    single bead simulation."""
+    """Contains the melt pool size dimensions for each time step during a single bead simulation."""
 
     def __init__(self, msg: MeltPoolMessage):
         """Initialize a ``MeltPool`` object."""

@@ -1,16 +1,14 @@
 # Changelog
 
-## PyAdditive 0.17.1
-
-### Doc Improvements
-
 ## PyAdditive 0.17.2
 
 ### Doc Improvements
 * Use print statement for material list in examples [#269](https://github.com/ansys/pyadditive/issues/269)
+* Fixed truncation problem on summary doc strings [#271](https://github.com/ansys/pyadditive/pull/271)
 
 ### Contributors
 * Peter Krull - <peter.krull@ansys.com>
+* Julie O'Hara - <julie.ohara@ansys.com>
 
 ## PyAdditive 0.17.1
 
