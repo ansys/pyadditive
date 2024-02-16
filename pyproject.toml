@@ -58,7 +58,7 @@ tests = [
     "plotly==5.18.0",
     "protobuf==4.25.2",
     "six==1.16.0",
-    "tqdm==4.66.1",
+    "tqdm==4.66.2",
     # Test specific dependencies
     "pytest==8.0.0",
     "pytest-cov==4.0.0",
