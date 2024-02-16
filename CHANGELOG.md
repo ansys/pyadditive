@@ -13,10 +13,12 @@
 
 ### Doc Improvements
 * Updated parametric study examples to show importing a study from a csv file in [#259]https://github.com/ansys/pyadditive/pull/259/
+* Fixed truncation problem on summary doc strings (material and single-bead API docs)
 
 ### Contributors
 * Peter Krull - <peter.krull@ansys.com>
 * Safee Rehman - <safee.rehman@ansys.com>
+* Julie O'Hara - <julie.ohara@ansys.com>
 
 ## PyAdditive 0.17.0
 
