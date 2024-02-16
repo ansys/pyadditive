@@ -8,8 +8,14 @@ Getting started
 
 PyAdditive is a Python client library for the Ansys Additive server. The Ansys
 Additive server is distributed with the Additive option of the Structures package
-in the Ansys unified installation. The first release of the Ansys Additive
-server is with Ansys 2024 R1.
+in the Ansys unified installation.
+
+.. note::
+   PyAdditive requires Ansys 2024 R1 or later.
+
+.. warning::
+   The simulations described in this documentation require an Additive Suite license. To obtain a license,
+   contact your Ansys sales representative or see https://www.ansys.com/contact-us.
 
 
 Starting a session
@@ -189,7 +195,6 @@ Consider using a virtual environment for the installation.
 
 
 Testing
-=======
 
 This project takes advantage of `tox`_. This tool automates common
 development tasks (similar to Makefile), but it is oriented towards Python
