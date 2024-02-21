@@ -23,11 +23,11 @@
 Parametric study
 ================
 
-This example shows how you can use PyAdditive to perform a parametric study.
-The intended audience is a user who desires to optimize additive machine parameters
+This example shows how to use PyAdditive to perform a parametric study.
+You perform a parametric study if you want to optimize additive machine parameters
 to achieve a specific result. Here, the :class:`ParametricStudy` class is used to
-conduct a parametric study. While this is not required, the :class:`ParametricStudy`
-class provides data management and visualization features that ease the task.
+conduct a parametric study. While not essential, the :class:`ParametricStudy`
+class provides data management and visualization features that make the work easier.
 
 Units are SI (m, kg, s, K) unless otherwise noted.
 """

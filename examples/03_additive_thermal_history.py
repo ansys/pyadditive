@@ -23,7 +23,7 @@
 Thermal history analysis
 ========================
 
-This example shows how you can use PyAdditive to determine
+This example shows how to use PyAdditive to determine
 thermal history during a build using a simulated coaxial
 average sensor.
 
