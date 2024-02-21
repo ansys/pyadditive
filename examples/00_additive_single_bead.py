@@ -23,7 +23,7 @@
 Single bead analysis
 ====================
 
-This example shows how you can use PyAdditive to determine
+This example shows how to use PyAdditive to determine
 melt pool characteristics for a given material and machine
 parameter combinations.
 

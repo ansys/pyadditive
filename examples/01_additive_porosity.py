@@ -23,7 +23,7 @@
 Porosity analysis
 =================
 
-This example shows how you can use PyAdditive to determine
+This example shows how to use PyAdditive to determine
 porosity for a given material and machine parameter combinations.
 
 Units are SI (m, kg, s, K) unless otherwise noted.

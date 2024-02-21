@@ -23,7 +23,7 @@
 Microstructure analysis
 #######################
 
-This example shows how you can use PyAdditive to determine
+This example shows how to use PyAdditive to determine
 the microstructure for a sample coupon with given material
 and machine parameters.
 

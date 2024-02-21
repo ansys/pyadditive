@@ -23,7 +23,7 @@
 Using a custom material
 =======================
 
-This example shows how you can use a custom material in PyAdditive simulations.
+This example shows how to use a custom material in PyAdditive simulations.
 For background information and file formats, see
 `Material Tuning Tool (Beta) to Create User Defined Materials
 <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_science_BETA_material_tuning_tool.html?q=material%20tuning%20tool>`_
