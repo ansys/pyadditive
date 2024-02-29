@@ -59,7 +59,6 @@ class ProgressLogger:
                 total=100,
                 colour="green",
                 desc=self._last_context,
-                # mininterval=0.001,
                 dynamic_ncols=True,
             )
 
