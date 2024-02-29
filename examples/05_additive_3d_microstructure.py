@@ -100,8 +100,8 @@ if isinstance(summary, SimulationError):
 
 
 ###############################################################################
-# Plot results
-# ------------
+# Plot 3D grain visualization
+# ---------------------------
 # The ``summary``` object includes a VTK file describing the 3D grain structure.
 # The VTK file contains scalar data sets ``GrainNumber``, ``Phi0``,
 # ``Phi1``, ``Phi2`` and ``Temperatures``.
@@ -111,7 +111,17 @@ cmap = "coolwarm"
 ms3d = pv.read(summary.grain_3d_vtk)
 ms3d.plot(scalars="Phi0", cmap=cmap)
 
-# Add a cutting plane to the plot
+# Add a cut plane to the plot
 plotter = pv.Plotter()
 plotter.add_mesh_clip_plane(ms3d, scalars="Phi0", cmap=cmap)
 plotter.show()
+
+###############################################################################
+# Print average grain sizes
+# -------------------------
+# The ``summary``` object includes the average grain sizes in the XY, XZ, and YZ
+# planes.
+
+print("Average grain size in XY plane: {} µm".format(summary.xy_average_grain_size))
+print("Average grain size in XZ plane: {} µm".format(summary.xz_average_grain_size))
+print("Average grain size in YZ plane: {} µm".format(summary.yz_average_grain_size))

@@ -32,6 +32,7 @@ from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 from ansys.additive.core import misc
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.microstructure import _Microstructure2DResult
 
 
 class Microstructure3DInput:
@@ -352,11 +353,15 @@ class Microstructure3DSummary:
         self._grain_3d_vtk = os.path.join(outpath, self._3D_GRAIN_VTK_NAME)
         with open(self._grain_3d_vtk, "wb") as f:
             f.write(result.three_d_vtk)
+        self._2d_result = _Microstructure2DResult(result.two_d_result, outpath)
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
-        for k in self.__dict__:
+        for k in [x for x in self.__dict__ if x != "_2d_result"]:
             repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
+        repr += f"xy_average_grain_size: {self.xy_average_grain_size}\n"
+        repr += f"xz_average_grain_size: {self.xz_average_grain_size}\n"
+        repr += f"yz_average_grain_size: {self.yz_average_grain_size}\n"
         return repr
 
     @property
@@ -375,3 +380,18 @@ class Microstructure3DSummary:
         ``Phi1``, ``Phi2`` and ``Temperatures``.
         """
         return self._grain_3d_vtk
+
+    @property
+    def xy_average_grain_size(self) -> float:
+        """Average grain size (µm) for the XY plane."""
+        return self._2d_result._xy_average_grain_size
+
+    @property
+    def xz_average_grain_size(self) -> float:
+        """Average grain size (µm) for the XZ plane."""
+        return self._2d_result._xz_average_grain_size
+
+    @property
+    def yz_average_grain_size(self) -> float:
+        """Average grain size (µm) for the YZ plane."""
+        return self._2d_result._yz_average_grain_size
