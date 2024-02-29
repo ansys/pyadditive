@@ -55,7 +55,13 @@ class ProgressLogger:
             # Don't send  progress when generating docs
             return
         if not hasattr(self, "_pbar"):
-            self._pbar = tqdm(total=100, colour="green", desc=self._last_context, mininterval=0.001)
+            self._pbar = tqdm(
+                total=100,
+                colour="green",
+                desc=self._last_context,
+                # mininterval=0.001,
+                dynamic_ncols=True,
+            )
 
         if progress.message and "SOLVERINFO" in progress.message:
             self._log.debug(progress.message)

@@ -26,12 +26,15 @@ import os
 from ansys.api.additive.v0.additive_domain_pb2 import (
     MicrostructureInput as MicrostructureInputMessage,
 )
-from ansys.api.additive.v0.additive_domain_pb2 import MicrostructureResult
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    MicrostructureResult as MicrostructureResultMessage,
+)
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
 import numpy as np
 import pandas as pd
 
+from ansys.additive.core import misc
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
 
@@ -506,47 +509,26 @@ class MicrostructureSummary:
     """Provides the summary of a microstructure simulation."""
 
     def __init__(
-        self, input: MicrostructureInput, result: MicrostructureResult, user_data_path: str
+        self, input: MicrostructureInput, result: MicrostructureResultMessage, user_data_path: str
     ) -> None:
         """Initialize a ``MicrostructureSummary`` object."""
         if not isinstance(input, MicrostructureInput):
             raise ValueError("Invalid input type passed to init, " + self.__class__.__name__)
-        if not isinstance(result, MicrostructureResult):
+        if not isinstance(result, MicrostructureResultMessage):
             raise ValueError("Invalid result type passed to init, " + self.__class__.__name__)
-        if not user_data_path or (user_data_path == ""):
-            raise ValueError("Invalid user data path passed to init, " + self.__class__.__name__)
+        if not user_data_path:
+            raise ValueError("Invalid user data path, " + self.__class__.__name__)
         self._input = input
-        self._output_path = os.path.join(user_data_path, input.id)
-        if not os.path.exists(self._output_path):
-            os.makedirs(self._output_path)
-        self._xy_vtk = os.path.join(self._output_path, "xy.vtk")
-        with open(self._xy_vtk, "wb") as xy_vtk:
-            xy_vtk.write(result.xy_vtk)
-        self._xz_vtk = os.path.join(self._output_path, "xz.vtk")
-        with open(self._xz_vtk, "wb") as xz_vtk:
-            xz_vtk.write(result.xz_vtk)
-        self._yz_vtk = os.path.join(self._output_path, "yz.vtk")
-        with open(self._yz_vtk, "wb") as yz_vtk:
-            yz_vtk.write(result.yz_vtk)
+        id = input.id if input.id else misc.short_uuid()
+        outpath = os.path.join(user_data_path, id)
+        self._result = _Microstructure2DResult(result, outpath)
 
-        self._xy_circle_equivalence = MicrostructureSummary._circle_equivalence_frame(
-            result.xy_circle_equivalence
-        )
-        self._xz_circle_equivalence = MicrostructureSummary._circle_equivalence_frame(
-            result.xz_circle_equivalence
-        )
-        self._yz_circle_equivalence = MicrostructureSummary._circle_equivalence_frame(
-            result.yz_circle_equivalence
-        )
-        self._xy_average_grain_size = MicrostructureSummary._average_grain_size(
-            self._xy_circle_equivalence
-        )
-        self._xz_average_grain_size = MicrostructureSummary._average_grain_size(
-            self._xz_circle_equivalence
-        )
-        self._yz_average_grain_size = MicrostructureSummary._average_grain_size(
-            self._yz_circle_equivalence
-        )
+    def __repr__(self):
+        repr = type(self).__name__ + "\n"
+        for k in [x for x in self.__dict__ if x != "_result"]:
+            repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
+        repr += self._result.__repr__()
+        return repr
 
     @property
     def input(self):
@@ -558,18 +540,30 @@ class MicrostructureSummary:
 
     @property
     def xy_vtk(self) -> str:
-        """Path to the VTK file containing the 2-D grain structure data in the XY plane."""
-        return self._xy_vtk
+        """Path to the VTK file containing the 2-D grain structure data in the XY plane.
+
+        The VTK file contains scalar data sets `GrainBoundaries`, `Orientation_(deg)` and
+        `GrainNumber`.
+        """
+        return self._result._xy_vtk
 
     @property
     def xz_vtk(self) -> str:
-        """Path to the VTK file containing the 2-D grain structure data in the XZ plane."""
-        return self._xz_vtk
+        """Path to the VTK file containing the 2-D grain structure data in the XZ plane.
+
+        The VTK file contains scalar data sets `GrainBoundaries`, `Orientation_(deg)` and
+        `GrainNumber`.
+        """
+        return self._result._xz_vtk
 
     @property
     def yz_vtk(self) -> str:
-        """Path to the VTK file containing the 2-D grain structure data in the YZ plane."""
-        return self._yz_vtk
+        """Path to the VTK file containing the 2-D grain structure data in the YZ plane.
+
+        The VTK file contains scalar data sets `GrainBoundaries`, `Orientation_(deg)` and
+        `GrainNumber`.
+        """
+        return self._result._yz_vtk
 
     @property
     def xy_circle_equivalence(self) -> pd.DataFrame:
@@ -577,7 +571,7 @@ class MicrostructureSummary:
 
         For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
         """
-        return self._xy_circle_equivalence
+        return self._result._xy_circle_equivalence
 
     @property
     def xz_circle_equivalence(self) -> pd.DataFrame:
@@ -585,7 +579,7 @@ class MicrostructureSummary:
 
         For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
         """
-        return self._xz_circle_equivalence
+        return self._result._xz_circle_equivalence
 
     @property
     def yz_circle_equivalence(self) -> pd.DataFrame:
@@ -593,22 +587,22 @@ class MicrostructureSummary:
 
         For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
         """
-        return self._yz_circle_equivalence
+        return self._result._yz_circle_equivalence
 
     @property
     def xy_average_grain_size(self) -> float:
         """Average grain size (µm) for the XY plane."""
-        return self._xy_average_grain_size
+        return self._result._xy_average_grain_size
 
     @property
     def xz_average_grain_size(self) -> float:
         """Average grain size (µm) for the XZ plane."""
-        return self._xz_average_grain_size
+        return self._result._xz_average_grain_size
 
     @property
     def yz_average_grain_size(self) -> float:
         """Average grain size (µm) for the YZ plane."""
-        return self._yz_average_grain_size
+        return self._result._yz_average_grain_size
 
     @staticmethod
     def _circle_equivalence_frame(src: RepeatedCompositeFieldContainer) -> pd.DataFrame:
@@ -641,8 +635,50 @@ class MicrostructureSummary:
             * df[CircleEquivalenceColumnNames.AREA_FRACTION]
         ).sum()
 
+
+class _Microstructure2DResult:
+    """Provides the results of a 2D microstructure simulation."""
+
+    def __init__(self, msg: MicrostructureResultMessage, output_data_path: str) -> None:
+        """Initialize a ``Microstructure2DResult`` object."""
+        if not isinstance(msg, MicrostructureResultMessage):
+            raise ValueError("Invalid msg parameter, " + self.__class__.__name__)
+        if not output_data_path:
+            raise ValueError("Invalid output data path, " + self.__class__.__name__)
+
+        if not os.path.exists(output_data_path):
+            os.makedirs(output_data_path)
+        self._xy_vtk = os.path.join(output_data_path, "xy.vtk")
+        with open(self._xy_vtk, "wb") as xy_vtk:
+            xy_vtk.write(msg.xy_vtk)
+        self._xz_vtk = os.path.join(output_data_path, "xz.vtk")
+        with open(self._xz_vtk, "wb") as xz_vtk:
+            xz_vtk.write(msg.xz_vtk)
+        self._yz_vtk = os.path.join(output_data_path, "yz.vtk")
+        with open(self._yz_vtk, "wb") as yz_vtk:
+            yz_vtk.write(msg.yz_vtk)
+
+        self._xy_circle_equivalence = MicrostructureSummary._circle_equivalence_frame(
+            msg.xy_circle_equivalence
+        )
+        self._xz_circle_equivalence = MicrostructureSummary._circle_equivalence_frame(
+            msg.xz_circle_equivalence
+        )
+        self._yz_circle_equivalence = MicrostructureSummary._circle_equivalence_frame(
+            msg.yz_circle_equivalence
+        )
+        self._xy_average_grain_size = MicrostructureSummary._average_grain_size(
+            self._xy_circle_equivalence
+        )
+        self._xz_average_grain_size = MicrostructureSummary._average_grain_size(
+            self._xz_circle_equivalence
+        )
+        self._yz_average_grain_size = MicrostructureSummary._average_grain_size(
+            self._yz_circle_equivalence
+        )
+
     def __repr__(self):
-        repr = type(self).__name__ + "\n"
+        repr = ""
         for k in self.__dict__:
             repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
         return repr

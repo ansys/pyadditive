@@ -60,6 +60,7 @@ from ansys.additive.core.microstructure import (
     MicrostructureInput,
     MicrostructureSummary,
 )
+from ansys.additive.core.microstructure_3d import Microstructure3DInput, Microstructure3DSummary
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
 from ansys.additive.core.simulation import SimulationError, SimulationStatus, SimulationType
 from ansys.additive.core.single_bead import (

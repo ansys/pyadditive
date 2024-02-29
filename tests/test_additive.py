@@ -30,6 +30,7 @@ from unittest.mock import ANY, MagicMock, Mock, call, create_autospec, patch
 from ansys.api.additive import __version__ as api_version
 import ansys.api.additive.v0.about_pb2_grpc
 from ansys.api.additive.v0.additive_domain_pb2 import (
+    Microstructure3DResult,
     MicrostructureResult,
     PorosityResult,
     Progress,
@@ -54,6 +55,8 @@ import pytest
 from ansys.additive.core import (
     USER_DATA_PATH,
     Additive,
+    Microstructure3DInput,
+    Microstructure3DSummary,
     MicrostructureInput,
     MicrostructureSummary,
     PorosityInput,
@@ -304,6 +307,7 @@ def test_about_prints_server_status_messages(capsys: pytest.CaptureFixture[str])
         PorosityInput(),
         MicrostructureInput(),
         ThermalHistoryInput(),
+        Microstructure3DInput(),
     ],
 )
 # patch needed for Additive() call
@@ -359,13 +363,11 @@ def test_simulate_with_input_list_calls_internal_simulate_n_times(_):
     additive = Additive()
     additive._simulate = _simulate_patch
     inputs = [
-        x
-        for x in [
-            SingleBeadInput(id="id1"),
-            PorosityInput(id="id2"),
-            MicrostructureInput(id="id3"),
-            ThermalHistoryInput(id="id4"),
-        ]
+        SingleBeadInput(id="id1"),
+        PorosityInput(id="id2"),
+        MicrostructureInput(id="id3"),
+        ThermalHistoryInput(id="id4"),
+        Microstructure3DInput(id="id5"),
     ]
     # act
     additive.simulate(inputs)
@@ -475,6 +477,7 @@ def test_internal_simulate_with_thermal_history_without_geometry_returns_Simulat
         (SingleBeadInput(), MeltPoolMessage(), SingleBeadSummary),
         (PorosityInput(), PorosityResult(), PorositySummary),
         (MicrostructureInput(), MicrostructureResult(), MicrostructureSummary),
+        (Microstructure3DInput(), Microstructure3DResult(), Microstructure3DSummary),
     ],
 )  # patch needed for Additive() call
 @patch("ansys.additive.core.additive.ServerConnection")
@@ -500,6 +503,10 @@ def test_internal_simulate_returns_correct_summary(
         sim_response = SimulationResponse(
             id="id", progress=progress_msg, microstructure_result=result
         )
+    elif isinstance(result, Microstructure3DResult):
+        sim_response = SimulationResponse(
+            id="id", progress=progress_msg, microstructure_3d_result=result
+        )
     else:
         assert False, "Invalid result type"
 
@@ -521,6 +528,7 @@ def test_internal_simulate_returns_correct_summary(
         PorosityInput(),
         MicrostructureInput(),
         ThermalHistoryInput(),
+        Microstructure3DInput(),
     ],
 )
 # patch needed for Additive() call
@@ -540,6 +548,7 @@ def test_internal_simulate_without_material_raises_exception(_, input):
         SingleBeadInput(),
         PorosityInput(),
         MicrostructureInput(),
+        Microstructure3DInput(),
     ],
 )
 # patch needed for Additive() call
@@ -682,7 +691,7 @@ def test_tune_material_raises_exception_if_output_path_exists(_, tmp_path: pathl
 
     # act, assert
     with pytest.raises(ValueError, match="already exists"):
-        result = additive.tune_material(input, out_dir=tmp_path)
+        additive.tune_material(input, out_dir=tmp_path)
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
