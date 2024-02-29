@@ -20,12 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """
-Microstructure analysis
-#######################
+2D Microstructure analysis
+##########################
 
 This example shows how to use PyAdditive to determine
-the microstructure for a sample coupon with given material
-and machine parameters.
+the two-dimensional microstructure in the XY, XZ and YZ
+planes for a sample coupon with given material and
+machine parameters.
 
 Units are SI (m, kg, s, K) unless otherwise noted.
 """

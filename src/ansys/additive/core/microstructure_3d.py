@@ -28,12 +28,10 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 )
 from ansys.api.additive.v0.additive_domain_pb2 import Microstructure3DResult
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
-import pandas as pd
 
 from ansys.additive.core import misc
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
-from ansys.additive.core.microstructure import _Microstructure2DResult
 
 
 class Microstructure3DInput:
@@ -351,16 +349,14 @@ class Microstructure3DSummary:
         id = input.id if input.id else misc.short_uuid()
         outpath = os.path.join(user_data_path, id)
         os.makedirs(outpath, exist_ok=True)
-        self._2d_result = _Microstructure2DResult(result.two_d_result, outpath)
         self._grain_3d_vtk = os.path.join(outpath, self._3D_GRAIN_VTK_NAME)
         with open(self._grain_3d_vtk, "wb") as f:
             f.write(result.three_d_vtk)
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
-        for k in [x for x in self.__dict__ if x != "_2d_result"]:
+        for k in self.__dict__:
             repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
-        repr += self._2d_result.__repr__()
         return repr
 
     @property
@@ -373,75 +369,9 @@ class Microstructure3DSummary:
 
     @property
     def grain_3d_vtk(self) -> str:
-        """Path to the VTK file containing the 3-D grain structure data.
+        """Path to the VTK file containing the 3D grain structure data.
 
-        The VTK file contains scalar data sets `GrainNumber`, `Phi0`,
-        `Phi1`, `Phi2` and `Temperatures`.
+        The VTK file contains scalar data sets ``GrainNumber``, ``Phi0``,
+        ``Phi1``, ``Phi2`` and ``Temperatures``.
         """
         return self._grain_3d_vtk
-
-    @property
-    def xy_vtk(self) -> str:
-        """Path to the VTK file containing the 2-D grain structure data in the XY plane.
-
-        The VTK file contains scalar data sets `GrainBoundaries`, `Orientation_(deg)` and
-        `GrainNumber`.
-        """
-        return self._2d_result._xy_vtk
-
-    @property
-    def xz_vtk(self) -> str:
-        """Path to the VTK file containing the 2-D grain structure data in the XZ plane.
-
-        The VTK file contains scalar data sets `GrainBoundaries`, `Orientation_(deg)` and
-        `GrainNumber`.
-        """
-        return self._2d_result._xz_vtk
-
-    @property
-    def yz_vtk(self) -> str:
-        """Path to the VTK file containing the 2-D grain structure data in the YZ plane.
-
-        The VTK file contains scalar data sets `GrainBoundaries`, `Orientation_(deg)` and
-        `GrainNumber`.
-        """
-        return self._2d_result._yz_vtk
-
-    @property
-    def xy_circle_equivalence(self) -> pd.DataFrame:
-        """Circle equivalence data for the XY plane.
-
-        For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
-        """
-        return self._2d_result._xy_circle_equivalence
-
-    @property
-    def xz_circle_equivalence(self) -> pd.DataFrame:
-        """Circle equivalence data for the XZ plane.
-
-        For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
-        """
-        return self._2d_result._xz_circle_equivalence
-
-    @property
-    def yz_circle_equivalence(self) -> pd.DataFrame:
-        """Circle equivalence data for the YZ plane.
-
-        For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
-        """
-        return self._2d_result._yz_circle_equivalence
-
-    @property
-    def xy_average_grain_size(self) -> float:
-        """Average grain size (µm) for the XY plane."""
-        return self._2d_result._xy_average_grain_size
-
-    @property
-    def xz_average_grain_size(self) -> float:
-        """Average grain size (µm) for the XZ plane."""
-        return self._2d_result._xz_average_grain_size
-
-    @property
-    def yz_average_grain_size(self) -> float:
-        """Average grain size (µm) for the YZ plane."""
-        return self._2d_result._yz_average_grain_size
