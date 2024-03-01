@@ -139,7 +139,7 @@ class Microstructure3DInput:
 
     @property
     def id(self) -> str:
-        """User-provided ID for this simulation."""
+        """User-provided ID for the simulation."""
         return self._id
 
     @id.setter
@@ -256,11 +256,11 @@ class Microstructure3DInput:
 
     @property
     def calculate_initial_microstructure(self) -> bool:
-        """Whether to run the initial microstructure solver.
+        """Flag indicating if the initial microstructure solver is to run.
 
-        If ``True``, the initial microstructure solver will be used to create initial
-        condition grain identifiers and euler angles.
-        If ``False``, the initial microstructure solver will not be run.
+        If ``True``, the initial microstructure solver is used to create initial
+        condition grain identifiers and Euler angles.
+        If ``False``, the initial microstructure solver is not be run.
         """
         return self._calculate_initial_microstructure
 
@@ -270,7 +270,7 @@ class Microstructure3DInput:
 
     @property
     def use_transient_bulk_nucleation(self) -> bool:
-        """Allow nucleation in the bulk region of the meltpool.
+        """Flag indicating if nucleation is allowed in the bulk region of the meltpool.
 
         Nucleation rate is controlled by bulk nucleation density.
         If ``True``, bulk nucleation is enabled. if ``False``, bulk
@@ -286,7 +286,7 @@ class Microstructure3DInput:
     def max_bulk_nucleation_density(self) -> int:
         """Maximum nucleation density in the bulk (grains/m^3).
 
-        If ``use_transient_bulk_nucleation`` is ``False``, this value is ignored.
+        If ``use_transient_bulk_nucleation=False``, this value is ignored.
         """
         return self._max_bulk_nucleation_density
 
@@ -299,8 +299,8 @@ class Microstructure3DInput:
     def num_initial_random_nuclei(self) -> int:
         """Number of random nuclei to use for the microstructure initial conditions.
 
-        This value will be used by the initial microstructure conditions solver.
-        If ``use_transient_bulk_nucleation`` is ``True``, this value is ignored.
+        This value is used by the initial microstructure conditions solver.
+        If ``use_transient_bulk_nucleation=True``, this value is ignored.
         """
         return self._num_initial_random_nuclei
 
@@ -376,8 +376,8 @@ class Microstructure3DSummary:
     def grain_3d_vtk(self) -> str:
         """Path to the VTK file containing the 3D grain structure data.
 
-        The VTK file contains scalar data sets ``GrainNumber``, ``Phi0``,
-        ``Phi1``, ``Phi2`` and ``Temperatures``.
+        The VTK file contains these scalar data sets" ``GrainNumber``, ``Phi0``,
+        ``Phi1``, ``Phi2``, and ``Temperatures``.
         """
         return self._grain_3d_vtk
 

@@ -104,7 +104,7 @@ if isinstance(summary, SimulationError):
 # ---------------------------
 # The ``summary``` object includes a VTK file describing the 3D grain structure.
 # The VTK file contains scalar data sets ``GrainNumber``, ``Phi0``,
-# ``Phi1``, ``Phi2`` and ``Temperatures``.
+# ``Phi1``, ``Phi2``, and ``Temperatures``.
 
 # Plot the Phi0 data of the 3D grain structure
 cmap = "coolwarm"

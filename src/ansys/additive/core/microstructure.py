@@ -542,8 +542,8 @@ class MicrostructureSummary:
     def xy_vtk(self) -> str:
         """Path to the VTK file containing the 2D grain structure data in the XY plane.
 
-        The VTK file contains scalar data sets `GrainBoundaries`, `Orientation_(deg)` and
-        `GrainNumber`.
+        The VTK file contains these scalar data sets: ``GrainBoundaries``, ``Orientation_(deg)``, and
+        ``GrainNumber``.
         """
         return self._result._xy_vtk
 
@@ -551,8 +551,8 @@ class MicrostructureSummary:
     def xz_vtk(self) -> str:
         """Path to the VTK file containing the 2D grain structure data in the XZ plane.
 
-        The VTK file contains scalar data sets `GrainBoundaries`, `Orientation_(deg)` and
-        `GrainNumber`.
+        The VTK file contains these scalar data sets: ``GrainBoundaries``,
+        ``Orientation_(deg)``, and ``GrainNumber``.
         """
         return self._result._xz_vtk
 
@@ -560,8 +560,8 @@ class MicrostructureSummary:
     def yz_vtk(self) -> str:
         """Path to the VTK file containing the 2D grain structure data in the YZ plane.
 
-        The VTK file contains scalar data sets `GrainBoundaries`, `Orientation_(deg)` and
-        `GrainNumber`.
+        The VTK file contains these scalar data sets: ``GrainBoundaries``,
+        ``Orientation_(deg)``, and ``GrainNumber``.
         """
         return self._result._yz_vtk
 

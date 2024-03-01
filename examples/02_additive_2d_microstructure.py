@@ -24,7 +24,7 @@
 ##########################
 
 This example shows how to use PyAdditive to determine
-the two-dimensional microstructure in the XY, XZ and YZ
+the two-dimensional microstructure in the XY, XZ, and YZ
 planes for a sample coupon with given material and
 machine parameters.
 
