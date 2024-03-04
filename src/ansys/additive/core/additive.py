@@ -43,6 +43,7 @@ from ansys.additive.core.download import download_file
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
 from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
+from ansys.additive.core.microstructure_3d import Microstructure3DInput, Microstructure3DSummary
 import ansys.additive.core.misc as misc
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
 from ansys.additive.core.progress_logger import ProgressLogger
@@ -224,12 +225,20 @@ class Additive:
 
     def simulate(
         self,
-        inputs: SingleBeadInput | PorosityInput | MicrostructureInput | ThermalHistoryInput | list,
+        inputs: (
+            SingleBeadInput
+            | PorosityInput
+            | MicrostructureInput
+            | ThermalHistoryInput
+            | Microstructure3DInput
+            | list
+        ),
     ) -> (
         SingleBeadSummary
         | PorositySummary
         | MicrostructureSummary
         | ThermalHistorySummary
+        | Microstructure3DSummary
         | SimulationError
         | list
     ):
@@ -237,19 +246,19 @@ class Additive:
 
         Parameters
         ----------
-        inputs: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput, list
+        inputs: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput,
+        Microstructure3DInput, list
             Parameters to use for simulations. A list of inputs may be provided to execute multiple
             simulations.
 
         Returns
         -------
-        SingleBeadSummary, PorositySummary, MicrostructureSummary, ThermalHistorySummary, SimulationError,
-        list
+        SingleBeadSummary, PorositySummary, MicrostructureSummary, ThermalHistorySummary,
+        Microstructure3DSummary, SimulationError, list
             One or more summaries of simulation results. If a list of inputs is provided, a
             list is returned.
         """
         if type(inputs) is not list:
-            print("Single input")
             return self._simulate(inputs, self._servers[0], show_progress=True)
         else:
             self._validate_inputs(inputs)
@@ -287,7 +296,13 @@ class Additive:
 
     def _simulate(
         self,
-        input: SingleBeadInput | PorosityInput | MicrostructureInput | ThermalHistoryInput,
+        input: (
+            SingleBeadInput
+            | PorosityInput
+            | MicrostructureInput
+            | ThermalHistoryInput
+            | Microstructure3DInput
+        ),
         server: ServerConnection,
         show_progress: bool = False,
     ):
@@ -295,7 +310,8 @@ class Additive:
 
         Parameters
         ----------
-        input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput
+        input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput,
+        Microstructure3DInput
             Parameters to use for simulation.
 
         server: ServerConnection
@@ -307,7 +323,7 @@ class Additive:
         Returns
         -------
         SingleBeadSummary, PorositySummary, MicrostructureSummary, ThermalHistorySummary,
-        SimulationError
+        Microstructure3DSummary, SimulationError
         """
         logger = None
         if show_progress:
@@ -336,6 +352,10 @@ class Additive:
                 if response.HasField("microstructure_result"):
                     return MicrostructureSummary(
                         input, response.microstructure_result, self._user_data_path
+                    )
+                if response.HasField("microstructure_3d_result"):
+                    return Microstructure3DSummary(
+                        input, response.microstructure_3d_result, self._user_data_path
                     )
         except Exception as e:
             return SimulationError(input, str(e))

@@ -97,7 +97,7 @@ def test_MicrostructureSummary_init_raises_exception_for_invalid_input_type(
     invalid_obj,
 ):
     # arrange, act, assert
-    with pytest.raises(ValueError, match="Invalid input type") as exc_info:
+    with pytest.raises(ValueError, match="Invalid input type"):
         MicrostructureSummary(invalid_obj, MicrostructureResult(), ".")
 
 
@@ -113,7 +113,7 @@ def test_MicrostructureSummary_init_raises_exception_for_invalid_result_type(
     invalid_obj,
 ):
     # arrange, act, assert
-    with pytest.raises(ValueError, match="Invalid result type") as exc_info:
+    with pytest.raises(ValueError, match="Invalid result type"):
         MicrostructureSummary(MicrostructureInput(), invalid_obj, ".")
 
 
@@ -128,7 +128,7 @@ def test_MicrostructureSummary_init_raises_exception_for_invalid_path(
     invalid_path,
 ):
     # arrange, act, assert
-    with pytest.raises(ValueError, match="Invalid user data path") as exc_info:
+    with pytest.raises(ValueError, match="Invalid user data path"):
         MicrostructureSummary(MicrostructureInput(), MicrostructureResult(), invalid_path)
 
 
@@ -545,7 +545,6 @@ def test_MicrostructureSummary_repr_returns_expected_string():
         + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
         + "random_seed: 0\n"
         + "\n"
-        + f"output_path: {expected_output_dir}\n"
         + "xy_vtk: "
         + os.path.join(expected_output_dir, "xy.vtk")
         + "\n"
