@@ -356,7 +356,7 @@ class Additive:
 
         if isinstance(input, Microstructure3DInput) and self.enable_beta_features is False:
             raise BetaFeatureNotEnabledError(
-                "3D microstructure simulation requires beta features to be enabled.\n"
+                "3D microstructure simulations require beta features to be enabled.\n"
                 + "Set enable_beta_features=True when creating the Additive client."
             )
 
