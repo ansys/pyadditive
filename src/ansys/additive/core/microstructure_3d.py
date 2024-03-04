@@ -256,11 +256,10 @@ class Microstructure3DInput:
 
     @property
     def calculate_initial_microstructure(self) -> bool:
-        """Flag indicating if the initial microstructure solver is to run.
+        """Flag indicating if the initial microstructure conditions solver is to run.
 
-        If ``True``, the initial microstructure solver is used to create initial
-        condition grain identifiers and Euler angles.
-        If ``False``, the initial microstructure solver is not be run.
+        If ``True``, initial condition grain identifiers and Euler angles are calculated.
+        If ``False``, the initial microstructure conditions solver is not be run.
         """
         return self._calculate_initial_microstructure
 

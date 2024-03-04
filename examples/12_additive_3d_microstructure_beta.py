@@ -20,8 +20,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """
-3D Microstructure analysis
-###########################
+3D Microstructure analysis (BETA)
+#################################
+
+.. warning::
+    Beta Features Disclaimer
+
+    * This is beta documentation for one or more beta software features.
+    * Beta features are considered unreleased and have not been fully tested nor
+      fully validated. The results are not guaranteed by Ansys, Inc. (Ansys) to be
+      correct. You assume the risk of using beta features.
+    * At its discretion, Ansys may release, change, or withdraw beta features
+      in future revisions.
+    * Beta features are not subject to the Ansys Class 3 error reporting system.
+      Ansys makes no commitment to resolve defects reported against beta features;
+      however, your feedback will help us improve the quality of the product.
+    * Ansys does not guarantee that database and/or input files used with beta
+      features will run successfully from version to version of the software, nor
+      with the final released version of the features. You may need to modify the
+      database and/or input files before running them on other versions.
+    * Documentation for beta features is called beta documentation, and it may
+      not be written to the same standard as documentation for released features.
+      Beta documentation may not be complete at the time of product release.
+      At its discretion, Ansys may add, change, or delete beta documentation
+      at any time.
 
 This example shows how to use PyAdditive to determine
 the three-dimensional microstructure for a sample coupon
@@ -102,7 +124,7 @@ if isinstance(summary, SimulationError):
 ###############################################################################
 # Plot 3D grain visualization
 # ---------------------------
-# The ``summary``` object includes a VTK file describing the 3D grain structure.
+# The ``summary`` object includes a VTK file describing the 3D grain structure.
 # The VTK file contains scalar data sets ``GrainNumber``, ``Phi0``,
 # ``Phi1``, ``Phi2``, and ``Temperatures``.
 
@@ -119,7 +141,7 @@ plotter.show()
 ###############################################################################
 # Print average grain sizes
 # -------------------------
-# The ``summary``` object includes the average grain sizes in the XY, XZ, and YZ
+# The ``summary`` object includes the average grain sizes in the XY, XZ, and YZ
 # planes.
 
 print("Average grain size in XY plane: {} µm".format(summary.xy_average_grain_size))
