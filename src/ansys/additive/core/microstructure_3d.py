@@ -39,6 +39,29 @@ class Microstructure3DInput:
     """Provides input parameters for 3D microstructure simulation.
 
     Units are SI (m, kg, s, K) unless otherwise noted.
+
+    .. warning::
+        Beta Features Disclaimer
+
+        * 3D microstructure simulation is a beta feature and requires ``enable_beta_features=True``
+          when creating the :class:`Additive` client.
+        * Beta features are considered unreleased and have not been fully tested nor
+          fully validated. The results are not guaranteed by Ansys, Inc. (Ansys) to be
+          correct. You assume the risk of using beta features.
+        * At its discretion, Ansys may release, change, or withdraw beta features
+          in future revisions.
+        * Beta features are not subject to the Ansys Class 3 error reporting system.
+          Ansys makes no commitment to resolve defects reported against beta features;
+          however, your feedback will help us improve the quality of the product.
+        * Ansys does not guarantee that database and/or input files used with beta
+          features will run successfully from version to version of the software, nor
+          with the final released version of the features. You may need to modify the
+          database and/or input files before running them on other versions.
+        * Documentation for beta features is called beta documentation, and it may
+          not be written to the same standard as documentation for released features.
+          Beta documentation may not be complete at the time of product release.
+          At its discretion, Ansys may add, change, or delete beta documentation
+          at any time.
     """
 
     DEFAULT_POSITION_COORDINATE = 0

@@ -69,6 +69,7 @@ from ansys.additive.core import (
     __version__,
 )
 import ansys.additive.core.additive
+from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
@@ -318,7 +319,7 @@ def test_simulate_with_single_input_calls_internal_simulate_once(_, input):
     expected_summary = test_utils.get_test_SingleBeadSummary()
     with patch("ansys.additive.core.additive.Additive._simulate") as _simulate_patch:
         _simulate_patch.return_value = expected_summary
-    additive = Additive()
+    additive = Additive(enable_beta_features=True)
     additive._simulate = _simulate_patch
 
     # act
@@ -360,7 +361,7 @@ def test_simulate_with_input_list_calls_internal_simulate_n_times(_):
     # arrange
     with patch("ansys.additive.core.additive.Additive._simulate") as _simulate_patch:
         _simulate_patch.return_value = None
-    additive = Additive()
+    additive = Additive(enable_beta_features=True)
     additive._simulate = _simulate_patch
     inputs = [
         SingleBeadInput(id="id1"),
@@ -512,7 +513,7 @@ def test_internal_simulate_returns_correct_summary(
 
     mock_connection_with_stub = Mock()
     mock_connection_with_stub.simulation_stub.Simulate.return_value = [sim_response]
-    additive = Additive()
+    additive = Additive(enable_beta_features=True)
 
     # act
     summary = additive._simulate(input, mock_connection_with_stub)
@@ -535,7 +536,7 @@ def test_internal_simulate_returns_correct_summary(
 @patch("ansys.additive.core.additive.ServerConnection")
 def test_internal_simulate_without_material_raises_exception(_, input):
     # arrange
-    additive = Additive()
+    additive = Additive(enable_beta_features=True)
 
     # act, assert
     with pytest.raises(ValueError, match="A material is not assigned to the simulation input"):
@@ -571,7 +572,7 @@ def test_exception_during_interal_simulation_returns_SimulationError(_, input):
     mock_connection_with_stub = Mock()
     mock_connection_with_stub.simulation_stub.Simulate.side_effect = iterable_with_exception
     input.material = test_utils.get_test_material()
-    additive = Additive()
+    additive = Additive(enable_beta_features=True)
 
     # act
     result = additive._simulate(input, mock_connection_with_stub)
@@ -974,3 +975,39 @@ def test_simulate_thermal_history_returns_expected_summary(
     assert summary.input == input
     assert summary.coax_ave_output_folder == str(out_dir / id / "coax_ave_output")
     assert len(list(pathlib.Path(summary.coax_ave_output_folder).glob("*.vtk"))) == 6
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_Additive_init_assigns_enable_beta_features(_):
+    # arrange
+    # act
+    additive_default = Additive()
+    additive = Additive(enable_beta_features=True)
+
+    # assert
+    assert additive_default.enable_beta_features is False
+    assert additive.enable_beta_features is True
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_enable_beta_features_setter_assigns_value(_):
+    # arrange
+    additive = Additive()
+    assert additive.enable_beta_features is False
+
+    # act
+    additive.enable_beta_features = True
+
+    # assert
+    assert additive.enable_beta_features is True
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_3d_microstructure_without_beta_enabled_raises_exception(_):
+    # arrange
+    additive = Additive()
+    input = Microstructure3DInput(material=AdditiveMaterial(name="my_material"))
+
+    # act, assert
+    with pytest.raises(BetaFeatureNotEnabledError):
+        additive.simulate(input)

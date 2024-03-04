@@ -40,6 +40,7 @@ import grpc
 
 from ansys.additive.core import USER_DATA_PATH, __version__
 from ansys.additive.core.download import download_file
+from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
 from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
@@ -96,6 +97,8 @@ class Additive:
         Minimum severity level of messages to log.
     log_file: str, default: ""
         File name to write log messages to.
+    enable_beta_features: bool, default: False
+        Flag indicating if beta features are enabled.
 
     Examples
     --------
@@ -133,6 +136,7 @@ class Additive:
         product_version: str = DEFAULT_PRODUCT_VERSION,
         log_level: str = "INFO",
         log_file: str = "",
+        enable_beta_features: bool = False,
     ) -> None:
         """Initialize server connections."""
         if product_version is None or product_version == "":
@@ -145,6 +149,7 @@ class Additive:
             server_connections, host, port, nservers, product_version, self._log
         )
         self._nsims_per_server = nsims_per_server
+        self._enable_beta_features = enable_beta_features
 
         # Setup data directory
         self._user_data_path = USER_DATA_PATH
@@ -213,6 +218,16 @@ class Additive:
             raise ValueError("Number of simulations per server must be greater than zero.")
         self._nsims_per_server = value
 
+    @property
+    def enable_beta_features(self) -> bool:
+        """Flag indicating if beta features are enabled."""
+        return self._enable_beta_features
+
+    @enable_beta_features.setter
+    def enable_beta_features(self, value: bool) -> None:
+        """Set the flag indicating if beta features are enabled."""
+        self._enable_beta_features = value
+
     def about(self) -> None:
         """Print information about the client and server."""
         print(f"Client {__version__}, API version: {api_version}")
@@ -258,10 +273,10 @@ class Additive:
             One or more summaries of simulation results. If a list of inputs is provided, a
             list is returned.
         """
-        if type(inputs) is not list:
+        self._check_for_duplicate_id(inputs)
+
+        if not isinstance(inputs, list):
             return self._simulate(inputs, self._servers[0], show_progress=True)
-        else:
-            self._validate_inputs(inputs)
 
         summaries = []
         print(
@@ -305,6 +320,13 @@ class Additive:
         ),
         server: ServerConnection,
         show_progress: bool = False,
+    ) -> (
+        SingleBeadSummary
+        | PorositySummary
+        | MicrostructureSummary
+        | ThermalHistorySummary
+        | Microstructure3DSummary
+        | SimulationError
     ):
         """Execute a single simulation.
 
@@ -331,6 +353,12 @@ class Additive:
 
         if input.material == AdditiveMaterial():
             raise ValueError("A material is not assigned to the simulation input")
+
+        if isinstance(input, Microstructure3DInput) and self.enable_beta_features is False:
+            raise BetaFeatureNotEnabledError(
+                "3D microstructure simulations require beta features to be enabled.\n"
+                + "Set enable_beta_features=True when creating the Additive client."
+            )
 
         try:
             request = None
@@ -548,7 +576,9 @@ class Additive:
                 os.remove(local_zip)
                 return ThermalHistorySummary(input, path)
 
-    def _validate_inputs(self, inputs):
+    def _check_for_duplicate_id(self, inputs):
+        if not isinstance(inputs, list):
+            return
         ids = []
         for input in inputs:
             if input.id == "":
