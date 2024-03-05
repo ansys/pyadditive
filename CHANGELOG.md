@@ -5,17 +5,18 @@
 ### Breaking Changes
 
 ### New Features
-* Add separate logging class
-* Update parametric study to check for duplicate entries
-* Capability to import a csv file containing a parametric study
+* Add separate logging class [#163](https://github.com/ansys/pyadditive/issues/163)
+* Update parametric study to check for duplicate entries [#228](https://github.com/ansys/pyadditive/issues/228)
+* Capability to import a csv file containing a parametric study [#118](https://github.com/ansys/pyadditive/issues/118)
+* Added 3D microstructure (BETA) simulations [#276](https://github.com/ansys/pyadditive/issues/276)
 
 ### Bug Fixes
 
 ### Doc Improvements
-* Updated parametric study examples to show importing a study from a csv file in [#259]https://github.com/ansys/pyadditive/pull/259/
-* Fixed truncation problem on summary doc strings (material and single-bead API docs)
+* Updated parametric study examples to show importing a study from a csv file in [#259](https://github.com/ansys/pyadditive/pull/259/)
+* Fixed truncation problem on summary doc strings (material and single-bead API docs) [#271](https://github.com/ansys/pyadditive/pull/271)
 * Add license warning to Getting started page [#262](https://github.com/ansys/pyadditive/issues/262)
-* Edit introductory sentences in examples
+* Edit introductory sentences in examples [#275](https://github.com/ansys/pyadditive/pull/275)
 
 ### Contributors
 * Peter Krull - <peter.krull@ansys.com>
