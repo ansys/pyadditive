@@ -1,6 +1,6 @@
 # Changelog
 
-## PyAdditive 0.18.0
+## PyAdditive 0.18.0b0
 
 ### Breaking Changes
 
