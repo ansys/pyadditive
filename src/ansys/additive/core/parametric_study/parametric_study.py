@@ -466,7 +466,7 @@ class ParametricStudy:
         max_area_energy_density: float | None = None,
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
-    ):
+    ) -> int:
         """Add single bead permutations to the parametric study.
 
         Parameters
@@ -511,6 +511,11 @@ class ParametricStudy:
             Iteration number for this set of simulations.
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for this set of simulations.
+
+        Returns
+        -------
+        int
+            Number of single bead permutations added to the parametric study.
         """  # noqa: E501
         lt = (
             layer_thicknesses
@@ -529,6 +534,7 @@ class ParametricStudy:
         )
         min_aed = min_area_energy_density or 0.0
         max_aed = max_area_energy_density or float("inf")
+        num_permutations_added = int()
         for p in laser_powers:
             for v in scan_speeds:
                 for l in lt:
@@ -580,6 +586,8 @@ class ParametricStudy:
                             self._data_frame = pd.concat(
                                 [self._data_frame, row.to_frame().T], ignore_index=True
                             )
+                            num_permutations_added += 1
+        return num_permutations_added - self._remove_duplicate_entries(overwrite=False)
 
     @save_on_return
     def generate_porosity_permutations(
@@ -603,7 +611,7 @@ class ParametricStudy:
         max_build_rate: float | None = None,
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
-    ):
+    ) -> int:
         """Add porosity permutations to the parametric study.
 
         Parameters
@@ -689,6 +697,11 @@ class ParametricStudy:
             Iteration number for this set of simulations.
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for this set of simulations.
+
+        Returns
+        -------
+        int
+            Number of porosity permutations added to the parametric study.
         """  # noqa: E501
         lt = (
             layer_thicknesses
@@ -729,6 +742,7 @@ class ParametricStudy:
         max_ed = max_energy_density or float("inf")
         min_br = min_build_rate or 0.0
         max_br = max_build_rate or float("inf")
+        num_permutations_added = int()
         for p in laser_powers:
             for v in scan_speeds:
                 for l in lt:
@@ -798,6 +812,8 @@ class ParametricStudy:
                                                 [self._data_frame, row.to_frame().T],
                                                 ignore_index=True,
                                             )
+                                            num_permutations_added += 1
+        return num_permutations_added - self._remove_duplicate_entries(overwrite=False)
 
     @save_on_return
     def generate_microstructure_permutations(
@@ -830,7 +846,7 @@ class ParametricStudy:
         random_seed: int | None = None,
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
-    ):
+    ) -> int:
         """Add microstructure permutations to the parametric study.
 
         Parameters
@@ -969,6 +985,11 @@ class ParametricStudy:
             Iteration number for this set of simulations.
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for this set of simulations.
+
+        Returns
+        -------
+        int
+            Number of microstructure permutations added to the parametric study.
         """  # noqa
         lt = (
             layer_thicknesses
@@ -1023,6 +1044,7 @@ class ParametricStudy:
             melt_pool_width = melt_pool_width or MicrostructureInput.DEFAULT_MELT_POOL_WIDTH
             melt_pool_depth = melt_pool_depth or MicrostructureInput.DEFAULT_MELT_POOL_DEPTH
 
+        num_permutations_added = int()
         for p in laser_powers:
             for v in scan_speeds:
                 for l in lt:
@@ -1148,6 +1170,8 @@ class ParametricStudy:
                                                 [self._data_frame, row.to_frame().T],
                                                 ignore_index=True,
                                             )
+                                            num_permutations_added += 1
+        return num_permutations_added - self._remove_duplicate_entries(overwrite=False)
 
     @save_on_return
     def update(self, summaries: list[SingleBeadSummary | PorositySummary | MicrostructureSummary]):

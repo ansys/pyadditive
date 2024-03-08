@@ -657,6 +657,44 @@ def test_generate_single_bead_permutations_only_adds_valid_permutations(
     assert df.loc[0, ps.ColumnNames.SCAN_SPEED] == MachineConstants.DEFAULT_SCAN_SPEED
 
 
+def test_generate_single_bead_permuations_returns_correct_number_of_simulations_added(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    bead_length = 0.005
+    powers = [50, 250, 700]
+    scan_speeds = [0.35, 1, 2.4]
+    layer_thicknesses = [30e-6, 50e-6]
+    heater_temperatures = [80, 100]
+    beam_diameters = [2e-5]
+
+    # act
+    initial_num_sim_added = study.generate_single_bead_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        bead_length=bead_length,
+        layer_thicknesses=layer_thicknesses,
+        heater_temperatures=heater_temperatures,
+        beam_diameters=beam_diameters,
+    )
+
+    duplicate_num_sim_added = study.generate_single_bead_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        bead_length=bead_length,
+        layer_thicknesses=layer_thicknesses,
+        heater_temperatures=heater_temperatures,
+        beam_diameters=beam_diameters,
+    )
+
+    # assert
+    assert initial_num_sim_added == 36
+    assert duplicate_num_sim_added == 0
+
+
 def test_generate_porosity_permutations_creates_permutations(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
@@ -805,6 +843,62 @@ def test_generate_porosity_permutations_only_adds_valid_permutations(
     assert len(df) == 1
     assert df.loc[0, ps.ColumnNames.LASER_POWER] == MachineConstants.DEFAULT_LASER_POWER
     assert df.loc[0, ps.ColumnNames.SCAN_SPEED] == MachineConstants.DEFAULT_SCAN_SPEED
+
+
+def test_generate_porosity_permutations_returns_correct_number_of_simulations_added(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    powers = [50, 250, 700]
+    scan_speeds = [0.35, 1, 2.4]
+    layer_thicknesses = [30e-6, 50e-6]
+    heater_temperatures = [80, 100]
+    beam_diameters = [2e-5]
+    start_angles = [22.5, 0]
+    rotation_angles = [30]
+    hatch_spacings = [1e-4]
+    stripe_widths = [0.05]
+    size_x = 0.001
+    size_y = 0.002
+    size_z = 0.003
+
+    # act
+    initial_num_sim_added = study.generate_porosity_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        size_x=size_x,
+        size_y=size_y,
+        size_z=size_z,
+        layer_thicknesses=layer_thicknesses,
+        heater_temperatures=heater_temperatures,
+        beam_diameters=beam_diameters,
+        start_angles=start_angles,
+        rotation_angles=rotation_angles,
+        hatch_spacings=hatch_spacings,
+        stripe_widths=stripe_widths,
+    )
+
+    duplicate_num_sim_added = study.generate_porosity_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        size_x=size_x,
+        size_y=size_y,
+        size_z=size_z,
+        layer_thicknesses=layer_thicknesses,
+        heater_temperatures=heater_temperatures,
+        beam_diameters=beam_diameters,
+        start_angles=start_angles,
+        rotation_angles=rotation_angles,
+        hatch_spacings=hatch_spacings,
+        stripe_widths=stripe_widths,
+    )
+
+    # assert
+    assert initial_num_sim_added == 72
+    assert duplicate_num_sim_added == 0
 
 
 def test_generate_microstructure_permutations_creates_permutations(
@@ -1019,6 +1113,88 @@ def test_generate_microstructure_permutations_only_adds_valid_permutations(
     assert len(df) == 1
     assert df.loc[0, ps.ColumnNames.LASER_POWER] == MachineConstants.DEFAULT_LASER_POWER
     assert df.loc[0, ps.ColumnNames.SCAN_SPEED] == MachineConstants.DEFAULT_SCAN_SPEED
+
+
+def test_generate_microstructure_permutations_returns_correct_number_of_simulations_added(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    powers = [50, 250, 700]
+    scan_speeds = [0.35, 1, 2.4]
+    layer_thicknesses = [30e-6, 50e-6]
+    heater_temperatures = [80, 100]
+    beam_diameters = [2e-5]
+    start_angles = [22.5, 0]
+    rotation_angles = [30]
+    hatch_spacings = [1e-4]
+    stripe_widths = [0.05]
+    min_x = 1
+    min_y = 2
+    min_z = 3
+    size_x = 0.001
+    size_y = 0.002
+    size_z = 0.003
+    cooling_rate = MicrostructureInput.DEFAULT_COOLING_RATE
+    thermal_gradient = MicrostructureInput.DEFAULT_THERMAL_GRADIENT
+    melt_pool_width = MicrostructureInput.DEFAULT_MELT_POOL_WIDTH
+    melt_pool_depth = MicrostructureInput.DEFAULT_MELT_POOL_DEPTH
+    random_seed = 1234
+
+    # act
+    initial_num_sim_added = study.generate_microstructure_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        min_x=min_x,
+        min_y=min_y,
+        min_z=min_z,
+        size_x=size_x,
+        size_y=size_y,
+        size_z=size_z,
+        layer_thicknesses=layer_thicknesses,
+        heater_temperatures=heater_temperatures,
+        beam_diameters=beam_diameters,
+        start_angles=start_angles,
+        rotation_angles=rotation_angles,
+        hatch_spacings=hatch_spacings,
+        stripe_widths=stripe_widths,
+        cooling_rate=cooling_rate,
+        thermal_gradient=thermal_gradient,
+        melt_pool_width=melt_pool_width,
+        melt_pool_depth=melt_pool_depth,
+        random_seed=random_seed,
+        iteration=9,
+    )
+
+    duplicate_num_sim_added = study.generate_microstructure_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        min_x=min_x,
+        min_y=min_y,
+        min_z=min_z,
+        size_x=size_x,
+        size_y=size_y,
+        size_z=size_z,
+        layer_thicknesses=layer_thicknesses,
+        heater_temperatures=heater_temperatures,
+        beam_diameters=beam_diameters,
+        start_angles=start_angles,
+        rotation_angles=rotation_angles,
+        hatch_spacings=hatch_spacings,
+        stripe_widths=stripe_widths,
+        cooling_rate=cooling_rate,
+        thermal_gradient=thermal_gradient,
+        melt_pool_width=melt_pool_width,
+        melt_pool_depth=melt_pool_depth,
+        random_seed=random_seed,
+        iteration=9,
+    )
+
+    # assert
+    assert initial_num_sim_added == 72
+    assert duplicate_num_sim_added == 0
 
 
 def test_update_updates_error_status(tmp_path: pytest.TempPathFactory):
@@ -1405,6 +1581,27 @@ def test_add_inputs_raises_error_with_simulation_status_completed_or_error(
     # act, assert
     with pytest.raises(ValueError, match="Simulation status must be"):
         study.add_inputs(inputs, status=input_status)
+
+
+def test_add_inputs_returns_correct_number_of_simulations_added_to_the_study(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    inputs = [
+        SingleBeadInput(id="test_id_1"),
+        PorosityInput(id="test_id_2"),
+        MicrostructureInput(id="test_id_3"),
+        SingleBeadInput(id="test_id_1"),
+        PorosityInput(id="test_id_2"),
+        MicrostructureInput(id="test_id_3"),
+    ]
+
+    # act
+    added = study.add_inputs(inputs, status=SimulationStatus.PENDING)
+
+    # assert
+    assert added == 3
 
 
 @pytest.mark.parametrize("input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP)])
