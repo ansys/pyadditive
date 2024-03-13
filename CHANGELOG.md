@@ -1,6 +1,6 @@
 # Changelog
 
-## PyAdditive 0.18.0b0
+## PyAdditive 0.18.0b1
 
 ### Breaking Changes
 * Removed the `save_file_name` parameter from `ParametricStudy.load()`. [#302](https://github.com/ansys/pyadditive/pull/302)
