@@ -211,18 +211,11 @@ class ParametricStudy:
         """
 
         pathlib.Path(file_name).parent.mkdir(parents=True, exist_ok=True)
-        if self.file_name != file_name:
-            # Save to a new file. Copy the current study and update the file name.
-            ps = ParametricStudy.load(self.file_name, file_name)
-        else:
-            ps = self
         with open(file_name, "wb") as f:
-            dill.dump(ps, f)
+            dill.dump(self, f)
 
     @staticmethod
-    def load(
-        file_name: str | os.PathLike, save_file_name: str | os.PathLike = None
-    ) -> ParametricStudy:
+    def load(file_name: str | os.PathLike) -> ParametricStudy:
         """Load a parametric study from a file.
 
         Loaded parametric studies are automatically updated to the latest
@@ -234,10 +227,8 @@ class ParametricStudy:
         file_name : str, os.PathLike
             Name of the parametric study file to load. If ``save_file_name``
             is not specified, this file is overwritten when the parametric
-            study is updated.
-        save_file_name : str, os.PathLike, default: None
-            Name of the file the parametric study is saved to. If this value is
-            ``None``, the ``file_name`` parameter is used.
+            study is updated. To prevent this behavior, update the ``file_name``
+            attribute of the returned parametric study after calling this method.
 
         Returns
         -------
@@ -271,7 +262,7 @@ class ParametricStudy:
         if not isinstance(study, ParametricStudy):
             raise ValueError(f"{file_name} is not a parametric study.")
 
-        study.file_name = save_file_name if save_file_name is not None else file_name
+        study.file_name = file_name
         study = ParametricStudy.update_format(study)
         return study
 
