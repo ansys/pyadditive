@@ -225,10 +225,10 @@ class ParametricStudy:
         Parameters
         ----------
         file_name : str, os.PathLike
-            Name of the parametric study file to load. If ``save_file_name``
-            is not specified, this file is overwritten when the parametric
-            study is updated. To prevent this behavior, update the ``file_name``
-            attribute of the returned parametric study after calling this method.
+            Name of the parametric study file to load. This file is overwritten
+            when the parametric study is updated. To prevent this behavior, update
+            the ``file_name`` attribute of the returned parametric study after
+            calling ``load()``.
 
         Returns
         -------
@@ -1085,18 +1085,26 @@ class ParametricStudy:
                                                     sample_size_z=size_z,
                                                     sensor_dimension=sensor_dimension,
                                                     use_provided_thermal_parameters=use_thermal_params,
-                                                    cooling_rate=MicrostructureInput.DEFAULT_COOLING_RATE
-                                                    if cooling_rate is None
-                                                    else cooling_rate,
-                                                    thermal_gradient=MicrostructureInput.DEFAULT_THERMAL_GRADIENT  # noqa: E501, line too long
-                                                    if thermal_gradient is None
-                                                    else thermal_gradient,
-                                                    melt_pool_width=MicrostructureInput.DEFAULT_MELT_POOL_WIDTH  # noqa: E501, line too long
-                                                    if melt_pool_width is None
-                                                    else melt_pool_width,
-                                                    melt_pool_depth=MicrostructureInput.DEFAULT_MELT_POOL_DEPTH  # noqa: E501, line too long
-                                                    if melt_pool_depth is None
-                                                    else melt_pool_depth,
+                                                    cooling_rate=(
+                                                        MicrostructureInput.DEFAULT_COOLING_RATE
+                                                        if cooling_rate is None
+                                                        else cooling_rate
+                                                    ),
+                                                    thermal_gradient=(
+                                                        MicrostructureInput.DEFAULT_THERMAL_GRADIENT  # noqa: E501, line too long
+                                                        if thermal_gradient is None
+                                                        else thermal_gradient
+                                                    ),
+                                                    melt_pool_width=(
+                                                        MicrostructureInput.DEFAULT_MELT_POOL_WIDTH  # noqa: E501, line too long
+                                                        if melt_pool_width is None
+                                                        else melt_pool_width
+                                                    ),
+                                                    melt_pool_depth=(
+                                                        MicrostructureInput.DEFAULT_MELT_POOL_DEPTH  # noqa: E501, line too long
+                                                        if melt_pool_depth is None
+                                                        else melt_pool_depth
+                                                    ),
                                                     random_seed=random_seed
                                                     or MicrostructureInput.DEFAULT_RANDOM_SEED,
                                                     machine=machine,
@@ -1135,21 +1143,31 @@ class ParametricStudy:
                                                     ColumnNames.MICRO_SIZE_Y: size_y,
                                                     ColumnNames.MICRO_SIZE_Z: size_z,
                                                     ColumnNames.MICRO_SENSOR_DIM: sensor_dimension,
-                                                    ColumnNames.COOLING_RATE: float("nan")
-                                                    if cooling_rate is None
-                                                    else cooling_rate,
-                                                    ColumnNames.THERMAL_GRADIENT: float("nan")
-                                                    if thermal_gradient is None
-                                                    else thermal_gradient,
-                                                    ColumnNames.MICRO_MELT_POOL_WIDTH: float("nan")
-                                                    if melt_pool_width is None
-                                                    else melt_pool_width,
-                                                    ColumnNames.MICRO_MELT_POOL_DEPTH: float("nan")
-                                                    if melt_pool_depth is None
-                                                    else melt_pool_depth,
-                                                    ColumnNames.RANDOM_SEED: float("nan")
-                                                    if random_seed is None
-                                                    else random_seed,
+                                                    ColumnNames.COOLING_RATE: (
+                                                        float("nan")
+                                                        if cooling_rate is None
+                                                        else cooling_rate
+                                                    ),
+                                                    ColumnNames.THERMAL_GRADIENT: (
+                                                        float("nan")
+                                                        if thermal_gradient is None
+                                                        else thermal_gradient
+                                                    ),
+                                                    ColumnNames.MICRO_MELT_POOL_WIDTH: (
+                                                        float("nan")
+                                                        if melt_pool_width is None
+                                                        else melt_pool_width
+                                                    ),
+                                                    ColumnNames.MICRO_MELT_POOL_DEPTH: (
+                                                        float("nan")
+                                                        if melt_pool_depth is None
+                                                        else melt_pool_depth
+                                                    ),
+                                                    ColumnNames.RANDOM_SEED: (
+                                                        float("nan")
+                                                        if random_seed is None
+                                                        else random_seed
+                                                    ),
                                                 }
                                             )
                                             self._data_frame = pd.concat(
