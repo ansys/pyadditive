@@ -1,8 +1,9 @@
 # Changelog
 
-## PyAdditive 0.18.0b0
+## PyAdditive 0.18.0b1
 
 ### Breaking Changes
+* Removed the `save_file_name` parameter from `ParametricStudy.load()`. [#302](https://github.com/ansys/pyadditive/pull/302)
 
 ### New Features
 * Added separate logging class [#163](https://github.com/ansys/pyadditive/issues/163)
@@ -11,6 +12,7 @@
 * Added 3D microstructure (BETA) simulations [#276](https://github.com/ansys/pyadditive/issues/276)
 
 ### Bug Fixes
+* Removed side effect from `ParametricStudy.save()` which changed the study file path if the `file_name` parameter differed from the `ParameticStudy.file_name` property. Also removed the `save_file_name` parameter from `ParametricStudy.load()`. [#301](https://github.com/ansys/pyadditive/issues/301)
 * Fixed handling of material CSV files with alternative language settings (additiveserver) [#261](https://github.com/ansys/pyadditive/issues/261)
 
 ### Doc Improvements
