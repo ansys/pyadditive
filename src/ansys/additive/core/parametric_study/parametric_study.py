@@ -218,10 +218,6 @@ class ParametricStudy:
     def load(file_name: str | os.PathLike) -> ParametricStudy:
         """Load a parametric study from a file.
 
-        Loaded parametric studies are automatically updated to the latest
-        version of the file format unless the ``save_file_name`` parameter
-        is specified.
-
         Parameters
         ----------
         file_name : str, os.PathLike
