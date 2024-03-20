@@ -104,7 +104,7 @@ class Additive:
         File name to write log messages to.
     enable_beta_features: bool, default: False
         Flag indicating if beta features are enabled.
-    linux_install_path: os.PathLike, None, default: None
+    linux_install_path: os.PathLike, None default: None
         Path to the Ansys installation directory on Linux. This parameter is only
         required when Ansys has not been installed in the default location. Example:
         ``/usr/shared/ansys_inc``. Note that the path should not include the product
