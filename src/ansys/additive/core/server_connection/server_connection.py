@@ -24,6 +24,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import logging
+import os
 import time
 
 from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
@@ -88,6 +89,11 @@ class ServerConnection:
         cloud environments and on localhost.
     log: logging.Logger, None
         Log to write connection messages to.
+    linux_install_path: os.PathLike, None default: None
+        Path to the Ansys installation directory on Linux. This parameter is only
+        required when Ansys has not been installed in the default location. Example:
+        ``/usr/shared/ansys_inc``. Note that the path should not include the product
+        version.
     """
 
     def __init__(
@@ -96,6 +102,7 @@ class ServerConnection:
         addr: str | None = None,
         product_version: str = DEFAULT_PRODUCT_VERSION,
         log: logging.Logger = None,
+        linux_install_path: os.PathLike | None = None,
     ) -> None:
         """Initialize a server connection."""
 
@@ -119,7 +126,9 @@ class ServerConnection:
                 (_, target) = self._server_instance.services["grpc"].uri.split(":", 1)
             else:
                 port = LocalServer.find_open_port()
-                self._server_process = LocalServer.launch(port, product_version=product_version)
+                self._server_process = LocalServer.launch(
+                    port, product_version=product_version, linux_install_path=linux_install_path
+                )
                 target = f"{LOCALHOST}:{port}"
             self._channel = create_channel(target)
 

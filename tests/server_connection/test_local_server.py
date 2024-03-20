@@ -84,6 +84,19 @@ def test_launch_with_linux_installation_but_invalid_ansys_version_raises_excepti
     assert "Cannot find " in str(excinfo.value)
 
 
+# test launch on linux with invalid linux_install_path
+@pytest.mark.skipif(os.name == "nt", reason="Test only valid on linux")
+@patch("os.path.isdir")
+def test_launch_with_linux_installation_but_invalid_linux_install_path_raises_exception(mock_isdir):
+    # arrange
+    mock_isdir.return_value = False
+
+    # act, assert
+    with pytest.raises(FileNotFoundError) as excinfo:
+        LocalServer.launch(TEST_VALID_PORT, linux_install_path="bogus")
+    assert "Cannot find bogus" in str(excinfo.value)
+
+
 @pytest.mark.skipif(os.name != "nt", reason="Test only valid on Windows")
 def test_launch_when_exe_not_found_raises_exception_win():
     # arrange
@@ -157,6 +170,43 @@ def test_launch_calls_popen_as_expected_linux(
 
     # act
     LocalServer.launch(TEST_VALID_PORT, tmp_path, product_version)
+
+    # assert
+    mock_popen.assert_called_once_with(
+        f'"{exe_path}" --port {TEST_VALID_PORT}',
+        shell=True,
+        cwd=tmp_path,
+        stdout=ANY,
+        stderr=subprocess.STDOUT,
+    )
+    assert len(glob.glob(str(tmp_path / "additiveserver_*.log"))) == 1
+
+
+# test launch on linux with valid linux_install_path calls popen as expected
+@pytest.mark.skipif(os.name == "nt", reason="Test only valid on linux")
+@patch("os.path.exists")
+@patch("os.path.isdir")
+@patch("subprocess.Popen")
+@patch("pathlib.Path.exists")
+def test_launch_calls_popen_as_expected_linux_with_valid_linux_install_path(
+    mock_pathlib_exists, mock_popen, mock_isdir, mock_os_exists, tmp_path: pathlib.Path
+):
+    # arrange
+    mock_process = Mock()
+    product_version = 123
+    attrs = {"poll.return_value": None}
+    mock_process.configure_mock(**attrs)
+    mock_popen.return_value = mock_process
+    mock_pathlib_exists.return_value = True
+    mock_isdir.return_value = True
+    mock_os_exists.return_value = True
+    linux_install_path = "/linux/install/path"
+    exe_path = f"{linux_install_path}/v{product_version}/Additive/additiveserver/additiveserver"
+
+    # act
+    LocalServer.launch(
+        TEST_VALID_PORT, tmp_path, product_version, linux_install_path=linux_install_path
+    )
 
     # assert
     mock_popen.assert_called_once_with(
