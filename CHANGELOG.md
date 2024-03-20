@@ -15,6 +15,8 @@
 * Removed side effect from `ParametricStudy.save()` which changed the study file path if the `file_name` parameter differed from the `ParameticStudy.file_name` property. Also removed the `save_file_name` parameter from `ParametricStudy.load()`. [#301](https://github.com/ansys/pyadditive/issues/301)
 * Fixed handling of material CSV files with alternative language settings (additiveserver) [#261](https://github.com/ansys/pyadditive/issues/261)
 * Duplicate simulations will be dropped from a parametric study [#290](https://github.com/ansys/pyadditive/issues/290)
+* Added Ansys installation path for linux to Additive object initializer. [#308](https://github.com/ansys/pyadditive/issues/308)
+* CSV files with empty thermal parameters of a microstructure simulation will be imported [#309](https://github.com/ansys/pyadditive/issues/309)
 
 ### Doc Improvements
 * Updated parametric study examples to show importing a study from a csv file in [#259](https://github.com/ansys/pyadditive/pull/259/)

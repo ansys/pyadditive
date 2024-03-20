@@ -1863,10 +1863,18 @@ class ParametricStudy:
                 sample_size_z=input[ColumnNames.MICRO_SIZE_Z],
                 sensor_dimension=input[ColumnNames.MICRO_SENSOR_DIM],
                 use_provided_thermal_parameters=test_use_provided_thermal_parameters,
-                cooling_rate=test_cooling_rate,
-                thermal_gradient=test_thermal_gradient,
-                melt_pool_width=test_melt_pool_width,
-                melt_pool_depth=test_melt_pool_depth,
+                cooling_rate=MicrostructureInput.DEFAULT_COOLING_RATE
+                if (test_cooling_rate is None or math.isnan(test_cooling_rate))
+                else test_cooling_rate,
+                thermal_gradient=MicrostructureInput.DEFAULT_THERMAL_GRADIENT
+                if (test_thermal_gradient is None or math.isnan(test_thermal_gradient))
+                else test_thermal_gradient,
+                melt_pool_width=MicrostructureInput.DEFAULT_MELT_POOL_WIDTH
+                if (test_melt_pool_width is None or math.isnan(test_melt_pool_width))
+                else test_melt_pool_width,
+                melt_pool_depth=MicrostructureInput.DEFAULT_MELT_POOL_DEPTH
+                if (test_melt_pool_depth is None or math.isnan(test_melt_pool_depth))
+                else test_melt_pool_depth,
                 random_seed=test_random_seed,
                 machine=machine,
                 material=material,
