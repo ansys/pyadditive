@@ -102,7 +102,7 @@ class Additive:
     linux_install_path: os.PathLike, None default: None
         Path to the Ansys installation directory on Linux. This parameter is only
         required when Ansys has not been installed in the default location. Example:
-        ``/usr/shared/ansys_inc``. Note that the path does not include the product
+        ``/usr/shared/ansys_inc``. Note that the path should not include the product
         version.
 
     Examples
@@ -195,7 +195,10 @@ class Additive:
         log: logging.Logger = None,
         linux_install_path: os.PathLike | None = None,
     ) -> list[ServerConnection]:
-        """Connect to Additive servers. Start them if necessary."""
+        """Connect to Additive servers.
+
+        Start them if necessary.
+        """
         connections = []
         if server_connections:
             for target in server_connections:

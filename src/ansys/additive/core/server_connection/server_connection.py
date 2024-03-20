@@ -92,7 +92,7 @@ class ServerConnection:
     linux_install_path: os.PathLike, None default: None
         Path to the Ansys installation directory on Linux. This parameter is only
         required when Ansys has not been installed in the default location. Example:
-        ``/usr/shared/ansys_inc``. Note that the path does not include the product
+        ``/usr/shared/ansys_inc``. Note that the path should not include the product
         version.
     """
 
