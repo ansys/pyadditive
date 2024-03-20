@@ -204,7 +204,9 @@ def test_launch_calls_popen_as_expected_linux_with_valid_linux_install_path(
     exe_path = f"{linux_install_path}/v{product_version}/Additive/additiveserver/additiveserver"
 
     # act
-    LocalServer.launch(TEST_VALID_PORT, tmp_path, product_version, linux_install_path=tmp_path)
+    LocalServer.launch(
+        TEST_VALID_PORT, tmp_path, product_version, linux_install_path=linux_install_path
+    )
 
     # assert
     mock_popen.assert_called_once_with(
