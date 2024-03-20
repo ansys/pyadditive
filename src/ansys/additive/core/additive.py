@@ -99,6 +99,11 @@ class Additive:
         File name to write log messages to.
     enable_beta_features: bool, default: False
         Flag indicating if beta features are enabled.
+    linux_install_path: os.PathLike, None default: None
+        Path to the Ansys installation directory on Linux. This parameter is only
+        required when Ansys has not been installed in the default location. Example:
+        ``/usr/shared/ansys_inc``. Note that the path does not include the product
+        version.
 
     Examples
     --------
@@ -137,6 +142,7 @@ class Additive:
         log_level: str = "INFO",
         log_file: str = "",
         enable_beta_features: bool = False,
+        linux_install_path: os.PathLike | None = None,
     ) -> None:
         """Initialize server connections."""
         if product_version is None or product_version == "":
@@ -146,7 +152,7 @@ class Additive:
         self._log.debug("Logging set to %s", log_level)
 
         self._servers = Additive._connect_to_servers(
-            server_connections, host, port, nservers, product_version, self._log
+            server_connections, host, port, nservers, product_version, self._log, linux_install_path
         )
         self._nsims_per_server = nsims_per_server
         self._enable_beta_features = enable_beta_features
@@ -187,6 +193,7 @@ class Additive:
         nservers: int = 1,
         product_version: str = DEFAULT_PRODUCT_VERSION,
         log: logging.Logger = None,
+        linux_install_path: os.PathLike | None = None,
     ) -> list[ServerConnection]:
         """Connect to Additive servers, starting them if necessary."""
         connections = []
@@ -202,7 +209,13 @@ class Additive:
             connections.append(ServerConnection(addr=os.getenv("ANSYS_ADDITIVE_ADDRESS"), log=log))
         else:
             for _ in range(nservers):
-                connections.append(ServerConnection(product_version=product_version, log=log))
+                connections.append(
+                    ServerConnection(
+                        product_version=product_version,
+                        log=log,
+                        linux_install_path=linux_install_path,
+                    )
+                )
 
         return connections
 

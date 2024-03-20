@@ -48,7 +48,7 @@ def test_init_raises_exception_if_channel_and_addr_provided():
 
     # act, assert
     with pytest.raises(ValueError) as exc:
-        s = ServerConnection(channel, addr)
+        ServerConnection(channel, addr)
     assert "Both 'channel' and 'addr' cannot both be specified" in str(exc.value)
 
 
@@ -170,11 +170,11 @@ def test_init_starts_local_server(monkeypatch):
 
     # assert
     assert LOCALHOST in server.channel_str
-    assert hasattr(server, "_server_instance") == False
+    assert hasattr(server, "_server_instance") is False
     assert isinstance(server.materials_stub, MaterialsServiceStub)
     assert isinstance(server.simulation_stub, SimulationServiceStub)
     assert isinstance(server._about_stub, AboutServiceStub)
-    mock_launch.assert_called_with(ANY, product_version="123")
+    mock_launch.assert_called_with(ANY, product_version="123", linux_install_path=None)
 
 
 def test_ready_returns_true_when_about_succeeds():

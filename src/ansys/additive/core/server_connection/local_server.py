@@ -42,7 +42,10 @@ class LocalServer:
 
     @staticmethod
     def launch(
-        port: int, cwd: str = USER_DATA_PATH, product_version: str = DEFAULT_PRODUCT_VERSION
+        port: int,
+        cwd: str = USER_DATA_PATH,
+        product_version: str = DEFAULT_PRODUCT_VERSION,
+        linux_install_path: os.PathLike | None = None,
     ) -> subprocess.Popen:
         """Launch a local gRPC server for the Additive service.
 
@@ -56,6 +59,11 @@ class LocalServer:
             Version of the Ansys installation to use, of the form ``"YYR"``, where
             ``YY`` is the two digit year and ``R`` is the release for
             that year. For example, Ansys 2024 R1 would be ``"241"``.
+        linux_install_path: os.PathLike, None default: None
+            Path to the Ansys installation directory on Linux. This parameter is only
+            required when Ansys has not been installed in the default location. Example:
+            ``/usr/shared/ansys_inc``. Note that the path does not include the product
+            version.
 
         Returns
         -------
@@ -75,10 +83,15 @@ class LocalServer:
             server_exe = Path(awp_root) / ADDITIVE_SERVER_SUBDIR / f"{ADDITIVE_SERVER_EXE_NAME}.exe"
         elif os.name == "posix":
             base_path = None
-            for path in ["/usr/ansys_inc", "/ansys_inc"]:
-                if os.path.isdir(path):
-                    base_path = path
-                    break
+            if linux_install_path is not None:
+                if not os.path.isdir(str(linux_install_path)):
+                    raise FileNotFoundError(f"Cannot find {linux_install_path}")
+                base_path = linux_install_path
+            else:
+                for path in ["/usr/ansys_inc", "/ansys_inc"]:
+                    if os.path.isdir(path):
+                        base_path = path
+                        break
             if not base_path:
                 raise FileNotFoundError("Cannot find Ansys installation directory")
             server_exe = (
