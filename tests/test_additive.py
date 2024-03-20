@@ -104,12 +104,17 @@ def test_Additive_init_calls_connect_to_servers_correctly(
 
     # act
     additive = Additive(
-        server_connections, host, port, nservers=nservers, product_version=in_prod_version
+        server_connections,
+        host,
+        port,
+        nservers=nservers,
+        product_version=in_prod_version,
+        linux_install_path=None,
     )
 
     # assert
     mock_connect.assert_called_with(
-        server_connections, host, port, nservers, expected_prod_version, ANY
+        server_connections, host, port, nservers, expected_prod_version, ANY, None
     )
     assert additive._servers == mock_server_connections
     assert isinstance(additive._log, logging.Logger)
@@ -236,7 +241,9 @@ def test_connect_to_servers_with_nservers_creates_server_connections(mock_connec
 
     # assert
     assert len(servers) == nservers
-    mock_connection.assert_called_with(product_version=product_version, log=log)
+    mock_connection.assert_called_with(
+        product_version=product_version, log=log, linux_install_path=None
+    )
 
 
 def test_create_logger_raises_exception_for_invalid_log_level():
