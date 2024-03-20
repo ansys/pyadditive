@@ -2117,23 +2117,50 @@ def test_import_csv_study_does_not_add_simulations_with_invalid_inputs_and_retur
         assert "Invalid parameter combination" in error_message
 
 
+@pytest.mark.parametrize(
+    "file_name, len_error_list",
+    [
+        ("single-bead-nan-input-parameters.csv", 6),
+        ("porosity-nan-input-parameters.csv", 7),
+        ("microstructure-nan-input-parameters.csv", 8),
+    ],
+)
 def test_import_csv_study_does_not_add_simulations_with_nan_inputs_and_returns_expected_error(
+    file_name,
+    len_error_list,
     tmp_path: pytest.TempPathFactory,
 ):
     # arrange
     study_name = "test_study"
-    nan_input_parameters_file = test_utils.get_test_file_path(
-        pathlib.Path("csv") / "nan-input-parameter.csv"
-    )
+    nan_input_parameters_file = test_utils.get_test_file_path(pathlib.Path("csv") / file_name)
 
     # act
     study = ps.ParametricStudy(tmp_path / study_name)
     error_list = study.import_csv_study(nan_input_parameters_file)
 
     # assert
-    assert len(error_list) == 25
+    assert len(error_list) == len_error_list
     for error_message in error_list:
         assert "must be a number" in error_message
+    assert len(study.data_frame()) == 0
+
+
+def test_import_csv_adds_microstructure_simulations_with_nan_thermal_parameter_values(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study_name = "test_study"
+    nan_thermal_parameters_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "microstructure-nan-input-thermal-parameters.csv"
+    )
+
+    # act
+    study = ps.ParametricStudy(tmp_path / study_name)
+    error_list = study.import_csv_study(nan_thermal_parameters_file)
+
+    # assert
+    assert len(error_list) == 0
+    assert len(study.data_frame()) == 4
 
 
 def test_import_csv_study_does_not_add_simulations_with_invalid_status_or_type_and_returns_expected_error(
