@@ -195,7 +195,7 @@ class Additive:
         log: logging.Logger = None,
         linux_install_path: os.PathLike | None = None,
     ) -> list[ServerConnection]:
-        """Connect to Additive servers, starting them if necessary."""
+        """Connect to Additive servers. Start them if necessary."""
         connections = []
         if server_connections:
             for target in server_connections:
