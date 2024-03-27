@@ -294,6 +294,9 @@ class Additive:
         if not isinstance(inputs, list):
             return self._simulate(inputs, self._servers[0], show_progress=True)
 
+        if len(inputs) == 0:
+            raise ValueError("No simulation inputs provided")
+
         summaries = []
         print(
             f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Completed 0 of {len(inputs)} simulations",
