@@ -125,7 +125,7 @@ class ParametricRunner:
                 continue
 
         if len(inputs) == 0:
-            LOG.warning("No simulations meet criteria to run")
+            LOG.warning("None of the input simulations meet the criteria selected")
             return []
 
         summaries = additive.simulate(inputs)
