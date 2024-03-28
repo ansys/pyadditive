@@ -1,0 +1,263 @@
+
+
+
+
+
+The ``ansys.additive.core`` library
+===================================
+
+.. py:module:: ansys.additive.core
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: core
+.. tab-set::
+
+    .. tab-item:: Subpackages
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ansys.additive.core.examples`
+            - Provides utilities for use with PyAdditive examples.
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study`
+            - Provides data storage and utility methods for a parametric study.
+
+
+          * - :py:attr:`~ansys.additive.core.server_connection`
+            - Server connection definition and utilities.
+
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ansys.additive.core.additive`
+            - Provides a client for interacting with the Additive service.
+
+
+          * - :py:attr:`~ansys.additive.core.conversions`
+            - Unit conversion constants and functions.
+
+
+          * - :py:attr:`~ansys.additive.core.download`
+            - Provides a function for downloading files from the server to the client.
+
+
+          * - :py:attr:`~ansys.additive.core.exceptions`
+            - Provides custom exceptions for the additive client.
+
+
+          * - :py:attr:`~ansys.additive.core.geometry_file`
+            - Provides a container for part geometry files.
+
+
+          * - :py:attr:`~ansys.additive.core.logger`
+            - Provides a general framework for logging in PyAdditive.
+
+
+          * - :py:attr:`~ansys.additive.core.machine`
+            - Provides a container for machine parameters.
+
+
+          * - :py:attr:`~ansys.additive.core.material`
+            - Provides a container for material parameters.
+
+
+          * - :py:attr:`~ansys.additive.core.material_tuning`
+            - Provides input and result summary containers for material tuning.
+
+
+          * - :py:attr:`~ansys.additive.core.microstructure`
+            - Provides input and result summary containers for microstructure simulations.
+
+
+          * - :py:attr:`~ansys.additive.core.microstructure_3d`
+            - Provides input and result summary containers for microstructure 3D simulations.
+
+
+          * - :py:attr:`~ansys.additive.core.misc`
+            - Provides miscellaneous utility functions.
+
+
+          * - :py:attr:`~ansys.additive.core.porosity`
+            - Provides input and result summary containers for porosity simulations.
+
+
+          * - :py:attr:`~ansys.additive.core.progress_logger`
+            - Provides logging and progress.
+
+
+          * - :py:attr:`~ansys.additive.core.simulation`
+            - Provides common definitions and classes for simulations.
+
+
+          * - :py:attr:`~ansys.additive.core.single_bead`
+            - Provides input and result summary containers for single bead simulations.
+
+
+          * - :py:attr:`~ansys.additive.core.thermal_history`
+            - Provides input and result summary containers for thermal history simulations.
+
+
+
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~USER_DATA_PATH`
+            - Storage path for user data.
+
+
+          * - :py:attr:`~EXAMPLES_PATH`
+            - Storage path for example data.
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🖿 examples<examples/index.rst>
+    🖿 parametric_study<parametric_study/index.rst>
+    🖿 server_connection<server_connection/index.rst>
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🗎 additive<additive/index.rst>
+    🗎 conversions<conversions/index.rst>
+    🗎 download<download/index.rst>
+    🗎 exceptions<exceptions/index.rst>
+    🗎 geometry_file<geometry_file/index.rst>
+    🗎 logger<logger/index.rst>
+    🗎 machine<machine/index.rst>
+    🗎 material<material/index.rst>
+    🗎 material_tuning<material_tuning/index.rst>
+    🗎 microstructure<microstructure/index.rst>
+    🗎 microstructure_3d<microstructure_3d/index.rst>
+    🗎 misc<misc/index.rst>
+    🗎 porosity<porosity/index.rst>
+    🗎 progress_logger<progress_logger/index.rst>
+    🗎 simulation<simulation/index.rst>
+    🗎 single_bead<single_bead/index.rst>
+    🗎 thermal_history<thermal_history/index.rst>
+
+
+
+
+
+
+
+
+Description
+-----------
+
+
+Python client for the Ansys Additive service.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: USER_DATA_PATH
+
+   
+   Storage path for user data.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: EXAMPLES_PATH
+
+   
+   Storage path for example data.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
