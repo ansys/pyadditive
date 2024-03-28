@@ -26,6 +26,7 @@ import numpy as np
 import pandas as pd
 
 from ansys.additive.core import (
+    LOG,
     Additive,
     AdditiveMachine,
     AdditiveMaterial,
@@ -123,6 +124,10 @@ class ParametricRunner:
                 )
                 continue
 
+        if len(inputs) == 0:
+            LOG.warning("None of the input simulations meet the criteria selected")
+            return []
+
         summaries = additive.simulate(inputs)
 
         # TODO: Return the summaries one at a time, possibly as an iterator,
@@ -137,18 +142,26 @@ class ParametricRunner:
             layer_thickness=row[ColumnNames.LAYER_THICKNESS],
             beam_diameter=row[ColumnNames.BEAM_DIAMETER],
             heater_temperature=row[ColumnNames.HEATER_TEMPERATURE],
-            starting_layer_angle=row[ColumnNames.START_ANGLE]
-            if not np.isnan(row[ColumnNames.START_ANGLE])
-            else MachineConstants.DEFAULT_STARTING_LAYER_ANGLE,
-            layer_rotation_angle=row[ColumnNames.ROTATION_ANGLE]
-            if not np.isnan(row[ColumnNames.ROTATION_ANGLE])
-            else MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE,
-            hatch_spacing=row[ColumnNames.HATCH_SPACING]
-            if not np.isnan(row[ColumnNames.HATCH_SPACING])
-            else MachineConstants.DEFAULT_HATCH_SPACING,
-            slicing_stripe_width=row[ColumnNames.STRIPE_WIDTH]
-            if not np.isnan(row[ColumnNames.STRIPE_WIDTH])
-            else MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH,
+            starting_layer_angle=(
+                row[ColumnNames.START_ANGLE]
+                if not np.isnan(row[ColumnNames.START_ANGLE])
+                else MachineConstants.DEFAULT_STARTING_LAYER_ANGLE
+            ),
+            layer_rotation_angle=(
+                row[ColumnNames.ROTATION_ANGLE]
+                if not np.isnan(row[ColumnNames.ROTATION_ANGLE])
+                else MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE
+            ),
+            hatch_spacing=(
+                row[ColumnNames.HATCH_SPACING]
+                if not np.isnan(row[ColumnNames.HATCH_SPACING])
+                else MachineConstants.DEFAULT_HATCH_SPACING
+            ),
+            slicing_stripe_width=(
+                row[ColumnNames.STRIPE_WIDTH]
+                if not np.isnan(row[ColumnNames.STRIPE_WIDTH])
+                else MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH
+            ),
         )
 
     @staticmethod
@@ -195,28 +208,44 @@ class ParametricRunner:
             sample_size_z=row[ColumnNames.MICRO_SIZE_Z],
             sensor_dimension=row[ColumnNames.MICRO_SENSOR_DIM],
             use_provided_thermal_parameters=use_provided_thermal_param,
-            sample_min_x=row[ColumnNames.MICRO_MIN_X]
-            if not np.isnan(row[ColumnNames.MICRO_MIN_X])
-            else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
-            sample_min_y=row[ColumnNames.MICRO_MIN_Y]
-            if not np.isnan(row[ColumnNames.MICRO_MIN_Y])
-            else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
-            sample_min_z=row[ColumnNames.MICRO_MIN_Z]
-            if not np.isnan(row[ColumnNames.MICRO_MIN_Z])
-            else MicrostructureInput.DEFAULT_POSITION_COORDINATE,
-            cooling_rate=row[ColumnNames.COOLING_RATE]
-            if not np.isnan(row[ColumnNames.COOLING_RATE])
-            else MicrostructureInput.DEFAULT_COOLING_RATE,
-            thermal_gradient=row[ColumnNames.THERMAL_GRADIENT]
-            if not np.isnan(row[ColumnNames.THERMAL_GRADIENT])
-            else MicrostructureInput.DEFAULT_THERMAL_GRADIENT,
-            melt_pool_width=row[ColumnNames.MICRO_MELT_POOL_WIDTH]
-            if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_WIDTH])
-            else MicrostructureInput.DEFAULT_MELT_POOL_WIDTH,
-            melt_pool_depth=row[ColumnNames.MICRO_MELT_POOL_DEPTH]
-            if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_DEPTH])
-            else MicrostructureInput.DEFAULT_MELT_POOL_DEPTH,
-            random_seed=row[ColumnNames.RANDOM_SEED]
-            if not np.isnan(row[ColumnNames.RANDOM_SEED])
-            else MicrostructureInput.DEFAULT_RANDOM_SEED,
+            sample_min_x=(
+                row[ColumnNames.MICRO_MIN_X]
+                if not np.isnan(row[ColumnNames.MICRO_MIN_X])
+                else MicrostructureInput.DEFAULT_POSITION_COORDINATE
+            ),
+            sample_min_y=(
+                row[ColumnNames.MICRO_MIN_Y]
+                if not np.isnan(row[ColumnNames.MICRO_MIN_Y])
+                else MicrostructureInput.DEFAULT_POSITION_COORDINATE
+            ),
+            sample_min_z=(
+                row[ColumnNames.MICRO_MIN_Z]
+                if not np.isnan(row[ColumnNames.MICRO_MIN_Z])
+                else MicrostructureInput.DEFAULT_POSITION_COORDINATE
+            ),
+            cooling_rate=(
+                row[ColumnNames.COOLING_RATE]
+                if not np.isnan(row[ColumnNames.COOLING_RATE])
+                else MicrostructureInput.DEFAULT_COOLING_RATE
+            ),
+            thermal_gradient=(
+                row[ColumnNames.THERMAL_GRADIENT]
+                if not np.isnan(row[ColumnNames.THERMAL_GRADIENT])
+                else MicrostructureInput.DEFAULT_THERMAL_GRADIENT
+            ),
+            melt_pool_width=(
+                row[ColumnNames.MICRO_MELT_POOL_WIDTH]
+                if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_WIDTH])
+                else MicrostructureInput.DEFAULT_MELT_POOL_WIDTH
+            ),
+            melt_pool_depth=(
+                row[ColumnNames.MICRO_MELT_POOL_DEPTH]
+                if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_DEPTH])
+                else MicrostructureInput.DEFAULT_MELT_POOL_DEPTH
+            ),
+            random_seed=(
+                row[ColumnNames.RANDOM_SEED]
+                if not np.isnan(row[ColumnNames.RANDOM_SEED])
+                else MicrostructureInput.DEFAULT_RANDOM_SEED
+            ),
         )

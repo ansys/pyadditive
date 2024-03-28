@@ -340,6 +340,17 @@ def test_simulate_with_single_input_calls_internal_simulate_once(_, input):
 
 # patch needed for Additive() call
 @patch("ansys.additive.core.additive.ServerConnection")
+def test_simulate_with_empty_input_list_raises_exception(_):
+    # arrange
+    additive = Additive()
+
+    # act, assert
+    with pytest.raises(ValueError):
+        additive.simulate([])
+
+
+# patch needed for Additive() call
+@patch("ansys.additive.core.additive.ServerConnection")
 def test_simulate_prints_error_message_when_SimulationError_returned(
     _, capsys: pytest.CaptureFixture[str]
 ):

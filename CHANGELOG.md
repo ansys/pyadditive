@@ -17,6 +17,7 @@
 * Duplicate simulations will be dropped from a parametric study [#290](https://github.com/ansys/pyadditive/issues/290)
 * Added Ansys installation path for linux to Additive object initializer. [#308](https://github.com/ansys/pyadditive/issues/308)
 * CSV files with empty thermal parameters of a microstructure simulation will be imported [#309](https://github.com/ansys/pyadditive/issues/309)
+* Gracefully return from run_simulations when no simulations meet criteria [#318](https://github.com/ansys/pyadditive/pull/318)
 
 ### Doc Improvements
 * Updated parametric study examples to show importing a study from a csv file in [#259](https://github.com/ansys/pyadditive/pull/259/)

@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import logging
 from unittest.mock import create_autospec
 
 import pandas as pd
@@ -399,7 +400,6 @@ def test_simulate_skips_simulations_with_missing_materials(tmp_path: pytest.Temp
     study.add_inputs([sb], priority=1)
     study.add_inputs([p], priority=2)
     study.add_inputs([ms], priority=3)
-    inputs = [sb, p, ms]
     mock_additive = create_autospec(Additive)
     mock_additive.material.side_effect = [material, Exception(), material]
 
@@ -408,3 +408,26 @@ def test_simulate_skips_simulations_with_missing_materials(tmp_path: pytest.Temp
 
     # assert
     mock_additive.simulate.assert_called_once_with([sb, ms])
+
+
+def test_simulate_returns_empty_list_when_no_simulations_meet_criteria(
+    tmp_path: pytest.TempPathFactory,
+    caplog,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    material = AdditiveMaterial(name="test_material")
+    sb = SingleBeadInput(id="test_1", material=material)
+    study.add_inputs([sb], priority=1)
+    mock_additive = create_autospec(Additive)
+    caplog.set_level(logging.WARNING, logger="PyAdditive_global")
+
+    # act
+    result = pr.simulate(study.data_frame(), mock_additive, type=SimulationType.POROSITY)
+
+    # assert
+    assert result == []
+    assert len(caplog.records) == 1
+    for record in caplog.records:
+        assert record.levelname == "WARNING"
+        assert "None of the input simulations meet the criteria selected" in record.message
