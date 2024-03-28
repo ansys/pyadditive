@@ -47,7 +47,7 @@ dependencies = [
 tests = [
     "ansys-platform-instancemanagement==1.1.2",
     "dill==0.3.8",
-    "google-api-python-client==2.122.0",
+    "google-api-python-client==2.123.0",
     "googleapis-common-protos==1.63.0",
     "grpcio==1.60.0",
     "grpcio-health-checking==1.48.2",
@@ -56,7 +56,7 @@ tests = [
     "panel==1.4.0",
     "platformdirs==4.2.0",
     "plotly==5.20.0",
-    "protobuf==4.25.3",
+    "protobuf==5.26.1",
     "six==1.16.0",
     "tqdm==4.66.2",
     # Test specific dependencies
