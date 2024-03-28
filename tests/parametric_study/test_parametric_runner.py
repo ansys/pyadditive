@@ -424,7 +424,6 @@ def test_simulate_returns_empty_list_when_no_simulations_meet_criteria(
 
     # act
     result = pr.simulate(study.data_frame(), mock_additive, type=SimulationType.POROSITY)
-    logging.info("test")
 
     # assert
     assert result == []

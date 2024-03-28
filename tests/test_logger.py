@@ -70,7 +70,7 @@ def test_global_logger_level_mode():
     Update test if default value is changed.
     """
     assert isinstance(LOG.logger.level, int)
-    assert LOG.logger.level == logger.logging.ERROR
+    assert LOG.logger.level == logger.logging.WARNING
 
 
 @pytest.mark.parametrize(

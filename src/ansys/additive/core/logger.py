@@ -283,4 +283,4 @@ def add_stdout_handler(logger, level=LOG_LEVEL):
 # Finally define logger
 # ===============================================================
 
-LOG = Logger(level=logging.ERROR, to_file=False, to_stdout=True)
+LOG = Logger(level=logging.WARNING, to_file=False, to_stdout=True)
