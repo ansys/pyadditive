@@ -97,7 +97,7 @@ class MicrostructureInput:
     """The default random seed, which indicates that a random seed was not provided."""
     MIN_RANDOM_SEED = 1
     """Minimum random seed."""
-    MAX_RANDOM_SEED = 2**31 - 1
+    MAX_RANDOM_SEED = 2**32 - 1
     """Maximum random seed."""
 
     def __init__(
