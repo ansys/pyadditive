@@ -6,10 +6,11 @@
 * Removed the `save_file_name` parameter from `ParametricStudy.load()`. [#302](https://github.com/ansys/pyadditive/pull/302)
 
 ### New Features
+* Added ability to import a csv file containing a parametric study [#118](https://github.com/ansys/pyadditive/issues/118)
 * Added separate logging class [#163](https://github.com/ansys/pyadditive/issues/163)
 * Updated parametric study to check for duplicate entries [#228](https://github.com/ansys/pyadditive/issues/228)
-* Added ability to import a csv file containing a parametric study [#118](https://github.com/ansys/pyadditive/issues/118)
 * Added 3D microstructure (BETA) simulations [#276](https://github.com/ansys/pyadditive/issues/276)
+* Increased max random seed limit for microstructure simulations [#325](https://github.com/ansys/pyadditive/pull/325/files)
 
 ### Bug Fixes
 * Removed side effect from `ParametricStudy.save()` which changed the study file path if the `file_name` parameter differed from the `ParameticStudy.file_name` property. Also removed the `save_file_name` parameter from `ParametricStudy.load()`. [#301](https://github.com/ansys/pyadditive/issues/301)
