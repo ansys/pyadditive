@@ -126,17 +126,17 @@ if isinstance(summary, SimulationError):
 # Plot 3D grain visualization
 # ---------------------------
 # The ``summary`` object includes a VTK file describing the 3D grain structure.
-# The VTK file contains scalar data sets ``GrainNumber``, ``Phi0``,
-# ``Phi1``, ``Phi2``, and ``Temperatures``.
+# The VTK file contains scalar data sets ``GrainNumber``, ``Phi0_(deg)``,
+# ``Phi1_(deg)``, ``Phi2_(deg)``, and ``Temperatures``.
 
 # Plot the Phi0 data of the 3D grain structure
 cmap = "coolwarm"
 ms3d = pv.read(summary.grain_3d_vtk)
-ms3d.plot(scalars="Phi0", cmap=cmap)
+ms3d.plot(scalars="Phi0_(deg)", cmap=cmap)
 
 # Add a cut plane to the plot
 plotter = pv.Plotter()
-plotter.add_mesh_clip_plane(ms3d, scalars="Phi0", cmap=cmap)
+plotter.add_mesh_clip_plane(ms3d, scalars="Phi0_(deg)", cmap=cmap)
 plotter.show()
 
 ###############################################################################
