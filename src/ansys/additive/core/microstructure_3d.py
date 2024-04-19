@@ -398,8 +398,8 @@ class Microstructure3DSummary:
     def grain_3d_vtk(self) -> str:
         """Path to the VTK file containing the 3D grain structure data.
 
-        The VTK file contains these scalar data sets" ``GrainNumber``, ``Phi0``,
-        ``Phi1``, ``Phi2``, and ``Temperatures``.
+        The VTK file contains these scalar data sets" ``GrainNumber``, ``Phi0_(deg)``,
+        ``Phi1_(deg)``, ``Phi2_(deg)``, and ``Temperatures``.
         """
         return self._grain_3d_vtk
 
