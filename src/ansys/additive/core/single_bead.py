@@ -21,6 +21,7 @@
 # SOFTWARE.
 """Provides input and result summary containers for single bead simulations."""
 import math
+import os
 
 from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
 from ansys.api.additive.v0.additive_domain_pb2 import SingleBeadInput as SingleBeadInputMessage
@@ -40,6 +41,14 @@ class SingleBeadInput:
     """Minimum bead length (m)."""
     MAX_BEAD_LENGTH = 1e-2
     """Maximum bead length (m)."""
+    DEFAULT_OUTPUT_THERMAL_HISTORY = False
+    """Default output thermal history flag."""
+    DEFAULT_THERMAL_HISTORY_INTERVAL = 1
+    """Default thermal history interval."""
+    MIN_THERMAL_HISTORY_INTERVAL = 1
+    """Minimum thermal history interval."""
+    MAX_THERMAL_HISTORY_INTERVAL = 10000
+    """Maximum thermal history interval."""
 
     def __init__(
         self,
@@ -47,12 +56,16 @@ class SingleBeadInput:
         bead_length: float = DEFAULT_BEAD_LENGTH,
         machine: AdditiveMachine = AdditiveMachine(),
         material: AdditiveMaterial = AdditiveMaterial(),
+        output_thermal_history: bool = DEFAULT_OUTPUT_THERMAL_HISTORY,
+        thermal_history_interval: int = DEFAULT_THERMAL_HISTORY_INTERVAL,
     ):
         """Initialize a ``SingleBeadInput`` object."""
         self.id = id
         self.bead_length = bead_length
         self.machine = machine
         self.material = material
+        self.output_thermal_history = output_thermal_history
+        self.thermal_history_interval = thermal_history_interval
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
@@ -120,6 +133,30 @@ class SingleBeadInput:
         self.__validate_range(value, self.MIN_BEAD_LENGTH, self.MAX_BEAD_LENGTH, "bead_length")
         self._bead_length = value
 
+    @property
+    def output_thermal_history(self) -> bool:
+        """Flag to output the thermal history of the simulation."""
+        return self._output_thermal_history
+
+    @output_thermal_history.setter
+    def output_thermal_history(self, value: bool):
+        self._output_thermal_history = value
+
+    @property
+    def thermal_history_interval(self) -> int:
+        """Interval to output thermal history data."""
+        return self._thermal_history_interval
+
+    @thermal_history_interval.setter
+    def thermal_history_interval(self, value: int):
+        self.__validate_range(
+            value,
+            self.MIN_THERMAL_HISTORY_INTERVAL,
+            self.MAX_THERMAL_HISTORY_INTERVAL,
+            "thermal_history_interval",
+        )
+        self._thermal_history_interval = value
+
     def _to_simulation_request(self) -> SimulationRequest:
         """Convert this object into a simulation request message."""
         input = SingleBeadInputMessage(
@@ -167,6 +204,7 @@ class MeltPool:
             },
         )
         self._df.index.name = "bead_length"
+        self.thermal_history_vtk = "single-bead-thermal-history.vtk"
 
     def data_frame(self) -> DataFrame:
         """Get the data frame containing the melt pool data.
@@ -194,6 +232,15 @@ class MeltPool:
         repr = type(self).__name__ + "\n"
         repr += self._df.to_string()
         return repr
+
+    @property
+    def thermal_history_vtk(self) -> str:
+        """Path to the VTK file containing the thermal history of the simulation."""
+        return self._thermal_history_vtk
+
+    @thermal_history_vtk.setter
+    def thermal_history_vtk(self, value: str | os.PathLike):
+        self._thermal_history_vtk = value
 
 
 class SingleBeadSummary:
