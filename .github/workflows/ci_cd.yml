@@ -99,11 +99,10 @@ jobs:
     # This is dumb but the schema checker doesn't allow the runner name
     # `public-ubuntu-latest-8-cores`. Circumvent this by using a matrix
     # strategy.
-    # strategy:
-    #   matrix:
-    #     runner: [public-ubuntu-latest-8-cores]
-    # runs-on: ${{ matrix.runner }}
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runner: [public-ubuntu-latest-8-cores]
+    runs-on: ${{ matrix.runner }}
     needs: [doc-style]
     steps:
       # Remove when https://github.com/readthedocs/sphinx-autoapi/pull/399 gets merged
