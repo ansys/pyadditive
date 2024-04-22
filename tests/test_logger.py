@@ -26,7 +26,6 @@ import logging as deflogging  # Default logging
 import pytest
 
 from ansys.additive.core import LOG  # Global logger
-import ansys.additive.core.progress_logger as logger
 
 LOG_LEVELS = {"CRITICAL": 50, "ERROR": 40, "WARNING": 30, "INFO": 20, "DEBUG": 10}
 
@@ -65,12 +64,12 @@ def test_global_logger_logging_with_level_debug(caplog: pytest.LogCaptureFixture
 
 def test_global_logger_level_mode():
     """Checking that the Logger levels are stored as integer values and that the default
-    value (unless changed) is ERROR.
+    value is WARNING.
 
     Update test if default value is changed.
     """
     assert isinstance(LOG.logger.level, int)
-    assert LOG.logger.level == logger.logging.WARNING
+    assert LOG.logger.level == LOG_LEVELS["WARNING"]
 
 
 @pytest.mark.parametrize(

@@ -1,4 +1,5 @@
 """Sphinx documentation configuration file."""
+
 from datetime import datetime
 import os
 from pathlib import Path
@@ -124,14 +125,15 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     # kept here as an example
     # "scipy": ("https://docs.scipy.org/doc/scipy/reference", None),
-    "numpy": ("https://numpy.org/doc/stable", None),
+    "ansys.additive.core": (f"https://additive.docs.pyansys.com/version/{switcher_version}", None),
+    "grpc": ("https://grpc.github.io/grpc/python/", None),
     "matplotlib": ("https://matplotlib.org/stable", None),
+    "numpy": ("https://numpy.org/doc/stable", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
     "pyvista": ("https://docs.pyvista.org/", None),
     "pypim": ("https://pypim.docs.pyansys.com/version/stable", None),
     "panel": ("https://panel.holoviz.org/", None),
-    "ansys.additive.core": (f"https://additive.docs.pyansys.com/version/{switcher_version}", None),
-    "grpc": ("https://grpc.github.io/grpc/python/", None),
+    "tqdm": ("https://tqdm.github.io/", None),
 }
 
 # List of patterns, relative to source directory, that match files and

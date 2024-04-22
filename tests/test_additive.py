@@ -33,12 +33,12 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
     Microstructure3DResult,
     MicrostructureResult,
     PorosityResult,
-    Progress,
-    ProgressState,
-    ThermalHistoryResult,
 )
 from ansys.api.additive.v0.additive_domain_pb2 import MaterialTuningResult
-from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
+from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMsg
+from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
+from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
+from ansys.api.additive.v0.additive_domain_pb2 import ThermalHistoryResult
 from ansys.api.additive.v0.additive_materials_pb2 import (
     GetMaterialRequest,
     GetMaterialsListResponse,
@@ -72,6 +72,7 @@ import ansys.additive.core.additive
 from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput
+from ansys.additive.core.progress_handler import DefaultSingleSimulationProgressHandler
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
 import ansys.additive.core.server_connection.server_connection
 
@@ -335,7 +336,8 @@ def test_simulate_with_single_input_calls_internal_simulate_once(_, input):
     # assert
     assert isinstance(summary, SingleBeadSummary)
     assert summary == expected_summary
-    _simulate_patch.assert_called_once_with(input, ANY, show_progress=True)
+    _simulate_patch.assert_called_once_with(input, ANY, ANY)
+    assert isinstance(_simulate_patch.call_args[0][2], DefaultSingleSimulationProgressHandler)
 
 
 # patch needed for Additive() call
@@ -351,9 +353,7 @@ def test_simulate_with_empty_input_list_raises_exception(_):
 
 # patch needed for Additive() call
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_simulate_prints_error_message_when_SimulationError_returned(
-    _, capsys: pytest.CaptureFixture[str]
-):
+def test_simulate_prints_error_message_when_SimulationError_returned(_, caplog):
     # arrange
     input = SingleBeadInput(material=test_utils.get_test_material())
     error_msg = "error message"
@@ -362,14 +362,14 @@ def test_simulate_prints_error_message_when_SimulationError_returned(
         _simulate_patch.return_value = simulation_error
     additive = Additive()
     additive._simulate = _simulate_patch
+    caplog.set_level(logging.ERROR)
 
     # act
     summaries = additive.simulate([input])
 
     # assert
     assert isinstance(summaries[0], SimulationError)
-    captured = capsys.readouterr()
-    assert error_msg in captured.out
+    assert error_msg in caplog.text
     _simulate_patch.assert_called_once_with(input=input, server=ANY, show_progress=False)
 
 
@@ -493,7 +493,7 @@ def test_internal_simulate_with_thermal_history_without_geometry_returns_Simulat
 @pytest.mark.parametrize(
     "input,result,summary_type",
     [
-        (SingleBeadInput(), MeltPoolMessage(), SingleBeadSummary),
+        (SingleBeadInput(), MeltPoolMsg(), SingleBeadSummary),
         (PorosityInput(), PorosityResult(), PorositySummary),
         (MicrostructureInput(), MicrostructureResult(), MicrostructureSummary),
         (Microstructure3DInput(), Microstructure3DResult(), Microstructure3DSummary),
@@ -508,13 +508,13 @@ def test_internal_simulate_returns_correct_summary(
 ):
     # arrange
     input.material = test_utils.get_test_material()
-    progress_msg = Progress(
-        state=ProgressState.PROGRESS_STATE_COMPLETED,
+    progress_msg = ProgressMsg(
+        state=ProgressMsgState.PROGRESS_STATE_COMPLETED,
         percent_complete=100,
         message="running",
         context="simulation",
     )
-    if isinstance(result, MeltPoolMessage):
+    if isinstance(result, MeltPoolMsg):
         sim_response = SimulationResponse(id="id", progress=progress_msg, melt_pool=result)
     elif isinstance(result, PorosityResult):
         sim_response = SimulationResponse(id="id", progress=progress_msg, porosity_result=result)
@@ -575,8 +575,8 @@ def test_internal_simulate_without_material_raises_exception(_, input):
 def test_exception_during_interal_simulation_returns_SimulationError(_, input):
     # arrange
     error_msg = "simulation error"
-    progress_msg = Progress(
-        state=ProgressState.PROGRESS_STATE_EXECUTING,
+    progress_msg = ProgressMsg(
+        state=ProgressMsgState.PROGRESS_STATE_EXECUTING,
         percent_complete=50,
         message="running",
         context="simulation",
@@ -605,8 +605,8 @@ def test_exception_during_interal_simulation_returns_SimulationError(_, input):
 def test_server_error_during_interal_simulation_returns_SimulationError(_):
     # arrange
     error_msg = "simulation error"
-    progress_msg = Progress(
-        state=ProgressState.PROGRESS_STATE_ERROR,
+    progress_msg = ProgressMsg(
+        state=ProgressMsgState.PROGRESS_STATE_ERROR,
         percent_complete=50,
         message=error_msg,
         context="simulation",
@@ -730,7 +730,7 @@ def test_tune_material_raises_exception_for_progress_error(mock_connection, tmp_
     )
     message = "error message"
     response = TuneMaterialResponse(
-        id="id", progress=Progress(state=ProgressState.PROGRESS_STATE_ERROR, message=message)
+        id="id", progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_ERROR, message=message)
     )
 
     def iterable_response(_):
@@ -743,7 +743,7 @@ def test_tune_material_raises_exception_for_progress_error(mock_connection, tmp_
 
     # act, assert
     with pytest.raises(Exception, match=message):
-        result = additive.tune_material(input, out_dir=tmp_path / "progress_error")
+        additive.tune_material(input, out_dir=tmp_path / "progress_error")
 
 
 @pytest.mark.parametrize(
@@ -777,7 +777,7 @@ def test_tune_material_filters_progress_messages(
         ),
     )
     response = TuneMaterialResponse(
-        id="id", progress=Progress(state=ProgressState.PROGRESS_STATE_EXECUTING, message=text)
+        id="id", progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_EXECUTING, message=text)
     )
 
     def iterable_response(_):
@@ -895,7 +895,7 @@ def test_simulate_thermal_history_with_progress_error_during_upload_raises_excep
     message = "error message"
     response = UploadFileResponse(
         remote_file_name="remote/file/name",
-        progress=Progress(state=ProgressState.PROGRESS_STATE_ERROR, message=message),
+        progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_ERROR, message=message),
     )
 
     def iterable_response(_):
@@ -924,16 +924,18 @@ def test_simulate_thermal_history_with_progress_error_during_simulation_raises_e
     remote_file_name = "remote/file/name"
     upload_response = UploadFileResponse(
         remote_file_name=remote_file_name,
-        progress=Progress(state=ProgressState.PROGRESS_STATE_COMPLETED, message="done"),
+        progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_COMPLETED, message="done"),
     )
     simulation_request = input._to_simulation_request(remote_geometry_path=remote_file_name)
     error_response_with_warn = SimulationResponse(
         id="ignored-warning",
-        progress=Progress(state=ProgressState.PROGRESS_STATE_ERROR, message="WARN warning message"),
+        progress=ProgressMsg(
+            state=ProgressMsgState.PROGRESS_STATE_ERROR, message="WARN warning message"
+        ),
     )
     error_response = SimulationResponse(
         id="id",
-        progress=Progress(state=ProgressState.PROGRESS_STATE_ERROR, message=message),
+        progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_ERROR, message=message),
     )
 
     mock_connection_with_stub = Mock()
@@ -972,7 +974,7 @@ def test_simulate_thermal_history_returns_expected_summary(
     remote_file_name = "remote/file/name"
     upload_response = UploadFileResponse(
         remote_file_name=remote_file_name,
-        progress=Progress(state=ProgressState.PROGRESS_STATE_COMPLETED, message="done"),
+        progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_COMPLETED, message="done"),
     )
     simulation_request = input._to_simulation_request(remote_geometry_path=remote_file_name)
     simulation_response = SimulationResponse(

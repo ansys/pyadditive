@@ -40,7 +40,7 @@ You can rename this logger to avoid conflicts with other loggers (if any):
 
    from ansys.additive.core import LOG as logger
 
-The default logging level of ``LOG`` is ``ERROR``.
+The default logging level of ``LOG`` is ``WARNING``.
 You can change this level and output lower-level messages with
 this code:
 

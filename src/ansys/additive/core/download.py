@@ -26,14 +26,14 @@ import os
 from ansys.api.additive.v0.additive_simulation_pb2 import DownloadFileRequest
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 
-from ansys.additive.core.progress_logger import Progress, ProgressLogger, ProgressState
+from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
 
 
 def download_file(
     stub: SimulationServiceStub,
     remote_file_name: str,
     local_folder: str,
-    logger: ProgressLogger = None,
+    progress_handler: IProgressHandler = None,
 ) -> str:
     """Download a file from the server to the localhost.
 
@@ -43,8 +43,8 @@ def download_file(
         Path to file on the server.
     local_folder: str
         Folder on your localhost to write your file to.
-    logger: ProgressLogger
-        Log message handler.
+    progress_handler: ProgressLogger, None, default: None
+        Progress update handler. If ``None``, no progress will be provided.
 
     Returns
     -------
@@ -60,18 +60,21 @@ def download_file(
 
     with open(dest, "wb") as f:
         for response in stub.DownloadFile(request):
-            if logger:
-                logger.log_progress(response.progress)  # pragma: no cover
+            if progress_handler:
+                progress_handler.update(
+                    Progress.from_proto_msg(response.progress)
+                )  # pragma: no cover
             if len(response.content) > 0:
                 md5 = hashlib.md5(response.content).hexdigest()
                 if md5 != response.content_md5:
-                    if logger:  # pragma: no cover
-                        logger.log_progress(
+                    msg = "Download error, MD5 sums did not match"
+                    if progress_handler:  # pragma: no cover
+                        progress_handler.update(
                             Progress(
-                                state=ProgressState.PROGRESS_STATE_ERROR,
-                                message="Download error, MD5 sums did not match",
+                                state=ProgressState.ERROR,
+                                message=msg,
                             )
                         )
-                    raise ValueError("Download error, MD5 sums did not match")
+                    raise ValueError(msg)
                 f.write(response.content)
     return dest

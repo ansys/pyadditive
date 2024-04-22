@@ -32,7 +32,6 @@ import os
 import zipfile
 
 from ansys.api.additive import __version__ as api_version
-from ansys.api.additive.v0.additive_domain_pb2 import ProgressState
 from ansys.api.additive.v0.additive_materials_pb2 import GetMaterialRequest
 from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
 from google.protobuf.empty_pb2 import Empty
@@ -41,13 +40,19 @@ import grpc
 from ansys.additive.core import USER_DATA_PATH, __version__
 from ansys.additive.core.download import download_file
 from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
+from ansys.additive.core.logger import LOG
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
 from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
 from ansys.additive.core.microstructure_3d import Microstructure3DInput, Microstructure3DSummary
 import ansys.additive.core.misc as misc
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
-from ansys.additive.core.progress_logger import ProgressLogger
+from ansys.additive.core.progress_handler import (
+    DefaultSingleSimulationProgressHandler,
+    IProgressHandler,
+    Progress,
+    ProgressState,
+)
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
 from ansys.additive.core.simulation import SimulationError
 from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
@@ -99,7 +104,7 @@ class Additive:
         File name to write log messages to.
     enable_beta_features: bool, default: False
         Flag indicating if beta features are enabled.
-    linux_install_path: os.PathLike, None default: None
+    linux_install_path: os.PathLike, None, default: None
         Path to the Ansys installation directory on Linux. This parameter is only
         required when Ansys has not been installed in the default location. Example:
         ``/usr/shared/ansys_inc``. Note that the path should not include the product
@@ -161,7 +166,7 @@ class Additive:
         self._user_data_path = USER_DATA_PATH
         if not os.path.exists(self._user_data_path):  # pragma: no cover
             os.makedirs(self._user_data_path)
-        print("user data path: " + self._user_data_path)
+        LOG.info("user data path: " + self._user_data_path)
 
     @staticmethod
     def _create_logger(log_file, log_level) -> logging.Logger:
@@ -264,6 +269,7 @@ class Additive:
             | Microstructure3DInput
             | list
         ),
+        progress_handler: IProgressHandler | None = None,
     ) -> (
         SingleBeadSummary
         | PorositySummary
@@ -281,6 +287,9 @@ class Additive:
         Microstructure3DInput, list
             Parameters to use for simulations. A list of inputs may be provided to execute multiple
             simulations.
+        progress_handler: IProgressHandler, None, default: None
+            Handler for progress updates. If ``None``, and ``inputs`` contains a single
+            simulation input, a default progress handler will be assigned.
 
         Returns
         -------
@@ -292,14 +301,16 @@ class Additive:
         self._check_for_duplicate_id(inputs)
 
         if not isinstance(inputs, list):
-            return self._simulate(inputs, self._servers[0], show_progress=True)
+            if not progress_handler:
+                progress_handler = DefaultSingleSimulationProgressHandler()
+            return self._simulate(inputs, self._servers[0], progress_handler)
 
         if len(inputs) == 0:
             raise ValueError("No simulation inputs provided")
 
         summaries = []
-        print(
-            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Completed 0 of {len(inputs)} simulations",
+        LOG.info(
+            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Starting {len(inputs)} simulations",
             end="",
         )
         threads = min(len(inputs), len(self._servers) * self._nsims_per_server)
@@ -318,14 +329,13 @@ class Additive:
             for future in concurrent.futures.as_completed(futures):
                 summary = future.result()
                 if isinstance(summary, SimulationError):
-                    print(f"\nError: {summary.message}")
+                    LOG.error(f"\nError: {summary.message}")
                 summaries.append(summary)
                 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                print(
+                LOG.info(
                     f"\r{timestamp} Completed {len(summaries)} of {len(inputs)} simulations",
                     end="",
                 )
-        print("")
         return summaries
 
     def _simulate(
@@ -338,7 +348,7 @@ class Additive:
             | Microstructure3DInput
         ),
         server: ServerConnection,
-        show_progress: bool = False,
+        progress_handler: IProgressHandler | None = None,
     ) -> (
         SingleBeadSummary
         | PorositySummary
@@ -358,18 +368,14 @@ class Additive:
         server: ServerConnection
             Server to use for the simulation.
 
-        show_progress: bool, False
-            Whether to send progress updates to the user interface.
+        progress_handler: IProgressHandler, None, default: None
+            Handler for progress updates. If ``None``, no progress updates are provided.
 
         Returns
         -------
         SingleBeadSummary, PorositySummary, MicrostructureSummary, ThermalHistorySummary,
         Microstructure3DSummary, SimulationError
         """
-        logger = None
-        if show_progress:
-            logger = ProgressLogger("Simulation")  # pragma: no cover
-
         if input.material == AdditiveMaterial():
             raise ValueError("A material is not assigned to the simulation input")
 
@@ -382,16 +388,19 @@ class Additive:
         try:
             request = None
             if isinstance(input, ThermalHistoryInput):
-                return self._simulate_thermal_history(input, USER_DATA_PATH, server, logger)
+                return self._simulate_thermal_history(
+                    input, USER_DATA_PATH, server, progress_handler
+                )
             else:
                 request = input._to_simulation_request()
 
             for response in server.simulation_stub.Simulate(request):
                 if response.HasField("progress"):
-                    if logger:
-                        logger.log_progress(response.progress)  # pragma: no cover
-                    if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
-                        raise Exception(response.progress.message)
+                    progress = Progress.from_proto_msg(input.id, response.progress)
+                    if progress_handler:
+                        progress_handler.update(progress)
+                    if progress.state == ProgressState.ERROR:
+                        raise Exception(progress.message)
                 if response.HasField("melt_pool"):
                     return SingleBeadSummary(input, response.melt_pool)
                 if response.HasField("porosity_result"):
@@ -504,10 +513,11 @@ class Additive:
 
         for response in self._servers[0].materials_stub.TuneMaterial(request):
             if response.HasField("progress"):
-                if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
-                    raise Exception(response.progress.message)
+                progress = Progress.from_proto_msg(input.id, response.progress)
+                if progress.state == ProgressState.ERROR:
+                    raise Exception(progress.message)
                 else:
-                    for m in response.progress.message.splitlines():
+                    for m in progress.message.splitlines():
                         if (
                             "License successfully" in m
                             or "Starting ThermalSolver" in m
@@ -541,24 +551,25 @@ class Additive:
         input: ThermalHistoryInput,
         out_dir: str,
         server: ServerConnection,
-        logger: ProgressLogger | None = None,
+        progress_handler: IProgressHandler | None = None,
     ) -> ThermalHistorySummary:
         """Execute a thermal history simulation.
 
-        Parameters
-        ----------
-        input: ThermalHistoryInput
-            Simulation input parameters.
-        out_dir: str
-            Folder path for output files.
-        server: ServerConnection
-            Server to use for the simulation.
-        logger: ProgressLogger
-            Log message handler.
+                Parameters
+                ----------
+                input: ThermalHistoryInput
+                    Simulation input parameters.
+                out_dir: str
+                    Folder path for output files.
+                server: ServerConnection
+                    Server to use for the simulation.
+                progress_handler: IPorgressHandler, None, default: None
+                    Handler for progress updates. If ``None``, no progress updates are provided.
+        .
 
-        Returns
-        -------
-        :class:`ThermalHistorySummary`
+                Returns
+                -------
+                :class:`ThermalHistorySummary`
         """
         if input.geometry is None or input.geometry.path == "":
             raise ValueError("The geometry path is not defined in the simulation input")
@@ -568,21 +579,20 @@ class Additive:
             self.__file_upload_reader(input.geometry.path)
         ):
             remote_geometry_path = response.remote_file_name
-            if logger:
-                logger.log_progress(response.progress)  # pragma: no cover
-            if response.progress.state == ProgressState.PROGRESS_STATE_ERROR:
-                raise Exception(response.progress.message)
+            progress = Progress.from_proto_msg(input.id, response.progress)
+            if progress_handler:
+                progress_handler.update(progress)
+            if progress.state == ProgressState.ERROR:
+                raise Exception(progress.message)
 
         request = input._to_simulation_request(remote_geometry_path=remote_geometry_path)
         for response in server.simulation_stub.Simulate(request):
             if response.HasField("progress"):
-                if logger:
-                    logger.log_progress(response.progress)  # pragma: no cover
-                if (
-                    response.progress.state == ProgressState.PROGRESS_STATE_ERROR
-                    and "WARN" not in response.progress.message
-                ):
-                    raise Exception(response.progress.message)
+                progress = Progress.from_proto_msg(input.id, response.progress)
+                if progress_handler:
+                    progress_handler.update(progress)
+                if progress.state == ProgressState.ERROR and "WARN" not in progress.message:
+                    raise Exception(progress.message)
             if response.HasField("thermal_history_result"):
                 path = os.path.join(out_dir, input.id, "coax_ave_output")
                 local_zip = download_file(
