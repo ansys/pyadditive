@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""Provides progress handling."""
+"""Provides progress updates."""
 
 from abc import ABC, abstractmethod
 from enum import IntEnum
@@ -32,7 +32,7 @@ from tqdm import tqdm
 
 
 class ProgressState(IntEnum):
-    """Simulation progress state."""
+    """Simulation progress status."""
 
     WAITING = ProgressMsgState.PROGRESS_STATE_WAITING
     """Waiting for the simulation to start."""
@@ -69,7 +69,7 @@ class Progress(BaseModel):
 
 
 class IProgressHandler(ABC):
-    """Interface for simulation progress update handlers."""
+    """Interface for simulation progress updates."""
 
     @abstractmethod
     def update(self, progress: Progress):

@@ -285,7 +285,7 @@ class Additive:
         ----------
         inputs: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput,
         Microstructure3DInput, list
-            Parameters to use for simulations. A list of inputs may be provided to execute multiple
+            Parameters to use for simulations. A list of inputs may be provided to run multiple
             simulations.
         progress_handler: IProgressHandler, None, default: None
             Handler for progress updates. If ``None``, and ``inputs`` contains a single
@@ -562,7 +562,7 @@ class Additive:
         server: ServerConnection,
         progress_handler: IProgressHandler | None = None,
     ) -> ThermalHistorySummary:
-        """Execute a thermal history simulation.
+        """Run a thermal history simulation.
 
                 Parameters
                 ----------
