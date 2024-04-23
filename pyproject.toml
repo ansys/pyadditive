@@ -56,7 +56,7 @@ tests = [
     "pandas==2.2.2",
     "panel==1.4.1",
     "platformdirs==4.2.0",
-    "plotly==5.20.0",
+    "plotly==5.21.0",
     "protobuf==4.25.3",
     "six==1.16.0",
     "tqdm==4.66.2",
