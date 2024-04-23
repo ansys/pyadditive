@@ -98,7 +98,7 @@ class DefaultSingleSimulationProgressHandler(IProgressHandler):
         self._last_context = "Initializing"
 
     def update(self, progress: Progress):
-        """Report progress and possibly emit a log message.
+        """Update the progress bar.
 
         Parameters
         ----------
