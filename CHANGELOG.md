@@ -11,6 +11,7 @@
 * Updated parametric study to check for duplicate entries [#228](https://github.com/ansys/pyadditive/issues/228)
 * Added 3D microstructure (BETA) simulations [#276](https://github.com/ansys/pyadditive/issues/276)
 * Increased max random seed limit for microstructure simulations [#325](https://github.com/ansys/pyadditive/pull/325/files)
+* Added a progress handler parameter to simulation functions [#315] (https://github.com/ansys/pyadditive/pull/315/files)
 
 ### Bug Fixes
 * Removed side effect from `ParametricStudy.save()` which changed the study file path if the `file_name` parameter differed from the `ParameticStudy.file_name` property. Also removed the `save_file_name` parameter from `ParametricStudy.load()`. [#301](https://github.com/ansys/pyadditive/issues/301)
