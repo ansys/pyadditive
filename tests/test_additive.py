@@ -362,7 +362,7 @@ def test_simulate_prints_error_message_when_SimulationError_returned(_, caplog):
         _simulate_patch.return_value = simulation_error
     additive = Additive()
     additive._simulate = _simulate_patch
-    caplog.set_level(logging.ERROR)
+    caplog.set_level(logging.ERROR, "PyAdditive_global")
 
     # act
     summaries = additive.simulate([input])
@@ -752,13 +752,13 @@ def test_tune_material_raises_exception_for_progress_error(mock_connection, tmp_
         ("License successfully, should not be printed", False),
         ("Starting ThermalSolver, should not be printed", False),
         ("threads for solver, should not be printed", False),
-        ("this should be printed", True),
+        ("this should be logged", True),
     ],
 )
 @patch("ansys.additive.core.additive.ServerConnection")
 def test_tune_material_filters_progress_messages(
     mock_connection,
-    capsys: pytest.CaptureFixture[str],
+    caplog,
     tmp_path: pathlib.Path,
     text: str,
     expected: bool,
@@ -780,6 +780,8 @@ def test_tune_material_filters_progress_messages(
         id="id", progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_EXECUTING, message=text)
     )
 
+    caplog.set_level(logging.INFO, logger="PyAdditive_global")
+
     def iterable_response(_):
         yield response
 
@@ -792,7 +794,7 @@ def test_tune_material_filters_progress_messages(
     additive.tune_material(input, out_dir=tmp_path / "progress_error")
 
     # assert
-    assert (text in capsys.readouterr().out) == expected
+    assert (text in caplog.text) == expected
 
 
 @patch("ansys.additive.core.additive.ServerConnection")

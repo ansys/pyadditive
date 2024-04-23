@@ -476,7 +476,10 @@ class Additive:
         return material
 
     def tune_material(
-        self, input: MaterialTuningInput, out_dir: str = USER_DATA_PATH
+        self,
+        input: MaterialTuningInput,
+        out_dir: str = USER_DATA_PATH,
+        progress_handler: IProgressHandler = None,
     ) -> MaterialTuningSummary:
         """Tune a custom material for use with additive simulations.
 
@@ -493,6 +496,10 @@ class Additive:
         ----------
         input: MaterialTuningInput
             Input parameters for material tuning.
+        out_dir: str, default: USER_DATA_PATH
+            Folder path for output files.
+        progress_handler: IProgressHandler, None, default: None
+            Handler for progress updates. If ``None``, no progress updates are provided.
 
         Returns
         -------
@@ -524,7 +531,9 @@ class Additive:
                             or "threads for solver" in m
                         ):
                             continue
-                        print(m)
+                        LOG.info(m)
+                        if progress_handler:
+                            progress_handler.update(progress)
             if response.HasField("result"):
                 return MaterialTuningSummary(input, response.result, out_dir)
 
