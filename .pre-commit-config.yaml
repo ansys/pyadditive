@@ -31,7 +31,8 @@ repos:
     rev: v2.2.5
     hooks:
       - id: codespell
-        args: ["--ignore-words", "doc/styles/Vocab/ANSYS/accept.txt"]
+        args:
+          ["--ignore-words", "doc/styles/config/vocabularies/ANSYS/accept.txt"]
         exclude_types: ["jupyter"]
 
   # To be activated after quick dev cycles
