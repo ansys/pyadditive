@@ -171,7 +171,7 @@ jobs:
 
       # Remove when auto-api is updated
       - name: Build the long examples
-        # if: github.event_name == 'push'
+        if: github.event_name == 'push'
         run: |
           ./.venv/bin/activate
           make -C doc html SPHINXOPTS="-j auto"
