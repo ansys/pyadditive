@@ -95,7 +95,6 @@ jobs:
 
   doc-build:
     name: "Building library documentation"
-    if: github.event_name != 'merge_group'
     # This is dumb but the schema checker doesn't allow the runner name
     # `public-ubuntu-latest-8-cores`. Circumvent this by using a matrix
     # strategy.
@@ -172,7 +171,7 @@ jobs:
 
       # Remove when auto-api is updated
       - name: Build the long examples
-        if: github.event_name == 'push'
+        # if: github.event_name == 'push'
         run: |
           ./.venv/bin/activate
           make -C doc html SPHINXOPTS="-j auto"

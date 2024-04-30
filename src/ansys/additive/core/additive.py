@@ -323,7 +323,7 @@ class Additive:
                         self._simulate,
                         input=input,
                         server=self._servers[server_id],
-                        show_progress=False,
+                        progress_handler=progress_handler,
                     )
                 )
             for future in concurrent.futures.as_completed(futures):
