@@ -84,7 +84,7 @@ class IProgressHandler(ABC):
 
 
 class DefaultSingleSimulationProgressHandler(IProgressHandler):
-    """Creates a :type:`tqdm` progress bar for a single simulation.
+    """Creates a progress bar for a single simulation.
 
     Parameters
     ----------

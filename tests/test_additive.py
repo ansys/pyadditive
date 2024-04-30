@@ -370,7 +370,7 @@ def test_simulate_prints_error_message_when_SimulationError_returned(_, caplog):
     # assert
     assert isinstance(summaries[0], SimulationError)
     assert error_msg in caplog.text
-    _simulate_patch.assert_called_once_with(input=input, server=ANY, show_progress=False)
+    _simulate_patch.assert_called_once_with(input=input, server=ANY, progress_handler=None)
 
 
 # patch needed for Additive() call
@@ -394,7 +394,7 @@ def test_simulate_with_input_list_calls_internal_simulate_n_times(_):
     # assert
     assert _simulate_patch.call_count == len(inputs)
     print(_simulate_patch.call_args_list)
-    calls = [call(input=i, server=ANY, show_progress=False) for i in inputs]
+    calls = [call(input=i, server=ANY, progress_handler=None) for i in inputs]
     _simulate_patch.assert_has_calls(calls, any_order=True)
 
 

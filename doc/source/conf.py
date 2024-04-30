@@ -133,7 +133,6 @@ intersphinx_mapping = {
     "pyvista": ("https://docs.pyvista.org/", None),
     "pypim": ("https://pypim.docs.pyansys.com/version/stable", None),
     "panel": ("https://panel.holoviz.org/", None),
-    "tqdm": ("https://tqdm.github.io/", None),
 }
 
 # List of patterns, relative to source directory, that match files and
