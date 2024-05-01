@@ -284,7 +284,7 @@ jinja_contexts = {
 linkcheck_ignore = [
     r"https://ansyshelp.ansys.com/.*",
     r"https://ansysproducthelpqa.win.ansys.com/.*",
-    r"https://www.ansys.com/products/additive/.*",
+    r"https://www.ansys.com/.*",
 ]
 
 linkcheck_retries = 3
