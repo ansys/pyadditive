@@ -79,7 +79,7 @@ def test_create_channel_returns_expected_channel():
 
     # assert
     assert channel is not None
-    assert channel._channel.target().decode() == target
+    assert channel._channel.target().decode().removeprefix("dns:///") == target
 
 
 def test_create_channel_raises_exception_for_missing_ip():

@@ -169,53 +169,27 @@ jobs:
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
           BUILD_EXAMPLES_LONG: false
 
-      # Remove when auto-api is updated
-      - name: Build the long examples
-        if: github.event_name == 'push'
-        run: |
-          ./.venv/bin/activate
-          make -C doc html SPHINXOPTS="-j auto"
-          make -C doc pdf
+      - name: "Build documentation with short examples"
+        if: github.event_name != 'push'
+        uses: ansys/actions/doc-build@v6
+        with:
+          checkout: false
+          sphinxopts: "-j auto"
+          dependencies: "pandoc"
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
-          BUILD_EXAMPLES_LONG: true
+          BUILD_EXAMPLES_LONG: false
 
-      - name: Upload HTML documentation
-        uses: actions/upload-artifact@v4
+      - name: "Build documentation with long examples"
+        # if: github.event_name == 'push'
+        uses: ansys/actions/doc-build@v6
         with:
-          name: documentation-html
-          path: doc/_build/html
-          retention-days: 7
-
-      - name: Upload PDF documentation
-        uses: actions/upload-artifact@v4
-        with:
-          name: documentation-pdf
-          path: doc/_build/latex/*.pdf
-          retention-days: 7
-
-      # Restore when auto-api is updated
-      # - name: "Build documentation with short examples"
-      #   uses: ansys/actions/doc-build@v4
-      #   with:
-      #     checkout: false
-      #     sphinxopts: "-j auto"
-      #     dependencies: "pandoc"
-      #   env:
-      #     GENERATING_DOCS: 1
-      #     ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
-      #     BUILD_EXAMPLES_LONG: false
-
-      # - name: "Build documentation with long examples"
-      #   if: github.event_name == 'push'
-      #   uses: ansys/actions/doc-build@v4
-      #   with:
-      #     checkout: false
-      #     sphinxopts: "-j auto"
-      #   env:
-      #     GENERATING_DOCS: 1
-      #     ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
+          checkout: false
+          sphinxopts: "-j auto"
+        env:
+          GENERATING_DOCS: 1
+          ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
 
       - name: "Collect logs and shutdown server"
         if: ${{ always() }}

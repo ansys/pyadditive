@@ -27,7 +27,12 @@ This example shows how to use PyAdditive to perform a parametric study.
 You perform a parametric study if you want to optimize additive machine parameters
 to achieve a specific result. Here, the :class:`ParametricStudy` class is used to
 conduct a parametric study. While not essential, the :class:`ParametricStudy`
-class provides data management and visualization features that make the work easier.
+class provides data management features that make the work easier. Also, the
+``ansys.additive.widgets`` package can be used to create interactive user
+interfaces for a parametric study. An example is available at
+`Parametric Study Example
+<https://widgets.additive.docs.pyansys.com/version/stable/examples/gallery_examples>`_.
+TODO: FIX LINK ABOVE
 
 Units are SI (m, kg, s, K) unless otherwise noted.
 """
@@ -37,7 +42,6 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # Perform the required import and create a :class:`ParametricStudy` instance.
 from ansys.additive.core import Additive, SimulationStatus, SimulationType
 from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
-import ansys.additive.core.parametric_study.display as display
 
 study = ParametricStudy("demo-study")
 
@@ -106,10 +110,10 @@ study.generate_single_bead_permutations(
 ###############################################################################
 # Show the simulations as a table
 # -------------------------------
-# You can use the :obj:`display <ansys.additive.core.parametric_study.display>`
-# package to list the simulations as a table.
+# The :meth:`~ParametricStudy.data_frame` method returns a :class:`~pandas.DataFrame`
+# object that can be used to display the simulations as a table.
 
-display.show_table(study)
+print(study.data_frame())
 
 ###############################################################################
 # Skip some simulations
@@ -128,7 +132,7 @@ ids = df.loc[
     ColumnNames.ID,
 ].tolist()
 study.set_status(ids, SimulationStatus.SKIP)
-display.show_table(study)
+print(study.data_frame())
 
 ###############################################################################
 # Run single bead simulations
@@ -157,7 +161,7 @@ study.data_frame().to_csv("demo-study.csv")
 
 study2 = ParametricStudy("demo-csv-study.ps")
 errors = study2.import_csv_study("demo-study.csv")
-display.show_table(study2)
+print(study2.data_frame())
 
 ###############################################################################
 # Load a previously saved study
@@ -166,15 +170,7 @@ display.show_table(study2)
 # :meth:`ParameticStudy.load() <ParametricStudy.load>` method.
 
 study3 = ParametricStudy.load("demo-study.ps")
-display.show_table(study3)
-
-###############################################################################
-# Plot single bead results
-# ------------------------
-# Plot the single bead results using the
-# :func:`~ansys.additive.core.parametric_study.display.single_bead_eval_plot` method.
-
-display.single_bead_eval_plot(study)
+print(study3.data_frame())
 
 ###############################################################################
 # Create a porosity evaluation
@@ -221,14 +217,6 @@ study.generate_porosity_permutations(
 study.run_simulations(additive)
 
 ###############################################################################
-# Plot porosity results
-# ---------------------
-# Plot the porosity simulation results using the
-# :func:`~ansys.additive.core.parametric_study.display.porosity_contour_plot` method.
-
-display.porosity_contour_plot(study)
-
-###############################################################################
 # Create a microstructure evaluation
 # ----------------------------------
 # Here a set of microstructure simulations is generated using many of the same
@@ -264,12 +252,3 @@ study.generate_microstructure_permutations(
 # Run the simulations using the :meth:`~ParametricStudy.run_simulations` method.
 
 study.run_simulations(additive)
-
-###############################################################################
-# Plot microstructure results
-# ---------------------------
-# Plot and compare the average grain sizes from the microstructure simulations
-# using the :func:`~ansys.additive.core.parametric_study.display.ave_grain_size_plot`
-# method.
-
-display.ave_grain_size_plot(study)
