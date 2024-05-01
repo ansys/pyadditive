@@ -27,7 +27,12 @@ This example shows how to use PyAdditive to perform a parametric study.
 You perform a parametric study if you want to optimize additive machine parameters
 to achieve a specific result. Here, the :class:`ParametricStudy` class is used to
 conduct a parametric study. While not essential, the :class:`ParametricStudy`
-class provides data management and visualization features that make the work easier.
+class provides data management features that make the work easier. Also, the
+``ansys.additive.widgets`` package can be used to create interactive visualizations
+for of parametric study results. An example is available at
+`Parametric Study Example
+<https://widgets.additive.docs.pyansys.com/version/stable/examples/gallery_examples>`_.
+
 
 Units are SI (m, kg, s, K) unless otherwise noted.
 """
@@ -35,9 +40,11 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # Perform required imports and create a study
 # -------------------------------------------
 # Perform the required import and create a :class:`ParametricStudy` instance.
+import numpy as np
+import pandas as pd
+
 from ansys.additive.core import Additive, SimulationStatus, SimulationType
 from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
-import ansys.additive.core.parametric_study.display as display
 
 study = ParametricStudy("demo-study")
 
@@ -72,7 +79,6 @@ material = "IN718"
 # specify a range of machine parameters and filter them by energy density. Not all
 # the parameters shown are required. Optional parameters that are not specified
 # use default values defined in the :class:`MachineConstants` class.
-import numpy as np
 
 # Specify a range of laser powers. Valid values are 50 to 700 W.
 initial_powers = np.linspace(50, 700, 7)
@@ -106,10 +112,13 @@ study.generate_single_bead_permutations(
 ###############################################################################
 # Show the simulations as a table
 # -------------------------------
-# You can use the :obj:`display <ansys.additive.core.parametric_study.display>`
-# package to list the simulations as a table.
+# The :meth:`~ParametricStudy.data_frame` method returns a :class:`~pandas.DataFrame`
+# object that can be used to display the simulations as a table. Here, the
+# :meth:`~pandas.DataFrame.head` method is used to display all the rows of the table.
 
-display.show_table(study)
+df = study.data_frame()
+pd.set_option("display.max_columns", None)  # show all columns
+df.head(len(df))
 
 ###############################################################################
 # Skip some simulations
@@ -128,7 +137,7 @@ ids = df.loc[
     ColumnNames.ID,
 ].tolist()
 study.set_status(ids, SimulationStatus.SKIP)
-display.show_table(study)
+print(study.data_frame()[[ColumnNames.ID, ColumnNames.TYPE, ColumnNames.STATUS]])
 
 ###############################################################################
 # Run single bead simulations
@@ -137,6 +146,16 @@ display.show_table(study)
 # with a :obj:`SimulationStatus.PENDING` status are executed.
 
 study.run_simulations(additive)
+
+###############################################################################
+# View single bead results
+# ------------------------
+# The single bead simulation results are shown in the ``Melt Pool Width (m)``, ``Melt Pool Depth (m)``,
+# ``Melt Pool Length (m)``, ``Melt Pool Length/Width``, ``Melt Pool Ref Width (m)``,
+# ``Melt Pool Ref Depth (m)``, and ``Melt Pool Ref Depth/Width`` columns of the data frame.
+# For explanations of these columns, see :class:`ColumnNames`.
+
+study.data_frame().head(len(study.data_frame()))
 
 ###############################################################################
 # Save the study to a CSV file
@@ -157,7 +176,7 @@ study.data_frame().to_csv("demo-study.csv")
 
 study2 = ParametricStudy("demo-csv-study.ps")
 errors = study2.import_csv_study("demo-study.csv")
-display.show_table(study2)
+study2.data_frame().head()
 
 ###############################################################################
 # Load a previously saved study
@@ -166,15 +185,7 @@ display.show_table(study2)
 # :meth:`ParameticStudy.load() <ParametricStudy.load>` method.
 
 study3 = ParametricStudy.load("demo-study.ps")
-display.show_table(study3)
-
-###############################################################################
-# Plot single bead results
-# ------------------------
-# Plot the single bead results using the
-# :func:`~ansys.additive.core.parametric_study.display.single_bead_eval_plot` method.
-
-display.single_bead_eval_plot(study)
+study3.data_frame().head()
 
 ###############################################################################
 # Create a porosity evaluation
@@ -221,12 +232,14 @@ study.generate_porosity_permutations(
 study.run_simulations(additive)
 
 ###############################################################################
-# Plot porosity results
+# View porosity results
 # ---------------------
-# Plot the porosity simulation results using the
-# :func:`~ansys.additive.core.parametric_study.display.porosity_contour_plot` method.
+# Porosity simulation results are shown in the ``Relative Density`` column of
+# the data frame.
+df = study.data_frame()
+df = df[df[ColumnNames.TYPE] == SimulationType.POROSITY]
+df.head(len(df))
 
-display.porosity_contour_plot(study)
 
 ###############################################################################
 # Create a microstructure evaluation
@@ -239,7 +252,7 @@ display.porosity_contour_plot(study)
 # microstructure simulations to the study.
 
 df = study.data_frame()
-df = df[(df[ColumnNames.TYPE] == SimulationType.POROSITY)]
+df = df[df[ColumnNames.TYPE] == SimulationType.POROSITY]
 
 study.generate_microstructure_permutations(
     material_name=material,
@@ -266,10 +279,12 @@ study.generate_microstructure_permutations(
 study.run_simulations(additive)
 
 ###############################################################################
-# Plot microstructure results
+# View microstructure results
 # ---------------------------
-# Plot and compare the average grain sizes from the microstructure simulations
-# using the :func:`~ansys.additive.core.parametric_study.display.ave_grain_size_plot`
-# method.
+# Microstructure simulation results are shown in the ``XY Average Grain Size (microns)``,
+# ``XZ Average Grain Size (microns)``, and ``YZ Average Grain Size (microns)`` columns of
+# the data frame. For explanations of these columns, see :class:`ColumnNames`.
 
-display.ave_grain_size_plot(study)
+df = study.data_frame()
+df = df[df[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE]
+df.head(len(df))

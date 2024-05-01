@@ -4,6 +4,7 @@
 
 ### Breaking Changes
 * Removed the `save_file_name` parameter from `ParametricStudy.load()`. [#302](https://github.com/ansys/pyadditive/pull/302)
+* Removed the `display` module from `ansys.additive.core.parametric_study` as part of [#194](https://github.com/ansys/pyadditive/issues/194)
 
 ### New Features
 * Added ability to import a csv file containing a parametric study [#118](https://github.com/ansys/pyadditive/issues/118)
