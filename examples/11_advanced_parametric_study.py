@@ -28,11 +28,11 @@ You perform a parametric study if you want to optimize additive machine paramete
 to achieve a specific result. Here, the :class:`ParametricStudy` class is used to
 conduct a parametric study. While not essential, the :class:`ParametricStudy`
 class provides data management features that make the work easier. Also, the
-``ansys.additive.widgets`` package can be used to create interactive user
-interfaces for a parametric study. An example is available at
+``ansys.additive.widgets`` package can be used to create interactive visualizations
+for of parametric study results. An example is available at
 `Parametric Study Example
 <https://widgets.additive.docs.pyansys.com/version/stable/examples/gallery_examples>`_.
-TODO: FIX LINK ABOVE
+TODO: UPDATE LINK ABOVE
 
 Units are SI (m, kg, s, K) unless otherwise noted.
 """
@@ -40,6 +40,9 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # Perform required imports and create a study
 # -------------------------------------------
 # Perform the required import and create a :class:`ParametricStudy` instance.
+import numpy as np
+import pandas
+
 from ansys.additive.core import Additive, SimulationStatus, SimulationType
 from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
 
@@ -76,7 +79,6 @@ material = "IN718"
 # specify a range of machine parameters and filter them by energy density. Not all
 # the parameters shown are required. Optional parameters that are not specified
 # use default values defined in the :class:`MachineConstants` class.
-import numpy as np
 
 # Specify a range of laser powers. Valid values are 50 to 700 W.
 initial_powers = np.linspace(50, 700, 7)
@@ -113,6 +115,7 @@ study.generate_single_bead_permutations(
 # The :meth:`~ParametricStudy.data_frame` method returns a :class:`~pandas.DataFrame`
 # object that can be used to display the simulations as a table.
 
+pandas.set_option("display.max_columns", None)
 print(study.data_frame())
 
 ###############################################################################
