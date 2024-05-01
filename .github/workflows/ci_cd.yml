@@ -133,24 +133,25 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v4
 
-      - name: "Build documentation with short examples"
-        if: github.event_name != 'push'
+      # - name: "Build documentation with short examples"
+      #   if: github.event_name != 'push'
+      #   uses: ansys/actions/doc-build@v6
+      #   with:
+      #     checkout: false
+      #     sphinxopts: "-j auto"
+      #     dependencies: "pandoc"
+      #   env:
+      #     GENERATING_DOCS: 1
+      #     ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
+      #     BUILD_EXAMPLES_LONG: false
+
+      - name: "Build documentation with long examples"
+        # if: github.event_name == 'push'
         uses: ansys/actions/doc-build@v6
         with:
           checkout: false
           sphinxopts: "-j auto"
           dependencies: "pandoc"
-        env:
-          GENERATING_DOCS: 1
-          ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
-          BUILD_EXAMPLES_LONG: false
-
-      - name: "Build documentation with long examples"
-        if: github.event_name == 'push'
-        uses: ansys/actions/doc-build@v6
-        with:
-          checkout: false
-          sphinxopts: "-j auto"
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"

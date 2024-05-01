@@ -130,7 +130,7 @@ intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable", None),
     "numpy": ("https://numpy.org/doc/stable", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
-    "pyvista": ("https://docs.pyvista.org/", None),
+    "pyvista": ("https://docs.pyvista.org/version/stable", None),
     "pypim": ("https://pypim.docs.pyansys.com/version/stable", None),
     "panel": ("https://panel.holoviz.org/", None),
 }
@@ -150,11 +150,11 @@ numpydoc_xref_param_type = True
 
 # Consider enabling numpydoc validation. See:
 # https://numpydoc.readthedocs.io/en/latest/validation.html#
+# TODO: Replace this with ruff pre-commit hook
 numpydoc_validate = True
 numpydoc_validation_checks = {
     "GL06",  # Found unknown section
     "GL07",  # Sections are in the wrong order.
-    # TODO: GL08 should be reactivated since it detects undocumented members
     # "GL08",  # The object does not have a docstring
     "GL09",  # Deprecation warning should precede extended summary
     "GL10",  # reST directives {directives} must be followed by two colons
