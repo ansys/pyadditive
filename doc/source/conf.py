@@ -284,7 +284,10 @@ jinja_contexts = {
 linkcheck_ignore = [
     r"https://ansyshelp.ansys.com/.*",
     r"https://ansysproducthelpqa.win.ansys.com/.*",
+    r"https://www.ansys.com/products/additive/.*",
 ]
+
+linkcheck_retries = 3
 
 
 def prepare_jinja_env(jinja_env) -> None:
