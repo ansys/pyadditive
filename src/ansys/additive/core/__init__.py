@@ -45,32 +45,42 @@ EXAMPLES_PATH = os.path.join(USER_DATA_PATH, "examples")
 if not os.path.exists(EXAMPLES_PATH):  # pragma: no cover
     os.makedirs(EXAMPLES_PATH)
 
-from ansys.additive.core.additive import Additive
-from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
-from ansys.additive.core.geometry_file import BuildFile, MachineType, StlFile
-from ansys.additive.core.logger import LOG
-from ansys.additive.core.machine import AdditiveMachine, MachineConstants
-from ansys.additive.core.material import (
+from ansys.additive.core.additive import Additive  # noqa: F401, E402
+from ansys.additive.core.exceptions import BetaFeatureNotEnabledError  # noqa: F401, E402
+from ansys.additive.core.geometry_file import BuildFile, MachineType, StlFile  # noqa: F401, E402
+from ansys.additive.core.logger import LOG  # noqa: F401, E402
+from ansys.additive.core.machine import AdditiveMachine, MachineConstants  # noqa: F401, E402
+from ansys.additive.core.material import (  # noqa: F401, E402
     AdditiveMaterial,
     CharacteristicWidthDataPoint,
     ThermalPropertiesDataPoint,
 )
-from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
-from ansys.additive.core.microstructure import (
+from ansys.additive.core.material_tuning import (  # noqa: F401, E402
+    MaterialTuningInput,
+    MaterialTuningSummary,
+)
+from ansys.additive.core.microstructure import (  # noqa: F401, E402
     CircleEquivalenceColumnNames,
     MicrostructureInput,
     MicrostructureSummary,
 )
-from ansys.additive.core.microstructure_3d import Microstructure3DInput, Microstructure3DSummary
-from ansys.additive.core.porosity import PorosityInput, PorositySummary
-from ansys.additive.core.simulation import SimulationError, SimulationStatus, SimulationType
-from ansys.additive.core.single_bead import (
+from ansys.additive.core.microstructure_3d import (  # noqa: F401, E402
+    Microstructure3DInput,
+    Microstructure3DSummary,
+)
+from ansys.additive.core.porosity import PorosityInput, PorositySummary  # noqa: F401, E402
+from ansys.additive.core.simulation import (  # noqa: F401, E402
+    SimulationError,
+    SimulationStatus,
+    SimulationType,
+)
+from ansys.additive.core.single_bead import (  # noqa: F401, E402
     MeltPool,
     MeltPoolColumnNames,
     SingleBeadInput,
     SingleBeadSummary,
 )
-from ansys.additive.core.thermal_history import (
+from ansys.additive.core.thermal_history import (  # noqa: F401, E402
     CoaxialAverageSensorInputs,
     Range,
     ThermalHistoryInput,

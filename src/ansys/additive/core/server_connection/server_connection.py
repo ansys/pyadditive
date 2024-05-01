@@ -156,7 +156,7 @@ class ServerConnection:
         The form is generally ``"ip:port"``. For example, ``"127.0.0.1:50052"``.
         """
         if self._channel is not None:
-            return self._channel._channel.target().decode()
+            return self._channel._channel.target().decode().removeprefix("dns:///")
         return ""
 
     @property
