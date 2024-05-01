@@ -32,7 +32,7 @@ class provides data management features that make the work easier. Also, the
 for of parametric study results. An example is available at
 `Parametric Study Example
 <https://widgets.additive.docs.pyansys.com/version/stable/examples/gallery_examples>`_.
-TODO: UPDATE LINK ABOVE
+
 
 Units are SI (m, kg, s, K) unless otherwise noted.
 """
@@ -41,6 +41,7 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # -------------------------------------------
 # Perform the required import and create a :class:`ParametricStudy` instance.
 import numpy as np
+import pandas as pd
 
 from ansys.additive.core import Additive, SimulationStatus, SimulationType
 from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
@@ -116,6 +117,7 @@ study.generate_single_bead_permutations(
 # :meth:`~pandas.DataFrame.head` method is used to display all the rows of the table.
 
 df = study.data_frame()
+pd.set_option("display.max_columns", None)  # show all columns
 df.head(len(df))
 
 ###############################################################################
@@ -151,6 +153,7 @@ study.run_simulations(additive)
 # The single bead simulation results are shown in the ``Melt Pool Width (m)``, ``Melt Pool Depth (m)``,
 # ``Melt Pool Length (m)``, ``Melt Pool Length/Width``, ``Melt Pool Ref Width (m)``,
 # ``Melt Pool Ref Depth (m)``, and ``Melt Pool Ref Depth/Width`` columns of the data frame.
+# For explanations of these columns, see :class:`ColumnNames`.
 
 study.data_frame().head(len(study.data_frame()))
 
@@ -233,7 +236,8 @@ study.run_simulations(additive)
 # ---------------------
 # Porosity simulation results are shown in the ``Relative Density`` column of
 # the data frame.
-df = study.data_frame()[(df[ColumnNames.TYPE] == SimulationType.POROSITY)]
+df = study.data_frame()
+df = df[df[ColumnNames.TYPE] == SimulationType.POROSITY]
 df.head(len(df))
 
 
@@ -248,7 +252,7 @@ df.head(len(df))
 # microstructure simulations to the study.
 
 df = study.data_frame()
-df = df[(df[ColumnNames.TYPE] == SimulationType.POROSITY)]
+df = df[df[ColumnNames.TYPE] == SimulationType.POROSITY]
 
 study.generate_microstructure_permutations(
     material_name=material,
@@ -279,7 +283,8 @@ study.run_simulations(additive)
 # ---------------------------
 # Microstructure simulation results are shown in the ``XY Average Grain Size (microns)``,
 # ``XZ Average Grain Size (microns)``, and ``YZ Average Grain Size (microns)`` columns of
-# the data frame.
+# the data frame. For explanations of these columns, see :class:`ColumnNames`.
 
-df = study.data_frame()[(df[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE)]
+df = study.data_frame()
+df = df[df[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE]
 df.head(len(df))
