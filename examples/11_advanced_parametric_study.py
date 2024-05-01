@@ -41,7 +41,6 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # -------------------------------------------
 # Perform the required import and create a :class:`ParametricStudy` instance.
 import numpy as np
-import pandas
 
 from ansys.additive.core import Additive, SimulationStatus, SimulationType
 from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
@@ -113,10 +112,11 @@ study.generate_single_bead_permutations(
 # Show the simulations as a table
 # -------------------------------
 # The :meth:`~ParametricStudy.data_frame` method returns a :class:`~pandas.DataFrame`
-# object that can be used to display the simulations as a table.
+# object that can be used to display the simulations as a table. Here, the
+# :meth:`~pandas.DataFrame.head` method is used to display all the rows of the table.
 
-pandas.set_option("display.max_columns", None)
-print(study.data_frame())
+df = study.data_frame()
+df.head(len(df))
 
 ###############################################################################
 # Skip some simulations
@@ -135,7 +135,7 @@ ids = df.loc[
     ColumnNames.ID,
 ].tolist()
 study.set_status(ids, SimulationStatus.SKIP)
-print(study.data_frame())
+print(study.data_frame()[[ColumnNames.ID, ColumnNames.TYPE, ColumnNames.STATUS]])
 
 ###############################################################################
 # Run single bead simulations
@@ -144,6 +144,15 @@ print(study.data_frame())
 # with a :obj:`SimulationStatus.PENDING` status are executed.
 
 study.run_simulations(additive)
+
+###############################################################################
+# View single bead results
+# ------------------------
+# The single bead simulation results are shown in the ``Melt Pool Width (m)``, ``Melt Pool Depth (m)``,
+# ``Melt Pool Length (m)``, ``Melt Pool Length/Width``, ``Melt Pool Ref Width (m)``,
+# ``Melt Pool Ref Depth (m)``, and ``Melt Pool Ref Depth/Width`` columns of the data frame.
+
+study.data_frame().head(len(study.data_frame()))
 
 ###############################################################################
 # Save the study to a CSV file
@@ -164,7 +173,7 @@ study.data_frame().to_csv("demo-study.csv")
 
 study2 = ParametricStudy("demo-csv-study.ps")
 errors = study2.import_csv_study("demo-study.csv")
-print(study2.data_frame())
+study2.data_frame().head()
 
 ###############################################################################
 # Load a previously saved study
@@ -173,7 +182,7 @@ print(study2.data_frame())
 # :meth:`ParameticStudy.load() <ParametricStudy.load>` method.
 
 study3 = ParametricStudy.load("demo-study.ps")
-print(study3.data_frame())
+study3.data_frame().head()
 
 ###############################################################################
 # Create a porosity evaluation
@@ -220,6 +229,15 @@ study.generate_porosity_permutations(
 study.run_simulations(additive)
 
 ###############################################################################
+# View porosity results
+# ---------------------
+# Porosity simulation results are shown in the ``Relative Density`` column of
+# the data frame.
+df = study.data_frame()[(df[ColumnNames.TYPE] == SimulationType.POROSITY)]
+df.head(len(df))
+
+
+###############################################################################
 # Create a microstructure evaluation
 # ----------------------------------
 # Here a set of microstructure simulations is generated using many of the same
@@ -255,3 +273,13 @@ study.generate_microstructure_permutations(
 # Run the simulations using the :meth:`~ParametricStudy.run_simulations` method.
 
 study.run_simulations(additive)
+
+###############################################################################
+# View microstructure results
+# ---------------------------
+# Microstructure simulation results are shown in the ``XY Average Grain Size (microns)``,
+# ``XZ Average Grain Size (microns)``, and ``YZ Average Grain Size (microns)`` columns of
+# the data frame.
+
+df = study.data_frame()[(df[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE)]
+df.head(len(df))
