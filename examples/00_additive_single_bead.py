@@ -47,8 +47,7 @@ from ansys.additive.core import (
     SingleBeadInput,
 )
 
-# additive = Additive()
-additive = Additive(host="localhost", port=50052)
+additive = Additive()
 
 ###############################################################################
 # Get server connection information
