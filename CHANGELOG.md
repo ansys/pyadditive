@@ -1,5 +1,22 @@
 # Changelog
 
+## PyAdditive 0.19.0
+
+### Breaking Changes
+
+### New Features
+* Single bead simulations with thermal history are now supported.
+
+### Bug Fixes
+
+### Doc Improvements
+* Updated the single bead example to show usage with the thermal history option.
+
+### Contributors
+* Peter Krull - <peter.krull@ansys.com>
+* Safee Rehman - <safee.rehman@ansys.com>
+* Julie O'Hara - <julie.ohara@ansys.com>
+
 ## PyAdditive 0.18.0
 
 ### Breaking Changes
