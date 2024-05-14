@@ -21,6 +21,7 @@
 * Added Ansys installation path for linux to Additive object initializer. [#308](https://github.com/ansys/pyadditive/issues/308)
 * CSV files with empty thermal parameters of a microstructure simulation will be imported [#309](https://github.com/ansys/pyadditive/issues/309)
 * Gracefully return from run_simulations when no simulations meet criteria [#318](https://github.com/ansys/pyadditive/pull/318)
+* Parametric Studies created by importing CSV files will have unique row indices [#364] (https://github.com/ansys/pyadditive/issues/364)
 
 ### Doc Improvements
 * Updated parametric study examples to show importing a study from a csv file in [#259](https://github.com/ansys/pyadditive/pull/259/)
