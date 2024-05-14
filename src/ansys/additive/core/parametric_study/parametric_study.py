@@ -1680,6 +1680,17 @@ class ParametricStudy:
                 )
                 duplicates += self._remove_duplicate_entries(overwrite=overwrite)
 
+        # convert priority, iteration, and random seed to int type explicitly
+        self._data_frame[ColumnNames.PRIORITY] = self._data_frame[ColumnNames.PRIORITY].astype(
+            pd.Int64Dtype()
+        )
+        self._data_frame[ColumnNames.ITERATION] = self._data_frame[ColumnNames.ITERATION].astype(
+            pd.Int64Dtype()
+        )
+        self._data_frame[ColumnNames.RANDOM_SEED] = self._data_frame[
+            ColumnNames.RANDOM_SEED
+        ].astype(pd.Int64Dtype())
+
         if duplicates > 0:
             error_list.append(f"Removed {duplicates} duplicate simulation(s).")
         return error_list
