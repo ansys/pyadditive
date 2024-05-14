@@ -1471,6 +1471,7 @@ class ParametricStudy:
                 )
 
         self._data_frame = duplicates_removed_df
+        self._data_frame.reset_index(drop=True, inplace=True)
         n_removed = len(current_df) - len(duplicates_removed_df)
         LOG.debug(f"Removed {n_removed} duplicate simulation(s).")
         return n_removed
