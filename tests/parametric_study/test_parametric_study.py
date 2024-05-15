@@ -1637,9 +1637,9 @@ def test_add_inputs_overwrites_duplicate_entries_by_keeping_earlier_entry(
 
     df = study.data_frame()
     assert len(df) == 3
-    assert df.loc[0, ps.ColumnNames.ID].values[0] == "sb_id_1"
-    assert df.loc[0, ps.ColumnNames.ID].values[1] == "p_id_1"
-    assert df.loc[0, ps.ColumnNames.ID].values[2] == "m_id_1"
+    assert df.loc[0, ps.ColumnNames.ID] == "sb_id_1"
+    assert df.loc[1, ps.ColumnNames.ID] == "p_id_1"
+    assert df.loc[2, ps.ColumnNames.ID] == "m_id_1"
 
 
 @pytest.mark.parametrize("input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP)])
@@ -2023,6 +2023,7 @@ def test_import_csv_study_adds_simulations_of_multiple_input_types_to_new_study(
     # assert
     assert len(errors) == 0
     assert len(study.data_frame()) == 15
+    assert len(study.data_frame().index) == len(study.data_frame().index.unique())
 
 
 def test_import_csv_study_adds_simulations_to_existing_study(tmp_path: pytest.TempPathFactory):

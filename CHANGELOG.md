@@ -1,6 +1,6 @@
 # Changelog
 
-## PyAdditive 0.18.0b4
+## PyAdditive 0.18.0b5
 
 ### Breaking Changes
 * Removed the `save_file_name` parameter from `ParametricStudy.load()`. [#302](https://github.com/ansys/pyadditive/pull/302)
@@ -21,6 +21,7 @@
 * Added Ansys installation path for linux to Additive object initializer. [#308](https://github.com/ansys/pyadditive/issues/308)
 * CSV files with empty thermal parameters of a microstructure simulation will be imported [#309](https://github.com/ansys/pyadditive/issues/309)
 * Gracefully return from run_simulations when no simulations meet criteria [#318](https://github.com/ansys/pyadditive/pull/318)
+* Fixed simulation results being updated for incorrect simulations in parametric studies. [#364] (https://github.com/ansys/pyadditive/issues/364)
 
 ### Doc Improvements
 * Updated parametric study examples to show importing a study from a csv file in [#259](https://github.com/ansys/pyadditive/pull/259/)

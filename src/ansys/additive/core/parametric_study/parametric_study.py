@@ -1471,6 +1471,7 @@ class ParametricStudy:
                 )
 
         self._data_frame = duplicates_removed_df
+        self._data_frame.reset_index(drop=True, inplace=True)
         n_removed = len(current_df) - len(duplicates_removed_df)
         LOG.debug(f"Removed {n_removed} duplicate simulation(s).")
         return n_removed
@@ -1678,6 +1679,17 @@ class ParametricStudy:
                     ignore_index=True,
                 )
                 duplicates += self._remove_duplicate_entries(overwrite=overwrite)
+
+        # convert priority, iteration, and random seed to int type explicitly
+        self._data_frame[ColumnNames.PRIORITY] = self._data_frame[ColumnNames.PRIORITY].astype(
+            pd.Int64Dtype()
+        )
+        self._data_frame[ColumnNames.ITERATION] = self._data_frame[ColumnNames.ITERATION].astype(
+            pd.Int64Dtype()
+        )
+        self._data_frame[ColumnNames.RANDOM_SEED] = self._data_frame[
+            ColumnNames.RANDOM_SEED
+        ].astype(pd.Int64Dtype())
 
         if duplicates > 0:
             error_list.append(f"Removed {duplicates} duplicate simulation(s).")
