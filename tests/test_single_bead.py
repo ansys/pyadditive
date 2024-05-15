@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
+
 from ansys.api.additive.v0.additive_domain_pb2 import MeltPoolTimeStep
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import pytest
@@ -36,9 +38,9 @@ from ansys.additive.core.single_bead import (
 from . import test_utils
 
 
-def test_MeltPool_init_converts_MeltPoolMessage():
+def test_MeltPool_init_converts_MeltPoolMessage(tmp_path: pytest.TempPathFactory):
     # arrange, act
-    melt_pool = MeltPool(test_utils.get_test_melt_pool_message())
+    melt_pool = MeltPool(test_utils.get_test_melt_pool_message(), tmp_path)
 
     # assert
     df = melt_pool.data_frame()
@@ -53,9 +55,11 @@ def test_MeltPool_init_converts_MeltPoolMessage():
     assert melt_pool.thermal_history_output == None
 
 
-def test_MeltPool_init_converts_MeltPoolMessage_with_thermal_history():
+def test_MeltPool_init_converts_MeltPoolMessage_with_thermal_history(
+    tmp_path: pytest.TempPathFactory,
+):
     # arrange, act
-    melt_pool = MeltPool(test_utils.get_test_melt_pool_message_with_thermal_history())
+    melt_pool = MeltPool(test_utils.get_test_melt_pool_message_with_thermal_history(), tmp_path)
 
     # assert
     df = melt_pool.data_frame()
@@ -67,14 +71,14 @@ def test_MeltPool_init_converts_MeltPoolMessage_with_thermal_history():
     assert df.iloc[0]["reference_width"] == 5
     assert df.iloc[0]["depth"] == 6
     assert df.iloc[0]["reference_depth"] == 7
-    assert "GridFullThermal" in str(melt_pool.thermal_history_output)
+    assert "thermal-history" in str(melt_pool.thermal_history_output)
     assert len(list(melt_pool.thermal_history_output.glob("*.vtk"))) == 11
 
 
-def test_SingleBeadSummary_init_returns_valid_result():
+def test_SingleBeadSummary_init_returns_valid_result(tmp_path: pytest.TempPathFactory):
     # arrange
     melt_pool_msg = test_utils.get_test_melt_pool_message()
-    expected_melt_pool = MeltPool(melt_pool_msg)
+    expected_melt_pool = MeltPool(melt_pool_msg, tmp_path)
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input = SingleBeadInput(
@@ -85,7 +89,7 @@ def test_SingleBeadSummary_init_returns_valid_result():
     )
 
     # act
-    summary = SingleBeadSummary(input, melt_pool_msg)
+    summary = SingleBeadSummary(input, melt_pool_msg, str())
 
     # assert
     assert input == summary.input
@@ -93,10 +97,12 @@ def test_SingleBeadSummary_init_returns_valid_result():
     assert summary.melt_pool.thermal_history_output == None
 
 
-def test_SingleBeadSummary_init_with_thermal_history_returns_valid_result():
+def test_SingleBeadSummary_init_with_thermal_history_returns_valid_result(
+    tmp_path: pytest.TempPathFactory,
+):
     # arrange
     melt_pool_msg = test_utils.get_test_melt_pool_message_with_thermal_history()
-    expected_melt_pool = MeltPool(melt_pool_msg)
+    expected_melt_pool = MeltPool(melt_pool_msg, tmp_path)
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input = SingleBeadInput(
@@ -107,12 +113,12 @@ def test_SingleBeadSummary_init_with_thermal_history_returns_valid_result():
     )
 
     # act
-    summary = SingleBeadSummary(input, melt_pool_msg)
+    summary = SingleBeadSummary(input, melt_pool_msg, tmp_path)
 
     # assert
     assert input == summary.input
     assert expected_melt_pool == summary.melt_pool
-    assert "GridFullThermal" in str(summary.melt_pool.thermal_history_output)
+    assert "thermal-history" in str(summary.melt_pool.thermal_history_output)
     assert len(list(summary.melt_pool.thermal_history_output.glob("*.vtk"))) == 11
 
 
@@ -125,11 +131,11 @@ def test_SingleBeadSummary_init_with_thermal_history_returns_valid_result():
     ],
 )
 def test_SingleBeadSummary_init_raises_exception_for_invalid_melt_pool_message(
-    invalid_obj,
+    invalid_obj, tmp_path: pytest.TempPathFactory
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid message type") as exc_info:
-        SingleBeadSummary(SingleBeadInput(), invalid_obj)
+        SingleBeadSummary(SingleBeadInput(), invalid_obj, tmp_path)
 
 
 @pytest.mark.parametrize(
@@ -141,11 +147,11 @@ def test_SingleBeadSummary_init_raises_exception_for_invalid_melt_pool_message(
     ],
 )
 def test_SingleBeadSummary_init_raises_exception_for_invalid_single_bead_input(
-    invalid_obj,
+    invalid_obj, tmp_path: pytest.TempPathFactory
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid input type") as exc_info:
-        SingleBeadSummary(invalid_obj, MeltPoolMessage())
+        SingleBeadSummary(invalid_obj, MeltPoolMessage(), tmp_path)
 
 
 def test_SingleBeadInput_to_simulation_request_assigns_values():
@@ -302,11 +308,11 @@ def test_SingleBeadInput_repr_with_thermal_history_creates_expected_string():
     )
 
 
-def test_MeltPool_eq_returns_expected_value():
+def test_MeltPool_eq_returns_expected_value(tmp_path: pytest.TempPathFactory):
     # arrange
     mp_msg = MeltPoolMessage()
-    mp1 = MeltPool(mp_msg)
-    mp2 = MeltPool(mp_msg)
+    mp1 = MeltPool(mp_msg, tmp_path)
+    mp2 = MeltPool(mp_msg, tmp_path)
     mp_msg.time_steps.append(
         MeltPoolTimeStep(
             laser_x=1,
@@ -318,7 +324,7 @@ def test_MeltPool_eq_returns_expected_value():
             reference_depth=7,
         )
     )
-    mp3 = MeltPool(mp_msg)
+    mp3 = MeltPool(mp_msg, tmp_path)
 
     # act, assert
     assert mp1 == mp2
@@ -326,7 +332,7 @@ def test_MeltPool_eq_returns_expected_value():
     assert mp1 != MeltPoolMessage()
 
 
-def test_MeltPool_repr_returns_expected_string():
+def test_MeltPool_repr_returns_expected_string(tmp_path: pytest.TempPathFactory):
     # arrange
     mp_msg = MeltPoolMessage()
     mp_msg.time_steps.append(
@@ -341,7 +347,7 @@ def test_MeltPool_repr_returns_expected_string():
         )
     )
 
-    mp = MeltPool(mp_msg)
+    mp = MeltPool(mp_msg, tmp_path)
 
     # act, assert
     assert mp.__repr__() == (
@@ -353,7 +359,9 @@ def test_MeltPool_repr_returns_expected_string():
     )
 
 
-def test_MeltPool_with_thermal_history_repr_returns_expected_string():
+def test_MeltPool_with_thermal_history_repr_returns_expected_string(
+    tmp_path: pytest.TempPathFactory,
+):
     # arrange
     mp_msg = MeltPoolMessage()
     mp_msg.time_steps.append(
@@ -374,7 +382,8 @@ def test_MeltPool_with_thermal_history_repr_returns_expected_string():
 
     mp_msg.thermal_history_vtk = thermal_history_vtk_bytes
 
-    mp = MeltPool(mp_msg)
+    mp = MeltPool(mp_msg, tmp_path)
+    mp_out_dir = os.path.abspath(mp.thermal_history_output)
 
     # act, assert
     assert mp.__repr__() == (
@@ -382,11 +391,13 @@ def test_MeltPool_with_thermal_history_repr_returns_expected_string():
         "             length  width  depth  reference_width  reference_depth\n"
         "bead_length                                                        \n"
         "1.0             3.0    4.0    5.0              6.0              7.0\n"
-        "grid_full_thermal_sensor_file_output_path: output-thermal-history\GridFullThermal"
+        f"grid_full_thermal_sensor_file_output_path: {mp_out_dir}"
     )
 
+    # avoid double slashes in Windows paths
 
-def test_MeltPool_with_thermal_history_extracts_vtk_files():
+
+def test_MeltPool_with_thermal_history_extracts_vtk_files(tmp_path: pytest.TempPathFactory):
     # arrange
     mp_msg = MeltPoolMessage()
     mp_msg.time_steps.append(
@@ -408,18 +419,18 @@ def test_MeltPool_with_thermal_history_extracts_vtk_files():
     mp_msg.thermal_history_vtk = thermal_history_vtk_bytes
 
     # act
-    mp = MeltPool(mp_msg)
+    mp = MeltPool(mp_msg, tmp_path)
 
     # assert
     vtk_files = list(mp.thermal_history_output.glob("*.vtk"))
     assert len(vtk_files) == 11
 
 
-def test_SingleBeadSummary_repr_returns_expected_string():
+def test_SingleBeadSummary_repr_returns_expected_string(tmp_path: pytest.TempPathFactory):
     # arrange
     msg = MeltPoolMessage()
     input = SingleBeadInput(id="myId")
-    summary = SingleBeadSummary(input, msg)
+    summary = SingleBeadSummary(input, msg, tmp_path)
 
     # act, assert
     assert (

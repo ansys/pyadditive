@@ -34,7 +34,10 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # ------------------------------------
 # Perform the required imports and connect to the Additive service.
 
+import os
+
 import matplotlib.pyplot as plt
+import pyvista as pv
 
 from ansys.additive.core import (
     Additive,
@@ -93,7 +96,12 @@ machine.laser_power = 300  # W
 # Create a :class:`SingleBeadInput` object containing the desired simulation parameters.
 
 input = SingleBeadInput(
-    machine=machine, material=material, id="single-bead-example", bead_length=0.0012  # meters
+    machine=machine,
+    material=material,
+    id="single-bead-example",
+    bead_length=0.0012,  # meters
+    output_thermal_history=True,
+    thermal_history_interval=1,
 )
 
 ###############################################################################
@@ -151,3 +159,25 @@ df.head()
 # :meth:`to_csv() <pandas.DataFrame.to_csv>` method.
 
 df.to_csv("melt_pool.csv")
+
+###############################################################################
+# Plot thermal history
+# --------------------
+# Plot the thermal history of the single bead simulation using the class
+# :class:`pyvista.Plotter`. The plot shows the temperature
+# distribution in the melt pool at each time step.
+
+plotter_xy = pv.Plotter(notebook=False, off_screen=True)
+plotter_xy.open_gif("thermal_history_xy.gif")
+
+path = summary.melt_pool.thermal_history_output
+files = [f for f in os.listdir(path) if f.endswith(".vtk")]
+
+for i in range(0, len(files)):
+    i = f"{i:07}"
+    mesh = pv.read(os.path.join(path, f"GridFullThermal_L0000000_T{i}.vtk"))
+    plotter_xy.add_mesh(mesh, scalars="Temperature_(C)", cmap="coolwarm")
+    plotter_xy.view_xy()
+    plotter_xy.write_frame()
+
+plotter_xy.close()

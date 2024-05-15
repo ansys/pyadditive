@@ -402,7 +402,8 @@ class Additive:
                     if progress.state == ProgressState.ERROR:
                         raise Exception(progress.message)
                 if response.HasField("melt_pool"):
-                    return SingleBeadSummary(input, response.melt_pool)
+                    out_dir = os.path.join(self._user_data_path, input.id)
+                    return SingleBeadSummary(input, response.melt_pool, out_dir)
                 if response.HasField("porosity_result"):
                     return PorositySummary(input, response.porosity_result)
                 if response.HasField("microstructure_result"):
