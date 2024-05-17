@@ -21,10 +21,6 @@
 # SOFTWARE.
 """Provides input and result summary containers for single bead simulations."""
 import math
-import os
-import pathlib
-import tempfile
-import zipfile
 
 from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
 from ansys.api.additive.v0.additive_domain_pb2 import SingleBeadInput as SingleBeadInputMessage
@@ -196,9 +192,7 @@ class MeltPoolColumnNames:
 class MeltPool:
     """Contains the melt pool size dimensions for each time step during a single bead simulation."""
 
-    THERMAL_HISTORY_OUTPUT_PATH = "thermal-history"
-
-    def __init__(self, msg: MeltPoolMessage, out_dir: str):
+    def __init__(self, msg: MeltPoolMessage, thermal_history_output: str | None):
         """Initialize a ``MeltPool`` object."""
         bead_length = [ts.laser_x for ts in msg.time_steps]
         length = [ts.length for ts in msg.time_steps]
@@ -217,13 +211,7 @@ class MeltPool:
             },
         )
         self._df.index.name = "bead_length"
-        if msg.thermal_history_vtk:
-            self.thermal_history_output = os.path.join(out_dir, self.THERMAL_HISTORY_OUTPUT_PATH)
-            MeltPool.extract_grid_full_thermal_sensor_file(
-                msg.thermal_history_vtk, self.thermal_history_output
-            )
-        else:
-            self.thermal_history_output = None
+        self._thermal_history_output = thermal_history_output
 
     def data_frame(self) -> DataFrame:
         """Get the data frame containing the melt pool data.
@@ -256,38 +244,9 @@ class MeltPool:
         return repr
 
     @property
-    def thermal_history_output(self) -> str:
-        """Path to the VTK file(s) containing the thermal history of the simulation
-        or ``None`` if no thermal history was not selected selected on the simulation
-        input."""
+    def thermal_history_output(self) -> str | None:
+        """Path to the thermal history output file."""
         return self._thermal_history_output
-
-    @thermal_history_output.setter
-    def thermal_history_output(self, value: str | os.PathLike | None):
-        """Set the path to the VTK file(s) containing the thermal history of the simulation."""
-        if value is None:
-            self._thermal_history_output = None
-            return
-        self._thermal_history_output = pathlib.Path(value)
-        if not os.path.exists(self._thermal_history_output):
-            os.makedirs(self._thermal_history_output)
-
-    @staticmethod
-    def extract_grid_full_thermal_sensor_file(
-        thermal_history_vtk: bytes, thermal_history_output: str
-    ):
-        """Write the message contents to a temp file and extract the thermal history vtk
-        files to the output path."""
-
-        temp = tempfile.NamedTemporaryFile(suffix=".zip", delete=False).name
-        with open(temp, "wb") as f:
-            f.write(thermal_history_vtk)
-        with zipfile.ZipFile(temp, "r") as zip_ref:
-            zip_ref.extractall(thermal_history_output)
-        try:
-            os.remove(temp)
-        except OSError:
-            pass
 
 
 class SingleBeadSummary:
@@ -297,7 +256,7 @@ class SingleBeadSummary:
         self,
         input: SingleBeadInput,
         msg: MeltPoolMessage,
-        out_dir: str,
+        thermal_history_output=str | None,
     ):
         """Initialize a ``SingleBeadSummary`` object."""
         if not isinstance(input, SingleBeadInput):
@@ -305,7 +264,7 @@ class SingleBeadSummary:
         if not isinstance(msg, MeltPoolMessage):
             raise ValueError("Invalid message type passed to init, " + self.__class__.__name__)
         self._input = input
-        self._melt_pool = MeltPool(msg, out_dir)
+        self._melt_pool = MeltPool(msg, thermal_history_output)
 
     @property
     def input(self) -> SingleBeadInput:
@@ -316,11 +275,6 @@ class SingleBeadSummary:
     def melt_pool(self) -> MeltPool:
         """Resulting melt pool."""
         return self._melt_pool
-
-    @property
-    def out_dir(self) -> str:
-        """Output directory for the simulation results."""
-        return self._out_dir
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"

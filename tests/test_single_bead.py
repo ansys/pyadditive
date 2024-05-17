@@ -38,9 +38,9 @@ from ansys.additive.core.single_bead import (
 from . import test_utils
 
 
-def test_MeltPool_init_converts_MeltPoolMessage(tmp_path: pytest.TempPathFactory):
+def test_MeltPool_init_converts_MeltPoolMessage():
     # arrange, act
-    melt_pool = MeltPool(test_utils.get_test_melt_pool_message(), tmp_path)
+    melt_pool = MeltPool(test_utils.get_test_melt_pool_message(), None)
 
     # assert
     df = melt_pool.data_frame()
@@ -55,11 +55,11 @@ def test_MeltPool_init_converts_MeltPoolMessage(tmp_path: pytest.TempPathFactory
     assert melt_pool.thermal_history_output == None
 
 
-def test_MeltPool_init_converts_MeltPoolMessage_with_thermal_history(
-    tmp_path: pytest.TempPathFactory,
-):
+def test_MeltPool_init_converts_MeltPoolMessage_with_thermal_history():
     # arrange, act
-    melt_pool = MeltPool(test_utils.get_test_melt_pool_message_with_thermal_history(), tmp_path)
+    melt_pool = MeltPool(
+        test_utils.get_test_melt_pool_message_with_thermal_history(), "thermal_history"
+    )
 
     # assert
     df = melt_pool.data_frame()
@@ -71,14 +71,13 @@ def test_MeltPool_init_converts_MeltPoolMessage_with_thermal_history(
     assert df.iloc[0]["reference_width"] == 5
     assert df.iloc[0]["depth"] == 6
     assert df.iloc[0]["reference_depth"] == 7
-    assert "thermal-history" in str(melt_pool.thermal_history_output)
-    assert len(list(melt_pool.thermal_history_output.glob("*.vtk"))) == 11
+    assert melt_pool.thermal_history_output == "thermal_history"
 
 
-def test_SingleBeadSummary_init_returns_valid_result(tmp_path: pytest.TempPathFactory):
+def test_SingleBeadSummary_init_returns_valid_result():
     # arrange
     melt_pool_msg = test_utils.get_test_melt_pool_message()
-    expected_melt_pool = MeltPool(melt_pool_msg, tmp_path)
+    expected_melt_pool = MeltPool(melt_pool_msg, None)
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input = SingleBeadInput(
@@ -89,7 +88,7 @@ def test_SingleBeadSummary_init_returns_valid_result(tmp_path: pytest.TempPathFa
     )
 
     # act
-    summary = SingleBeadSummary(input, melt_pool_msg, str())
+    summary = SingleBeadSummary(input, melt_pool_msg, None)
 
     # assert
     assert input == summary.input
@@ -118,8 +117,7 @@ def test_SingleBeadSummary_init_with_thermal_history_returns_valid_result(
     # assert
     assert input == summary.input
     assert expected_melt_pool == summary.melt_pool
-    assert "thermal-history" in str(summary.melt_pool.thermal_history_output)
-    assert len(list(summary.melt_pool.thermal_history_output.glob("*.vtk"))) == 11
+    assert summary.melt_pool.thermal_history_output == tmp_path
 
 
 @pytest.mark.parametrize(
@@ -332,7 +330,7 @@ def test_MeltPool_eq_returns_expected_value(tmp_path: pytest.TempPathFactory):
     assert mp1 != MeltPoolMessage()
 
 
-def test_MeltPool_repr_returns_expected_string(tmp_path: pytest.TempPathFactory):
+def test_MeltPool_repr_returns_expected_string():
     # arrange
     mp_msg = MeltPoolMessage()
     mp_msg.time_steps.append(
@@ -347,7 +345,7 @@ def test_MeltPool_repr_returns_expected_string(tmp_path: pytest.TempPathFactory)
         )
     )
 
-    mp = MeltPool(mp_msg, tmp_path)
+    mp = MeltPool(mp_msg, None)
 
     # act, assert
     assert mp.__repr__() == (
@@ -376,11 +374,7 @@ def test_MeltPool_with_thermal_history_repr_returns_expected_string(
         )
     )
 
-    thermal_history_vtk = test_utils.get_test_file_path("gridfullthermal.zip")
-    with open(thermal_history_vtk, "rb") as f:
-        thermal_history_vtk_bytes = f.read()
-
-    mp_msg.thermal_history_vtk = thermal_history_vtk_bytes
+    mp_msg.thermal_history_vtk_zip = test_utils.get_test_file_path("gridfullthermal.zip")
 
     mp = MeltPool(mp_msg, tmp_path)
     mp_out_dir = os.path.abspath(mp.thermal_history_output)
@@ -394,43 +388,12 @@ def test_MeltPool_with_thermal_history_repr_returns_expected_string(
         f"grid_full_thermal_sensor_file_output_path: {mp_out_dir}"
     )
 
-    # avoid double slashes in Windows paths
 
-
-def test_MeltPool_with_thermal_history_extracts_vtk_files(tmp_path: pytest.TempPathFactory):
-    # arrange
-    mp_msg = MeltPoolMessage()
-    mp_msg.time_steps.append(
-        MeltPoolTimeStep(
-            laser_x=1,
-            laser_y=2,
-            length=3,
-            width=4,
-            depth=5,
-            reference_width=6,
-            reference_depth=7,
-        )
-    )
-
-    thermal_history_vtk = test_utils.get_test_file_path("gridfullthermal.zip")
-    with open(thermal_history_vtk, "rb") as f:
-        thermal_history_vtk_bytes = f.read()
-
-    mp_msg.thermal_history_vtk = thermal_history_vtk_bytes
-
-    # act
-    mp = MeltPool(mp_msg, tmp_path)
-
-    # assert
-    vtk_files = list(mp.thermal_history_output.glob("*.vtk"))
-    assert len(vtk_files) == 11
-
-
-def test_SingleBeadSummary_repr_returns_expected_string(tmp_path: pytest.TempPathFactory):
+def test_SingleBeadSummary_repr_returns_expected_string():
     # arrange
     msg = MeltPoolMessage()
     input = SingleBeadInput(id="myId")
-    summary = SingleBeadSummary(input, msg, tmp_path)
+    summary = SingleBeadSummary(input, msg, None)
 
     # act, assert
     assert (

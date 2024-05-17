@@ -402,8 +402,7 @@ class Additive:
                     if progress.state == ProgressState.ERROR:
                         raise Exception(progress.message)
                 if response.HasField("melt_pool"):
-                    out_dir = os.path.join(self._user_data_path, input.id)
-                    return SingleBeadSummary(input, response.melt_pool, out_dir)
+                    return self._check_for_thermal_history(response, input)
                 if response.HasField("porosity_result"):
                     return PorositySummary(input, response.porosity_result)
                 if response.HasField("microstructure_result"):
@@ -625,3 +624,26 @@ class Additive:
             if input.id in ids:
                 raise ValueError(f'Duplicate simulation ID "{input.id}" in input list')
             ids.append(input.id)
+
+    def _check_for_thermal_history(self, response, input) -> SingleBeadSummary:
+        """Check for single bead thermal history output on the response.
+
+        If the response contains thermal history output, download the output and extract
+        it. Extracted files are placed in a folder named "thermal_history" in the user
+        data path.
+        """
+        thermal_history_output = None
+        if response.melt_pool.thermal_history_vtk_zip != str():
+            thermal_history_output = os.path.join(self._user_data_path, input.id, "thermal_history")
+            local_thermal_history = download_file(
+                self._servers[0].simulation_stub,
+                response.melt_pool.thermal_history_vtk_zip,
+                thermal_history_output,
+            )
+            with zipfile.ZipFile(local_thermal_history, "r") as zip_ref:
+                zip_ref.extractall(thermal_history_output)
+            try:
+                os.remove(local_thermal_history)
+            except OSError:
+                pass
+        return SingleBeadSummary(input, response.melt_pool, thermal_history_output)

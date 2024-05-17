@@ -101,15 +101,11 @@ def get_test_melt_pool_message() -> MeltPoolMessage:
                 reference_depth=7,
             )
         ],
-        thermal_history_vtk=None,
+        thermal_history_vtk_zip=str(),
     )
 
 
 def get_test_melt_pool_message_with_thermal_history() -> MeltPoolMessage:
-    thermal_history_vtk = get_test_file_path("gridfullthermal.zip")
-    with open(thermal_history_vtk, "rb") as f:
-        thermal_history_vtk_bytes = f.read()
-
     return MeltPoolMessage(
         time_steps=[
             MeltPoolTimeStep(
@@ -122,7 +118,7 @@ def get_test_melt_pool_message_with_thermal_history() -> MeltPoolMessage:
                 reference_depth=7,
             )
         ],
-        thermal_history_vtk=thermal_history_vtk_bytes,
+        thermal_history_vtk_zip=get_test_file_path("gridfullthermal.zip"),
     )
 
 
