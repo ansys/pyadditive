@@ -217,7 +217,7 @@ def test_add_summaries_with_single_bead_summary_adds_row(tmp_path: pytest.TempPa
         machine=machine,
         material=material,
     )
-    summary = SingleBeadSummary(input, melt_pool_msg)
+    summary = SingleBeadSummary(input, melt_pool_msg, None)
     expected_build_rate = build_rate(
         machine.scan_speed,
         machine.layer_thickness,
@@ -429,7 +429,7 @@ def test_add_summaries_overwrites_duplicate_entries_with_simulation_status_compl
         material=material,
     )
     melt_pool_msg = test_utils.get_test_melt_pool_message()
-    summary = SingleBeadSummary(input_sb_1, melt_pool_msg)
+    summary = SingleBeadSummary(input_sb_1, melt_pool_msg, None)
     expected_build_rate = build_rate(
         machine.scan_speed,
         machine.layer_thickness,
@@ -1225,8 +1225,8 @@ def test_update_updates_single_bead_permutation(tmp_path: pytest.TempPathFactory
     id = df1.loc[0, ps.ColumnNames.ID]
     input = SingleBeadInput(id=id)
     mp_msg = test_utils.get_test_melt_pool_message()
-    mp_median = MeltPool(mp_msg).data_frame().median()
-    summary = SingleBeadSummary(input, mp_msg)
+    mp_median = MeltPool(mp_msg, tmp_path).data_frame().median()
+    summary = SingleBeadSummary(input, mp_msg, None)
 
     # act
     study.update([summary])
@@ -1670,7 +1670,7 @@ def test_add_inputs_does_not_overwrite_simulation_with_status_completed(
     study = ps.ParametricStudy(tmp_path / "test_study")
     input_sb_1 = SingleBeadInput(id="sb_id_1")
     melt_pool_msg = test_utils.get_test_melt_pool_message()
-    summary = SingleBeadSummary(input_sb_1, melt_pool_msg)
+    summary = SingleBeadSummary(input_sb_1, melt_pool_msg, None)
 
     # act
     study.add_summaries([summary], iteration=1)

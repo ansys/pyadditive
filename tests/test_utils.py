@@ -100,7 +100,25 @@ def get_test_melt_pool_message() -> MeltPoolMessage:
                 depth=6,
                 reference_depth=7,
             )
-        ]
+        ],
+        thermal_history_vtk_zip=str(),
+    )
+
+
+def get_test_melt_pool_message_with_thermal_history() -> MeltPoolMessage:
+    return MeltPoolMessage(
+        time_steps=[
+            MeltPoolTimeStep(
+                laser_x=1,
+                laser_y=2,
+                length=3,
+                width=4,
+                reference_width=5,
+                depth=6,
+                reference_depth=7,
+            )
+        ],
+        thermal_history_vtk_zip=get_test_file_path("gridfullthermal.zip"),
     )
 
 
@@ -111,7 +129,7 @@ def get_test_SingleBeadSummary(input: SingleBeadInput = None) -> SingleBeadSumma
             material=get_test_material(),
         )
 
-    return SingleBeadSummary(input, melt_pool_msg)
+    return SingleBeadSummary(input, melt_pool_msg, None)
 
 
 def get_test_file_path(name: str) -> str:

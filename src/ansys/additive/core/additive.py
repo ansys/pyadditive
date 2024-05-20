@@ -402,7 +402,17 @@ class Additive:
                     if progress.state == ProgressState.ERROR:
                         raise Exception(progress.message)
                 if response.HasField("melt_pool"):
-                    return SingleBeadSummary(input, response.melt_pool)
+                    thermal_history_output = None
+                    if self._check_if_thermal_history_is_present(response):
+                        thermal_history_output = os.path.join(
+                            self._user_data_path, input.id, "thermal_history"
+                        )
+                        download_file(
+                            self._servers[0].simulation_stub,
+                            response.melt_pool.thermal_history_vtk_zip,
+                            thermal_history_output,
+                        )
+                    return SingleBeadSummary(input, response.melt_pool, thermal_history_output)
                 if response.HasField("porosity_result"):
                     return PorositySummary(input, response.porosity_result)
                 if response.HasField("microstructure_result"):
@@ -624,3 +634,7 @@ class Additive:
             if input.id in ids:
                 raise ValueError(f'Duplicate simulation ID "{input.id}" in input list')
             ids.append(input.id)
+
+    def _check_if_thermal_history_is_present(self, response) -> bool:
+        """Check if thermal history output is present in the response."""
+        return response.melt_pool.thermal_history_vtk_zip != str()
