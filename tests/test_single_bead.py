@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import os
+import shutil
 
 from ansys.api.additive.v0.additive_domain_pb2 import MeltPoolTimeStep
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
@@ -38,9 +39,16 @@ from ansys.additive.core.single_bead import (
 from . import test_utils
 
 
-def test_MeltPool_init_converts_MeltPoolMessage():
+@pytest.mark.parametrize(
+    "thermal_history_output",
+    [
+        None,
+        "thermal_history",
+    ],
+)
+def test_MeltPool_init_converts_MeltPoolMessage(thermal_history_output):
     # arrange, act
-    melt_pool = MeltPool(test_utils.get_test_melt_pool_message(), None)
+    melt_pool = MeltPool(test_utils.get_test_melt_pool_message(), thermal_history_output)
 
     # assert
     df = melt_pool.data_frame()
@@ -52,26 +60,7 @@ def test_MeltPool_init_converts_MeltPoolMessage():
     assert df.iloc[0]["reference_width"] == 5
     assert df.iloc[0]["depth"] == 6
     assert df.iloc[0]["reference_depth"] == 7
-    assert melt_pool.thermal_history_output == None
-
-
-def test_MeltPool_init_converts_MeltPoolMessage_with_thermal_history():
-    # arrange, act
-    melt_pool = MeltPool(
-        test_utils.get_test_melt_pool_message_with_thermal_history(), "thermal_history"
-    )
-
-    # assert
-    df = melt_pool.data_frame()
-    assert df is not None
-    assert len(df.index) == 1
-    assert df.index[0] == 1
-    assert df.iloc[0]["length"] == 3
-    assert df.iloc[0]["width"] == 4
-    assert df.iloc[0]["reference_width"] == 5
-    assert df.iloc[0]["depth"] == 6
-    assert df.iloc[0]["reference_depth"] == 7
-    assert melt_pool.thermal_history_output == "thermal_history"
+    assert melt_pool.thermal_history_output == thermal_history_output
 
 
 def test_SingleBeadSummary_init_returns_valid_result():
@@ -101,7 +90,6 @@ def test_SingleBeadSummary_init_with_thermal_history_returns_valid_result(
 ):
     # arrange
     melt_pool_msg = test_utils.get_test_melt_pool_message_with_thermal_history()
-    expected_melt_pool = MeltPool(melt_pool_msg, tmp_path)
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input = SingleBeadInput(
@@ -110,14 +98,16 @@ def test_SingleBeadSummary_init_with_thermal_history_returns_valid_result(
         machine=machine,
         material=material,
     )
+    thermal_history_vtk_zip = test_utils.get_test_file_path("gridfullthermal.zip")
+    shutil.copy(thermal_history_vtk_zip, tmp_path)
 
     # act
     summary = SingleBeadSummary(input, melt_pool_msg, tmp_path)
 
     # assert
     assert input == summary.input
-    assert expected_melt_pool == summary.melt_pool
     assert summary.melt_pool.thermal_history_output == tmp_path
+    assert len(os.listdir(summary.melt_pool.thermal_history_output)) == 11
 
 
 @pytest.mark.parametrize(
@@ -150,6 +140,18 @@ def test_SingleBeadSummary_init_raises_exception_for_invalid_single_bead_input(
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid input type") as exc_info:
         SingleBeadSummary(invalid_obj, MeltPoolMessage(), tmp_path)
+
+
+def test_SingleBeadSummary_init_raises_exception_if_thermal_history_file_not_found(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    melt_pool_msg = test_utils.get_test_melt_pool_message()
+    input = SingleBeadInput()
+
+    # act, assert
+    with pytest.raises(FileNotFoundError, match="not found") as exc_info:
+        SingleBeadSummary(input, melt_pool_msg, tmp_path)
 
 
 def test_SingleBeadInput_to_simulation_request_assigns_values():

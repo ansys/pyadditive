@@ -21,6 +21,8 @@
 # SOFTWARE.
 """Provides input and result summary containers for single bead simulations."""
 import math
+import os
+import zipfile
 
 from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
 from ansys.api.additive.v0.additive_domain_pb2 import SingleBeadInput as SingleBeadInputMessage
@@ -252,6 +254,8 @@ class MeltPool:
 class SingleBeadSummary:
     """Provides a summary of a single bead simulation."""
 
+    THERMAL_HISTORY_OUTPUT_ZIP = "gridfullthermal.zip"
+
     def __init__(
         self,
         input: SingleBeadInput,
@@ -265,6 +269,8 @@ class SingleBeadSummary:
             raise ValueError("Invalid message type passed to init, " + self.__class__.__name__)
         self._input = input
         self._melt_pool = MeltPool(msg, thermal_history_output)
+        if thermal_history_output is not None:
+            self._extract_thermal_history(thermal_history_output)
 
     @property
     def input(self) -> SingleBeadInput:
@@ -281,3 +287,15 @@ class SingleBeadSummary:
         for k in self.__dict__:
             repr += k.replace("_", "", 1) + ": " + str(getattr(self, k)) + "\n"
         return repr
+
+    def _extract_thermal_history(self, thermal_history_output):
+        """Extract the thermal history output."""
+        zip_file = os.path.join(thermal_history_output, self.THERMAL_HISTORY_OUTPUT_ZIP)
+        if not os.path.isfile(zip_file):
+            raise FileNotFoundError("Thermal history files not found: " + zip_file)
+        with zipfile.ZipFile(zip_file, "r") as zip_ref:
+            zip_ref.extractall(thermal_history_output)
+        try:
+            os.remove(zip_file)
+        except OSError:
+            pass
