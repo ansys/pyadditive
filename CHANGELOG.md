@@ -5,6 +5,7 @@
 ### Breaking Changes
 
 ### New Features
+* Default version of Additive Server is 25.1 when creating a client connection.
 * Single bead simulations with thermal history are now supported.
 
 ### Bug Fixes
@@ -13,9 +14,9 @@
 * Updated the single bead example to show usage with the thermal history option.
 
 ### Contributors
-* Peter Krull - <peter.krull@ansys.com>
-* Safee Rehman - <safee.rehman@ansys.com>
-* Julie O'Hara - <julie.ohara@ansys.com>
+* pkrull-ansys
+* safeerehman
+* julieatansys
 
 ## PyAdditive 0.18.0
 
@@ -47,9 +48,9 @@
 * Edited introductory sentences in examples [#275](https://github.com/ansys/pyadditive/pull/275)
 
 ### Contributors
-* Peter Krull - <peter.krull@ansys.com>
-* Safee Rehman - <safee.rehman@ansys.com>
-* Julie O'Hara - <julie.ohara@ansys.com>
+* pkrull-ansys
+* safeerehman
+* julieatansys
 
 ## PyAdditive 0.17.2
 
@@ -57,7 +58,7 @@
 * Use print statement for material list in examples [#269](https://github.com/ansys/pyadditive/issues/269)
 
 ### Contributors
-* Peter Krull - <peter.krull@ansys.com>
+* pkrull-ansys
 
 ## PyAdditive 0.17.1
 
@@ -65,7 +66,7 @@
 * Add license warning to Getting started page [#262](https://github.com/ansys/pyadditive/issues/262)
 
 ### Contributors
-* Peter Krull - <peter.krull@ansys.com>
+* pkrull-ansys
 
 ## PyAdditive 0.17.0
 
@@ -85,10 +86,10 @@
 
 ### Contributors
 
-* Peter Krull - <peter.krull@ansys.com>
-* Abdul Khader Khan - <abdulkhader.khan@ansys.com>
-* Kathy Pippert - <kathy.pippert@ansys.com>
-* Julie O'Hara - <julie.ohara@ansys.com>
+* pkrull-ansys
+* ABDULKHADERKHAN
+* PipKat
+* julieatansys
 
 ## PyAdditive 0.16.0
 
@@ -112,7 +113,7 @@
 
 ### Contributors
 
-* Peter Krull - <peter.krull@ansys.com>
+* pkrull-ansys
 
 ## PyAdditive 0.15.0, 2023-10-09
 
@@ -131,7 +132,7 @@
 
 ### Contributors
 
-* Peter Krull - <peter.krull@ansys.com>
+* pkrull-ansys
 
 
 ## PyAdditive 0.14.0, 2023-08-08
@@ -147,7 +148,7 @@
 
 ### Contributors
 
-* Peter Krull - <peter.krull@ansys.com>
+* pkrull-ansys
 
 ## PyAdditive 0.13.0, 2023-07-17
 
@@ -165,4 +166,4 @@
 
 ### Contributors
 
-* Peter Krull - <peter.krull@ansys.com>
+* pkrull-ansys
