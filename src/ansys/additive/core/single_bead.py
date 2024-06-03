@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides input and result summary containers for single bead simulations."""
+from __future__ import annotations
+
 import math
 import os
 import zipfile
@@ -194,8 +196,15 @@ class MeltPoolColumnNames:
 class MeltPool:
     """Contains the melt pool size dimensions for each time step during a single bead simulation."""
 
-    def __init__(self, msg: MeltPoolMessage, thermal_history_output: str | None):
-        """Initialize a ``MeltPool`` object."""
+    def __init__(self, msg: MeltPoolMessage, thermal_history_output: str | None = None):
+        """Initialize a ``MeltPool`` object.
+
+        Parameters:
+            msg: MeltPoolMessage
+                The message containing the melt pool data.
+            thermal_history_output: str | None
+                Path to the thermal history output file.
+        """
         bead_length = [ts.laser_x for ts in msg.time_steps]
         length = [ts.length for ts in msg.time_steps]
         width = [ts.width for ts in msg.time_steps]
@@ -260,7 +269,7 @@ class SingleBeadSummary:
         self,
         input: SingleBeadInput,
         msg: MeltPoolMessage,
-        thermal_history_output=str | None,
+        thermal_history_output: str | None = None,
     ):
         """Initialize a ``SingleBeadSummary`` object."""
         if not isinstance(input, SingleBeadInput):
