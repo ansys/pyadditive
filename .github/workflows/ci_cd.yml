@@ -14,11 +14,11 @@ permissions:
   packages: read
 
 env:
-  MAIN_PYTHON_VERSION: "3.10"
+  MAIN_PYTHON_VERSION: "3.9"
   DOCUMENTATION_CNAME: "additive.docs.pyansys.com"
   LIBRARY_NAME: "ansys-additive-core"
   # NOTE: The server needs to stay in a private registry.
-  ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys-internal/additive:25.1.0-alpha3"
+  ANSYS_PRODUCT_IMAGE: "ghcr.io/ansys-internal/additive:25.1.0-alpha4"
   ANSYS_PRODUCT_CONTAINER: "ansys-additive-container"
 
 concurrency:
@@ -76,6 +76,8 @@ jobs:
     steps:
       - name: "Run pytest"
         uses: ansys/actions/tests-pytest@v6
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Upload Coverage Results
         if: (matrix.python-version == env.MAIN_PYTHON_VERSION) && (runner.os == 'Linux')
