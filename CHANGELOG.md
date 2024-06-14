@@ -10,6 +10,7 @@
 * Added description field to AdditiveMaterial
 
 ### Bug Fixes
+* Fixed import of microstructure simulations in csv file when random seed is undefined.
 
 ### Doc Improvements
 * Updated the single bead example to show usage with the thermal history option.
