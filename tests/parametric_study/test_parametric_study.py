@@ -1010,6 +1010,73 @@ def test_generate_microstructure_permutations_creates_permutations(
                                         )
 
 
+@pytest.mark.parametrize("value", [None, np.nan])
+def test_generate_microstructure_with_Nones_NANs_succeeds(value, tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    powers = [50]
+    scan_speeds = [1]
+    cooling_rate = value
+    thermal_gradient = value
+    melt_pool_width = value
+    melt_pool_depth = value
+    random_seed = value
+
+    # act
+    result = study.generate_microstructure_permutations(
+        "material",
+        powers,
+        scan_speeds,
+        cooling_rate=cooling_rate,
+        thermal_gradient=thermal_gradient,
+        melt_pool_width=melt_pool_width,
+        melt_pool_depth=melt_pool_depth,
+        random_seed=random_seed,
+    )
+
+    # assert
+    assert result == 1
+    df = study.data_frame()
+    assert len(df) == 1
+    assert np.isnan(df.loc[0, ps.ColumnNames.COOLING_RATE])
+    assert np.isnan(df.loc[0, ps.ColumnNames.THERMAL_GRADIENT])
+    assert np.isnan(df.loc[0, ps.ColumnNames.MICRO_MELT_POOL_WIDTH])
+    assert np.isnan(df.loc[0, ps.ColumnNames.MICRO_MELT_POOL_DEPTH])
+    assert np.isnan(df.loc[0, ps.ColumnNames.RANDOM_SEED])
+
+
+@pytest.mark.parametrize("value", [None, np.nan])
+def test_validate_microstructure_with_Nones_NANs_succeeds(value, tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    d = {
+        ps.ColumnNames.MICRO_MIN_X: 0,
+        ps.ColumnNames.MICRO_MIN_Y: 0,
+        ps.ColumnNames.MICRO_MIN_Z: 0,
+        ps.ColumnNames.MICRO_SIZE_X: 0.0015,
+        ps.ColumnNames.MICRO_SIZE_Y: 0.002,
+        ps.ColumnNames.MICRO_SIZE_Z: 0.003,
+        ps.ColumnNames.MICRO_SENSOR_DIM: 0.001,
+        ps.ColumnNames.COOLING_RATE: value,
+        ps.ColumnNames.THERMAL_GRADIENT: value,
+        ps.ColumnNames.MICRO_MELT_POOL_WIDTH: value,
+        ps.ColumnNames.MICRO_MELT_POOL_DEPTH: value,
+        ps.ColumnNames.RANDOM_SEED: value,
+    }
+    series = pd.Series(d)
+
+    # act
+    result = study._validate_microstructure_input(
+        AdditiveMachine(),
+        AdditiveMaterial(name="material"),
+        series,
+    )
+
+    # assert
+    assert result[0]
+    assert not result[1]
+
+
 def test_generate_microstructure_permutations_converts_Nones_to_NANs_in_dataframe(
     tmp_path: pytest.TempPathFactory,
 ):
@@ -2123,7 +2190,7 @@ def test_import_csv_study_does_not_add_simulations_with_invalid_inputs_and_retur
     [
         ("single-bead-nan-input-parameters.csv", 6),
         ("porosity-nan-input-parameters.csv", 7),
-        ("microstructure-nan-input-parameters.csv", 8),
+        ("microstructure-nan-input-parameters.csv", 7),
     ],
 )
 def test_import_csv_study_does_not_add_simulations_with_nan_inputs_and_returns_expected_error(
