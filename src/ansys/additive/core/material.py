@@ -291,6 +291,7 @@ class AdditiveMaterial:
         anisotropic_strain_coefficient_parallel: float = 0,
         anisotropic_strain_coefficient_perpendicular: float = 0,
         anisotropic_strain_coefficient_z: float = 0,
+        description: str = "",
         elastic_modulus: float = 0,
         hardening_factor: float = 0,
         liquidus_temperature: float = 0,
@@ -330,6 +331,7 @@ class AdditiveMaterial:
             anisotropic_strain_coefficient_perpendicular
         )
         self._anisotropic_strain_coefficient_z = anisotropic_strain_coefficient_z
+        self._description = description
         self._elastic_modulus = elastic_modulus
         self._hardening_factor = hardening_factor
         self._liquidus_temperature = liquidus_temperature
@@ -474,6 +476,16 @@ class AdditiveMaterial:
     def anisotropic_strain_coefficient_z(self, value: float):
         """Set anisotropic strain coefficient z."""
         self._anisotropic_strain_coefficient_z = value
+
+    @property
+    def description(self) -> str:
+        """Description of the material."""
+        return self._description
+
+    @description.setter
+    def description(self, value: str):
+        """Set description."""
+        self._description = value
 
     @property
     def elastic_modulus(self) -> float:
