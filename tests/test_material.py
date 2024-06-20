@@ -290,7 +290,7 @@ def test_from_material_message_raises_exception_for_invalid_type(invalid_obj):
     # arrange, act, assert
     with pytest.raises(
         ValueError, match="Invalid message object passed to from_material_message()"
-    ) as exc_info:
+    ):
         AdditiveMaterial._from_material_message(invalid_obj)
 
 
@@ -399,6 +399,7 @@ def test_from_material_message_creates_AdditiveMaterial():
         anisotropic_strain_coefficient_parallel=7,
         anisotropic_strain_coefficient_perpendicular=8,
         anisotropic_strain_coefficient_z=9,
+        description="test-description",
         elastic_modulus=10,
         hardening_factor=11,
         liquidus_temperature=12,
@@ -457,6 +458,7 @@ def test_from_material_message_creates_AdditiveMaterial():
     assert am.anisotropic_strain_coefficient_parallel == 7
     assert am.anisotropic_strain_coefficient_perpendicular == 8
     assert am.anisotropic_strain_coefficient_z == 9
+    assert am.description == "test-description"
     assert am.elastic_modulus == 10
     assert am.hardening_factor == 11
     assert am.liquidus_temperature == 12
@@ -509,6 +511,7 @@ def test_to_material_message_returns_MaterialMessage():
     am.anisotropic_strain_coefficient_parallel = 7
     am.anisotropic_strain_coefficient_perpendicular = 8
     am.anisotropic_strain_coefficient_z = 9
+    am.description = "test-description"
     am.elastic_modulus = 10
     am.hardening_factor = 11
     am.liquidus_temperature = 12
@@ -565,6 +568,7 @@ def test_to_material_message_returns_MaterialMessage():
     assert msg.anisotropic_strain_coefficient_parallel == 7
     assert msg.anisotropic_strain_coefficient_perpendicular == 8
     assert msg.anisotropic_strain_coefficient_z == 9
+    assert msg.description == "test-description"
     assert msg.elastic_modulus == 10
     assert msg.hardening_factor == 11
     assert msg.liquidus_temperature == 12

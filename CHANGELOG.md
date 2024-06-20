@@ -7,6 +7,7 @@
 ### New Features
 * Default version of Additive Server is 25.1 when creating a client connection.
 * Single bead simulations with thermal history are now supported.
+* Added description field to AdditiveMaterial
 
 ### Bug Fixes
 
