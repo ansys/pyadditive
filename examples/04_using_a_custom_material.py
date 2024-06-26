@@ -98,7 +98,7 @@ custom_material = additive.add_material(
 
 ###############################################################################
 # Remove the custom material from the material library
-# ---------------------------------------------------
+# ----------------------------------------------------
 # You can remove a custom material from the material library using the
 # :meth:`~Additive.remove_material` method. Built-in materials cannot be removed
 # and will raise an error if you try to remove them.
