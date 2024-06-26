@@ -56,7 +56,9 @@ material_files = examples.download_custom_material()
 # Load custom material files
 # --------------------------
 # Use the :meth:`~Additive.load_material` method on the ``additive`` object to
-# load the files defining a custom material.
+# load custom material defnition files. The method returns an :class:`~AdditiveMaterial`
+# object that you can use in simulations. The :class:`~AdditiveMaterial` object
+# only exists in the current Python session and is not saved to disk.
 
 custom_material = additive.load_material(
     parameters_file=material_files.material_configuration_file,
@@ -79,3 +81,26 @@ input = SingleBeadInput(
 
 # Remove '#' to run the simulation
 # additive.simulate(input)
+
+###############################################################################
+# Add a custom material to the material library
+# ---------------------------------------------
+# You can add the custom material to the material library to use it in future
+# simulations. The :meth:`~Additive.add_material` method is similar to the
+# :meth:`~Additive.load_material` method, but it saves the
+# material to the server.
+
+custom_material = additive.add_material(
+    parameters_file=material_files.material_configuration_file,
+    thermal_lookup_file=material_files.thermal_properties_lookup_file,
+    characteristic_width_lookup_file=material_files.characteristic_width_lookup_file,
+)
+
+###############################################################################
+# Remove the custom material from the material library
+# ---------------------------------------------------
+# You can remove the custom material from the material library using the
+# :meth:`~Additive.remove_material` method. Built-in materials cannot be removed
+# and will raise an error if you try to remove them.
+
+additive.remove_material(custom_material.name)
