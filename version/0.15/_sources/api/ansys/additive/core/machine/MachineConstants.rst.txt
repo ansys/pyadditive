@@ -1,0 +1,248 @@
+
+
+
+
+MachineConstants
+================
+
+.. py:class:: MachineConstants
+   :canonical: ansys.additive.core.machine.MachineConstants
+
+
+
+
+Provides constants for additive manufacturing machine settings.
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: MachineConstants
+.. tab-set::
+
+
+
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_LASER_POWER`
+            - 
+          * - :py:attr:`~MIN_LASER_POWER`
+            - 
+          * - :py:attr:`~MAX_LASER_POWER`
+            - 
+          * - :py:attr:`~DEFAULT_SCAN_SPEED`
+            - 
+          * - :py:attr:`~MIN_SCAN_SPEED`
+            - 
+          * - :py:attr:`~MAX_SCAN_SPEED`
+            - 
+          * - :py:attr:`~DEFAULT_HEATER_TEMP`
+            - 
+          * - :py:attr:`~MIN_HEATER_TEMP`
+            - 
+          * - :py:attr:`~MAX_HEATER_TEMP`
+            - 
+          * - :py:attr:`~DEFAULT_LAYER_THICKNESS`
+            - 
+          * - :py:attr:`~MIN_LAYER_THICKNESS`
+            - 
+          * - :py:attr:`~MAX_LAYER_THICKNESS`
+            - 
+          * - :py:attr:`~DEFAULT_BEAM_DIAMETER`
+            - 
+          * - :py:attr:`~MIN_BEAM_DIAMETER`
+            - 
+          * - :py:attr:`~MAX_BEAM_DIAMETER`
+            - 
+          * - :py:attr:`~DEFAULT_STARTING_LAYER_ANGLE`
+            - 
+          * - :py:attr:`~MIN_STARTING_LAYER_ANGLE`
+            - 
+          * - :py:attr:`~MAX_STARTING_LAYER_ANGLE`
+            - 
+          * - :py:attr:`~DEFAULT_LAYER_ROTATION_ANGLE`
+            - 
+          * - :py:attr:`~MIN_LAYER_ROTATION_ANGLE`
+            - 
+          * - :py:attr:`~MAX_LAYER_ROTATION_ANGLE`
+            - 
+          * - :py:attr:`~DEFAULT_HATCH_SPACING`
+            - 
+          * - :py:attr:`~MIN_HATCH_SPACING`
+            - 
+          * - :py:attr:`~MAX_HATCH_SPACING`
+            - 
+          * - :py:attr:`~DEFAULT_SLICING_STRIPE_WIDTH`
+            - 
+          * - :py:attr:`~MIN_SLICING_STRIPE_WIDTH`
+            - 
+          * - :py:attr:`~MAX_SLICING_STRIPE_WIDTH`
+            - 
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.machine import MachineConstants
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: DEFAULT_LASER_POWER
+   :value: 195
+
+   
+
+.. py:attribute:: MIN_LASER_POWER
+   :value: 50
+
+   
+
+.. py:attribute:: MAX_LASER_POWER
+   :value: 700
+
+   
+
+.. py:attribute:: DEFAULT_SCAN_SPEED
+   :value: 1.0
+
+   
+
+.. py:attribute:: MIN_SCAN_SPEED
+   :value: 0.35
+
+   
+
+.. py:attribute:: MAX_SCAN_SPEED
+   :value: 2.5
+
+   
+
+.. py:attribute:: DEFAULT_HEATER_TEMP
+   :value: 80
+
+   
+
+.. py:attribute:: MIN_HEATER_TEMP
+   :value: 20
+
+   
+
+.. py:attribute:: MAX_HEATER_TEMP
+   :value: 500
+
+   
+
+.. py:attribute:: DEFAULT_LAYER_THICKNESS
+   :value: 5e-05
+
+   
+
+.. py:attribute:: MIN_LAYER_THICKNESS
+   :value: 1e-05
+
+   
+
+.. py:attribute:: MAX_LAYER_THICKNESS
+   :value: 0.0001
+
+   
+
+.. py:attribute:: DEFAULT_BEAM_DIAMETER
+   :value: 0.0001
+
+   
+
+.. py:attribute:: MIN_BEAM_DIAMETER
+   :value: 2e-05
+
+   
+
+.. py:attribute:: MAX_BEAM_DIAMETER
+   :value: 0.00014
+
+   
+
+.. py:attribute:: DEFAULT_STARTING_LAYER_ANGLE
+   :value: 57
+
+   
+
+.. py:attribute:: MIN_STARTING_LAYER_ANGLE
+   :value: 0
+
+   
+
+.. py:attribute:: MAX_STARTING_LAYER_ANGLE
+   :value: 180
+
+   
+
+.. py:attribute:: DEFAULT_LAYER_ROTATION_ANGLE
+   :value: 67
+
+   
+
+.. py:attribute:: MIN_LAYER_ROTATION_ANGLE
+   :value: 0
+
+   
+
+.. py:attribute:: MAX_LAYER_ROTATION_ANGLE
+   :value: 180
+
+   
+
+.. py:attribute:: DEFAULT_HATCH_SPACING
+   :value: 0.0001
+
+   
+
+.. py:attribute:: MIN_HATCH_SPACING
+   :value: 6e-05
+
+   
+
+.. py:attribute:: MAX_HATCH_SPACING
+   :value: 0.0002
+
+   
+
+.. py:attribute:: DEFAULT_SLICING_STRIPE_WIDTH
+   :value: 0.01
+
+   
+
+.. py:attribute:: MIN_SLICING_STRIPE_WIDTH
+   :value: 0.001
+
+   
+
+.. py:attribute:: MAX_SLICING_STRIPE_WIDTH
+   :value: 0.1
+
+   
+
+
+
