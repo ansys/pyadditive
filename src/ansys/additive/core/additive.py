@@ -550,7 +550,7 @@ class Additive:
             Name of the material to remove.
         """
         if name.lower() in (material.lower() for material in RESERVED_MATERIAL_NAMES):
-            raise ValueError(f"Unable to remove reserved material '{name}'.")
+            raise ValueError(f"Unable to remove Ansys-supplied material '{name}'.")
 
         self._servers[0].materials_stub.RemoveMaterial(RemoveMaterialRequest(name=name))
 
