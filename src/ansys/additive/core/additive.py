@@ -32,7 +32,11 @@ import os
 import zipfile
 
 from ansys.api.additive import __version__ as api_version
-from ansys.api.additive.v0.additive_materials_pb2 import GetMaterialRequest
+from ansys.api.additive.v0.additive_materials_pb2 import (
+    AddMaterialRequest,
+    GetMaterialRequest,
+    RemoveMaterialRequest,
+)
 from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
 from google.protobuf.empty_pb2 import Empty
 import grpc
@@ -41,7 +45,7 @@ from ansys.additive.core import USER_DATA_PATH, __version__
 from ansys.additive.core.download import download_file
 from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
 from ansys.additive.core.logger import LOG
-from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.material import RESERVED_MATERIAL_NAMES, AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
 from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
 from ansys.additive.core.microstructure_3d import Microstructure3DInput, Microstructure3DSummary
@@ -449,6 +453,7 @@ class Additive:
         Returns
         -------
         AdditiveMaterial
+            Requested material definition.
         """
         request = GetMaterialRequest(name=name)
         result = self._servers[0].materials_stub.GetMaterial(request)
@@ -458,7 +463,8 @@ class Additive:
     def load_material(
         parameters_file: str, thermal_lookup_file: str, characteristic_width_lookup_file: str
     ) -> AdditiveMaterial:
-        """Load a user-provided material definition.
+        """Load a custom material definition for the current session. The resulting
+        ``AdditiveMaterial`` object will not be saved to the library.
 
         Parameters
         ----------
@@ -478,12 +484,75 @@ class Additive:
             `Find Characteristic Width Values and Generate Characteristic Width File (.csv)
             <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_find_cw.html>`_
             in the *Additive Manufacturing Beta Features* documentation.
+
+        Returns
+        -------
+        AdditiveMaterial
+            A material definition for use in additive simulations.
         """
         material = AdditiveMaterial()
         material._load_parameters(parameters_file)
         material._load_thermal_properties(thermal_lookup_file)
         material._load_characteristic_width(characteristic_width_lookup_file)
         return material
+
+    def add_material(
+        self, parameters_file: str, thermal_lookup_file: str, characteristic_width_lookup_file: str
+    ) -> AdditiveMaterial | None:
+        """Add a custom material to the library for use in additive simulations.
+
+        Parameters
+        ----------
+        parameters_file: str
+            Name of the JSON file containing material parameters. For more information, see
+            `Create Material Configuration File (.json)
+            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_create_tables.html>`_
+            in the *Additive Manufacturing Beta Features* documentation.
+        thermal_lookup_file: str
+            Name of the CSV file containing the lookup table for temperature-dependent properties.
+            For more information, see `Create Material Lookup File (.csv)
+            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_create_mat_lookup.html>`_
+            in the *Additive Manufacturing Beta Features* documentation.
+        characteristic_width_lookup_file: str
+            Name of the CSV file containing the lookup table for characteristic melt pool width. For
+            more information, see
+            `Find Characteristic Width Values and Generate Characteristic Width File (.csv)
+            <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_find_cw.html>`_
+            in the *Additive Manufacturing Beta Features* documentation.
+
+        Returns
+        -------
+        AdditiveMaterial
+            A definition of the material that was added to the library.
+        """  # noqa: E501
+        material = self.load_material(
+            parameters_file, thermal_lookup_file, characteristic_width_lookup_file
+        )
+
+        names = self.materials_list()
+        if material.name.lower() in (name.lower() for name in names):
+            raise ValueError(f"Material {material.name} already exists. Unable to add material.")
+
+        request = AddMaterialRequest(id=misc.short_uuid(), material=material._to_material_message())
+        response = self._servers[0].materials_stub.AddMaterial(request)
+
+        if response.HasField("error"):
+            raise RuntimeError(response.error)
+
+        return AdditiveMaterial._from_material_message(response.material)
+
+    def remove_material(self, name: str):
+        """Remove a material from the server.
+
+        Parameters
+        ----------
+        name: str
+            Name of the material to remove.
+        """
+        if name.lower() in (material.lower() for material in RESERVED_MATERIAL_NAMES):
+            raise ValueError(f"Unable to remove Ansys-supplied material '{name}'.")
+
+        self._servers[0].materials_stub.RemoveMaterial(RemoveMaterialRequest(name=name))
 
     def tune_material(
         self,

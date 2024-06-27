@@ -1084,25 +1084,33 @@ class ParametricStudy:
                                                     cooling_rate=(
                                                         MicrostructureInput.DEFAULT_COOLING_RATE
                                                         if cooling_rate is None
+                                                        or np.isnan(cooling_rate)
                                                         else cooling_rate
                                                     ),
                                                     thermal_gradient=(
                                                         MicrostructureInput.DEFAULT_THERMAL_GRADIENT  # noqa: E501, line too long
                                                         if thermal_gradient is None
+                                                        or np.isnan(thermal_gradient)
                                                         else thermal_gradient
                                                     ),
                                                     melt_pool_width=(
                                                         MicrostructureInput.DEFAULT_MELT_POOL_WIDTH  # noqa: E501, line too long
                                                         if melt_pool_width is None
+                                                        or np.isnan(melt_pool_width)
                                                         else melt_pool_width
                                                     ),
                                                     melt_pool_depth=(
                                                         MicrostructureInput.DEFAULT_MELT_POOL_DEPTH  # noqa: E501, line too long
                                                         if melt_pool_depth is None
+                                                        or np.isnan(melt_pool_depth)
                                                         else melt_pool_depth
                                                     ),
-                                                    random_seed=random_seed
-                                                    or MicrostructureInput.DEFAULT_RANDOM_SEED,
+                                                    random_seed=(
+                                                        MicrostructureInput.DEFAULT_RANDOM_SEED
+                                                        if random_seed is None
+                                                        or np.isnan(random_seed)
+                                                        else random_seed
+                                                    ),
                                                     machine=machine,
                                                     material=AdditiveMaterial(),
                                                 )
@@ -1875,19 +1883,31 @@ class ParametricStudy:
                 sample_size_z=input[ColumnNames.MICRO_SIZE_Z],
                 sensor_dimension=input[ColumnNames.MICRO_SENSOR_DIM],
                 use_provided_thermal_parameters=test_use_provided_thermal_parameters,
-                cooling_rate=MicrostructureInput.DEFAULT_COOLING_RATE
-                if (test_cooling_rate is None or math.isnan(test_cooling_rate))
-                else test_cooling_rate,
-                thermal_gradient=MicrostructureInput.DEFAULT_THERMAL_GRADIENT
-                if (test_thermal_gradient is None or math.isnan(test_thermal_gradient))
-                else test_thermal_gradient,
-                melt_pool_width=MicrostructureInput.DEFAULT_MELT_POOL_WIDTH
-                if (test_melt_pool_width is None or math.isnan(test_melt_pool_width))
-                else test_melt_pool_width,
-                melt_pool_depth=MicrostructureInput.DEFAULT_MELT_POOL_DEPTH
-                if (test_melt_pool_depth is None or math.isnan(test_melt_pool_depth))
-                else test_melt_pool_depth,
-                random_seed=test_random_seed,
+                cooling_rate=(
+                    MicrostructureInput.DEFAULT_COOLING_RATE
+                    if (test_cooling_rate is None or math.isnan(test_cooling_rate))
+                    else test_cooling_rate
+                ),
+                thermal_gradient=(
+                    MicrostructureInput.DEFAULT_THERMAL_GRADIENT
+                    if (test_thermal_gradient is None or math.isnan(test_thermal_gradient))
+                    else test_thermal_gradient
+                ),
+                melt_pool_width=(
+                    MicrostructureInput.DEFAULT_MELT_POOL_WIDTH
+                    if (test_melt_pool_width is None or math.isnan(test_melt_pool_width))
+                    else test_melt_pool_width
+                ),
+                melt_pool_depth=(
+                    MicrostructureInput.DEFAULT_MELT_POOL_DEPTH
+                    if (test_melt_pool_depth is None or math.isnan(test_melt_pool_depth))
+                    else test_melt_pool_depth
+                ),
+                random_seed=(
+                    MicrostructureInput.DEFAULT_RANDOM_SEED
+                    if (test_random_seed is None or math.isnan(test_random_seed))
+                    else test_random_seed
+                ),
                 machine=machine,
                 material=material,
             )
