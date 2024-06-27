@@ -58,7 +58,7 @@ material_files = examples.download_custom_material()
 # Use the :meth:`~Additive.load_material` method on the ``additive`` object to
 # load custom material defnition files. The method returns an :class:`~AdditiveMaterial`
 # object that you can use in simulations. The :class:`~AdditiveMaterial` object
-# only exists in the current Python session and is not saved to disk.
+# exists only in the current Python session and is not saved.
 
 custom_material = additive.load_material(
     parameters_file=material_files.material_configuration_file,

@@ -817,7 +817,7 @@ def test_remove_material_raises_ValueError_when_removing_reserved_material(mock_
     additive = Additive()
 
     # act, assert
-    with pytest.raises(ValueError, match="Unable to remove reserved material"):
+    with pytest.raises(ValueError, match="Unable to remove Ansys-supplied material"):
         additive.remove_material(material_name)
 
 

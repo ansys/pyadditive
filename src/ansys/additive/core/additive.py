@@ -463,8 +463,8 @@ class Additive:
     def load_material(
         parameters_file: str, thermal_lookup_file: str, characteristic_width_lookup_file: str
     ) -> AdditiveMaterial:
-        """Load a user-provided material definition for the current session. The resulting
-        ``AdditiveMaterial`` object will not be stored on the server.
+        """Load a custom material definition for the current session. The resulting
+        ``AdditiveMaterial`` object will not be saved to the library.
 
         Parameters
         ----------
@@ -499,7 +499,7 @@ class Additive:
     def add_material(
         self, parameters_file: str, thermal_lookup_file: str, characteristic_width_lookup_file: str
     ) -> AdditiveMaterial | None:
-        """Add a user-provided material definition to the server for use in additive simulations.
+        """Add a custom material to the library for use in additive simulations.
 
         Parameters
         ----------
@@ -509,7 +509,7 @@ class Additive:
             <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_create_tables.html>`_
             in the *Additive Manufacturing Beta Features* documentation.
         thermal_lookup_file: str
-            Name of the CSV file containing the lookup table for thermal dependent properties.
+            Name of the CSV file containing the lookup table for temperature-dependent properties.
             For more information, see `Create Material Lookup File (.csv)
             <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_create_mat_lookup.html>`_
             in the *Additive Manufacturing Beta Features* documentation.
@@ -523,7 +523,7 @@ class Additive:
         Returns
         -------
         AdditiveMaterial
-            A definition of the material that was added to the server.
+            A definition of the material that was added to the library.
         """  # noqa: E501
         material = self.load_material(
             parameters_file, thermal_lookup_file, characteristic_width_lookup_file
