@@ -47,7 +47,7 @@ from ansys.additive.core import (
     SingleBeadInput,
 )
 
-additive = Additive()
+additive = Additive(host='127.0.0.1', port="50052", log_file="single_bead.log")
 
 ###############################################################################
 # Get server connection information

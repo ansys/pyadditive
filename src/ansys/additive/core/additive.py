@@ -30,10 +30,14 @@ import hashlib
 import logging
 import os
 import zipfile
+import time
 
 from ansys.api.additive import __version__ as api_version
 from ansys.api.additive.v0.additive_materials_pb2 import GetMaterialRequest
 from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
+from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse
+from google.longrunning.operations_pb2 import ListOperationsRequest, GetOperationRequest
 from google.protobuf.empty_pb2 import Empty
 import grpc
 
@@ -313,29 +317,32 @@ class Additive:
             f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Starting {len(inputs)} simulations",
             end="",
         )
-        threads = min(len(inputs), len(self._servers) * self._nsims_per_server)
-        with concurrent.futures.ThreadPoolExecutor(threads) as executor:
-            futures = []
-            for i, input in enumerate(inputs):
-                server_id = i % len(self._servers)
-                futures.append(
-                    executor.submit(
-                        self._simulate,
-                        input=input,
-                        server=self._servers[server_id],
-                        progress_handler=progress_handler,
-                    )
-                )
-            for future in concurrent.futures.as_completed(futures):
-                summary = future.result()
-                if isinstance(summary, SimulationError):
-                    LOG.error(f"\nError: {summary.message}")
-                summaries.append(summary)
-                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                LOG.info(
-                    f"\r{timestamp} Completed {len(summaries)} of {len(inputs)} simulations",
-                    end="",
-                )
+        summary = self._simulate(inputs[0], self._servers[0], progress_handler)
+        summaries.append(summary)
+
+        # threads = min(len(inputs), len(self._servers) * self._nsims_per_server)
+        # with concurrent.futures.ThreadPoolExecutor(threads) as executor:
+        #     futures = []
+        #     for i, input in enumerate(inputs):
+        #         server_id = i % len(self._servers)
+        #         futures.append(
+        #             executor.submit(
+        #                 self._simulate,
+        #                 input=input,
+        #                 server=self._servers[server_id],
+        #                 progress_handler=progress_handler,
+        #             )
+        #         )
+        #     for future in concurrent.futures.as_completed(futures):
+        #         summary = future.result()
+        #         if isinstance(summary, SimulationError):
+        #             LOG.error(f"\nError: {summary.message}")
+        #         summaries.append(summary)
+        #         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        #         LOG.info(
+        #             f"\r{timestamp} Completed {len(summaries)} of {len(inputs)} simulations",
+        #             end="",
+        #         )
         return summaries
 
     def _simulate(
@@ -394,35 +401,66 @@ class Additive:
             else:
                 request = input._to_simulation_request()
 
-            for response in server.simulation_stub.Simulate(request):
-                if response.HasField("progress"):
-                    progress = Progress.from_proto_msg(input.id, response.progress)
-                    if progress_handler:
-                        progress_handler.update(progress)
-                    if progress.state == ProgressState.ERROR:
-                        raise Exception(progress.message)
-                if response.HasField("melt_pool"):
-                    thermal_history_output = None
-                    if self._check_if_thermal_history_is_present(response):
-                        thermal_history_output = os.path.join(
-                            self._user_data_path, input.id, "thermal_history"
-                        )
-                        download_file(
-                            self._servers[0].simulation_stub,
-                            response.melt_pool.thermal_history_vtk_zip,
-                            thermal_history_output,
-                        )
-                    return SingleBeadSummary(input, response.melt_pool, thermal_history_output)
-                if response.HasField("porosity_result"):
-                    return PorositySummary(input, response.porosity_result)
-                if response.HasField("microstructure_result"):
-                    return MicrostructureSummary(
-                        input, response.microstructure_result, self._user_data_path
+            lro = server.simulation_stub.Simulate(request)
+            
+            message = OperationMetadata()
+            response = SimulationResponse()
+            lro.metadata.Unpack(message)
+            lro.response.Unpack(response)
+            print("***start")
+            print(message)
+
+            time.sleep(10.0)
+            getOperationRequest = GetOperationRequest(name=request.id)
+            getOperationResponse = server.operations_stub.GetOperation(getOperationRequest)
+            getOperationResponse.metadata.Unpack(message)
+            print("***update 1")
+            print(message)
+
+            time.sleep(10.0)
+            getOperationRequest = GetOperationRequest(name=request.id)
+            getOperationResponse = server.operations_stub.GetOperation(getOperationRequest)
+            getOperationResponse.metadata.Unpack(message)
+            print("***update 2")
+            print(message)
+
+            time.sleep(10.0)
+            listRequest = ListOperationsRequest()
+            listResponse = server.operations_stub.ListOperations(listRequest)
+            print("***list operations")
+            for op in listResponse.operations:
+                op.metadata.Unpack(message)
+                print(message)
+
+            print(response)
+            if response.HasField("progress"):
+                progress = Progress.from_proto_msg(input.id, response.progress)
+                if progress_handler:
+                    progress_handler.update(progress)
+                if progress.state == ProgressState.ERROR:
+                    raise Exception(progress.message)
+            if response.HasField("melt_pool"):
+                thermal_history_output = None
+                if self._check_if_thermal_history_is_present(response):
+                    thermal_history_output = os.path.join(
+                        self._user_data_path, input.id, "thermal_history"
                     )
-                if response.HasField("microstructure_3d_result"):
-                    return Microstructure3DSummary(
-                        input, response.microstructure_3d_result, self._user_data_path
+                    download_file(
+                        self._servers[0].simulation_stub,
+                        response.melt_pool.thermal_history_vtk_zip,
+                        thermal_history_output,
                     )
+                return SingleBeadSummary(input, response.melt_pool, thermal_history_output)
+            if response.HasField("porosity_result"):
+                return PorositySummary(input, response.porosity_result)
+            if response.HasField("microstructure_result"):
+                return MicrostructureSummary(
+                    input, response.microstructure_result, self._user_data_path
+                )
+            if response.HasField("microstructure_3d_result"):
+                return Microstructure3DSummary(
+                    input, response.microstructure_3d_result, self._user_data_path
+                )
         except Exception as e:
             return SimulationError(input, str(e))
 
