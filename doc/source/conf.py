@@ -186,7 +186,7 @@ templates_path = ["_templates"]
 # The master toctree document.
 master_doc = "index"
 
-# Common content for every RST file such us links
+# Common content for every RST file such as links
 rst_epilog = ""
 links_filepath = Path(__file__).parent.absolute() / "links.rst"
 with open(links_filepath) as links_file:
