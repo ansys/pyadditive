@@ -53,7 +53,7 @@ PyAdditive provides a Python API to interact with `Ansys Additive`_.
        :hidden:
        :maxdepth: 2
 
-       getting_started/index
+       getting-started
        {% if build_api %}
        api/index
        {% endif %}
