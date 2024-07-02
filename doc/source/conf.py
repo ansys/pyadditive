@@ -286,6 +286,9 @@ jinja_contexts = {
         "build_api": BUILD_API,
         "build_examples": BUILD_EXAMPLES,
     },
+    "install_guide": {
+        "version": f"v{version}" if not version.endswith("dev0") else "main",
+    },
 }
 
 linkcheck_ignore = [
