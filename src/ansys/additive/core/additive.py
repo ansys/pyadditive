@@ -534,6 +534,7 @@ class Additive:
             raise ValueError(f"Material {material.name} already exists. Unable to add material.")
 
         request = AddMaterialRequest(id=misc.short_uuid(), material=material._to_material_message())
+        print(f"Adding material {request.material.description}")
         response = self._servers[0].materials_stub.AddMaterial(request)
 
         if response.HasField("error"):
