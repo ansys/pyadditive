@@ -803,6 +803,7 @@ class AdditiveMaterial:
         with open(parameters_file, "r") as f:
             data = json.load(f)
         self.name = data["name"]
+        self.description = data["description"]
         parameters = data["configuration"]
         # Convert camelCase to snake_case
         pattern = re.compile(r"(?<!^)(?=[A-Z])")
