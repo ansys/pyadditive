@@ -1,6 +1,6 @@
 {
   "name": "TestMaterial",
-  "description": "",
+  "description": "Test material description",
   "coreVersion": "0.0.0",
   "configuration": {
     "absorptivityMaximum": 1,
