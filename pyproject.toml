@@ -40,6 +40,7 @@ dependencies = [
     "six>=1.16.0",
     "tqdm>=4.45.0",
     "pydantic>=2.6.3",
+    "ipython>=7.0.0",
 ]
 
 [project.optional-dependencies]
@@ -85,6 +86,7 @@ doc = [
     "sphinx-notfound-page==1.0.2",
     "sphinx-toolbox==3.6.0",
     "sphinxemoji==0.3.1",
+    "ipython>=7.0.0",
 ]
 
 [project.urls]
