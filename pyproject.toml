@@ -83,7 +83,7 @@ doc = [
     "sphinx-gallery==0.16.0",
     "sphinx-jinja==2.0.2",
     "sphinx-notfound-page==1.0.2",
-    "sphinx-toolbox==3.6.0",
+    "sphinx-toolbox==3.7.0",
     "sphinxemoji==0.3.1",
 ]
 
