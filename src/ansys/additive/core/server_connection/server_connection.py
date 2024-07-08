@@ -107,7 +107,7 @@ class ServerConnection:
     ) -> None:
         """Initialize a server connection."""
 
-        if channel is not None and addr is not None:
+        if not channel and not addr:
             raise ValueError("Both 'channel' and 'addr' cannot both be specified.")
 
         self._log = log if log else logging.getLogger(__name__)

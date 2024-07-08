@@ -24,20 +24,21 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
-import concurrent.futures
 from datetime import datetime
 import hashlib
 import logging
 import os
 import zipfile
-import time
 
 from ansys.api.additive import __version__ as api_version
 from ansys.api.additive.v0.additive_materials_pb2 import GetMaterialRequest
 from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse
-from google.longrunning.operations_pb2 import ListOperationsRequest, GetOperationRequest
+from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
+from google.longrunning.operations_pb2 import ListOperationsRequest, WaitOperationRequest, Operation
+from google.protobuf.any_pb2 import Any
+from google.protobuf.duration_pb2 import Duration
 from google.protobuf.empty_pb2 import Empty
 import grpc
 
@@ -154,7 +155,7 @@ class Additive:
         linux_install_path: os.PathLike | None = None,
     ) -> None:
         """Initialize server connections."""
-        if product_version is None or product_version == "":
+        if not product_version:
             product_version = DEFAULT_PRODUCT_VERSION
 
         self._log = Additive._create_logger(log_file, log_level)
@@ -165,6 +166,23 @@ class Additive:
         )
         self._nsims_per_server = nsims_per_server
         self._enable_beta_features = enable_beta_features
+
+        # TODO (deleon): Check if any existing long running operations already exist on the server. If so, cancel
+        # and delete them as ListOperations() will pick them up.
+
+        # dict to hold the server and any long running operations deployed on it. Assuming multiple operations
+        # can be deployed on a single server, so initialize as a dictionary of lists
+        self._long_running_ops = {}
+        for server in self._servers:
+            self._long_running_ops[server.channel_str] = []
+
+        # list to hold input objects
+        self._simulation_inputs = []
+
+        # dictionary to hold simulation result summaries or simulation errors upon completion
+        self._summaries = {}
+
+        self._progress_handler = None
 
         # Setup data directory
         self._user_data_path = USER_DATA_PATH
@@ -263,6 +281,23 @@ class Additive:
             for server in self._servers:
                 print(server.status())
 
+    def get_results(self):
+        """Get a list of simulation result summaries. If empty, no simulations have 
+        successfully finished. If only one simulation, returns a scalar not a list."""
+        results = [x for x in self._summaries.values() if not isinstance(x, SimulationError)]
+        if len(results) == 1:
+            return results[0]
+        return results
+    
+    def get_errors(self):
+        """Any SimulationErrors that occur. If empty, no simulations have errored.
+        If only one simulation, returns a scalar not a list."""
+        errors = [x for x in self._summaries.values() if isinstance(x, SimulationError)]
+        if len(errors) == 1:
+            return errors[0]
+        return errors
+
+
     def simulate(
         self,
         inputs: (
@@ -273,7 +308,7 @@ class Additive:
             | Microstructure3DInput
             | list
         ),
-        progress_handler: IProgressHandler | None = None,
+        progress_handler: IProgressHandler | None = None            
     ) -> (
         SingleBeadSummary
         | PorositySummary
@@ -294,60 +329,82 @@ class Additive:
         progress_handler: IProgressHandler, None, default: None
             Handler for progress updates. If ``None``, and ``inputs`` contains a single
             simulation input, a default progress handler will be assigned.
+        """
+        self.simulate_async(inputs, progress_handler)
+        self.wait_all()
 
-        Returns
-        -------
-        SingleBeadSummary, PorositySummary, MicrostructureSummary, ThermalHistorySummary,
-        Microstructure3DSummary, SimulationError, list
-            One or more summaries of simulation results. If a list of inputs is provided, a
-            list is returned.
+        errors = self.get_errors()
+        if errors:
+            if isinstance(errors, list):
+                # TODO (deleon): Report all errors instead of just the first one
+                raise Exception(errors[0].message)
+            else:
+                raise Exception(errors.message)
+            
+        return self.get_results()
+
+    def simulate_async(
+        self,
+        inputs: (
+            SingleBeadInput
+            | PorosityInput
+            | MicrostructureInput
+            | ThermalHistoryInput
+            | Microstructure3DInput
+            | list
+        ),
+        progress_handler: IProgressHandler | None = None        
+    ):
+        """Execute additive simulations asynchronously. This method does not block while the
+        simulations are running on the server. This class stores handles of type 
+        google.longrunning.Operation to the remote tasks that can be used to communicate with
+        the server for status updates.
+
+        Parameters
+        ----------
+        inputs: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput,
+        Microstructure3DInput, list
+            Parameters to use for simulations. A list of inputs may be provided to run multiple
+            simulations.
+        progress_handler: IProgressHandler, None, default: None
+            Handler for progress updates. If ``None``, and ``inputs`` contains a single
+            simulation input, a default progress handler will be assigned.
         """
         self._check_for_duplicate_id(inputs)
+        self._simulation_inputs = inputs
+
+        self._progress_handler = progress_handler
 
         if not isinstance(inputs, list):
             if not progress_handler:
-                progress_handler = DefaultSingleSimulationProgressHandler()
-            return self._simulate(inputs, self._servers[0], progress_handler)
+                self._progress_handler = DefaultSingleSimulationProgressHandler()
+            summary = self._simulate(inputs, self._servers[0])
+            if summary:
+                self._summaries[summary.input.id] = summary
+            return
 
         if len(inputs) == 0:
             raise ValueError("No simulation inputs provided")
 
-        summaries = []
         LOG.info(
             f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Starting {len(inputs)} simulations",
             end="",
         )
-        summary = self._simulate(inputs[0], self._servers[0], progress_handler)
-        summaries.append(summary)
+        # TODO (deleon): don't forget that the first server is hard-coded
+        for inp in inputs:
+            if isinstance(inp, ThermalHistoryInput):
+                summary = self._simulate_thermal_history(
+                    inp, USER_DATA_PATH, self._servers[0], progress_handler
+                )
+            else:
+                summary = self._simulate(inp, self._servers[0])
 
-        # threads = min(len(inputs), len(self._servers) * self._nsims_per_server)
-        # with concurrent.futures.ThreadPoolExecutor(threads) as executor:
-        #     futures = []
-        #     for i, input in enumerate(inputs):
-        #         server_id = i % len(self._servers)
-        #         futures.append(
-        #             executor.submit(
-        #                 self._simulate,
-        #                 input=input,
-        #                 server=self._servers[server_id],
-        #                 progress_handler=progress_handler,
-        #             )
-        #         )
-        #     for future in concurrent.futures.as_completed(futures):
-        #         summary = future.result()
-        #         if isinstance(summary, SimulationError):
-        #             LOG.error(f"\nError: {summary.message}")
-        #         summaries.append(summary)
-        #         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        #         LOG.info(
-        #             f"\r{timestamp} Completed {len(summaries)} of {len(inputs)} simulations",
-        #             end="",
-        #         )
-        return summaries
+            if summary:
+                self._summaries[summary.input.id] = summary
 
     def _simulate(
         self,
-        input: (
+        simulationInput: (
             SingleBeadInput
             | PorosityInput
             | MicrostructureInput
@@ -355,20 +412,15 @@ class Additive:
             | Microstructure3DInput
         ),
         server: ServerConnection,
-        progress_handler: IProgressHandler | None = None,
     ) -> (
-        SingleBeadSummary
-        | PorositySummary
-        | MicrostructureSummary
-        | ThermalHistorySummary
-        | Microstructure3DSummary
-        | SimulationError
+        SimulationError
+        | None
     ):
         """Execute a single simulation.
 
         Parameters
         ----------
-        input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput,
+        simulationInput: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput,
         Microstructure3DInput
             Parameters to use for simulation.
 
@@ -383,86 +435,182 @@ class Additive:
         SingleBeadSummary, PorositySummary, MicrostructureSummary, ThermalHistorySummary,
         Microstructure3DSummary, SimulationError
         """
-        if input.material == AdditiveMaterial():
+        if simulationInput.material == AdditiveMaterial():
             raise ValueError("A material is not assigned to the simulation input")
 
-        if isinstance(input, Microstructure3DInput) and self.enable_beta_features is False:
+        if isinstance(simulationInput, Microstructure3DInput) and self.enable_beta_features is False:
             raise BetaFeatureNotEnabledError(
                 "3D microstructure simulations require beta features to be enabled.\n"
                 + "Set enable_beta_features=True when creating the Additive client."
             )
 
         try:
-            request = None
-            if isinstance(input, ThermalHistoryInput):
-                return self._simulate_thermal_history(
-                    input, USER_DATA_PATH, server, progress_handler
-                )
-            else:
-                request = input._to_simulation_request()
+            request = simulationInput._to_simulation_request()
+            long_running_op = server.simulation_stub.Simulate(request)
+            self._long_running_ops[server.channel_str].append(long_running_op)
 
-            lro = server.simulation_stub.Simulate(request)
-            
-            message = OperationMetadata()
-            response = SimulationResponse()
-            lro.metadata.Unpack(message)
-            lro.response.Unpack(response)
-            print("***start")
-            print(message)
-
-            time.sleep(10.0)
-            getOperationRequest = GetOperationRequest(name=request.id)
-            getOperationResponse = server.operations_stub.GetOperation(getOperationRequest)
-            getOperationResponse.metadata.Unpack(message)
-            print("***update 1")
-            print(message)
-
-            time.sleep(10.0)
-            getOperationRequest = GetOperationRequest(name=request.id)
-            getOperationResponse = server.operations_stub.GetOperation(getOperationRequest)
-            getOperationResponse.metadata.Unpack(message)
-            print("***update 2")
-            print(message)
-
-            time.sleep(10.0)
-            listRequest = ListOperationsRequest()
-            listResponse = server.operations_stub.ListOperations(listRequest)
-            print("***list operations")
-            for op in listResponse.operations:
-                op.metadata.Unpack(message)
-                print(message)
-
-            print(response)
-            if response.HasField("progress"):
-                progress = Progress.from_proto_msg(input.id, response.progress)
-                if progress_handler:
-                    progress_handler.update(progress)
-                if progress.state == ProgressState.ERROR:
-                    raise Exception(progress.message)
-            if response.HasField("melt_pool"):
-                thermal_history_output = None
-                if self._check_if_thermal_history_is_present(response):
-                    thermal_history_output = os.path.join(
-                        self._user_data_path, input.id, "thermal_history"
-                    )
-                    download_file(
-                        self._servers[0].simulation_stub,
-                        response.melt_pool.thermal_history_vtk_zip,
-                        thermal_history_output,
-                    )
-                return SingleBeadSummary(input, response.melt_pool, thermal_history_output)
-            if response.HasField("porosity_result"):
-                return PorositySummary(input, response.porosity_result)
-            if response.HasField("microstructure_result"):
-                return MicrostructureSummary(
-                    input, response.microstructure_result, self._user_data_path
-                )
-            if response.HasField("microstructure_3d_result"):
-                return Microstructure3DSummary(
-                    input, response.microstructure_3d_result, self._user_data_path
-                )
         except Exception as e:
-            return SimulationError(input, str(e))
+            return SimulationError(simulationInput, str(e))
+
+    def status(self):
+        """Fetch status of all simulations from the server to update progress and results."""
+        for server in self._servers:
+            list_request = ListOperationsRequest()
+            list_response = server.operations_stub.ListOperations(list_request)
+            for op in list_response.operations:
+                self._update_operation_status(op)
+    
+    def wait_all(
+            self,
+            progress_update_interval: int = 10
+            ) -> None :
+        """Wait for all simulations to finish while updating progress. 
+        
+        Loop over all operations across all servers and use WaitOperation() with a timeout
+        inside a loop on each operation. WaitOperation() is blocking while the operation is
+        running or the timeout hasn't been reached on the server. If the operation is already
+        completed on the server or is completed while WaitOperation() is blocking, WaitOperation()
+        returns immediately. A simple looping over all operations will block this function until
+        the longest-running operation is completed. The timeout is provided to get progress updates
+        as WaitOperation() returns an updated message about the operation.
+        
+        Parameters
+        ----------
+        progress_update_interval: int, 10
+            A timeout value (in seconds) to give to the looped WaitOperation() calls to return an
+            updated message for a progress update.
+        """
+        for server in self._servers:
+            list_request = ListOperationsRequest()
+            list_response = server.operations_stub.ListOperations(list_request)
+
+            for op in list_response.operations:
+                while True:
+                    timeout = Duration(seconds=progress_update_interval)
+                    wait_request = WaitOperationRequest(name=op.name, timeout=timeout)
+                    awaited_operation = server.operations_stub.WaitOperation(wait_request)
+                    self._update_operation_status(awaited_operation)
+                    if awaited_operation.done:
+                        break
+
+        # Perform a call to status to ensure all messages from completed operations are recieved
+        self.status()
+
+    def _update_progress(
+        self,
+        metadataMessage: Any,
+        progress_state: ProgressState,
+    ):
+        """Update the progress handler with a metadata message.
+
+        Parameters
+        ----------
+        metadataMessage: [google.protobuf.Any]
+            The metadata field of the Operation protobuf message prior to unpacking
+            to an OperationMetadata class.
+        progress_state: [ProgressState]
+            The progress status of the simulation.
+        """
+        metadata = OperationMetadata()
+        metadataMessage.Unpack(metadata)
+        progress = Progress.from_operation_metadata(progress_state, metadata)
+        if self._progress_handler:
+            self._progress_handler.update(progress)
+        if progress.state == ProgressState.ERROR:
+            raise Exception(progress.message)
+        
+
+    def _unpack_summary(
+            self,
+            operation: Operation
+    )-> (
+        SingleBeadSummary
+        | PorositySummary
+        | MicrostructureSummary
+        | ThermalHistorySummary
+        | Microstructure3DSummary
+    ):
+        """
+        Update the simulation summaries. If an operation is completed, either the "error" field or 
+        the "response" field is available. Update the progress according to which field is available.
+
+        Parameters
+        ----------
+        operation: [google.longrunning.Operation]
+            The long-running operation
+        """
+        if operation.HasField("response"):
+            response = SimulationResponse()
+            self._update_progress(operation.metadata, ProgressMsgState.PROGRESS_STATE_COMPLETED)
+            operation.response.Unpack(response)
+            summary = self._get_results_from_response(response)
+        else:
+            self._update_progress(operation.metadata, ProgressMsgState.PROGRESS_STATE_ERROR)
+            # TODO (deleon): Return a SimulationError if there is an rpc error
+            # operation_error = RpcStatus()
+            # operation.error.Unpack(operation_error)
+            # summary = self._create_summary_of_operation_error(operation_error)
+
+        return summary
+        
+    def _update_operation_status(
+            self,
+            operation: Operation
+    ):
+        """
+        Update progress or summaries. If operation is done, update summaries and progress.
+        Otherwise, update progress only.
+
+        Parameters
+        ----------
+        operation: [google.longrunning.Operation]
+            The long-running operation
+        """
+        if operation.done:
+            # if operation is completed, get the summary and update progress
+            summary = self._unpack_summary(operation)
+            self._summaries[summary.input.id] = summary
+        else:
+            # otherwise, just update progress
+            self._update_progress(operation.metadata, ProgressMsgState.PROGRESS_STATE_EXECUTING)
+
+    def _get_results_from_response(
+        self,
+        response: SimulationResponse
+    )-> (
+        SingleBeadSummary
+        | PorositySummary
+        | MicrostructureSummary
+        | ThermalHistorySummary
+        | Microstructure3DSummary
+    ):
+        if not isinstance(self._simulation_inputs, list):
+            simulation_input = self._simulation_inputs
+        else:
+            simulation_input = [x for x in self._simulation_inputs if x.id == response.id][0]
+
+        if response.HasField("melt_pool"):
+            thermal_history_output = None
+            if self._check_if_thermal_history_is_present(response):
+                thermal_history_output = os.path.join(
+                    self._user_data_path, simulation_input.id, "thermal_history"
+                )
+                download_file(
+                    self._servers[0].simulation_stub,
+                    response.melt_pool.thermal_history_vtk_zip,
+                    thermal_history_output,
+                )
+            return SingleBeadSummary(simulation_input, response.melt_pool, thermal_history_output)
+        if response.HasField("porosity_result"):
+            return PorositySummary(simulation_input, response.porosity_result)
+        if response.HasField("microstructure_result"):
+            return MicrostructureSummary(
+                simulation_input, response.microstructure_result, self._user_data_path
+            )
+        if response.HasField("microstructure_3d_result"):
+            return Microstructure3DSummary(
+                simulation_input, response.microstructure_3d_result, self._user_data_path
+            )
 
     def materials_list(self) -> list[str]:
         """Get a list of material names used in additive simulations.
@@ -666,12 +814,12 @@ class Additive:
         if not isinstance(inputs, list):
             return
         ids = []
-        for input in inputs:
-            if input.id == "":
-                input.id = misc.short_uuid()
-            if input.id in ids:
-                raise ValueError(f'Duplicate simulation ID "{input.id}" in input list')
-            ids.append(input.id)
+        for i in inputs:
+            if i.id == "":
+                i.id = misc.short_uuid()
+            if i.id in ids:
+                raise ValueError(f'Duplicate simulation ID "{i.id}" in input list')
+            ids.append(i.id)
 
     def _check_if_thermal_history_is_present(self, response) -> bool:
         """Check if thermal history output is present in the response."""
