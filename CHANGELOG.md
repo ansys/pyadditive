@@ -1,38 +1,41 @@
 # Changelog
 
-## PyAdditive 0.18.0b6
+## PyAdditive 0.18.0
 
 ### Breaking Changes
+
 * Removed the `save_file_name` parameter from `ParametricStudy.load()`. [#302](https://github.com/ansys/pyadditive/pull/302)
-* Removed the `display` module from `ansys.additive.core.parametric_study` as part of [#194](https://github.com/ansys/pyadditive/issues/194)
+* Removed the `display` module from `ansys.additive.core.parametric_study` as part of [#194](https://github.com/ansys/pyadditive/issues/194). The `display` module is now part of [pyadditive-widgets](https://github.com/ansys/pyadditive-widgets).
 
 ### New Features
+
 * Added ability to import a csv file containing a parametric study [#118](https://github.com/ansys/pyadditive/issues/118)
-* Added separate logging class [#163](https://github.com/ansys/pyadditive/issues/163)
-* Updated parametric study to check for duplicate entries [#228](https://github.com/ansys/pyadditive/issues/228)
+* Added a separate logging class [#163](https://github.com/ansys/pyadditive/issues/163)
 * Added 3D microstructure (BETA) simulations [#276](https://github.com/ansys/pyadditive/issues/276)
 * Increased max random seed limit for microstructure simulations [#325](https://github.com/ansys/pyadditive/pull/325/files)
 * Added a progress handler parameter to simulation functions [#315] (https://github.com/ansys/pyadditive/pull/315/files)
 
 ### Bug Fixes
-* Removed side effect from `ParametricStudy.save()` which changed the study file path if the `file_name` parameter differed from the `ParameticStudy.file_name` property. Also removed the `save_file_name` parameter from `ParametricStudy.load()`. [#301](https://github.com/ansys/pyadditive/issues/301)
+
+* Removed side effect from `ParametricStudy.save()` which changed the study file path if the `file_name` parameter differed from the `ParameticStudy.file_name` property. Also removed the `save_file_name` parameter from `ParametricStudy.load()` [#301](https://github.com/ansys/pyadditive/issues/301).
 * Fixed handling of material CSV files with alternative language settings (additiveserver) [#261](https://github.com/ansys/pyadditive/issues/261)
 * Duplicate simulations will be dropped from a parametric study [#290](https://github.com/ansys/pyadditive/issues/290)
-* Added Ansys installation path for linux to Additive object initializer. [#308](https://github.com/ansys/pyadditive/issues/308)
-* CSV files with empty thermal parameters of a microstructure simulation will be imported [#309](https://github.com/ansys/pyadditive/issues/309)
-* Gracefully return from run_simulations when no simulations meet criteria [#318](https://github.com/ansys/pyadditive/pull/318)
-* Fixed simulation results being updated for incorrect simulations in parametric studies. [#364] (https://github.com/ansys/pyadditive/issues/364)
+* Added Ansys installation path for linux to Additive object initializer [#308](https://github.com/ansys/pyadditive/issues/308)
+* CSV files with empty thermal parameters for microstructure simulations will be imported [#309](https://github.com/ansys/pyadditive/issues/309)
+* Gracefully return from `run_simulations` when no simulations meet criteria [#318](https://github.com/ansys/pyadditive/pull/318)
+* Fixed simulation results being updated for incorrect simulations in parametric studies [#364] (https://github.com/ansys/pyadditive/issues/364)
 
 ### Doc Improvements
+
 * Updated parametric study examples to show importing a study from a csv file in [#259](https://github.com/ansys/pyadditive/pull/259/)
 * Fixed truncation problem on summary doc strings (material and single-bead API docs) [#271](https://github.com/ansys/pyadditive/pull/271)
-* Added license warning to Getting started page [#262](https://github.com/ansys/pyadditive/issues/262)
-* Edited introductory sentences in examples [#275](https://github.com/ansys/pyadditive/pull/275)
+* Added license warning to `Getting started` page [#262](https://github.com/ansys/pyadditive/issues/262)
 
 ### Contributors
-* Peter Krull - <peter.krull@ansys.com>
-* Safee Rehman - <safee.rehman@ansys.com>
-* Julie O'Hara - <julie.ohara@ansys.com>
+
+* pkrull-ansys
+* safeerehman
+* julieatansys
 
 ## PyAdditive 0.17.2
 
@@ -40,7 +43,7 @@
 * Use print statement for material list in examples [#269](https://github.com/ansys/pyadditive/issues/269)
 
 ### Contributors
-* Peter Krull - <peter.krull@ansys.com>
+* pkrull-ansys
 
 ## PyAdditive 0.17.1
 
@@ -48,7 +51,7 @@
 * Add license warning to Getting started page [#262](https://github.com/ansys/pyadditive/issues/262)
 
 ### Contributors
-* Peter Krull - <peter.krull@ansys.com>
+* pkrull-ansys
 
 ## PyAdditive 0.17.0
 
@@ -68,10 +71,10 @@
 
 ### Contributors
 
-* Peter Krull - <peter.krull@ansys.com>
-* Abdul Khader Khan - <abdulkhader.khan@ansys.com>
-* Kathy Pippert - <kathy.pippert@ansys.com>
-* Julie O'Hara - <julie.ohara@ansys.com>
+* pkrull-ansys
+* ABDULKHADERKHAN
+* PipKat
+* julieatansys
 
 ## PyAdditive 0.16.0
 
@@ -95,7 +98,7 @@
 
 ### Contributors
 
-* Peter Krull - <peter.krull@ansys.com>
+* pkrull-ansys
 
 ## PyAdditive 0.15.0, 2023-10-09
 
@@ -114,7 +117,7 @@
 
 ### Contributors
 
-* Peter Krull - <peter.krull@ansys.com>
+* pkrull-ansys
 
 
 ## PyAdditive 0.14.0, 2023-08-08
@@ -130,7 +133,7 @@
 
 ### Contributors
 
-* Peter Krull - <peter.krull@ansys.com>
+* pkrull-ansys
 
 ## PyAdditive 0.13.0, 2023-07-17
 
@@ -148,4 +151,4 @@
 
 ### Contributors
 
-* Peter Krull - <peter.krull@ansys.com>
+* pkrull-ansys

@@ -11,7 +11,8 @@ Additive server is distributed with the Additive option of the Structures packag
 in the Ansys unified installation.
 
 .. note::
-   PyAdditive requires Ansys 2024 R1 or later.
+   PyAdditive requires Ansys 2024 R1 or later. Version 0.18 of PyAdditive is intended for
+   use with Ansys 2024 R2. It can be used with Ansys 2024 R1, but some features may not be available.
 
 .. warning::
    The simulations described in this documentation require an Additive Suite license. To obtain a license,
