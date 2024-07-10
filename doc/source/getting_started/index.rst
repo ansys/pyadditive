@@ -50,7 +50,7 @@ Alternative startup methods
 ---------------------------
 
 For additional session startup methods, see the documentation for the
-`Additive class <https://additive.docs.pyansys.com/version/stable/api/ansys/additive/core/additive/Additive.html>`_.
+`Additive class <https://additive.docs.pyansys.com/version/stable/api/ansys/additive/core/additive/index.html#additive.Additive>`_.
 
 
 Run simulations

@@ -2,6 +2,12 @@
 
 ## PyAdditive 0.18.1
 
+### Bug Fixes
+
+* Fixed documentation build
+
+## PyAdditive 0.18.0
+
 ### Breaking Changes
 
 * Removed the `save_file_name` parameter from `ParametricStudy.load()`. [#302](https://github.com/ansys/pyadditive/pull/302)
@@ -40,17 +46,21 @@
 ## PyAdditive 0.17.2
 
 ### Doc Improvements
+
 * Use print statement for material list in examples [#269](https://github.com/ansys/pyadditive/issues/269)
 
 ### Contributors
+
 * pkrull-ansys
 
 ## PyAdditive 0.17.1
 
 ### Doc Improvements
+
 * Add license warning to Getting started page [#262](https://github.com/ansys/pyadditive/issues/262)
 
 ### Contributors
+
 * pkrull-ansys
 
 ## PyAdditive 0.17.0
@@ -67,6 +77,7 @@
 * Add product version parameter to `Additive` class  @pkrull-ansys in [#170](https://github.com/ansys/pyadditive/pull/170)
 
 ### Doc Improvements
+
 * Several grammar and link corrections @pkrull-ansys in [#158](https://github.com/ansys/pyadditive/pull/158), [#160](https://github.com/ansys/pyadditive/pull/160)[#164](https://github.com/ansys/pyadditive/pull/164), [#184](https://github.com/ansys/pyadditive/pull/184)
 
 ### Contributors
@@ -94,6 +105,7 @@
 * Make connecting to the server more robust by @pkrull-ansys in [#133](https://github.com/ansys/pyadditive/pull/133).
 
 ### Doc Improvements
+
 * Update docs and build pipeline for public release by @pkrull-ansys in [#136](https://github.com/ansys/pyadditive/pull/136).
 
 ### Contributors
@@ -118,7 +130,6 @@
 ### Contributors
 
 * pkrull-ansys
-
 
 ## PyAdditive 0.14.0, 2023-08-08
 
