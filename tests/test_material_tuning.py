@@ -199,6 +199,8 @@ def test_MaterialTuningSummary_init_creates_expected_object():
     msg = MaterialTuningResultMessage(
         optimized_parameters=b"optimized_parameters",
         characteristic_width_lookup=b"characteristic_width_lookup",
+        coefficients=b"coefficients",
+        material_parameters=b"material_parameters",
         log=b"log",
     )
     file_name = test_utils.get_test_file_path("slm_build_file.zip")
@@ -224,6 +226,12 @@ def test_MaterialTuningSummary_init_creates_expected_object():
     assert os.path.isfile(summary.log_file)
     with open(summary.log_file, "rb") as f:
         assert f.read() == b"log"
+    assert os.path.isfile(summary.coefficients_file)
+    with open(summary.coefficients_file, "rb") as f:
+        assert f.read() == b"coefficients"
+    assert os.path.isfile(summary.material_configuration_file)
+    with open(summary.material_configuration_file, "rb") as f:
+        assert f.read() == b"material_parameters"
 
 
 @pytest.mark.parametrize(
@@ -249,8 +257,8 @@ def test_MaterialTuningSummary_init_raises_type_error_for_invalid_message(invali
         material_configuration_file=file_name,
         thermal_properties_lookup_file=file_name,
     )
+
     # act, assert
-    tmp = tempfile.TemporaryDirectory()
     with pytest.raises(
         TypeError, match="Parameter 'msg' is not a 'MaterialTuningResultMessage' object"
     ):
@@ -290,12 +298,16 @@ def test_MaterialTuningSummary_str_returns_expected_string():
         "characteristic_width_lookup_file: None\n"
         "base_plate_temperature: 353.15\n\n"
         "optimized_parameters_file: {}\n"
+        "coefficients_file: {}\n"
+        "material_configuration_file: {}\n"
         "characteristic_width_file: {}\n"
         "log_file: {}\n".format(
             file_name,
             file_name,
             file_name,
             os.path.join(tmp.name, "optimized_parameters.csv"),
+            os.path.join(tmp.name, "coefficients.csv"),
+            os.path.join(tmp.name, "material_configuration.json"),
             os.path.join(tmp.name, "characteristic_width_lookup.csv"),
             os.path.join(tmp.name, "log.txt"),
         )
