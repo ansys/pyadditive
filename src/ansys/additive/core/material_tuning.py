@@ -140,11 +140,17 @@ class MaterialTuningSummary:
         os.makedirs(out_dir, exist_ok=True)
 
         self._optimized_parameters_file = os.path.join(out_dir, "optimized_parameters.csv")
+        self._coefficients_file = os.path.join(out_dir, "coefficients.csv")
+        self._material_configuration_file = os.path.join(out_dir, "material_configuration.json")
         self._characteristic_width_file = None
         self._log_file = None
 
         with open(self._optimized_parameters_file, "wb") as f:
             f.write(msg.optimized_parameters)
+        with open(self._coefficients_file, "wb") as f:
+            f.write(msg.coefficients)
+        with open(self._material_configuration_file, "wb") as f:
+            f.write(msg.material_parameters)
 
         if len(msg.characteristic_width_lookup) > 0:
             self._characteristic_width_file = os.path.join(
@@ -169,6 +175,20 @@ class MaterialTuningSummary:
     def optimized_parameters_file(self) -> str:
         """Path to the optimization parameters file."""
         return self._optimized_parameters_file
+
+    @property
+    def coefficients_file(self) -> str:
+        """Path to the calculated coefficients file."""
+        return self._coefficients_file
+
+    @property
+    def material_configuration_file(self) -> str:
+        """Path to the updated material properties file.
+
+        Penetration depth and absorptivity coefficients are updated based on the tuning
+        results.
+        """
+        return self._material_configuration_file
 
     @property
     def characteristic_width_file(self) -> str:
