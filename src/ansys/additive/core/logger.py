@@ -70,6 +70,8 @@ add a file handler with this code:
 import logging
 import sys
 
+from IPython import get_ipython
+
 # Default logging configuration
 LOG_LEVEL = logging.DEBUG
 FILE_NAME = "pyadditive.log"
@@ -77,6 +79,24 @@ FILE_NAME = "pyadditive.log"
 # Formatting
 STDOUT_MSG_FORMAT = "%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(message)s"
 FILE_MSG_FORMAT = STDOUT_MSG_FORMAT
+
+
+def is_notebook() -> bool:
+    """Check if the code is running in a Jupyter notebook.
+
+    Returns:
+        bool: True if running in a Jupyter notebook, False otherwise.
+    """
+    try:
+        shell = get_ipython().__class__.__name__
+        if shell == "ZMQInteractiveShell":
+            return True
+        elif shell == "TerminalInteractiveShell":
+            return False
+        else:
+            return False
+    except NameError:
+        return False
 
 
 class PyAdditivePercentStyle(logging.PercentStyle):
@@ -153,9 +173,14 @@ class Logger:
     ) -> None:
         """Initialize a ``Logger`` object."""
 
+        if is_notebook():
+            level = logging.INFO
+
         # create default main logger
         self.logger = logging.getLogger("PyAdditive_global")
+
         self.logger.setLevel(level)
+
         self.logger.propagate = True
 
         # Writing logging methods.

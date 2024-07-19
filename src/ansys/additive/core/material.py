@@ -33,6 +33,8 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 )
 from ansys.api.additive.v0.additive_domain_pb2 import AdditiveMaterial as MaterialMessage
 
+RESERVED_MATERIAL_NAMES = ["17-4PH", "316L", "Al357", "AlSi10Mg", "CoCr", "IN625", "IN718", "Ti64"]
+
 
 class CharacteristicWidthDataPoint:
     """Provides the container for a characteristic width data point.
@@ -801,6 +803,7 @@ class AdditiveMaterial:
         with open(parameters_file, "r") as f:
             data = json.load(f)
         self.name = data["name"]
+        self.description = data["description"]
         parameters = data["configuration"]
         # Convert camelCase to snake_case
         pattern = re.compile(r"(?<!^)(?=[A-Z])")

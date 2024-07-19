@@ -56,7 +56,9 @@ material_files = examples.download_custom_material()
 # Load custom material files
 # --------------------------
 # Use the :meth:`~Additive.load_material` method on the ``additive`` object to
-# load the files defining a custom material.
+# load custom material defnition files. The method returns an :class:`~AdditiveMaterial`
+# object that you can use in simulations. The :class:`~AdditiveMaterial` object
+# exists only in the current Python session and is not saved.
 
 custom_material = additive.load_material(
     parameters_file=material_files.material_configuration_file,
@@ -79,3 +81,38 @@ input = SingleBeadInput(
 
 # Remove '#' to run the simulation
 # additive.simulate(input)
+
+###############################################################################
+# Add a custom material to the material library
+# ---------------------------------------------
+# You can add a custom material to the material library for use in future
+# Python sessions. The :meth:`~Additive.add_material` method is similar to the
+# :meth:`~Additive.load_material` method, except that it saves the
+# material to the server.
+
+# show current available materials
+print(additive.materials_list())
+
+custom_material = additive.add_material(
+    parameters_file=material_files.material_configuration_file,
+    thermal_lookup_file=material_files.thermal_properties_lookup_file,
+    characteristic_width_lookup_file=material_files.characteristic_width_lookup_file,
+)
+
+# show updated available materials
+print(additive.materials_list())
+
+###############################################################################
+# Remove the custom material from the material library
+# ----------------------------------------------------
+# You can remove a custom material from the material library using the
+# :meth:`~Additive.remove_material` method. Ansys-supplied materials cannot be removed
+# and will raise an error if you try to remove them.
+
+# show current available materials
+print(additive.materials_list())
+
+additive.remove_material(custom_material.name)
+
+# show updated available materials
+print(additive.materials_list())

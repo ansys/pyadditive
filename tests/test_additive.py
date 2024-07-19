@@ -39,8 +39,10 @@ from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
 from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
 from ansys.api.additive.v0.additive_domain_pb2 import ThermalHistoryResult
 from ansys.api.additive.v0.additive_materials_pb2 import (
+    AddMaterialResponse,
     GetMaterialRequest,
     GetMaterialsListResponse,
+    RemoveMaterialRequest,
     TuneMaterialResponse,
 )
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
@@ -71,7 +73,6 @@ import ansys.additive.core.additive
 from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput
-from ansys.additive.core.progress_handler import DefaultSingleSimulationProgressHandler
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
 import ansys.additive.core.server_connection.server_connection
 import ansys.additive.core.simulation_task
@@ -749,9 +750,181 @@ def test_load_material_returns_material():
 
     # assert
     assert isinstance(material, AdditiveMaterial)
+    assert material.name == "TestMaterial"
+    assert material.description == "Test material description"
+    assert material.absorptivity_maximum == 1
+    assert material.absorptivity_minimum == 2
+    assert material.absorptivity_powder_coefficient_a == 3
+    assert material.absorptivity_powder_coefficient_b == 4
+    assert material.absorptivity_solid_coefficient_a == 5
+    assert material.absorptivity_solid_coefficient_b == 6
+    assert material.anisotropic_strain_coefficient_parallel == 7
+    assert material.anisotropic_strain_coefficient_perpendicular == 8
+    assert material.anisotropic_strain_coefficient_z == 9
+    assert material.elastic_modulus == 10
+    assert material.hardening_factor == 12
+    assert material.liquidus_temperature == 13
+    assert material.material_yield_strength == 14
+    assert material.nucleation_constant_bulk == 15
+    assert material.nucleation_constant_interface == 16
+    assert material.penetration_depth_maximum == 17
+    assert material.penetration_depth_minimum == 18
+    assert material.penetration_depth_powder_coefficient_a == 19
+    assert material.penetration_depth_powder_coefficient_b == 20
+    assert material.penetration_depth_solid_coefficient_a == 21
+    assert material.penetration_depth_solid_coefficient_b == 22
     assert material.poisson_ratio == 23
+    assert material.powder_packing_density == 24
+    assert material.purging_gas_convection_coefficient == 25
+    assert material.solid_density_at_room_temperature == 26
+    assert material.solid_specific_heat_at_room_temperature == 27
+    assert material.solid_thermal_conductivity_at_room_temperature == 28
+    assert material.solidus_temperature == 29
+    assert material.strain_scaling_factor == 30
+    assert material.support_yield_strength_ratio == 31
+    assert material.thermal_expansion_coefficient == 32
+    assert material.vaporization_temperature == 33
     assert len(material.characteristic_width_data) == 64
+    assert material.characteristic_width_data[0].scan_speed == 0.35
+    assert material.characteristic_width_data[0].laser_power == 50
+    assert material.characteristic_width_data[0].characteristic_width == 0.000054939
     assert len(material.thermal_properties_data) == 7500
+    row = material.thermal_properties_data[0]
+    assert row.temperature == 2
+    assert row.thermal_conductivity == 8.3067794
+    assert row.specific_heat == 260.25
+    assert row.density == 8631.11931
+    assert row.thermal_conductivity_ratio == 0.01
+    assert row.density_ratio == 0.6
+    assert row.specific_heat_ratio == 1
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_add_material_calls_material_service_add_material(mock_connection):
+    # arrange
+    parameters_file = test_utils.get_test_file_path(pathlib.Path("Material") / "material-data.json")
+    thermal_lookup_file = test_utils.get_test_file_path(
+        pathlib.Path("Material") / "Test_Lookup.csv"
+    )
+    characteristic_width_lookup_file = test_utils.get_test_file_path(
+        pathlib.Path("Material") / "Test_CW_Lookup.csv"
+    )
+    loaded_material = Additive.load_material(
+        parameters_file, thermal_lookup_file, characteristic_width_lookup_file
+    )
+    added_material = AdditiveMaterial()
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.materials_stub.AddMaterial.return_value = AddMaterialResponse(
+        id="id", material=added_material._to_material_message()
+    )
+    mock_connection_with_stub.materials_stub.GetMaterialsList.return_value = (
+        GetMaterialsListResponse(names=[])
+    )
+    mock_connection.return_value = mock_connection_with_stub
+    additive = Additive()
+
+    # act
+    result = additive.add_material(
+        parameters_file, thermal_lookup_file, characteristic_width_lookup_file
+    )
+
+    # assert
+    assert result == added_material
+    mock_connection_with_stub.materials_stub.AddMaterial.assert_called_once()
+    assert len(mock_connection_with_stub.materials_stub.AddMaterial.call_args[0][0].id) > 0
+    assert (
+        mock_connection_with_stub.materials_stub.AddMaterial.call_args[0][0].material
+        == loaded_material._to_material_message()
+    )
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_add_material_raises_ValueError_when_adding_existing_material(mock_connection):
+    # arrange
+    parameters_file = test_utils.get_test_file_path(pathlib.Path("Material") / "material-data.json")
+    thermal_lookup_file = test_utils.get_test_file_path(
+        pathlib.Path("Material") / "Test_Lookup.csv"
+    )
+    characteristic_width_lookup_file = test_utils.get_test_file_path(
+        pathlib.Path("Material") / "Test_CW_Lookup.csv"
+    )
+    loaded_material = Additive.load_material(
+        parameters_file, thermal_lookup_file, characteristic_width_lookup_file
+    )
+    added_material = AdditiveMaterial()
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.materials_stub.AddMaterial.return_value = AddMaterialResponse(
+        id="id", material=added_material._to_material_message()
+    )
+    mock_connection_with_stub.materials_stub.GetMaterialsList.return_value = (
+        GetMaterialsListResponse(names=[loaded_material.name])
+    )
+    mock_connection.return_value = mock_connection_with_stub
+    additive = Additive()
+
+    # act, assert
+    with pytest.raises(ValueError, match="already exists"):
+        additive.add_material(
+            parameters_file, thermal_lookup_file, characteristic_width_lookup_file
+        )
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_add_material_raises_RuntimeError_when_server_errors(mock_connection):
+    # arrange
+    parameters_file = test_utils.get_test_file_path(pathlib.Path("Material") / "material-data.json")
+    thermal_lookup_file = test_utils.get_test_file_path(
+        pathlib.Path("Material") / "Test_Lookup.csv"
+    )
+    characteristic_width_lookup_file = test_utils.get_test_file_path(
+        pathlib.Path("Material") / "Test_CW_Lookup.csv"
+    )
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.materials_stub.AddMaterial.return_value = AddMaterialResponse(
+        id="id", error="error"
+    )
+    mock_connection_with_stub.materials_stub.GetMaterialsList.return_value = (
+        GetMaterialsListResponse(names=[])
+    )
+    mock_connection.return_value = mock_connection_with_stub
+    additive = Additive()
+
+    # act, assert
+    with pytest.raises(RuntimeError, match="error"):
+        additive.add_material(
+            parameters_file, thermal_lookup_file, characteristic_width_lookup_file
+        )
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_remove_material_calls_material_service_remove_material(mock_connection):
+    # arrange
+    material_name = "vibranium"
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.materials_stub.RemoveMaterial.return_value = None
+    mock_connection.return_value = mock_connection_with_stub
+    additive = Additive()
+
+    # act
+    additive.remove_material(material_name)
+
+    # assert
+    mock_connection_with_stub.materials_stub.RemoveMaterial.assert_called_once_with(
+        RemoveMaterialRequest(name=material_name)
+    )
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_remove_material_raises_ValueError_when_removing_reserved_material(mock_connection):
+    material_name = "ALSI10MG"
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.materials_stub.RemoveMaterial.return_value = None
+    mock_connection.return_value = mock_connection_with_stub
+    additive = Additive()
+
+    # act, assert
+    with pytest.raises(ValueError, match="Unable to remove Ansys-supplied material"):
+        additive.remove_material(material_name)
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
