@@ -74,6 +74,7 @@ from ansys.additive.core.simulation import (  # noqa: F401, E402
     SimulationStatus,
     SimulationType,
 )
+from ansys.additive.core.simulation_task import SimulationTask  # noqa: F401, E402
 from ansys.additive.core.single_bead import (  # noqa: F401, E402
     MeltPool,
     MeltPoolColumnNames,

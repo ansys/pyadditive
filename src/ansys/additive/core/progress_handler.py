@@ -64,7 +64,7 @@ class Progress(BaseModel):
             message=progress.message,
             context=progress.context,
         )
-    
+
     @classmethod
     def from_operation_metadata(cls, progress_state: ProgressMsgState, metadata: OperationMetadata):
         """Create a ``Progress`` object from a operation metadata (long running operations) protobuf message."""
@@ -74,7 +74,7 @@ class Progress(BaseModel):
             state=ProgressState(progress_state),
             percent_complete=metadata.percent_complete,
             message=metadata.message,
-            context=metadata.context
+            context=metadata.context,
         )
 
     def __str__(self):
@@ -95,10 +95,6 @@ class IProgressHandler(ABC):
         """
         raise NotImplementedError
 
-class PrintMessageProgressHandler(IProgressHandler):
-    def update(self, progress: Progress):
-        print(progress.message)
-        print("Percent Complete:", progress.percent_complete)
 
 class DefaultSingleSimulationProgressHandler(IProgressHandler):
     """Creates a progress bar for a single simulation.

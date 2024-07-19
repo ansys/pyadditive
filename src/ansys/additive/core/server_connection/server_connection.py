@@ -107,7 +107,7 @@ class ServerConnection:
     ) -> None:
         """Initialize a server connection."""
 
-        if not channel and not addr:
+        if channel and addr:
             raise ValueError("Both 'channel' and 'addr' cannot both be specified.")
 
         self._log = log if log else logging.getLogger(__name__)
@@ -170,7 +170,7 @@ class ServerConnection:
     def simulation_stub(self) -> SimulationServiceStub:
         """Simulation service stub."""
         return self._simulation_stub
-    
+
     @property
     def operations_stub(self) -> OperationsStub:
         """Simulation service stub."""
