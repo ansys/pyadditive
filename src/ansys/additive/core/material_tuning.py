@@ -150,29 +150,26 @@ class MaterialTuningSummary:
         with open(self._optimized_parameters_file, "wb") as f:
             f.write(msg.optimized_parameters)
 
-        if msg.coefficients and len(msg.coefficients) > 0:
+        if msg.coefficients:
             self._coefficients_file = os.path.join(out_dir, "coefficients.csv")
             with open(self._coefficients_file, "wb") as f:
                 f.write(msg.coefficients)
 
-        if msg.material_parameters and len(msg.material_parameters) > 0:
+        if msg.material_parameters:
             self._material_configuration_file = os.path.join(out_dir, "material_configuration.json")
             with open(self._material_configuration_file, "wb") as f:
                 f.write(msg.material_parameters)
 
-        if msg.characteristic_width_lookup and len(msg.characteristic_width_lookup) > 0:
+        if msg.characteristic_width_lookup:
             self._characteristic_width_file = os.path.join(
                 out_dir, "characteristic_width_lookup.csv"
             )
             with open(self._characteristic_width_file, "wb") as f:
                 f.write(msg.characteristic_width_lookup)
-        elif (
-            input.characteristic_width_lookup_file
-            and len(input.characteristic_width_lookup_file) > 0
-        ):
+        elif input.characteristic_width_lookup_file:
             self._characteristic_width_file = input.characteristic_width_lookup_file
 
-        if msg.log and len(msg.log) > 0:
+        if msg.log:
             self._log_file = os.path.join(out_dir, "log.txt")
             with open(self._log_file, "wb") as f:
                 f.write(msg.log)
