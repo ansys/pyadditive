@@ -193,7 +193,7 @@ def test_MaterialTuningInput_eq():
     assert input != not_input
 
 
-def test_MaterialTuningSummary_init_creates_expected_object():
+def test_MaterialTuningSummary_init_with_all_fields_creates_expected_object():
     # arrange
     tmp = tempfile.TemporaryDirectory()
     msg = MaterialTuningResultMessage(
@@ -232,6 +232,39 @@ def test_MaterialTuningSummary_init_creates_expected_object():
     assert os.path.isfile(summary.material_configuration_file)
     with open(summary.material_configuration_file, "rb") as f:
         assert f.read() == b"material_parameters"
+
+
+def test_MaterialTuningSummary_init_with_minimum_fields_creates_expected_object():
+    # arrange
+    tmp = tempfile.TemporaryDirectory()
+    msg = MaterialTuningResultMessage(
+        optimized_parameters=b"optimized_parameters",
+        characteristic_width_lookup=b"",
+        coefficients=b"",
+        material_parameters=b"",
+        log=b"",
+    )
+    file_name = test_utils.get_test_file_path("slm_build_file.zip")
+    input = MaterialTuningInput(
+        id="id",
+        experiment_data_file=file_name,
+        material_configuration_file=file_name,
+        thermal_properties_lookup_file=file_name,
+    )
+
+    # act
+    summary = MaterialTuningSummary(input, msg, tmp.name)
+
+    # assert
+    assert isinstance(summary, MaterialTuningSummary)
+    assert summary.input == input
+    assert os.path.isfile(summary.optimized_parameters_file)
+    with open(summary.optimized_parameters_file, "rb") as f:
+        assert f.read() == b"optimized_parameters"
+    assert summary.characteristic_width_file is None
+    assert summary.log_file is None
+    assert summary.coefficients_file is None
+    assert summary.material_configuration_file is None
 
 
 @pytest.mark.parametrize(
@@ -278,6 +311,8 @@ def test_MaterialTuningSummary_str_returns_expected_string():
     msg = MaterialTuningResultMessage(
         optimized_parameters=b"optimized_parameters",
         characteristic_width_lookup=b"characteristic_width_lookup",
+        coefficients=b"coefficients",
+        material_parameters=b"material_parameters",
         log=b"log",
     )
     result = MaterialTuningSummary(input, msg, tmp.name)
