@@ -24,22 +24,22 @@ PyAdditive provides a Python API to interact with `Ansys Additive`_.
 
     {% if build_api or build_examples %}
     .. grid:: 2
-    
+
        {% if build_api %}
        .. grid-item-card:: API reference :fa:`book-bookmark`
            :link: api/index
            :link-type: doc
-    
+
            A detailed guide describing the PyAdditive API. This guide documents
            all the methods and properties for each interface, class, and
            enumerations of each PyAdditive module.
         {% endif %}
-      
+
        {% if build_examples %}
        .. grid-item-card:: Gallery of examples :fa:`laptop-code`
            :link: examples/gallery_examples/index
            :link-type: doc
-    
+
            Learn how to use PyAdditive for creating custom applications and
            automating your existing Additive workflows. This guide contains a
            gallery of examples showing how to integrate PyAdditive with other

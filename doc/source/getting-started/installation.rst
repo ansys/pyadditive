@@ -16,20 +16,20 @@ PyAdditive. These include ``pip`` and ``GitHub``.
     .. tab-set::
 
         .. tab-item:: Public PyPI
-    
+
             .. code-block::
-    
+
                 python -m pip install ansys-additive-core
-   
+
         .. tab-item:: Ansys PyPI
-    
+
             .. code-block::
-    
+
                 export PIP_EXTRA_INDEX_URL="https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/"
                 python -m pip install ansys-additive-core
 
         .. tab-item:: GitHub
-    
+
             .. code-block::
 
                 python -m pip install git+https://github.com/ansys/pyadditive.git@{{ version }}
@@ -76,7 +76,7 @@ Move inside the project and create a new Python environment:
     .. tab-item:: Linux/UNIX
 
         .. code-block:: text
-            
+
             python -m venv <venv>
 
 Activate previous environment:
