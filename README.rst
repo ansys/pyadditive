@@ -1,10 +1,6 @@
-.. _ref_readme:
-
 ##########
 PyAdditive
 ##########
-
-.. readme_start
 
 |pyansys| |python| |pypi| |GH-CI| |codecov| |MIT| |black|
 
