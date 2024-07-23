@@ -1,5 +1,11 @@
 # Changelog
 
+## PyAdditive 0.18.2
+
+### Maintenance Fixes
+
+* Suppress pandas FutureWarning when concatenating frames.
+
 ## PyAdditive 0.18.1
 
 ### Bug Fixes
