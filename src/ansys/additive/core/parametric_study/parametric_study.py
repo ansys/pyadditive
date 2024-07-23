@@ -32,7 +32,6 @@ import warnings
 
 import dill
 import numpy as np
-import pandas as pd
 
 from ansys.additive.core import (
     LOG,
@@ -57,11 +56,12 @@ from .constants import DEFAULT_ITERATION, DEFAULT_PRIORITY, FORMAT_VERSION, Colu
 from .parametric_runner import ParametricRunner
 from .parametric_utils import build_rate, energy_density
 
-# Suppress: FutureWarning: The behavior of DataFrame concatenation with empty or
+# Suppress: FutureWarning in pandas: The behavior of DataFrame concatenation with empty or
 # all-NA entries is deprecated. In a future version, this will no longer exclude
 # empty or all-NA columns when determining the result dtypes. To retain the old
 # behavior, exclude the relevant entries before the concat operation.
 warnings.simplefilter(action="ignore", category=FutureWarning)
+import pandas as pd  # noqa: E402
 
 
 def save_on_return(func):
