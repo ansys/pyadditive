@@ -102,12 +102,12 @@ class ParametricRunner:
             simulation_ids_list = list()
             for sim_id in simulation_ids:
                 if sim_id not in view[ColumnNames.ID].values:
-                    LOG.warning(f"Simulation ID '{sim_id}' not found in the parametric study")
+                    LOG.debug(f"Simulation ID '{sim_id}' not found in the parametric study")
                 elif sim_id in simulation_ids_list:
-                    LOG.warning(f"Simulation ID '{sim_id}' has already been added")
+                    LOG.debug(f"Simulation ID '{sim_id}' has already been added")
                 else:
                     simulation_ids_list.append(sim_id)
-            view = df[df[ColumnNames.ID].isin(simulation_ids_list)]
+            view = view[view[ColumnNames.ID].isin(simulation_ids_list)]
 
         if priority is not None:
             view = view[view[ColumnNames.PRIORITY] == priority]

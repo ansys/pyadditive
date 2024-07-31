@@ -192,7 +192,7 @@ class ParametricStudy:
             Additive service connection to use for running simulations.
         simulation_ids : list[str], default: None
             List of simulation IDs to run. If this value is ``None``,
-            all simulations are run.
+            all simulations with a status of ``Pending`` are run.
         type : list[SimulationType], default: None
             Type of simulations to run. If this value is ``None``,
             all simulation types are run.
