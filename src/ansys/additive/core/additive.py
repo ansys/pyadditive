@@ -23,9 +23,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
 from datetime import datetime
-import hashlib
 import logging
 import os
 
@@ -37,7 +35,6 @@ from ansys.api.additive.v0.additive_materials_pb2 import (
     TuneMaterialResponse,
 )
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
-from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
 from google.longrunning.operations_pb2 import Operation
 from google.protobuf.empty_pb2 import Empty
 import grpc
@@ -54,10 +51,9 @@ from ansys.additive.core.porosity import PorosityInput, PorositySummary
 from ansys.additive.core.progress_handler import (
     DefaultSingleSimulationProgressHandler,
     IProgressHandler,
-    Progress,
-    ProgressState,
 )
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
+from ansys.additive.core.simulation_requests import _create_request
 from ansys.additive.core.simulation import SimulationError
 from ansys.additive.core.simulation_task import SimulationTask
 from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
@@ -167,7 +163,10 @@ class Additive:
         self._nsims_per_server = nsims_per_server
         self._enable_beta_features = enable_beta_features
 
-        self._progress_handler = None
+        # dict to hold the server and how many available simulation slots it has.
+        self._available_sims_per_server = {}
+        for server in self._servers:
+            self._available_sims_per_server[server.channel_str] = self._nsims_per_server
 
         # Store any simulation inputs given to this class in case multiple asynchronous simulation calls
         # are made. The assumption is that all simulations handled by this class have a unique id.
@@ -307,7 +306,7 @@ class Additive:
 
         summaries = []
 
-        errors = task.collect_errors()
+        errors = task.errors()
         if errors:
             if isinstance(errors, list):
                 summaries += errors
@@ -318,7 +317,7 @@ class Additive:
                 summaries.append(errors)
                 LOG.error(f"\nError: {errors.message}")
 
-        results = task.collect_results()
+        results = task.results()
         if results:
             if isinstance(results, list):
                 summaries += results
@@ -339,7 +338,7 @@ class Additive:
             | list
         ),
         progress_handler: IProgressHandler | None = None,
-    ):
+    ) -> SimulationTask:
         """Execute additive simulations asynchronously. This method does not block while the
         simulations are running on the server. This class stores handles of type
         google.longrunning.Operation to the remote tasks that can be used to communicate with
@@ -356,17 +355,13 @@ class Additive:
             simulation input, a default progress handler will be assigned.
         """
         self._check_for_duplicate_id(inputs)
-
-        simulation_task = SimulationTask(self._servers, self._user_data_path, progress_handler)
-
-        self._progress_handler = progress_handler
+        simulation_task = SimulationTask(self._servers, self._user_data_path, self._nsims_per_server)
 
         if not isinstance(inputs, list):
             if not progress_handler:
-                self._progress_handler = DefaultSingleSimulationProgressHandler()
+                progress_handler = DefaultSingleSimulationProgressHandler()
             server = self._servers[0]
-            operation = self._simulate(inputs, server)
-            simulation_task.add_simulation(server.channel_str, operation, inputs)
+            self._simulate(simulation_task, inputs, server, progress_handler)
             return simulation_task
 
         if len(inputs) == 0:
@@ -379,13 +374,13 @@ class Additive:
         for i, sim_input in enumerate(inputs):
             server_id = i % len(self._servers)
             server = self._servers[server_id]
-            operation = self._simulate(sim_input, server)
-            simulation_task.add_simulation(server.channel_str, operation, sim_input)
+            self._simulate(simulation_task, sim_input, server, progress_handler)
 
         return simulation_task
 
     def _simulate(
         self,
+        simulation_task: SimulationTask,
         simulation_input: (
             SingleBeadInput
             | PorosityInput
@@ -394,7 +389,8 @@ class Additive:
             | Microstructure3DInput
         ),
         server: ServerConnection,
-    ) -> Operation:
+        progress_handler: IProgressHandler | None = None
+    ) -> None:
         """Execute a single simulation.
 
         Parameters
@@ -402,14 +398,12 @@ class Additive:
         simulation_input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput,
         Microstructure3DInput
             Parameters to use for simulation.
-
         server: ServerConnection
             Server to use for the simulation.
-
-        Returns
-        -------
-        A long running operation
+        progress_handler: IProgressHandler, None, default: None
+            Handler for progress updates. If ``None``, no progress updates are provided.
         """
+
         if simulation_input.material == AdditiveMaterial():
             raise ValueError("A material is not assigned to the simulation input")
 
@@ -423,18 +417,21 @@ class Additive:
             )
 
         try:
-            if isinstance(simulation_input, ThermalHistoryInput):
-                request = self._setup_thermal_history(simulation_input, server)
+            if self._available_sims_per_server[server.channel_str]:
+                request = _create_request(simulation_input, server, progress_handler)
+                # server has available job slots, so kick off a simulation
+                long_running_op = server.simulation_stub.Simulate(request)
+                simulation_task.add_running_simulation(server.channel_str, long_running_op, simulation_input)
+                self._available_sims_per_server[server.channel_str] -= 1
             else:
-                request = simulation_input._to_simulation_request()
-            long_running_op = server.simulation_stub.Simulate(request)
-            return long_running_op
+                # server does not have available job slots, so store simulation input to simulate later
+                simulation_task.add_waiting_simulation(simulation_input)
 
         except Exception as e:
             metadata = OperationMetadata(simulation_id=simulation_input.id, message=str(e))
             errored_op = Operation(name=simulation_input.id, done=True)
             errored_op.metadata.Pack(metadata)
-            return errored_op
+            simulation_task.add_running_simulation(server.channel_str, errored_op, simulation_input)
 
     def materials_list(self) -> list[str]:
         """Get a list of material names used in additive simulations.
@@ -606,9 +603,9 @@ class Additive:
 
         operation = self._servers[0].materials_stub.TuneMaterial(request)
 
-        task = SimulationTask([self._servers[0]], out_dir, progress_handler)
-        task.add_simulation(self._servers[0].channel_str, operation, input)
-        task.wait_all()
+        task = SimulationTask([self._servers[0]], out_dir, self._nsims_per_server)
+        task.add_running_simulation(self._servers[0].channel_str, operation, input)
+        task.wait_all(progress_handler=progress_handler)
 
         operation = task.get_operation(input.id)
         response = TuneMaterialResponse()
@@ -617,54 +614,6 @@ class Additive:
             raise Exception("Material tuning result not found")
 
         return MaterialTuningSummary(input, response.result, out_dir)
-
-    def __file_upload_reader(
-        self, file_name: str, chunk_size=2 * 1024**2
-    ) -> Iterator[UploadFileRequest]:
-        """Read a file and return an iterator of UploadFileRequests."""
-        file_size = os.path.getsize(file_name)
-        short_name = os.path.basename(file_name)
-        with open(file_name, mode="rb") as f:
-            while True:
-                chunk = f.read(chunk_size)
-                if not chunk:
-                    break
-                yield UploadFileRequest(
-                    name=short_name,
-                    total_size=file_size,
-                    content=chunk,
-                    content_md5=hashlib.md5(chunk).hexdigest(),
-                )
-
-    def _setup_thermal_history(self, input: ThermalHistoryInput, server: ServerConnection):
-        """Setup a thermal history simulation.
-
-        Parameters
-        ----------
-        input: ThermalHistoryInput
-            Simulation input parameters.
-        server: ServerConnection
-            Server to use for the simulation.
-
-        Returns
-        -------
-        :class:`SimulationRequest`
-        """
-        if not input.geometry or not input.geometry.path:
-            raise ValueError("The geometry path is not defined in the simulation input")
-
-        remote_geometry_path = ""
-        for response in server.simulation_stub.UploadFile(
-            self.__file_upload_reader(input.geometry.path)
-        ):
-            remote_geometry_path = response.remote_file_name
-            progress = Progress.from_proto_msg(input.id, response.progress)
-            if self._progress_handler:
-                self._progress_handler.update(progress)
-            if progress.state == ProgressState.ERROR:
-                raise Exception(progress.message)
-
-        return input._to_simulation_request(remote_geometry_path=remote_geometry_path)
 
     def _check_for_duplicate_id(self, inputs):
         if not isinstance(inputs, list):

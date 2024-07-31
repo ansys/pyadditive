@@ -47,10 +47,9 @@ from ansys.api.additive.v0.additive_materials_pb2 import (
 )
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
 from ansys.api.additive.v0.additive_simulation_pb2 import (
-    SimulationRequest,
     SimulationResponse,
     UploadFileRequest,
-    UploadFileResponse,
+    UploadFileResponse
 )
 from google.longrunning.operations_pb2 import ListOperationsResponse, Operation
 import grpc
@@ -76,6 +75,7 @@ from ansys.additive.core.material_tuning import MaterialTuningInput
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
 import ansys.additive.core.server_connection.server_connection
 import ansys.additive.core.simulation_task
+from ansys.additive.core.progress_handler import DefaultSingleSimulationProgressHandler
 
 from . import test_utils
 
@@ -311,7 +311,7 @@ def test_about_prints_server_status_messages(capsys: pytest.CaptureFixture[str])
 
 
 @pytest.mark.parametrize(
-    "input",
+    "sim_input",
     [
         SingleBeadInput(),
         PorosityInput(),
@@ -322,13 +322,12 @@ def test_about_prints_server_status_messages(capsys: pytest.CaptureFixture[str])
 )
 # patch needed for Additive() call
 @patch("ansys.additive.core.additive.ServerConnection")
-# @patch("ansys.additive.core.additive.ServerConnection.channel_str")
-def test_simulate_async_with_single_input_calls_internal_simulate_once(_, input):
+def test_simulate_async_with_single_input_calls_internal_simulate_once(_, sim_input):
     # arrange
-    input.material = test_utils.get_test_material()
+    sim_input.material = test_utils.get_test_material()
 
-    metadata = OperationMetadata(simulation_id=input.id, message="Simulation Started")
-    expected_operation = Operation(name=input.id)
+    metadata = OperationMetadata(simulation_id=sim_input.id, message="Simulation Started")
+    expected_operation = Operation(name=sim_input.id)
     expected_operation.metadata.Pack(metadata)
     with patch("ansys.additive.core.additive.Additive._simulate") as _simulate_patch:
         _simulate_patch.return_value = expected_operation
@@ -336,12 +335,10 @@ def test_simulate_async_with_single_input_calls_internal_simulate_once(_, input)
     additive._simulate = _simulate_patch
 
     # act
-    task = additive.simulate_async(input)
+    task = additive.simulate_async(sim_input)
 
     # assert
-    assert len(task._simulation_inputs) == 1
-    assert isinstance(task._simulation_inputs[0], type(input))
-    _simulate_patch.assert_called_once_with(input, ANY)
+    _simulate_patch.assert_called_once_with(task, sim_input, ANY, ANY)
 
 
 # patch needed for Additive() call
@@ -368,20 +365,20 @@ def test_simulate_with_empty_input_list_raises_exception(_):
 
 # patch needed for Additive() call
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_simulate_prints_error_message_when_SimulationError_returned(_, caplog):
+def test_simulate_logs_error_message_when_SimulationError_returned(_, caplog):
     # arrange
     sim_input = SingleBeadInput(material=test_utils.get_test_material())
     error_msg = "error message"
     simulation_error = SimulationError(sim_input, error_msg)
     mock_task = Mock(SimulationTask)
-    mock_task.collect_errors.return_value = simulation_error
+    mock_task.errors.return_value = simulation_error
     with patch("ansys.additive.core.additive.Additive.simulate_async") as sim_async_patch:
         sim_async_patch.return_value = mock_task
     additive = Additive()
     additive.simulate_async = sim_async_patch
     caplog.set_level(logging.ERROR, "PyAdditive_global")
 
-    # act & assert
+    # act
     summaries = additive.simulate([sim_input])
 
     # assert
@@ -404,11 +401,8 @@ def test_simulate_async_with_input_list_calls_internal_simulate_n_times(_):
 
     with patch("ansys.additive.core.additive.Additive._simulate") as _simulate_patch:
         _simulate_patch.return_value = expected_operation
-    # with patch("ansys.additive.core.additive.Additive._simulate_thermal_history") as _simulate_th_patch:
-    #     _simulate_patch.return_value = expected_operation
     additive = Additive(enable_beta_features=True)
     additive._simulate = _simulate_patch
-    # additive._setup_thermal_history = _simulate_th_patch
     inputs = [
         SingleBeadInput(id="id1"),
         PorosityInput(id="id2"),
@@ -416,21 +410,14 @@ def test_simulate_async_with_input_list_calls_internal_simulate_n_times(_):
         ThermalHistoryInput(id="id4"),
         Microstructure3DInput(id="id5"),
     ]
-    expected_simulate_thermal_history_count = len(
-        [x for x in inputs if isinstance(x, ThermalHistoryInput)]
-    )
 
     # act
-    additive.simulate_async(inputs)
+    task = additive.simulate_async(inputs)
 
     # assert
     assert _simulate_patch.call_count == len(inputs)
-    # assert _simulate_th_patch.call_count == expected_simulate_thermal_history_count
-    # calls = [call(i, ANY) for i in inputs if not isinstance(i, ThermalHistoryInput)]
-    calls = [call(i, ANY) for i in inputs]
+    calls = [call(task, i, ANY, None) for i in inputs]
     _simulate_patch.assert_has_calls(calls, any_order=True)
-    # calls = [call(i, ANY) for i in inputs if isinstance(i, ThermalHistoryInput)]
-    # _simulate_th_patch.assert_has_calls(calls, any_order=True)
 
 
 @pytest.mark.parametrize(
@@ -524,24 +511,23 @@ def test_simulate_async_with_duplicate_simulation_ids_raises_exception(_):
 
 
 @pytest.mark.parametrize(
-    "input,result",
+    "sim_input,result",
     [
         (SingleBeadInput(), MeltPoolMsg()),
         (PorosityInput(), PorosityResult()),
         (MicrostructureInput(), MicrostructureResult()),
         (Microstructure3DInput(), Microstructure3DResult()),
-        (ThermalHistoryInput(), ThermalHistoryResult()),
+        (ThermalHistoryInput(geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))), ThermalHistoryResult()),
     ],
-)  # patch needed for Additive() call
+)
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_internal_simulate_returns_correct_simulation_response(
-    _,
-    input,
+def test_internal_simulate_called_with_single_input_updates_SimulationTask(
+    mock_connection,
+    sim_input,
     result,
 ):
     # arrange
-    input.material = test_utils.get_test_material()
-    th_request = None
+    sim_input.material = test_utils.get_test_material()
 
     if isinstance(result, MeltPoolMsg):
         sim_response = SimulationResponse(id="id", melt_pool=result)
@@ -552,26 +538,39 @@ def test_internal_simulate_returns_correct_simulation_response(
     elif isinstance(result, Microstructure3DResult):
         sim_response = SimulationResponse(id="id", microstructure_3d_result=result)
     elif isinstance(result, ThermalHistoryResult):
-        th_request = SimulationRequest()
         sim_response = SimulationResponse(id="id", thermal_history_result=result)
     else:
         assert False, "Invalid result type"
 
-    with patch("ansys.additive.core.additive.Additive._setup_thermal_history") as _setup_patch:
-        _setup_patch.return_value = th_request
-
     long_running_operation = Operation(name="id", done=True)
     long_running_operation.response.Pack(sim_response)
 
+    remote_file_name = "remote/file/name"
+    upload_response = UploadFileResponse(
+        remote_file_name=remote_file_name,
+        progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_COMPLETED, message="done"),
+    )
+
+    server_channel_str = "1.1.1.1"
     mock_connection_with_stub = Mock()
     mock_connection_with_stub.simulation_stub.Simulate.return_value = long_running_operation
-    additive = Additive(enable_beta_features=True)
-    additive._setup_thermal_history = _setup_patch
+    mock_connection_with_stub.simulation_stub.UploadFile.return_value = [upload_response]
+    mock_connection_with_stub.channel_str = server_channel_str
+    mock_connection.return_value = mock_connection_with_stub
+
+    additive = Additive(server_connections=[mock_connection_with_stub],enable_beta_features=True, nsims_per_server=2)
+
+    task = SimulationTask(server_connections=[mock_connection_with_stub], user_data_path="path", nsims_per_server=2)
 
     # act
-    operation = additive._simulate(input, mock_connection_with_stub)
+    additive._simulate(
+        simulation_task=task,
+        simulation_input=sim_input,
+        server=mock_connection_with_stub)
 
     # assert
+    assert len(task._long_running_ops) == 1
+    operation = task._long_running_ops[server_channel_str][0]
     assert operation.done
     response = SimulationResponse()
     operation.response.Unpack(response)
@@ -590,7 +589,7 @@ def test_internal_simulate_returns_correct_simulation_response(
 
 
 @pytest.mark.parametrize(
-    "input",
+    "sim_input",
     [
         SingleBeadInput(),
         PorosityInput(),
@@ -601,13 +600,14 @@ def test_internal_simulate_returns_correct_simulation_response(
 )
 # patch needed for Additive() call
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_internal_simulate_without_material_raises_exception(_, input):
+def test_internal_simulate_without_material_raises_exception(server, sim_input):
     # arrange
     additive = Additive(enable_beta_features=True)
+    task = SimulationTask(server_connections=[server], user_data_path="path", nsims_per_server=1)
 
     # act, assert
     with pytest.raises(ValueError, match="A material is not assigned to the simulation input"):
-        additive._simulate(input, None)
+        additive._simulate(simulation_task=task, simulation_input=sim_input, server=server)
 
 
 @pytest.mark.parametrize(
@@ -631,20 +631,24 @@ def test_exception_during_internal_simulate_returns_operation_with_error(_, sim_
 
     mock_connection_with_stub = Mock()
     mock_connection_with_stub.simulation_stub.Simulate.side_effect = iterable_with_exception
+    mock_connection_with_stub.channel_str = "1.1.1.1"
     sim_input.material = test_utils.get_test_material()
     additive = Additive(enable_beta_features=True)
+    task = SimulationTask(server_connections=[mock_connection_with_stub], user_data_path="path", nsims_per_server=additive.nsims_per_server)
 
     # act
-    result = additive._simulate(sim_input, mock_connection_with_stub)
+    additive._simulate(task, sim_input, mock_connection_with_stub)
 
     # assert
+    assert len(task._long_running_ops) == 1
+    result = task._long_running_ops[mock_connection_with_stub.channel_str][0]
     assert isinstance(result, Operation)
     assert result.done
 
 
 # patch needed for Additive() call
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_internal_simulate_returns_errored_operation_from_server(_):
+def test_internal_simulate_returns_errored_operation_from_server(mock_server):
     # arrange
     error_msg = "simulation error"
     progress_msg = ProgressMsg(
@@ -658,7 +662,7 @@ def test_internal_simulate_returns_errored_operation_from_server(_):
     # make metadata have different values than progress message to
     # allow testing of each field
     metadata = OperationMetadata(
-        simulation_id="diff_id", context="server", message=error_msg, percent_complete=60
+        simulation_id="diff_id", context="server", message=error_msg, percent_complete=60, state=ProgressMsgState.PROGRESS_STATE_ERROR
     )
     errored_operation = Operation(name="diff_id", done=True)
     errored_operation.metadata.Pack(metadata)
@@ -668,12 +672,17 @@ def test_internal_simulate_returns_errored_operation_from_server(_):
 
     mock_connection_with_stub = Mock()
     mock_connection_with_stub.simulation_stub.Simulate.return_value = errored_operation
-    additive = Additive()
+    mock_connection_with_stub.channel_str = "1.1.1.1"
+    mock_server.return_value = mock_connection_with_stub
+    additive = Additive(server_connections=["1.1.1.1"], nsims_per_server=1)
+    task = SimulationTask(server_connections=[mock_connection_with_stub], user_data_path="path", nsims_per_server=1)
 
     # act
-    result = additive._simulate(input, mock_connection_with_stub)
+    additive._simulate(task, input, mock_connection_with_stub)
 
     # assert
+    assert len(task._long_running_ops[mock_connection_with_stub.channel_str]) == 1
+    result = task._long_running_ops[mock_connection_with_stub.channel_str][0]
     assert isinstance(result, Operation)
     assert result.name == "diff_id"
 
@@ -683,6 +692,7 @@ def test_internal_simulate_returns_errored_operation_from_server(_):
     assert error_msg in result_metadata.message
     assert result_metadata.percent_complete == 60.0
     assert result_metadata.context == "server"
+    assert result_metadata.state == ProgressMsgState.PROGRESS_STATE_ERROR
 
     assert result.HasField("response")
     result_response = SimulationResponse()
@@ -1071,6 +1081,7 @@ def test_tune_material_returns_expected_result(
     operation_completed.response.Pack(response)
 
     mock_connection_with_stub = Mock()
+    mock_connection_with_stub.channel_str = "1.1.1.1"
     mock_connection_with_stub.materials_stub.TuneMaterial.return_value = operation_started
     list_response = ListOperationsResponse(operations=[operation_completed])
     mock_connection_with_stub.operations_stub.ListOperations.return_value = list_response
@@ -1089,100 +1100,6 @@ def test_tune_material_returns_expected_result(
         assert optimized_parameters_bytes.decode() in f.read()
     with open(summary.characteristic_width_file, "r") as f:
         assert cw_lookup_bytes.decode() in f.read()
-
-
-# patch needed for Additive() call
-@patch("ansys.additive.core.additive.ServerConnection")
-def test_file_upload_reader_returns_expected_number_of_requests(_):
-    # arrange
-    file_size = os.path.getsize(__file__)
-    expected_iterations = 10
-    chunk_size = int(file_size / expected_iterations)
-    if file_size % expected_iterations > 0:
-        expected_iterations += 1
-    short_name = os.path.basename(__file__)
-    additive = Additive()
-
-    # act
-    for n, request in enumerate(
-        additive._Additive__file_upload_reader(os.path.abspath(__file__), chunk_size)
-    ):
-        assert isinstance(request, UploadFileRequest)
-        assert request.name == short_name
-        assert request.total_size == file_size
-        assert len(request.content) <= chunk_size
-        assert request.content_md5 == hashlib.md5(request.content).hexdigest()
-    assert n + 1 == expected_iterations
-
-
-# patch needed for Additive() call
-@patch("ansys.additive.core.additive.ServerConnection")
-def test_setup_thermal_history_without_geometry_raises_exception(
-    server,
-):
-    # arrange
-    input = ThermalHistoryInput()
-    additive = Additive()
-
-    # act, assert
-    with pytest.raises(
-        ValueError, match="The geometry path is not defined in the simulation input"
-    ):
-        additive._setup_thermal_history(input, server)
-
-
-# patch needed for Additive() call
-@patch("ansys.additive.core.additive.ServerConnection")
-def test_setup_thermal_history_with_progress_error_during_upload_raises_exception(
-    _,
-):
-    # arrange
-    input = ThermalHistoryInput(
-        geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))
-    )
-    message = "error message"
-    response = UploadFileResponse(
-        remote_file_name="remote/file/name",
-        progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_ERROR, message=message),
-    )
-
-    def iterable_response(_):
-        yield response
-
-    mock_connection_with_stub = Mock()
-    mock_connection_with_stub.simulation_stub.UploadFile.side_effect = iterable_response
-    additive = Additive()
-
-    # act, assert
-    with pytest.raises(Exception, match=message):
-        additive._setup_thermal_history(input, mock_connection_with_stub)
-    mock_connection_with_stub.simulation_stub.UploadFile.assert_called_once()
-
-
-# patch needed for Additive() call
-@patch("ansys.additive.core.additive.ServerConnection")
-def test_setup_thermal_history_returns_expected_request(_):
-    id = "thermal-history-test"
-    input = ThermalHistoryInput(
-        id=id, geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))
-    )
-    remote_file_name = "remote/file/name"
-    upload_response = UploadFileResponse(
-        remote_file_name=remote_file_name,
-        progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_COMPLETED, message="done"),
-    )
-    simulation_request = input._to_simulation_request(remote_geometry_path=remote_file_name)
-
-    mock_connection_with_stub = Mock()
-    mock_connection_with_stub.simulation_stub.UploadFile.return_value = [upload_response]
-    additive = Additive()
-
-    # act
-    request = additive._setup_thermal_history(input, mock_connection_with_stub)
-
-    # assert
-    mock_connection_with_stub.simulation_stub.UploadFile.assert_called_once()
-    assert request == simulation_request
 
 
 @patch("ansys.additive.core.additive.ServerConnection")

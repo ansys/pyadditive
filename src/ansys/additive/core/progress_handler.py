@@ -66,12 +66,11 @@ class Progress(BaseModel):
         )
 
     @classmethod
-    def from_operation_metadata(cls, progress_state: ProgressMsgState, metadata: OperationMetadata):
+    def from_operation_metadata(cls, metadata: OperationMetadata):
         """Create a ``Progress`` object from a operation metadata (long running operations) protobuf message."""
-        # TODO (deleon): Do we need to receive state or can it always be assumed to be executing?
         return cls(
             sim_id=metadata.simulation_id,
-            state=ProgressState(progress_state),
+            state=metadata.state,
             percent_complete=metadata.percent_complete,
             message=metadata.message,
             context=metadata.context,

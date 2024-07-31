@@ -20,45 +20,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import hashlib
-import logging
-import os
 import pathlib
 import shutil
-from unittest.mock import ANY, MagicMock, Mock, call, create_autospec, patch
+from unittest.mock import Mock, patch
 
-from ansys.api.additive import __version__ as api_version
-import ansys.api.additive.v0.about_pb2_grpc
 from ansys.api.additive.v0.additive_domain_pb2 import (
     Microstructure3DResult,
     MicrostructureResult,
     PorosityResult,
 )
-from ansys.api.additive.v0.additive_domain_pb2 import MaterialTuningResult
-from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
 from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMsg
-from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
+from ansys.api.additive.v0.additive_domain_pb2 import Progress
 from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
 from ansys.api.additive.v0.additive_domain_pb2 import ThermalHistoryResult
-from ansys.api.additive.v0.additive_materials_pb2 import (
-    GetMaterialRequest,
-    GetMaterialsListResponse,
-    TuneMaterialResponse,
-)
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
-from ansys.api.additive.v0.additive_simulation_pb2 import (
-    SimulationRequest,
-    SimulationResponse,
-    UploadFileRequest,
-    UploadFileResponse,
-)
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse
 from google.longrunning.operations_pb2 import ListOperationsResponse, Operation
-import grpc
 import pytest
 
 from ansys.additive.core import (
-    USER_DATA_PATH,
-    Additive,
     Microstructure3DInput,
     Microstructure3DSummary,
     MicrostructureInput,
@@ -74,19 +54,10 @@ from ansys.additive.core import (
     ThermalHistorySummary,
     __version__,
 )
-import ansys.additive.core.additive
-import ansys.additive.core.download
-from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
-from ansys.additive.core.material import AdditiveMaterial
-from ansys.additive.core.material_tuning import MaterialTuningInput
 from ansys.additive.core.progress_handler import (
-    DefaultSingleSimulationProgressHandler,
     IProgressHandler,
     Progress,
 )
-from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
-import ansys.additive.core.server_connection.server_connection
-import ansys.additive.core.simulation_task
 
 from . import test_utils
 
@@ -106,24 +77,22 @@ class DummyProgressHandler(IProgressHandler):
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_update_progress_handler_reports_progress_from_metadata(server):
+def test_convert_metadata_to_progress(server):
     # arrange
     operation = Operation()
-    metadata = OperationMetadata(simulation_id="id", percent_complete=50.0, message="executing")
+    metadata = OperationMetadata(simulation_id="id", percent_complete=50.0, message="executing", state=ProgressMsgState.PROGRESS_STATE_EXECUTING)
     operation.metadata.Pack(metadata)
 
-    progress_handler = DummyProgressHandler()
-
-    task = SimulationTask([server], "user_path", progress_handler)
+    task = SimulationTask([server], "user_path", 1)
 
     # act
-    task._update_progress(operation.metadata, ProgressMsgState.PROGRESS_STATE_EXECUTING)
+    progress = task._convert_metadata_to_progress(operation.metadata)
 
     # assert
-    assert task._progress_handler.percent_complete == int(metadata.percent_complete)
-    assert task._progress_handler.message == metadata.message
-    assert task._progress_handler.sim_id == metadata.simulation_id
-    assert task._progress_handler.progress_state == ProgressMsgState.PROGRESS_STATE_EXECUTING
+    assert progress.percent_complete == int(metadata.percent_complete)
+    assert progress.message == metadata.message
+    assert progress.sim_id == metadata.simulation_id
+    assert progress.state == ProgressMsgState.PROGRESS_STATE_EXECUTING
 
 
 @pytest.mark.parametrize(
@@ -142,11 +111,11 @@ def test_add_simulation(sim_input):
     mock_server = Mock()
     mock_server.channel_str = server_channel_str
 
-    task = SimulationTask([mock_server], "user_path")
+    task = SimulationTask([mock_server], "user_path", 1)
     operation = Operation(name="id")
 
     # act
-    task.add_simulation(server_channel_str, operation, sim_input)
+    task.add_running_simulation(server_channel_str, operation, sim_input)
 
     # assert
     assert task._long_running_ops
@@ -167,13 +136,13 @@ def test_get_server_from_simulation_id():
     mock_server_3 = Mock()
     mock_server_3.channel_str = server_channel_str
 
-    task = SimulationTask([mock_server_1, mock_server_2, mock_server_3], "user_path")
-    task.add_simulation(mock_server_1.channel_str, Operation(name="001"), SingleBeadInput())
-    task.add_simulation(mock_server_2.channel_str, Operation(name="002"), SingleBeadInput())
-    task.add_simulation(mock_server_2.channel_str, Operation(name="003"), SingleBeadInput())
-    task.add_simulation(mock_server_3.channel_str, Operation(name="004"), SingleBeadInput())
-    task.add_simulation(mock_server_3.channel_str, Operation(name="005"), SingleBeadInput())
-    task.add_simulation(mock_server_3.channel_str, Operation(name="006"), SingleBeadInput())
+    task = SimulationTask([mock_server_1, mock_server_2, mock_server_3], "user_path", 1)
+    task.add_running_simulation(mock_server_1.channel_str, Operation(name="001"), SingleBeadInput())
+    task.add_running_simulation(mock_server_2.channel_str, Operation(name="002"), SingleBeadInput())
+    task.add_running_simulation(mock_server_2.channel_str, Operation(name="003"), SingleBeadInput())
+    task.add_running_simulation(mock_server_3.channel_str, Operation(name="004"), SingleBeadInput())
+    task.add_running_simulation(mock_server_3.channel_str, Operation(name="005"), SingleBeadInput())
+    task.add_running_simulation(mock_server_3.channel_str, Operation(name="006"), SingleBeadInput())
 
     # act & assert
     assert task._get_server_from_simulation_id("001") == mock_server_1
@@ -206,24 +175,23 @@ def test_unpack_summary_returns_correct_summary(
 ):
     # arrange
     if isinstance(result, MeltPoolMsg):
-        sim_response = SimulationResponse(id="id", melt_pool=result)
+        sim_response = SimulationResponse(id=sim_input.id, melt_pool=result)
     elif isinstance(result, PorosityResult):
-        sim_response = SimulationResponse(id="id", porosity_result=result)
+        sim_response = SimulationResponse(id=sim_input.id, porosity_result=result)
     elif isinstance(result, MicrostructureResult):
-        sim_response = SimulationResponse(id="id", microstructure_result=result)
+        sim_response = SimulationResponse(id=sim_input.id, microstructure_result=result)
     elif isinstance(result, Microstructure3DResult):
-        sim_response = SimulationResponse(id="id", microstructure_3d_result=result)
+        sim_response = SimulationResponse(id=sim_input.id, microstructure_3d_result=result)
     elif isinstance(result, ThermalHistoryResult):
         # arrange
         results_file = tmp_path / "results.zip"
-        out_dir = tmp_path / "out_dir"
         shutil.copyfile(
             test_utils.get_test_file_path("thermal_history_results.zip"), str(results_file)
         )
         # mock_download_file.side_effect = lambda a, b, c: str(results_file)
         mock_download_file.return_value = str(results_file)
         sim_response = SimulationResponse(
-            id="id", thermal_history_result=ThermalHistoryResult(coax_ave_zip_file="zip-file")
+            id=sim_input.id, thermal_history_result=ThermalHistoryResult(coax_ave_zip_file="zip-file")
         )
     else:
         assert False, "Invalid result type"
@@ -233,28 +201,35 @@ def test_unpack_summary_returns_correct_summary(
     mock_server.channel_str = server_channel_str
     mock_server.simulation_stub = None
 
-    task = SimulationTask([mock_server], "user_path")
-    task.add_simulation(server_channel_str, Operation(name="id"), sim_input)
+    task = SimulationTask([mock_server], "user_path", 1)
+    task.add_running_simulation(server_channel_str, Operation(name=sim_input.id), sim_input)
 
-    operation = Operation(name="id", done=True)
+    metadata = OperationMetadata(simulation_id=sim_input.id, percent_complete=100.0, message="Done!", state=ProgressMsgState.PROGRESS_STATE_COMPLETED)
+
+    operation = Operation(name=sim_input.id, done=True)
     operation.response.Pack(sim_response)
+    operation.metadata.Pack(metadata)
 
     # act
-    summary = task._unpack_summary(operation)
+    summary, progress = task._unpack_summary(operation)
 
     # assert
     assert isinstance(summary, expected_summary_type)
+    assert progress.sim_id == sim_input.id
+    assert progress.state == ProgressMsgState.PROGRESS_STATE_COMPLETED
+    assert progress.percent_complete == 100.0
+    assert progress.message == "Done!"
 
 
 @patch("ansys.additive.core.additive.SimulationTask.status")
-def test_collect_results_returns_only_summaries(_):
+def test_results_returns_only_summaries(_):
     # arrange
     mock_server = Mock()
     mock_server.channel_str = "1.1.1.1"
     summary = test_utils.get_test_SingleBeadSummary()
     error = SimulationError(SingleBeadInput(), "error")
 
-    task = SimulationTask([mock_server], "user_path")
+    task = SimulationTask([mock_server], "user_path", 1)
     task._summaries = {
         "sim1": summary,
         "sim2": summary,
@@ -264,7 +239,7 @@ def test_collect_results_returns_only_summaries(_):
     }
 
     # act
-    results = task.collect_results()
+    results = task.results()
 
     # assert
     assert len(results) == 3
@@ -272,14 +247,14 @@ def test_collect_results_returns_only_summaries(_):
 
 
 @patch("ansys.additive.core.additive.SimulationTask.status")
-def test_collect_errors_returns_only_SimulationError(_):
+def test_errors_returns_only_SimulationError(_):
     # arrange
     mock_server = Mock()
     mock_server.channel_str = "1.1.1.1"
     summary = test_utils.get_test_SingleBeadSummary()
     error = SimulationError(SingleBeadInput(), "error")
 
-    task = SimulationTask([mock_server], "user_path")
+    task = SimulationTask([mock_server], "user_path", 1)
     task._summaries = {
         "sim1": summary,
         "sim2": summary,
@@ -289,7 +264,7 @@ def test_collect_errors_returns_only_SimulationError(_):
     }
 
     # act
-    results = task.collect_errors()
+    results = task.errors()
 
     # assert
     assert len(results) == 2
@@ -306,7 +281,7 @@ def test_status_calls_update_progress(update_mock):
     mock_server.channel_str = "1.1.1.1"
     mock_server.operations_stub.ListOperations.return_value = response
 
-    task = SimulationTask([mock_server], "user_path")
+    task = SimulationTask([mock_server], "user_path", 1)
 
     # act
     task.status()
@@ -329,7 +304,7 @@ def test_wait_calls_update_progress_and_break_with_completed_operations(update_m
     mock_server.channel_str = "1.1.1.1"
     mock_server.operations_stub.ListOperations.return_value = response
 
-    task = SimulationTask([mock_server], "user_path")
+    task = SimulationTask([mock_server], "user_path", 1)
 
     # act
     task.wait_all()
