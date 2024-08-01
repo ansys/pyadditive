@@ -175,6 +175,7 @@ class ParametricStudy:
     def run_simulations(
         self,
         additive: Additive,
+        simulation_ids: list[str] | None = None,
         type: list[SimulationType] | None = None,
         priority: int | None = None,
         iteration: int = None,
@@ -189,6 +190,9 @@ class ParametricStudy:
         ----------
         additive : Additive
             Additive service connection to use for running simulations.
+        simulation_ids : list[str], default: None
+            List of simulation IDs to run. If this value is ``None``,
+            all simulations with a status of ``Pending`` are run.
         type : list[SimulationType], default: None
             Type of simulations to run. If this value is ``None``,
             all simulation types are run.
@@ -202,6 +206,7 @@ class ParametricStudy:
         summaries = ParametricRunner.simulate(
             self.data_frame(),
             additive,
+            simulation_ids=simulation_ids,
             type=type,
             priority=priority,
             iteration=iteration,
