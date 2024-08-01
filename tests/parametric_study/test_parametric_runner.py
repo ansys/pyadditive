@@ -43,6 +43,7 @@ from ansys.additive.core.single_bead import SingleBeadSummary
 from tests import test_utils
 
 
+
 def test_create_machine_assigns_all_values():
     # arrange
     power = 50
