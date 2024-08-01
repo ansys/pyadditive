@@ -102,7 +102,7 @@ class ParametricRunner:
             simulation_ids_list = list()
             for sim_id in simulation_ids:
                 if sim_id not in view[ColumnNames.ID].values:
-                    LOG.debug(f"Simulation ID '{sim_id}' not found in the parametric study")
+                    LOG.warning(f"Simulation ID '{sim_id}' not found in the parametric study")
                 elif sim_id in simulation_ids_list:
                     LOG.debug(f"Simulation ID '{sim_id}' has already been added")
                 else:
