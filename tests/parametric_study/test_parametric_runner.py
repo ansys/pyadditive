@@ -24,7 +24,6 @@ import logging
 from unittest.mock import create_autospec
 
 import pandas as pd
-from pyadditive.tests import test_utils
 import pytest
 
 from ansys.additive.core import (
@@ -41,6 +40,7 @@ import ansys.additive.core.parametric_study as ps
 from ansys.additive.core.parametric_study.constants import ColumnNames
 from ansys.additive.core.parametric_study.parametric_runner import ParametricRunner as pr
 from ansys.additive.core.single_bead import SingleBeadSummary
+from tests import test_utils
 
 
 def test_create_machine_assigns_all_values():
