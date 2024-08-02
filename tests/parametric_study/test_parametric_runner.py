@@ -24,7 +24,6 @@ import logging
 from unittest.mock import create_autospec
 
 import pandas as pd
-from pyadditive.tests import test_utils
 import pytest
 
 from ansys.additive.core import (
@@ -41,6 +40,7 @@ import ansys.additive.core.parametric_study as ps
 from ansys.additive.core.parametric_study.constants import ColumnNames
 from ansys.additive.core.parametric_study.parametric_runner import ParametricRunner as pr
 from ansys.additive.core.single_bead import SingleBeadSummary
+from tests import test_utils
 
 
 def test_create_machine_assigns_all_values():
@@ -516,8 +516,10 @@ def test_simulate_is_skipped_if_simulation_ids_list_has_invalid_elements(
     # assert
     mock_additive.simulate.assert_not_called()
     assert result == []
-    assert len(caplog.records) == 1
-    assert "None of the input simulations meet the criteria selected" in caplog.records[0].message
+    assert len(caplog.records) == 3
+    assert "Simulation ID 'test_0' not found in the parametric study" in caplog.records[0].message
+    assert "Simulation ID 'test_4' not found in the parametric study" in caplog.records[1].message
+    assert "None of the input simulations meet the criteria selected" in caplog.records[2].message
 
 
 def test_simulate_filters_by_simulation_ids_and_skips_duplicates(
