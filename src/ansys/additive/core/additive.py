@@ -56,6 +56,7 @@ from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, Serve
 from ansys.additive.core.simulation_requests import _create_request
 from ansys.additive.core.simulation import SimulationError
 from ansys.additive.core.simulation_task import SimulationTask
+from ansys.additive.core.simulation_task_manager import SimulationTaskManager
 from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
 from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHistorySummary
 
@@ -162,15 +163,6 @@ class Additive:
         )
         self._nsims_per_server = nsims_per_server
         self._enable_beta_features = enable_beta_features
-
-        # dict to hold the server and how many available simulation slots it has.
-        self._available_sims_per_server = {}
-        for server in self._servers:
-            self._available_sims_per_server[server.channel_str] = self._nsims_per_server
-
-        # Store any simulation inputs given to this class in case multiple asynchronous simulation calls
-        # are made. The assumption is that all simulations handled by this class have a unique id.
-        self._simulation_inputs = []
 
         # Setup data directory
         self._user_data_path = USER_DATA_PATH
@@ -301,30 +293,19 @@ class Additive:
             Handler for progress updates. If ``None``, and ``inputs`` contains a single
             simulation input, a default progress handler will be assigned.
         """
-        task = self.simulate_async(inputs, progress_handler)
-        task.wait_all()
-
         summaries = []
+        task = self.simulate_async(inputs, progress_handler)
+        if isinstance(task, SimulationTaskManager):
+            task.wait_all()
+            summaries = task.summaries()
+        else:
+            task.wait()
+            summaries.append(task.summary)
 
-        errors = task.errors()
-        if errors:
-            if isinstance(errors, list):
-                summaries += errors
-                for e in errors:
-                    LOG.error(f"\nError: {e.message}")
-            else:
-                # Single error
-                summaries.append(errors)
-                LOG.error(f"\nError: {errors.message}")
-
-        results = task.results()
-        if results:
-            if isinstance(results, list):
-                summaries += results
-            else:
-                # single result
-                summaries.append(results)
-
+        for summ in summaries:
+            if isinstance(summ, SimulationError):
+                LOG.error(f"\nError: {summ.message}")
+  
         return summaries
 
     def simulate_async(
@@ -338,7 +319,7 @@ class Additive:
             | list
         ),
         progress_handler: IProgressHandler | None = None,
-    ) -> SimulationTask:
+    ) -> (SimulationTask | SimulationTaskManager):
         """Execute additive simulations asynchronously. This method does not block while the
         simulations are running on the server. This class stores handles of type
         google.longrunning.Operation to the remote tasks that can be used to communicate with
@@ -353,15 +334,19 @@ class Additive:
         progress_handler: IProgressHandler, None, default: None
             Handler for progress updates. If ``None``, and ``inputs`` contains a single
             simulation input, a default progress handler will be assigned.
+
+        Returns
+        -------
+        If only one simulation input is given, will return a SimulationTask.
+        If a list of simulation inputs is provided, will return a SimulationTaskManager.
         """
-        self._check_for_duplicate_id(inputs)
-        simulation_task = SimulationTask(self._servers, self._user_data_path, self._nsims_per_server)
+        # self._check_for_duplicate_id(inputs)
 
         if not isinstance(inputs, list):
             if not progress_handler:
                 progress_handler = DefaultSingleSimulationProgressHandler()
             server = self._servers[0]
-            self._simulate(simulation_task, inputs, server, progress_handler)
+            simulation_task = self._simulate(inputs, server, progress_handler)
             return simulation_task
 
         if len(inputs) == 0:
@@ -371,16 +356,17 @@ class Additive:
             f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Starting {len(inputs)} simulations",
             end="",
         )
+        task_manager = SimulationTaskManager()
         for i, sim_input in enumerate(inputs):
             server_id = i % len(self._servers)
             server = self._servers[server_id]
-            self._simulate(simulation_task, sim_input, server, progress_handler)
+            task = self._simulate(sim_input, server, progress_handler)
+            task_manager.add_task(task)
 
-        return simulation_task
+        return task_manager
 
     def _simulate(
         self,
-        simulation_task: SimulationTask,
         simulation_input: (
             SingleBeadInput
             | PorosityInput
@@ -390,7 +376,7 @@ class Additive:
         ),
         server: ServerConnection,
         progress_handler: IProgressHandler | None = None
-    ) -> None:
+    ) -> SimulationTask:
         """Execute a single simulation.
 
         Parameters
@@ -417,21 +403,18 @@ class Additive:
             )
 
         try:
-            if self._available_sims_per_server[server.channel_str]:
-                request = _create_request(simulation_input, server, progress_handler)
-                # server has available job slots, so kick off a simulation
-                long_running_op = server.simulation_stub.Simulate(request)
-                simulation_task.add_running_simulation(server.channel_str, long_running_op, simulation_input)
-                self._available_sims_per_server[server.channel_str] -= 1
-            else:
-                # server does not have available job slots, so store simulation input to simulate later
-                simulation_task.add_waiting_simulation(simulation_input)
+            request = _create_request(simulation_input, server, progress_handler)
+            # server has available job slots, so kick off a simulation
+            long_running_op = server.simulation_stub.Simulate(request)
+            simulation_task = SimulationTask(server, long_running_op, simulation_input, self._user_data_path)
 
         except Exception as e:
             metadata = OperationMetadata(simulation_id=simulation_input.id, message=str(e))
             errored_op = Operation(name=simulation_input.id, done=True)
             errored_op.metadata.Pack(metadata)
-            simulation_task.add_running_simulation(server.channel_str, errored_op, simulation_input)
+            simulation_task = SimulationTask(server, errored_op, simulation_input, self._user_data_path)
+        
+        return simulation_task
 
     def materials_list(self) -> list[str]:
         """Get a list of material names used in additive simulations.
