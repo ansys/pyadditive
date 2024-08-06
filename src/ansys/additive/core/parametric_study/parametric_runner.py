@@ -50,6 +50,7 @@ class ParametricRunner:
     def simulate(
         df: pd.DataFrame,
         additive: Additive,
+        simulation_ids: list[str] = None,
         type: list[SimulationType] = None,
         priority: int = None,
         iteration: int = None,
@@ -65,6 +66,10 @@ class ParametricRunner:
             Parametric study data frame.
         additive : Additive
             Additive service connection to use for running simulations.
+        simulation_ids: list[str], default: None
+            List of simulation IDs to run. The default is ``None``, in which case
+            all simulations in the parametric study are run. Any other filtering criteria
+            if provided, are applied on this list.
         type : list, default: None
             List of the simulation types to run. The default is ``None``, in which case all
             simulation types are run.
@@ -92,6 +97,18 @@ class ParametricRunner:
         view = df[
             (df[ColumnNames.STATUS] == SimulationStatus.PENDING) & df[ColumnNames.TYPE].isin(type)
         ]
+
+        if isinstance(simulation_ids, list) and len(simulation_ids) > 0:
+            simulation_ids_list = list()
+            for sim_id in simulation_ids:
+                if sim_id not in view[ColumnNames.ID].values:
+                    LOG.warning(f"Simulation ID '{sim_id}' not found in the parametric study")
+                elif sim_id in simulation_ids_list:
+                    LOG.debug(f"Simulation ID '{sim_id}' has already been added")
+                else:
+                    simulation_ids_list.append(sim_id)
+            view = view[view[ColumnNames.ID].isin(simulation_ids_list)]
+
         if priority is not None:
             view = view[view[ColumnNames.PRIORITY] == priority]
         view = view.sort_values(by=ColumnNames.PRIORITY, ascending=True)

@@ -1815,6 +1815,28 @@ def test_run_simulations_with_iteration_calls_simulate_correctly(
     assert patched_simulate.call_args[1]["iteration"] == 2
 
 
+def test_rum_simulations_with_simulation_ids_calls_simulate_correctly(
+    monkeypatch, tmp_path: pytest.TempPathFactory
+):
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    sb1 = SingleBeadInput(id="test_1", bead_length=0.001)
+    sb2 = SingleBeadInput(id="test_2", bead_length=0.002)
+    sb3 = SingleBeadInput(id="test_3", bead_length=0.003)
+    study.add_inputs([sb1])
+    study.add_inputs([sb2])
+    study.add_inputs([sb3])
+    mock_additive = create_autospec(Additive)
+    # mock_additive.material.return_value = material
+    patched_simulate = create_autospec(ParametricRunner.simulate, return_value=[])
+    monkeypatch.setattr(ParametricRunner, "simulate", patched_simulate)
+
+    # act
+    study.run_simulations(mock_additive, simulation_ids=["test_3"])
+
+    # assert
+    assert patched_simulate.call_args[1]["simulation_ids"] == ["test_3"]
+
+
 def test_remove_deletes_multiple_rows_from_dataframe(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
