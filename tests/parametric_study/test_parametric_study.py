@@ -24,6 +24,7 @@ import os
 import pathlib
 import platform
 import shutil
+import tempfile
 from unittest.mock import PropertyMock, create_autospec, patch
 import uuid
 
@@ -116,13 +117,16 @@ def test_update_format_raises_exception_when_version_too_great(tmp_path: pytest.
 @pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
 def test_load_reads_linux_file_on_windows(tmp_path: pytest.TempPathFactory):
     # arrange
-    filename = test_utils.get_test_file_path("linux.ps")
+    test_file = test_utils.get_test_file_path("linux.ps")
+    temp_dir = tempfile.gettempdir()
+    filename = os.path.join(temp_dir, "temp_file_name")
+    shutil.copy2(test_file, filename)
 
     # act
     study = ps.ParametricStudy.load(filename)
 
     # assert
-    assert study != None
+    assert study is not None
 
 
 @pytest.mark.skipif(platform.system() == "Windows", reason="Test only valid on Linux.")
@@ -407,7 +411,7 @@ def test_add_summaries_removes_duplicate_entries(tmp_path: pytest.TempPathFactor
     assert len(study.data_frame()) == 1
 
 
-@pytest.mark.parametrize("input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP)])
+@pytest.mark.parametrize("input_status", [(SimulationStatus.ADDED), (SimulationStatus.SKIP)])
 def test_add_summaries_overwrites_duplicate_entries_with_simulation_status_completed(
     input_status,
     tmp_path: pytest.TempPathFactory,
@@ -577,7 +581,7 @@ def test_generate_single_bead_permutations_creates_permutations(tmp_path: pytest
                         assert any(
                             (df[ps.ColumnNames.ITERATION] == 0)
                             & (df[ps.ColumnNames.TYPE] == SimulationType.SINGLE_BEAD)
-                            & (df[ps.ColumnNames.STATUS] == SimulationStatus.PENDING)
+                            & (df[ps.ColumnNames.STATUS] == SimulationStatus.ADDED)
                             & (df[ps.ColumnNames.MATERIAL] == "material")
                             & (df[ps.ColumnNames.HEATER_TEMPERATURE] == t)
                             & (df[ps.ColumnNames.LAYER_THICKNESS] == l)
@@ -733,10 +737,7 @@ def test_generate_porosity_permutations_creates_permutations(tmp_path: pytest.Te
                                         assert any(
                                             (df[ps.ColumnNames.ITERATION] == 0)
                                             & (df[ps.ColumnNames.TYPE] == SimulationType.POROSITY)
-                                            & (
-                                                df[ps.ColumnNames.STATUS]
-                                                == SimulationStatus.PENDING
-                                            )
+                                            & (df[ps.ColumnNames.STATUS] == SimulationStatus.ADDED)
                                             & (df[ps.ColumnNames.MATERIAL] == "material")
                                             & (df[ps.ColumnNames.HEATER_TEMPERATURE] == t)
                                             & (df[ps.ColumnNames.LAYER_THICKNESS] == l)
@@ -961,10 +962,7 @@ def test_generate_microstructure_permutations_creates_permutations(
                                                 df[ps.ColumnNames.TYPE]
                                                 == SimulationType.MICROSTRUCTURE
                                             )
-                                            & (
-                                                df[ps.ColumnNames.STATUS]
-                                                == SimulationStatus.PENDING
-                                            )
+                                            & (df[ps.ColumnNames.STATUS] == SimulationStatus.ADDED)
                                             & (df[ps.ColumnNames.MATERIAL] == "material")
                                             & (df[ps.ColumnNames.HEATER_TEMPERATURE] == t)
                                             & (df[ps.ColumnNames.LAYER_THICKNESS] == l)
@@ -1271,7 +1269,7 @@ def test_update_updates_error_status(tmp_path: pytest.TempPathFactory):
     # assert
     df2 = study.data_frame()
     assert len(df2) == len(df1) == 1
-    assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.PENDING
+    assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.ADDED
     assert df2.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.ERROR
     assert df2.loc[0, ps.ColumnNames.ERROR_MESSAGE] == "error message"
 
@@ -1295,7 +1293,7 @@ def test_update_updates_single_bead_permutation(tmp_path: pytest.TempPathFactory
     # assert
     df2 = study.data_frame()
     assert len(df2) == len(df1) == 1
-    assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.PENDING
+    assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.ADDED
     assert df2.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
     assert df2.loc[0, ps.ColumnNames.MELT_POOL_WIDTH] == mp_median[MeltPoolColumnNames.WIDTH]
     assert df2.loc[0, ps.ColumnNames.MELT_POOL_DEPTH] == mp_median[MeltPoolColumnNames.DEPTH]
@@ -1339,7 +1337,7 @@ def test_update_updates_porosity_permutation(tmp_path: pytest.TempPathFactory):
     # assert
     df2 = study.data_frame()
     assert len(df2) == len(df1) == 1
-    assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.PENDING
+    assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.ADDED
     assert df2.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
     assert df2.loc[0, ps.ColumnNames.RELATIVE_DENSITY] == 12
 
@@ -1374,7 +1372,7 @@ def test_update_updates_microstructure_permutation(tmp_path: pytest.TempPathFact
     # assert
     df2 = study.data_frame()
     assert len(df2) == len(df1) == 1
-    assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.PENDING
+    assert df1.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.ADDED
     assert df2.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
     assert df2.loc[0, ps.ColumnNames.XY_AVERAGE_GRAIN_SIZE] == 6
     assert df2.loc[0, ps.ColumnNames.XZ_AVERAGE_GRAIN_SIZE] == 42
@@ -1418,7 +1416,7 @@ def test_add_inputs_raises_error_for_invalid_input(tmp_path: pytest.TempPathFact
 
     # act, assert
     with pytest.raises(TypeError, match="Invalid simulation input type"):
-        study.add_inputs(inputs, status=SimulationStatus.PENDING)
+        study.add_inputs(inputs, status=SimulationStatus.ADDED)
 
 
 def test_add_inputs_returns_correct_number_of_added_inputs(tmp_path: pytest.TempPathFactory):
@@ -1602,7 +1600,7 @@ def test_add_inputs_assigns_unspecified_microstructure_params_correctly(
 @pytest.mark.parametrize(
     "input_status, expected_len",
     [
-        (SimulationStatus.PENDING, 3),
+        (SimulationStatus.ADDED, 3),
         (SimulationStatus.SKIP, 3),
     ],
 )
@@ -1663,13 +1661,13 @@ def test_add_inputs_returns_correct_number_of_simulations_added_to_the_study(
     ]
 
     # act
-    added = study.add_inputs(inputs, status=SimulationStatus.PENDING)
+    added = study.add_inputs(inputs, status=SimulationStatus.ADDED)
 
     # assert
     assert added == 3
 
 
-@pytest.mark.parametrize("input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP)])
+@pytest.mark.parametrize("input_status", [(SimulationStatus.ADDED), (SimulationStatus.SKIP)])
 def test_add_inputs_overwrites_duplicate_entries_by_keeping_earlier_entry(
     input_status, tmp_path: pytest.TempPathFactory
 ):
@@ -1705,7 +1703,7 @@ def test_add_inputs_overwrites_duplicate_entries_by_keeping_earlier_entry(
     assert df.loc[2, ps.ColumnNames.ID] == input_m_1.id
 
 
-@pytest.mark.parametrize("input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP)])
+@pytest.mark.parametrize("input_status", [(SimulationStatus.ADDED), (SimulationStatus.SKIP)])
 def test_add_inputs_overwrites_duplicate_entries_with_priority_to_simulation_status_pending(
     input_status, tmp_path: pytest.TempPathFactory
 ):
@@ -1715,7 +1713,7 @@ def test_add_inputs_overwrites_duplicate_entries_with_priority_to_simulation_sta
     input_sb_2 = SingleBeadInput()
 
     # act
-    study.add_inputs([input_sb_1], status=SimulationStatus.PENDING)
+    study.add_inputs([input_sb_1], status=SimulationStatus.ADDED)
     study.add_inputs([input_sb_2], status=input_status)
 
     # assert
@@ -1725,7 +1723,7 @@ def test_add_inputs_overwrites_duplicate_entries_with_priority_to_simulation_sta
     assert df.loc[0, ps.ColumnNames.ID] == input_sb_1.id
 
 
-@pytest.mark.parametrize("input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP)])
+@pytest.mark.parametrize("input_status", [(SimulationStatus.ADDED), (SimulationStatus.SKIP)])
 def test_add_inputs_does_not_overwrite_simulation_with_status_completed(
     input_status, tmp_path: pytest.TempPathFactory
 ):
@@ -2182,7 +2180,7 @@ def test_import_csv_study_drops_duplicates_with_correct_simulation_status_heirar
     assert len(df) == 4
     assert df.iloc[0][ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
     assert df.iloc[0][ps.ColumnNames.ID] == "sb_c_d"
-    assert df.iloc[1][ps.ColumnNames.STATUS] == SimulationStatus.PENDING
+    assert df.iloc[1][ps.ColumnNames.STATUS] == SimulationStatus.ADDED
     assert df.iloc[1][ps.ColumnNames.ID] == "sb_p"
     assert df.iloc[2][ps.ColumnNames.STATUS] == SimulationStatus.SKIP
     assert df.iloc[2][ps.ColumnNames.ID] == "sb_s"

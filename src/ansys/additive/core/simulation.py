@@ -43,8 +43,12 @@ class SimulationType(str, Enum):
 class SimulationStatus(str, Enum):
     """Provides simulation status values."""
 
+    ADDED = "Added"
+    """Simulation was added to the parametric study."""
     PENDING = "Pending"
     """Simulation is waiting to run."""
+    RUNNING = "Running"
+    """Simulation is running."""
     COMPLETED = "Completed"
     """Simulation was run."""
     ERROR = "Error"
