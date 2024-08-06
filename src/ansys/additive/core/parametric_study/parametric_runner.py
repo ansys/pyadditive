@@ -95,7 +95,7 @@ class ParametricRunner:
             type = [type]
 
         view = df[
-            (df[ColumnNames.STATUS] == SimulationStatus.PENDING) & df[ColumnNames.TYPE].isin(type)
+            (df[ColumnNames.STATUS] == SimulationStatus.ADDED) & df[ColumnNames.TYPE].isin(type)
         ]
 
         if isinstance(simulation_ids, list) and len(simulation_ids) > 0:

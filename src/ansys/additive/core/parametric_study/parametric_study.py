@@ -272,7 +272,16 @@ class ParametricStudy:
 
         study.file_name = file_name
         study = ParametricStudy.update_format(study)
+        study.reset_status()
         return study
+
+    @save_on_return
+    def reset_status(self):
+        """Reset the status of any ``Pending`` or ``Running`` simulations to ``Added``."""
+        df = self._data_frame
+        df[df[ColumnNames.STATUS].isin([SimulationStatus.PENDING, SimulationStatus.RUNNING])][
+            ColumnNames.STATUS
+        ] = SimulationStatus.ADDED
 
     @save_on_return
     def add_summaries(
@@ -583,7 +592,7 @@ class ParametricStudy:
                                     ColumnNames.ID: self._create_unique_id(
                                         prefix=f"sb_{iteration}"
                                     ),
-                                    ColumnNames.STATUS: SimulationStatus.PENDING,
+                                    ColumnNames.STATUS: SimulationStatus.ADDED,
                                     ColumnNames.MATERIAL: material_name,
                                     ColumnNames.HEATER_TEMPERATURE: t,
                                     ColumnNames.LAYER_THICKNESS: l,
@@ -802,7 +811,7 @@ class ParametricStudy:
                                                     ColumnNames.ID: self._create_unique_id(
                                                         prefix=f"por_{iteration}"
                                                     ),
-                                                    ColumnNames.STATUS: SimulationStatus.PENDING,
+                                                    ColumnNames.STATUS: SimulationStatus.ADDED,
                                                     ColumnNames.MATERIAL: material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
                                                     ColumnNames.LAYER_THICKNESS: l,
@@ -1139,7 +1148,7 @@ class ParametricStudy:
                                                     ColumnNames.ID: self._create_unique_id(
                                                         prefix=f"micro_{iteration}"
                                                     ),
-                                                    ColumnNames.STATUS: SimulationStatus.PENDING,
+                                                    ColumnNames.STATUS: SimulationStatus.ADDED,
                                                     ColumnNames.MATERIAL: material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
                                                     ColumnNames.LAYER_THICKNESS: l,
@@ -1286,7 +1295,7 @@ class ParametricStudy:
         inputs: list[SingleBeadInput | PorosityInput | MicrostructureInput],
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
-        status: SimulationStatus = SimulationStatus.PENDING,
+        status: SimulationStatus = SimulationStatus.ADDED,
     ) -> int:
         """Add new simulations to the parametric study.
 
@@ -1303,17 +1312,17 @@ class ParametricStudy:
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for the simulations.
 
-        status : SimulationStatus, default: :obj:`SimulationStatus.PENDING`
-            Valid types are :obj:`SimulationStatus.PENDING` and :obj:`SimulationStatus.SKIP`.
+        status : SimulationStatus, default: :obj:`SimulationStatus.ADDED`
+            Valid types are :obj:`SimulationStatus.ADDED` and :obj:`SimulationStatus.SKIP`.
 
         Returns
         -------
         int
             The number of simulations added to the parametric study.
         """
-        if status not in [SimulationStatus.SKIP, SimulationStatus.PENDING]:
+        if status not in [SimulationStatus.SKIP, SimulationStatus.ADDED]:
             raise ValueError(
-                f"Simulation status must be '{SimulationStatus.PENDING}' or '{SimulationStatus.SKIP}'"
+                f"Simulation status must be '{SimulationStatus.ADDED}' or '{SimulationStatus.SKIP}'"
             )
         for input in inputs:
             dict = {}
@@ -1398,12 +1407,7 @@ class ParametricStudy:
 
         # Filter and arrange as per status so that completed simulations are not overwritten by the
         # ones lower in the list
-        for status in [
-            SimulationStatus.COMPLETED,
-            SimulationStatus.PENDING,
-            SimulationStatus.SKIP,
-            SimulationStatus.ERROR,
-        ]:
+        for status in [s.value for s in SimulationStatus]:
             if len(current_df[current_df[ColumnNames.STATUS] == status]) > 0:
                 sorted_df = pd.concat(
                     [sorted_df, current_df[current_df[ColumnNames.STATUS] == status]],
@@ -1667,12 +1671,7 @@ class ParametricStudy:
         # check valid inputs
         drop_indices, error_list = list(), list()
         duplicates = 0
-        allowed_status = [
-            SimulationStatus.COMPLETED,
-            SimulationStatus.PENDING,
-            SimulationStatus.SKIP,
-            SimulationStatus.ERROR,
-        ]
+        allowed_status = [s.value for s in SimulationStatus]
         for index, row in df.iterrows():
             valid = False
             if row[ColumnNames.STATUS] in allowed_status:
@@ -1687,18 +1686,15 @@ class ParametricStudy:
         df = df.drop(drop_indices)
 
         # add simulations to the parametric study and drop duplicates
-        for status, overwrite in [
-            (SimulationStatus.COMPLETED, True),
-            (SimulationStatus.PENDING, False),
-            (SimulationStatus.SKIP, False),
-            (SimulationStatus.ERROR, False),
-        ]:
+        for status in [s.value for s in SimulationStatus]:
             if len(df[df[ColumnNames.STATUS] == status]) > 0:
                 self._data_frame = pd.concat(
                     [self._data_frame, df[df[ColumnNames.STATUS] == status]],
                     ignore_index=True,
                 )
-                duplicates += self._remove_duplicate_entries(overwrite=overwrite)
+                duplicates += self._remove_duplicate_entries(
+                    overwrite=(status == SimulationStatus.COMPLETED)
+                )
 
         # convert priority, iteration, and random seed to int type explicitly
         self._data_frame[ColumnNames.PRIORITY] = self._data_frame[ColumnNames.PRIORITY].astype(
@@ -1803,11 +1799,9 @@ class ParametricStudy:
             string, Error message if the single bead input is invalid.
         """
         try:
-            test_bead_length = input[ColumnNames.SINGLE_BEAD_LENGTH]
+            bead_length = input[ColumnNames.SINGLE_BEAD_LENGTH]
 
-            test_single_bead_input = SingleBeadInput(
-                bead_length=test_bead_length, machine=machine, material=material
-            )
+            SingleBeadInput(bead_length=bead_length, machine=machine, material=material)
             return (True, "")
         except ValueError as e:
             return (False, (f"Invalid parameter combination: {e}"))

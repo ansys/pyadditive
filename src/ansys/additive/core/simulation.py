@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides common definitions and classes for simulations."""
+from enum import Enum
 from typing import Union
 
 from ansys.additive.core.microstructure import MicrostructureInput
@@ -39,11 +40,15 @@ class SimulationType:
     """Microstructure simulation."""
 
 
-class SimulationStatus:
+class SimulationStatus(str, Enum):
     """Provides simulation status values."""
 
+    ADDED = "Added"
+    """Simulation was added to the parametric study."""
     PENDING = "Pending"
     """Simulation is waiting to run."""
+    RUNNING = "Running"
+    """Simulation is running."""
     COMPLETED = "Completed"
     """Simulation was run."""
     ERROR = "Error"
