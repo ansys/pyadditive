@@ -383,7 +383,7 @@ def test_simulate_logs_error_message_when_SimulationError_returned(_, caplog):
 
 # patch needed for Additive() call
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_simulate_async_with_input_list_calls_internal_simulate_n_times(_):
+def test_simulate_async_with_input_list_calls_internal_simulate_n_times(connection):
     # arrange
     metadata = OperationMetadata()
     # Note this operation name doesn't match the input id but we're only testing number of calls
@@ -392,7 +392,7 @@ def test_simulate_async_with_input_list_calls_internal_simulate_n_times(_):
     metadata.context = "simulation"
     metadata.percent_complete = 50.0
     expected_operation.metadata.Pack(metadata)
-    sim_task = SimulationTask(ServerConnection(), expected_operation, SingleBeadInput(), "path")
+    sim_task = SimulationTask(connection, expected_operation, SingleBeadInput(), "path")
 
     with patch("ansys.additive.core.additive.Additive._simulate") as _simulate_patch:
         _simulate_patch.return_value = sim_task
