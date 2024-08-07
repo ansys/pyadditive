@@ -70,6 +70,7 @@ from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, Serve
 import ansys.additive.core.server_connection.server_connection
 import ansys.additive.core.simulation_task
 from ansys.additive.core.simulation_task_manager import SimulationTaskManager
+from ansys.additive.core.single_bead import SingleBeadSummary
 
 from . import test_utils
 
@@ -348,17 +349,6 @@ def test_simulate_with_empty_input_list_raises_exception(_):
 
 # patch needed for Additive() call
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_simulate_with_empty_input_list_raises_exception(_):
-    # arrange
-    additive = Additive()
-
-    # act, assert
-    with pytest.raises(ValueError):
-        additive.simulate_async([])
-
-
-# patch needed for Additive() call
-@patch("ansys.additive.core.additive.ServerConnection")
 def test_simulate_logs_error_message_when_SimulationError_returned(_, caplog):
     # arrange
     sim_input = SingleBeadInput(material=test_utils.get_test_material())
@@ -373,12 +363,51 @@ def test_simulate_logs_error_message_when_SimulationError_returned(_, caplog):
     caplog.set_level(logging.ERROR, "PyAdditive_global")
 
     # act
+    summary = additive.simulate(sim_input)
+
+    # assert
+    assert isinstance(summary, SimulationError)
+    assert error_msg in caplog.text
+    sim_async_patch.assert_called_once_with(sim_input, None)
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_simulate_returns_single_summary_for_single_input(_):
+    # arrange
+    sim_input = SingleBeadInput(material=test_utils.get_test_material())
+    summary = SingleBeadSummary(sim_input, test_utils.get_test_melt_pool_message())
+    mock_task = Mock(SimulationTask)
+    type(mock_task).summary = PropertyMock(return_value=summary)
+    with patch("ansys.additive.core.additive.Additive.simulate_async") as sim_async_patch:
+        sim_async_patch.return_value = mock_task
+    additive = Additive()
+    additive.simulate_async = sim_async_patch
+
+    # act
+    summary = additive.simulate(sim_input)
+
+    # assert
+    assert isinstance(summary, SingleBeadSummary)
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_simulate_returns_list_of_summaries_for_list_of_inputs(_):
+    # arrange
+    sim_input = SingleBeadInput(material=test_utils.get_test_material())
+    summary = SingleBeadSummary(sim_input, test_utils.get_test_melt_pool_message())
+    mock_task = Mock(SimulationTask)
+    type(mock_task).summary = PropertyMock(return_value=summary)
+    with patch("ansys.additive.core.additive.Additive.simulate_async") as sim_async_patch:
+        sim_async_patch.return_value = mock_task
+    additive = Additive()
+    additive.simulate_async = sim_async_patch
+
+    # act
     summaries = additive.simulate([sim_input])
 
     # assert
-    assert isinstance(summaries[0], SimulationError)
-    assert error_msg in caplog.text
-    sim_async_patch.assert_called_once_with([sim_input], None)
+    assert isinstance(summaries, list)
+    assert len(summaries) == 1
 
 
 # patch needed for Additive() call
