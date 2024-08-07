@@ -29,7 +29,7 @@ from ansys.additive.core.single_bead import SingleBeadInput
 from ansys.additive.core.thermal_history import ThermalHistoryInput
 
 
-class SimulationType:
+class SimulationType(str, Enum):
     """Provides simulation types."""
 
     SINGLE_BEAD = "SingleBead"
