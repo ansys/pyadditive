@@ -404,7 +404,6 @@ class Additive:
 
         try:
             request = _create_request(simulation_input, server, progress_handler)
-            # server has available job slots, so kick off a simulation
             long_running_op = server.simulation_stub.Simulate(request)
             simulation_task = SimulationTask(
                 server, long_running_op, simulation_input, self._user_data_path

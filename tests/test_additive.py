@@ -637,6 +637,12 @@ def test_exception_during_internal_simulate_returns_operation_with_error(_, sim_
     result = task._long_running_op
     assert isinstance(result, Operation)
     assert result.done
+    metadata = OperationMetadata()
+    result.metadata.Unpack(metadata)
+    if not isinstance(sim_input, ThermalHistoryInput):
+        assert metadata.message == error_msg
+    else:
+        assert metadata.message
 
 
 # patch needed for Additive() call
