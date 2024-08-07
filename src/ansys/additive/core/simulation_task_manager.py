@@ -23,31 +23,32 @@
 
 from __future__ import annotations
 
+from ansys.additive.core.progress_handler import IProgressHandler, Progress
 from ansys.additive.core.simulation_task import SimulationTask
-
-from ansys.additive.core.progress_handler import (
-    IProgressHandler,
-    Progress,
-)
 
 
 class SimulationTaskManager:
+    """Provides a manager for simulation tasks."""
+
     def __init__(self):
-        self._tasks = list[SimulationTask]
-    
+        """Initialize the simulation task manager."""
+        self._tasks: list[SimulationTask] = []
+
     def add_task(self, task: SimulationTask):
         """Add a task to this manager.
-        
+
         Parameters
         ----------
         task: SimulationTask
-            The simulation task holding the long running operation and corresponding server
+            The simulation task holding the long running operation and corresponding server.
         """
         self._tasks.append(task)
 
-    def status(self, progress_handler: IProgressHandler | None = None) -> list[tuple[str, Progress]]:
+    def status(
+        self, progress_handler: IProgressHandler | None = None
+    ) -> list[tuple[str, Progress]]:
         """Get status of each operation stored in this manager.
-         
+
         Parameters
         ----------
         progress_handler: IProgressHandler, None, default: None
@@ -60,19 +61,19 @@ class SimulationTaskManager:
         status_all = list[tuple[str, Progress]]
 
         for t in self._tasks:
-            op_name, progress = t.status(progress_handler)
-            status_all.append((op_name, progress))
+            progress = t.status(progress_handler)
+            status_all.append((t._long_running_op.name, progress))
 
         return status_all
-    
+
     def wait_all(self, progress_handler: IProgressHandler | None = None) -> None:
-        """Wait for all simulations to finish. A simple loop that waits for each task will wait for the 
+        """Wait for all simulations to finish. A simple loop that waits for each task will wait for the
         simulation that takes the longest. This works because wait returns immediately if operation is done.
-         
+
         Parameters
         ----------
         progress_handler: IProgressHandler, None, default: None
-            Handler for progress updates. If ``None``, no progress updates are provided.        
+            Handler for progress updates. If ``None``, no progress updates are provided.
         """
         for t in self._tasks:
             t.wait(progress_handler=progress_handler)

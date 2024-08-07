@@ -53,8 +53,8 @@ from ansys.additive.core.progress_handler import (
     IProgressHandler,
 )
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
-from ansys.additive.core.simulation_requests import _create_request
 from ansys.additive.core.simulation import SimulationError
+from ansys.additive.core.simulation_requests import _create_request
 from ansys.additive.core.simulation_task import SimulationTask
 from ansys.additive.core.simulation_task_manager import SimulationTaskManager
 from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
@@ -305,7 +305,7 @@ class Additive:
         for summ in summaries:
             if isinstance(summ, SimulationError):
                 LOG.error(f"\nError: {summ.message}")
-  
+
         return summaries
 
     def simulate_async(
@@ -319,7 +319,7 @@ class Additive:
             | list
         ),
         progress_handler: IProgressHandler | None = None,
-    ) -> (SimulationTask | SimulationTaskManager):
+    ) -> SimulationTask | SimulationTaskManager:
         """Execute additive simulations asynchronously. This method does not block while the
         simulations are running on the server. This class stores handles of type
         google.longrunning.Operation to the remote tasks that can be used to communicate with
@@ -340,7 +340,7 @@ class Additive:
         If only one simulation input is given, will return a SimulationTask.
         If a list of simulation inputs is provided, will return a SimulationTaskManager.
         """
-        # self._check_for_duplicate_id(inputs)
+        self._check_for_duplicate_id(inputs)
 
         if not isinstance(inputs, list):
             if not progress_handler:
@@ -375,7 +375,7 @@ class Additive:
             | Microstructure3DInput
         ),
         server: ServerConnection,
-        progress_handler: IProgressHandler | None = None
+        progress_handler: IProgressHandler | None = None,
     ) -> SimulationTask:
         """Execute a single simulation.
 
@@ -406,14 +406,18 @@ class Additive:
             request = _create_request(simulation_input, server, progress_handler)
             # server has available job slots, so kick off a simulation
             long_running_op = server.simulation_stub.Simulate(request)
-            simulation_task = SimulationTask(server, long_running_op, simulation_input, self._user_data_path)
+            simulation_task = SimulationTask(
+                server, long_running_op, simulation_input, self._user_data_path
+            )
 
         except Exception as e:
             metadata = OperationMetadata(simulation_id=simulation_input.id, message=str(e))
             errored_op = Operation(name=simulation_input.id, done=True)
             errored_op.metadata.Pack(metadata)
-            simulation_task = SimulationTask(server, errored_op, simulation_input, self._user_data_path)
-        
+            simulation_task = SimulationTask(
+                server, errored_op, simulation_input, self._user_data_path
+            )
+
         return simulation_task
 
     def materials_list(self) -> list[str]:
@@ -586,11 +590,9 @@ class Additive:
 
         operation = self._servers[0].materials_stub.TuneMaterial(request)
 
-        task = SimulationTask([self._servers[0]], out_dir, self._nsims_per_server)
-        task.add_running_simulation(self._servers[0].channel_str, operation, input)
-        task.wait_all(progress_handler=progress_handler)
-
-        operation = task.get_operation(input.id)
+        task = SimulationTask(self._servers[0], operation, input, out_dir)
+        task.wait(progress_handler=progress_handler)
+        operation = task._long_running_op
         response = TuneMaterialResponse()
         operation.response.Unpack(response)
         if not response.HasField("result"):
@@ -603,23 +605,12 @@ class Additive:
             # An individual input, not a list
             if inputs.id == "":
                 inputs.id = misc.short_uuid()
-            if any([x for x in self._simulation_inputs if x.id == inputs.id]):
-                raise ValueError(f'Duplicate simulation ID "{i.id}" in input list')
-
-            self._simulation_inputs.append(inputs)
             return
-
-        # list of inputs
         ids = []
         for i in inputs:
             if not i.id:
-                # give input an id if none given
+                # give input an id if none provided
                 i.id = misc.short_uuid()
-            if any([x for x in self._simulation_inputs if x.id == i.id]):
-                # id given previously
-                raise ValueError(
-                    f'Duplicate simulation ID "{i.id}" given in previous simulation calls'
-                )
             if any([x for x in ids if x == i.id]):
                 raise ValueError(f'Duplicate simulation ID "{i.id}" in input list')
             ids.append(i.id)
