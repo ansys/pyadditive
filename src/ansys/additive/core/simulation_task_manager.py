@@ -40,7 +40,7 @@ class SimulationTaskManager:
         Parameters
         ----------
         task: SimulationTask
-            The simulation task holding the long running operation and corresponding server.
+            The simulation task holding the long-running operation and corresponding server.
         """
         self._tasks.append(task)
 
