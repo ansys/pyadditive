@@ -67,7 +67,7 @@ class Progress(BaseModel):
 
     @classmethod
     def from_operation_metadata(cls, metadata: OperationMetadata):
-        """Create a ``Progress`` object from a operation metadata (long running operations) protobuf message."""  # noqa: E501
+        """Create a ``Progress`` object from an operation metadata (long running operations) protobuf message."""  # noqa: E501
         return cls(
             sim_id=metadata.simulation_id,
             state=metadata.state,
