@@ -100,7 +100,8 @@ def _create_request(
     server: ServerConnection,
     progress_handler: IProgressHandler | None = None,
 ) -> SimulationRequest:
-    """Create a simulation request and setup any pre-requisites on a server, e.g. STL for thermal history.
+    """Create a simulation request and set up any pre-requisites on a server, such as an STL file for a
+    thermal history simulation.
 
     Parameters
     ----------

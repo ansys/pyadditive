@@ -54,7 +54,7 @@ class SimulationTask:
     server_connection: ServerConnection
         The client connection to the Additive server.
     long_running_operation: Operation
-        The long running operation representing the simulation on the server.
+        The long-running operation representing the simulation on the server.
     simulation_input: SingleBeadInput | PorosityInput | MicrostructureInput | ThermalHistoryInput | Microstructure3DInput | MaterialTuningInput
         The simulation input.
     user_data_path: str
