@@ -154,7 +154,6 @@ def test_unpack_summary_returns_correct_summary(
         shutil.copyfile(
             test_utils.get_test_file_path("thermal_history_results.zip"), str(results_file)
         )
-        # mock_download_file.side_effect = lambda a, b, c: str(results_file)
         mock_download_file.return_value = str(results_file)
         sim_response = SimulationResponse(
             id=sim_input.id,
