@@ -108,7 +108,6 @@ def test_update_format_raises_exception_when_version_too_great(tmp_path: pytest.
     ) as mock_format_version:
         study = ps.ParametricStudy(tmp_path / "test_study")
         mock_format_version.return_value = ps.FORMAT_VERSION + 1
-        filename = tmp_path / "invalid_format_version.ps"
         # act, assert
         with pytest.raises(ValueError, match="Unsupported version"):
             ps.ParametricStudy.update_format(study)
