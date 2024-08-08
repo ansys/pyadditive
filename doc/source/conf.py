@@ -10,7 +10,6 @@ from ansys_sphinx_theme import (
     ansys_favicon,
     get_autoapi_templates_dir_relative_path,
     get_version_match,
-    pyansys_logo_black,
 )
 import numpy as np
 import pyvista
@@ -64,7 +63,6 @@ DOC_PATH = "doc/source"
 SEARCH_HINTS = ["def", "class"]
 
 # use the default pyansys logo
-html_logo = pyansys_logo_black
 html_theme = "ansys_sphinx_theme"
 html_favicon = ansys_favicon
 html_show_sourcelink = False
@@ -91,6 +89,8 @@ html_theme_options = {
         "version_match": switcher_version,
     },
     "check_switcher": False,
+    "navigation_with_keys": True,
+    "logo": "pyansys",
 }
 
 html_context = {
