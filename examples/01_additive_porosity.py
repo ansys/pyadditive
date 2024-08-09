@@ -79,7 +79,6 @@ machine.laser_power = 250  # W
 input = PorosityInput(
     machine=machine,
     material=material,
-    id="porosity-example",
     size_x=0.001,  # meters
     size_y=0.001,
     size_z=0.001,
