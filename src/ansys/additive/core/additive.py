@@ -699,8 +699,6 @@ class Additive:
             return
         ids = []
         for input in inputs:
-            if input.id == "":
-                input.id = misc.short_uuid()
             if input.id in ids:
                 raise ValueError(f'Duplicate simulation ID "{input.id}" in input list')
             ids.append(input.id)

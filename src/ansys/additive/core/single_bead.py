@@ -33,9 +33,10 @@ from pandas import DataFrame
 
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.simulation_input_base import SimulationInputBase
 
 
-class SingleBeadInput:
+class SingleBeadInput(SimulationInputBase):
     """Provides input parameters for a single bead simulation."""
 
     DEFAULT_BEAD_LENGTH = 3e-3
@@ -55,7 +56,7 @@ class SingleBeadInput:
 
     def __init__(
         self,
-        id: str = "",
+        *,
         bead_length: float = DEFAULT_BEAD_LENGTH,
         machine: AdditiveMachine = AdditiveMachine(),
         material: AdditiveMaterial = AdditiveMaterial(),
@@ -63,7 +64,7 @@ class SingleBeadInput:
         thermal_history_interval: int = DEFAULT_THERMAL_HISTORY_INTERVAL,
     ):
         """Initialize a ``SingleBeadInput`` object."""
-        self.id = id
+        super().__init__()
         self.bead_length = bead_length
         self.machine = machine
         self.material = material
@@ -96,15 +97,6 @@ class SingleBeadInput:
             raise ValueError("{} must be a number.".format(name))
         if value < min or value > max:
             raise ValueError("{} must be between {} and {}.".format(name, min, max))
-
-    @property
-    def id(self) -> str:
-        """User-provided ID for the simulation."""
-        return self._id
-
-    @id.setter
-    def id(self, value):
-        self._id = value
 
     @property
     def machine(self) -> AdditiveMachine:

@@ -32,14 +32,14 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 )
 from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialRequest
 
+from ansys.additive.core.simulation_input_base import SimulationInputBase
 
-class MaterialTuningInput:
+
+class MaterialTuningInput(SimulationInputBase):
     """Provides input parameters for tuning a custom material.
 
     Parameters
     ----------
-    id: str
-        ID for this set of tuning simulations.
     experiment_data_file: str
         Name of the CSV file containing the experimental results data.
     material_configuration_file: str
@@ -66,7 +66,6 @@ class MaterialTuningInput:
     def __init__(
         self,
         *,
-        id: str,
         experiment_data_file: str,
         material_configuration_file: str,
         thermal_properties_lookup_file: str,
@@ -76,6 +75,7 @@ class MaterialTuningInput:
         base_plate_temperature: float = 353.15,
     ):
         """Initialize a MaterialTuningInput object."""
+        super().__init__()
 
         if not os.path.isfile(experiment_data_file):
             raise FileNotFoundError(f"File not found: {experiment_data_file}")
@@ -87,7 +87,6 @@ class MaterialTuningInput:
             characteristic_width_lookup_file
         ):
             raise FileNotFoundError(f"File not found: {characteristic_width_lookup_file}")
-        self.id = id
         self.allowable_error = allowable_error
         self.max_iterations = max_iterations
         self.experiment_data_file = experiment_data_file
@@ -117,7 +116,10 @@ class MaterialTuningInput:
     def __repr__(self):
         repr = type(self).__name__ + "\n"
         for k in self.__dict__:
-            repr += k + ": " + str(getattr(self, k)) + "\n"
+            if k == "_id":
+                repr += "id: " + str(self.id) + "\n"
+            else:
+                repr += k + ": " + str(getattr(self, k)) + "\n"
         return repr
 
     def __eq__(self, other: object) -> bool:

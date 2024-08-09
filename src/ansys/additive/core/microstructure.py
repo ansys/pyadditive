@@ -37,9 +37,10 @@ import pandas as pd
 from ansys.additive.core import misc
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.simulation_input_base import SimulationInputBase
 
 
-class MicrostructureInput:
+class MicrostructureInput(SimulationInputBase):
     """Provides input parameters for microstructure simulation.
 
     Units are SI (m, kg, s, K) unless otherwise noted.
@@ -102,7 +103,6 @@ class MicrostructureInput:
 
     def __init__(
         self,
-        id: str = "",
         *,
         sample_min_x: float = DEFAULT_POSITION_COORDINATE,
         sample_min_y: float = DEFAULT_POSITION_COORDINATE,
@@ -121,6 +121,7 @@ class MicrostructureInput:
         material: AdditiveMaterial = AdditiveMaterial(),
     ):
         """Initialize a ``MicrostructureInput`` object."""
+        super().__init__()
 
         # we have a circular dependency here, so we validate sensor_dimension
         # and sample_size_* then assign them without calling the setters
@@ -145,7 +146,6 @@ class MicrostructureInput:
         self._sample_size_z = sample_size_z
 
         # use setters for remaining properties
-        self.id = id
         self.sample_min_x = sample_min_x
         self.sample_min_y = sample_min_y
         self.sample_min_z = sample_min_z
@@ -207,15 +207,6 @@ class MicrostructureInput:
             raise ValueError(
                 "{} must be at least {} larger than sensor_dimension.".format(name, cushion)
             )
-
-    @property
-    def id(self) -> str:
-        """User-provided ID for this simulation."""
-        return self._id
-
-    @id.setter
-    def id(self, value: str):
-        self._id = value
 
     @property
     def machine(self):

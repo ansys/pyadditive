@@ -38,7 +38,7 @@ def test_PorosityInput_init_creates_default_object():
     input = PorosityInput()
 
     # assert
-    assert "" == input.id
+    assert input.id
     assert 3e-3 == input.size_x
     assert 3e-3 == input.size_y
     assert 3e-3 == input.size_z
@@ -51,7 +51,6 @@ def test_PorosityInput_init_creates_expected_object():
     machine = AdditiveMachine(laser_power=100)
     material = test_utils.get_test_material()
     input = PorosityInput(
-        id="id",
         size_x=1e-3,
         size_y=2e-3,
         size_z=3e-3,
@@ -60,7 +59,7 @@ def test_PorosityInput_init_creates_expected_object():
     )
 
     # assert
-    assert "id" == input.id
+    assert input.id
     assert 1e-3 == input.size_x
     assert 2e-3 == input.size_y
     assert 3e-3 == input.size_z
@@ -71,7 +70,6 @@ def test_PorosityInput_init_creates_expected_object():
 def test_PorositySummary_init_creates_expected_object():
     # arrange
     input = PorosityInput(
-        id="id",
         size_x=1e-3,
         size_y=2e-3,
         size_z=3e-3,
@@ -103,7 +101,7 @@ def test_PorositySummary_init_creates_expected_object():
 )
 def test_PorositySummary_init_raises_exception_for_invalid_input_type(invalid_obj):
     # arrange, act, assert
-    with pytest.raises(ValueError, match="Invalid input type") as exc_info:
+    with pytest.raises(ValueError, match="Invalid input type"):
         PorositySummary(invalid_obj, PorosityResult())
 
 
@@ -126,16 +124,14 @@ def test_PorosityInput__to_simulation_request_assigns_values():
     machine = AdditiveMachine()
     machine.laser_power = 99
     material = AdditiveMaterial(name="vibranium")
-    input = PorosityInput(
-        id="myId", machine=machine, material=material, size_x=1e-3, size_y=2e-3, size_z=3e-3
-    )
+    input = PorosityInput(machine=machine, material=material, size_x=1e-3, size_y=2e-3, size_z=3e-3)
 
     # act
     request = input._to_simulation_request()
 
     # assert
     assert isinstance(request, SimulationRequest)
-    assert request.id == "myId"
+    assert request.id == input.id
     p_input = request.porosity_input
     assert p_input.machine.laser_power == 99
     assert p_input.material.name == "vibranium"
@@ -175,12 +171,12 @@ def test_PorosityInput_setters_raise_expected_error_for_nan_values(field):
 
 def test_PorosityInput_repr_returns_expected_string():
     # arrange
-    input = PorosityInput(id="myId")
+    input = PorosityInput()
 
     # act, assert
     assert repr(input) == (
         "PorosityInput\n"
-        + "id: myId\n"
+        + f"id: {input.id}\n"
         + "size_x: 0.003\n"
         + "size_y: 0.003\n"
         + "size_z: 0.003\n"
@@ -238,7 +234,7 @@ def test_PorosityInput_repr_returns_expected_string():
 
 def test_PorositySummary_repr_retuns_expected_string():
     # arrange
-    input = PorosityInput(id="myId")
+    input = PorosityInput()
     result = PorosityResult()
     summary = PorositySummary(input, result)
 
@@ -246,7 +242,7 @@ def test_PorositySummary_repr_retuns_expected_string():
     assert repr(summary) == (
         "PorositySummary\n"
         + "input: PorosityInput\n"
-        + "id: myId\n"
+        + f"id: {input.id}\n"
         + "size_x: 0.003\n"
         + "size_y: 0.003\n"
         + "size_z: 0.003\n"

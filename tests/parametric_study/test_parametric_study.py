@@ -160,7 +160,6 @@ def test_add_summaries_with_porosity_summary_adds_row(tmp_path: pytest.TempPathF
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input = PorosityInput(
-        id="id",
         size_x=1e-3,
         size_y=2e-3,
         size_z=3e-3,
@@ -184,7 +183,7 @@ def test_add_summaries_with_porosity_summary_adds_row(tmp_path: pytest.TempPathF
     assert len(study.data_frame()) == 1
     row = study.data_frame().iloc[0]
     assert row[ps.ColumnNames.ITERATION] == 99
-    assert row[ps.ColumnNames.ID] == "id"
+    assert row[ps.ColumnNames.ID] == input.id
     assert row[ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
     assert row[ps.ColumnNames.MATERIAL] == material.name
     assert row[ps.ColumnNames.HEATER_TEMPERATURE] == machine.heater_temperature
@@ -212,7 +211,6 @@ def test_add_summaries_with_single_bead_summary_adds_row(tmp_path: pytest.TempPa
     material = test_utils.get_test_material()
     melt_pool_msg = test_utils.get_test_melt_pool_message()
     input = SingleBeadInput(
-        id="id",
         bead_length=0.01,
         machine=machine,
         material=material,
@@ -242,7 +240,7 @@ def test_add_summaries_with_single_bead_summary_adds_row(tmp_path: pytest.TempPa
     assert len(study.data_frame()) == 1
     row = study.data_frame().iloc[0]
     assert row[ps.ColumnNames.ITERATION] == 98
-    assert row[ps.ColumnNames.ID] == "id"
+    assert row[ps.ColumnNames.ID] == input.id
     assert row[ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
     assert row[ps.ColumnNames.MATERIAL] == material.name
     assert row[ps.ColumnNames.HEATER_TEMPERATURE] == machine.heater_temperature
@@ -280,7 +278,6 @@ def test_add_summaries_with_microstructure_summary_adds_row(tmp_path: pytest.Tem
     material = test_utils.get_test_material()
     user_data_path = tmp_path / "microstructure_summary_init"
     input = MicrostructureInput(
-        id="id",
         machine=machine,
         material=material,
         random_seed=123,
@@ -314,7 +311,7 @@ def test_add_summaries_with_microstructure_summary_adds_row(tmp_path: pytest.Tem
     assert len(study.data_frame()) == 1
     row = study.data_frame().iloc[0]
     assert row[ps.ColumnNames.ITERATION] == 99
-    assert row[ps.ColumnNames.ID] == "id"
+    assert row[ps.ColumnNames.ID] == input.id
     assert row[ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
     assert row[ps.ColumnNames.MATERIAL] == material.name
     assert row[ps.ColumnNames.HEATER_TEMPERATURE] == machine.heater_temperature
@@ -362,7 +359,6 @@ def test_add_summaries_returns_correct_number_of_added_summaries(tmp_path: pytes
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input = PorosityInput(
-        id="id",
         size_x=1e-3,
         size_y=2e-3,
         size_z=3e-3,
@@ -391,7 +387,6 @@ def test_add_summaries_removes_duplicate_entries(tmp_path: pytest.TempPathFactor
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input = PorosityInput(
-        id="id1",
         size_x=1e-3,
         size_y=2e-3,
         size_z=3e-3,
@@ -423,7 +418,6 @@ def test_add_summaries_overwrites_duplicate_entries_with_simulation_status_compl
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input_sb_1 = SingleBeadInput(
-        id="sb_id_1",
         bead_length=0.01,
         machine=machine,
         material=material,
@@ -494,7 +488,6 @@ def test_add_summaries_overwrites_duplicate_completed_simulations_with_newer_ent
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input1 = PorosityInput(
-        id="id_1",
         size_x=1e-3,
         size_y=2e-3,
         size_z=3e-3,
@@ -502,7 +495,6 @@ def test_add_summaries_overwrites_duplicate_completed_simulations_with_newer_ent
         material=material,
     )
     input2 = PorosityInput(
-        id="id_2",
         size_x=1e-3,
         size_y=2e-3,
         size_z=3e-3,
@@ -530,11 +522,10 @@ def test_add_summaries_overwrites_duplicate_completed_simulations_with_newer_ent
     study.add_summaries([summary2], iteration=2)
 
     # assert
-    df = study.data_frame()
     assert len(study.data_frame()) == 1
     row = study.data_frame().iloc[0]
     assert row[ps.ColumnNames.ITERATION] == 2
-    assert row[ps.ColumnNames.ID] == "id_2"
+    assert row[ps.ColumnNames.ID] == input2.id
     assert row[ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
     assert row[ps.ColumnNames.MATERIAL] == material.name
     assert row[ps.ColumnNames.HEATER_TEMPERATURE] == machine.heater_temperature
@@ -1270,7 +1261,9 @@ def test_update_updates_error_status(tmp_path: pytest.TempPathFactory):
     study.generate_single_bead_permutations("material", [50], [1])
     df1 = study.data_frame()
     id = df1.loc[0, ps.ColumnNames.ID]
-    input = SingleBeadInput(id=id)
+    input = SingleBeadInput()
+    # overwrite the id to match the one in the study
+    input._id = id
     error = SimulationError(input, "error message")
 
     # act
@@ -1290,7 +1283,9 @@ def test_update_updates_single_bead_permutation(tmp_path: pytest.TempPathFactory
     study.generate_single_bead_permutations("material", [50], [1])
     df1 = study.data_frame()
     id = df1.loc[0, ps.ColumnNames.ID]
-    input = SingleBeadInput(id=id)
+    input = SingleBeadInput()
+    # overwrite the id to match the one in the study
+    input._id = id
     mp_msg = test_utils.get_test_melt_pool_message()
     mp_median = MeltPool(mp_msg, tmp_path).data_frame().median()
     summary = SingleBeadSummary(input, mp_msg, None)
@@ -1329,7 +1324,9 @@ def test_update_updates_porosity_permutation(tmp_path: pytest.TempPathFactory):
     study.generate_porosity_permutations("material", [50], [1])
     df1 = study.data_frame()
     id = df1.loc[0, ps.ColumnNames.ID]
-    input = PorosityInput(id=id)
+    input = PorosityInput()
+    # overwrite the id to match the one in the study
+    input._id = id
     result = PorosityResult(
         void_ratio=10,
         powder_ratio=11,
@@ -1355,7 +1352,9 @@ def test_update_updates_microstructure_permutation(tmp_path: pytest.TempPathFact
     df1 = study.data_frame()
     id = df1.loc[0, ps.ColumnNames.ID]
     user_data_path = tmp_path / "ps_microstructure_update_test"
-    input = MicrostructureInput(id=id)
+    input = MicrostructureInput()
+    # overwrite the id to match the one in the study
+    input._id = id
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
@@ -1397,9 +1396,9 @@ def test_add_inputs_creates_new_rows(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     inputs = [
-        SingleBeadInput(id="test_id_1"),
-        PorosityInput(id="test_id_2"),
-        MicrostructureInput(id="test_id_3"),
+        SingleBeadInput(),
+        PorosityInput(),
+        MicrostructureInput(),
     ]
 
     # act
@@ -1427,9 +1426,9 @@ def test_add_inputs_returns_correct_number_of_added_inputs(tmp_path: pytest.Temp
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     inputs = [
-        SingleBeadInput(id="test_id_1"),
-        PorosityInput(id="test_id_2"),
-        MicrostructureInput(id="test_id_3"),
+        SingleBeadInput(),
+        PorosityInput(),
+        MicrostructureInput(),
     ]
 
     # act
@@ -1468,7 +1467,7 @@ def test_add_inputs_assigns_common_params_correctly(tmp_path: pytest.TempPathFac
         slicing_stripe_width=stripe_width,
     )
     material = AdditiveMaterial(name="test_material")
-    input = SingleBeadInput(id="test_input", machine=machine, material=material)
+    input = SingleBeadInput(machine=machine, material=material)
 
     # act
     study.add_inputs([input], iteration=iteration, priority=priority, status=status)
@@ -1478,7 +1477,7 @@ def test_add_inputs_assigns_common_params_correctly(tmp_path: pytest.TempPathFac
     assert len(df) == 1
     assert df.loc[0, ps.ColumnNames.ITERATION] == iteration
     assert df.loc[0, ps.ColumnNames.PRIORITY] == priority
-    assert df.loc[0, ps.ColumnNames.ID] == "test_input"
+    assert df.loc[0, ps.ColumnNames.ID] == input.id
     assert df.loc[0, ps.ColumnNames.STATUS] == status
     assert df.loc[0, ps.ColumnNames.MATERIAL] == "test_material"
     assert df.loc[0, ps.ColumnNames.LASER_POWER] == power
@@ -1614,9 +1613,9 @@ def test_add_inputs_only_adds_entries_with_simulation_status_pending_or_skip(
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     inputs = [
-        SingleBeadInput(id="test_id_1"),
-        PorosityInput(id="test_id_2"),
-        MicrostructureInput(id="test_id_3"),
+        SingleBeadInput(),
+        PorosityInput(),
+        MicrostructureInput(),
     ]
 
     # act
@@ -1640,9 +1639,9 @@ def test_add_inputs_raises_error_with_simulation_status_completed_or_error(
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     inputs = [
-        SingleBeadInput(id="test_id_1"),
-        PorosityInput(id="test_id_2"),
-        MicrostructureInput(id="test_id_3"),
+        SingleBeadInput(),
+        PorosityInput(),
+        MicrostructureInput(),
     ]
 
     # act, assert
@@ -1656,12 +1655,12 @@ def test_add_inputs_returns_correct_number_of_simulations_added_to_the_study(
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     inputs = [
-        SingleBeadInput(id="test_id_1"),
-        PorosityInput(id="test_id_2"),
-        MicrostructureInput(id="test_id_3"),
-        SingleBeadInput(id="test_id_1"),
-        PorosityInput(id="test_id_2"),
-        MicrostructureInput(id="test_id_3"),
+        SingleBeadInput(),
+        PorosityInput(),
+        MicrostructureInput(),
+        SingleBeadInput(),
+        PorosityInput(),
+        MicrostructureInput(),
     ]
 
     # act
@@ -1677,15 +1676,13 @@ def test_add_inputs_overwrites_duplicate_entries_by_keeping_earlier_entry(
 ):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
-    input_sb_1 = SingleBeadInput(id="sb_id_1", bead_length=0.001)
-    input_p_1 = PorosityInput(id="p_id_1", size_x=0.001, size_y=0.001, size_z=0.001)
-    input_m_1 = MicrostructureInput(
-        id="m_id_1", sample_size_x=0.001, sample_size_y=0.001, sample_size_z=0.002
-    )
-    input_sb_1_duplicate = SingleBeadInput(id="sb_id_1_d", bead_length=0.001)
-    input_p_1_duplicate = PorosityInput(id="p_id_1_d", size_x=0.001, size_y=0.001, size_z=0.001)
+    input_sb_1 = SingleBeadInput(bead_length=0.001)
+    input_p_1 = PorosityInput(size_x=0.001, size_y=0.001, size_z=0.001)
+    input_m_1 = MicrostructureInput(sample_size_x=0.001, sample_size_y=0.001, sample_size_z=0.002)
+    input_sb_1_duplicate = SingleBeadInput(bead_length=0.001)
+    input_p_1_duplicate = PorosityInput(size_x=0.001, size_y=0.001, size_z=0.001)
     input_m_1_duplicate = MicrostructureInput(
-        id="m_id_1_d", sample_size_x=0.001, sample_size_y=0.001, sample_size_z=0.002
+        sample_size_x=0.001, sample_size_y=0.001, sample_size_z=0.002
     )
 
     inputs = [
@@ -1704,9 +1701,9 @@ def test_add_inputs_overwrites_duplicate_entries_by_keeping_earlier_entry(
 
     df = study.data_frame()
     assert len(df) == 3
-    assert df.loc[0, ps.ColumnNames.ID] == "sb_id_1"
-    assert df.loc[1, ps.ColumnNames.ID] == "p_id_1"
-    assert df.loc[2, ps.ColumnNames.ID] == "m_id_1"
+    assert df.loc[0, ps.ColumnNames.ID] == input_sb_1.id
+    assert df.loc[1, ps.ColumnNames.ID] == input_p_1.id
+    assert df.loc[2, ps.ColumnNames.ID] == input_m_1.id
 
 
 @pytest.mark.parametrize("input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP)])
@@ -1715,8 +1712,8 @@ def test_add_inputs_overwrites_duplicate_entries_with_priority_to_simulation_sta
 ):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
-    input_sb_1 = SingleBeadInput(id="sb_id_1")
-    input_sb_2 = SingleBeadInput(id="sb_id_2")
+    input_sb_1 = SingleBeadInput()
+    input_sb_2 = SingleBeadInput()
 
     # act
     study.add_inputs([input_sb_1], status=SimulationStatus.PENDING)
@@ -1726,7 +1723,7 @@ def test_add_inputs_overwrites_duplicate_entries_with_priority_to_simulation_sta
     df = study.data_frame()
     assert len(df) == 1
     assert df.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.PENDING
-    assert df.loc[0, ps.ColumnNames.ID] == "sb_id_1"
+    assert df.loc[0, ps.ColumnNames.ID] == input_sb_1.id
 
 
 @pytest.mark.parametrize("input_status", [(SimulationStatus.PENDING), (SimulationStatus.SKIP)])
@@ -1735,20 +1732,20 @@ def test_add_inputs_does_not_overwrite_simulation_with_status_completed(
 ):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
-    input_sb_1 = SingleBeadInput(id="sb_id_1")
+    sb = SingleBeadInput()
     melt_pool_msg = test_utils.get_test_melt_pool_message()
-    summary = SingleBeadSummary(input_sb_1, melt_pool_msg, None)
+    summary = SingleBeadSummary(sb, melt_pool_msg, None)
 
     # act
     study.add_summaries([summary], iteration=1)
-    study.add_inputs([input_sb_1], iteration=1, status=input_status)
+    study.add_inputs([sb], iteration=1, status=input_status)
 
     # assert
     df = study.data_frame()
 
     assert len(df) == 1
     assert df.loc[0, ps.ColumnNames.STATUS] == SimulationStatus.COMPLETED
-    assert df.loc[0, ps.ColumnNames.ID] == "sb_id_1"
+    assert df.loc[0, ps.ColumnNames.ID] == sb.id
 
 
 def test_run_simulations_calls_simulate_correctly(monkeypatch, tmp_path: pytest.TempPathFactory):
@@ -1775,9 +1772,9 @@ def test_run_simulations_with_priority_calls_simulate_correctly(
     monkeypatch, tmp_path: pytest.TempPathFactory
 ):
     study = ps.ParametricStudy(tmp_path / "test_study")
-    sb1 = SingleBeadInput(id="test_1")
-    sb2 = SingleBeadInput(id="test_2")
-    sb3 = SingleBeadInput(id="test_3")
+    sb1 = SingleBeadInput()
+    sb2 = SingleBeadInput()
+    sb3 = SingleBeadInput()
     study.add_inputs([sb1], priority=1)
     study.add_inputs([sb2], priority=2)
     study.add_inputs([sb3], priority=3)
@@ -1797,9 +1794,9 @@ def test_run_simulations_with_iteration_calls_simulate_correctly(
     monkeypatch, tmp_path: pytest.TempPathFactory
 ):
     study = ps.ParametricStudy(tmp_path / "test_study")
-    sb1 = SingleBeadInput(id="test_1")
-    sb2 = SingleBeadInput(id="test_2")
-    sb3 = SingleBeadInput(id="test_3")
+    sb1 = SingleBeadInput()
+    sb2 = SingleBeadInput()
+    sb3 = SingleBeadInput()
     study.add_inputs([sb1], iteration=1)
     study.add_inputs([sb2], iteration=2)
     study.add_inputs([sb3], iteration=3)
@@ -1819,9 +1816,9 @@ def test_rum_simulations_with_simulation_ids_calls_simulate_correctly(
     monkeypatch, tmp_path: pytest.TempPathFactory
 ):
     study = ps.ParametricStudy(tmp_path / "test_study")
-    sb1 = SingleBeadInput(id="test_1", bead_length=0.001)
-    sb2 = SingleBeadInput(id="test_2", bead_length=0.002)
-    sb3 = SingleBeadInput(id="test_3", bead_length=0.003)
+    sb1 = SingleBeadInput(bead_length=0.001)
+    sb2 = SingleBeadInput(bead_length=0.002)
+    sb3 = SingleBeadInput(bead_length=0.003)
     study.add_inputs([sb1])
     study.add_inputs([sb2])
     study.add_inputs([sb3])
@@ -1841,9 +1838,9 @@ def test_remove_deletes_multiple_rows_from_dataframe(tmp_path: pytest.TempPathFa
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     for i in range(4):
-        study.add_inputs([SingleBeadInput(id=f"test_id_{i}", bead_length=(i + 1) * 0.001)])
+        study.add_inputs([SingleBeadInput(bead_length=(i + 1) * 0.001)])
     df1 = study.data_frame()
-    ids = ["test_id_0", "test_id_1"]
+    ids = [df1.iloc[0][ps.ColumnNames.ID], df1.iloc[1][ps.ColumnNames.ID]]
 
     # act
     study.remove(ids)
@@ -1859,28 +1856,34 @@ def test_remove_deletes_single_row_from_dataframe(tmp_path: pytest.TempPathFacto
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     for i in range(4):
-        study.add_inputs([SingleBeadInput(id=f"test_id_{i}", bead_length=(i + 1) * 0.001)])
+        study.add_inputs([SingleBeadInput(bead_length=(i + 1) * 0.001)])
     df1 = study.data_frame()
+    id = df1.iloc[0][ps.ColumnNames.ID]
 
     # act
-    study.remove("test_id_0")
+    study.remove(id)
 
     # assert
     df2 = study.data_frame()
     assert len(df1) == 4
     assert len(df2) == 3
-    assert len(df2[df2[ps.ColumnNames.ID] == "test_id_0"]) == 0
+    assert len(df2[df2[ps.ColumnNames.ID] == id]) == 0
 
 
 def test_set_status_changes_status(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     for i in range(4):
-        study.add_inputs([SingleBeadInput(id=f"test_id_{i}")])
+        study.add_inputs([SingleBeadInput(bead_length=(i + 1) * 0.001)])
     status1 = study.data_frame()[ps.ColumnNames.STATUS]
+    df = study.data_frame()
+    ids = [
+        df.iloc[0][ps.ColumnNames.ID],
+        df.iloc[1][ps.ColumnNames.ID],
+    ]
 
     # act
-    study.set_status(["test_id_0", "test_id_1"], SimulationStatus.SKIP)
+    study.set_status(ids, SimulationStatus.SKIP)
 
     # assert
     status2 = study.data_frame()[ps.ColumnNames.STATUS]
@@ -1896,11 +1899,12 @@ def test_set_status_changes_status_for_single_id(tmp_path: pytest.TempPathFactor
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     for i in range(4):
-        study.add_inputs([SingleBeadInput(id=f"test_id_{i}")])
+        study.add_inputs([SingleBeadInput(bead_length=(i + 1) * 0.001)])
     status1 = study.data_frame()[ps.ColumnNames.STATUS]
+    id = study.data_frame().iloc[0][ps.ColumnNames.ID]
 
     # act
-    study.set_status("test_id_0", SimulationStatus.SKIP)
+    study.set_status(id, SimulationStatus.SKIP)
 
     # assert
     status2 = study.data_frame()[ps.ColumnNames.STATUS]
@@ -1915,7 +1919,6 @@ def test_set_status_changes_status_for_single_id(tmp_path: pytest.TempPathFactor
 def test_create_unique_id_returns_unique_id(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
-    study.add_inputs([SingleBeadInput(id="test_id_1")])
 
     # act
     id = study._create_unique_id(prefix="test_id_1")
@@ -1931,7 +1934,7 @@ def test_create_unique_id_returns_unique_id(tmp_path: pytest.TempPathFactory):
 def test_clear_removes_all_rows_but_not_columns(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
-    study.add_inputs([SingleBeadInput(id="test_id_1")])
+    study.add_inputs([SingleBeadInput()])
     df1 = study.data_frame()
 
     # act
@@ -1989,11 +1992,12 @@ def test_set_priority_sets_priority(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     for i in range(4):
-        study.add_inputs([SingleBeadInput(id=f"test_id_{i}")])
+        study.add_inputs([SingleBeadInput(bead_length=(i + 1) * 0.001)])
     priority1 = study.data_frame()[ps.ColumnNames.PRIORITY]
+    ids = study.data_frame().iloc[0:2][ps.ColumnNames.ID].array
 
     # act
-    study.set_priority(["test_id_0", "test_id_1"], 5)
+    study.set_priority(ids, 5)
 
     # assert
     priority2 = study.data_frame()[ps.ColumnNames.PRIORITY]
@@ -2009,11 +2013,12 @@ def test_set_iteration_sets_iteration(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     for i in range(4):
-        study.add_inputs([SingleBeadInput(id=f"test_id_{i}")])
+        study.add_inputs([SingleBeadInput(bead_length=(i + 1) * 0.001)])
     iteration1 = study.data_frame()[ps.ColumnNames.ITERATION]
+    ids = study.data_frame().iloc[0:2][ps.ColumnNames.ID].array
 
     # act
-    study.set_iteration(["test_id_0", "test_id_1"], 5)
+    study.set_iteration(ids, 5)
 
     # assert
     iteration2 = study.data_frame()[ps.ColumnNames.ITERATION]
