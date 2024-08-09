@@ -185,25 +185,29 @@ class ParametricRunner:
     def _create_single_bead_input(
         row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine
     ) -> SingleBeadInput:
-        return SingleBeadInput(
-            id=row[ColumnNames.ID],
+        sb_input = SingleBeadInput(
             material=material,
             machine=machine,
             bead_length=row[ColumnNames.SINGLE_BEAD_LENGTH],
         )
+        # overwrite the ID value with the simulation ID from the table
+        sb_input._id = row[ColumnNames.ID]
+        return sb_input
 
     @staticmethod
     def _create_porosity_input(
         row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine
     ) -> PorosityInput:
-        return PorosityInput(
-            id=row[ColumnNames.ID],
+        p_input = PorosityInput(
             material=material,
             machine=machine,
             size_x=row[ColumnNames.POROSITY_SIZE_X],
             size_y=row[ColumnNames.POROSITY_SIZE_Y],
             size_z=row[ColumnNames.POROSITY_SIZE_Z],
         )
+        # overwrite the ID value with the simulation ID from the table
+        p_input._id = row[ColumnNames.ID]
+        return p_input
 
     @staticmethod
     def _create_microstructure_input(
@@ -216,8 +220,7 @@ class ParametricRunner:
             or not np.isnan(row[ColumnNames.MICRO_MELT_POOL_DEPTH])
         )
 
-        return MicrostructureInput(
-            id=row[ColumnNames.ID],
+        ms_input = MicrostructureInput(
             material=material,
             machine=machine,
             sample_size_x=row[ColumnNames.MICRO_SIZE_X],
@@ -266,3 +269,6 @@ class ParametricRunner:
                 else MicrostructureInput.DEFAULT_RANDOM_SEED
             ),
         )
+        # overwrite the ID value with the simulation ID from the table
+        ms_input._id = row[ColumnNames.ID]
+        return ms_input

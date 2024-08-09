@@ -24,7 +24,17 @@ import random
 import string
 
 
-def short_uuid() -> str:
-    """Generate a short UUID."""
-    alphabet = string.ascii_lowercase + string.digits
-    return "".join(random.choices(alphabet, k=8))
+def short_uuid(nchars: int = 12) -> str:
+    """Generate a short UUID.
+
+    Parameters
+    ----------
+    nchars : int, default 12
+        Number of characters in the UUID. Only applies if ``nchars`` is greater
+        than 6. Using the default, the probability
+        of a collision is 1.23e-17 for 1 billion rounds. See
+        https://shortunique.id/classes/ShortUniqueId.html#collisionProbability.
+    """
+    alphabet = string.ascii_letters + string.digits
+    nchars = max(6, nchars)
+    return "".join(random.choices(alphabet, k=nchars))
