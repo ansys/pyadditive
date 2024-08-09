@@ -123,11 +123,10 @@ def test_create_machine_assigns_default_values():
 
 def test_create_single_bead_input():
     # arrange
-    id = "test_id"
     bead_length = 9.5e-3
     series = pd.Series(
         {
-            ColumnNames.ID: id,
+            ColumnNames.ID: "test_id",
             ColumnNames.SINGLE_BEAD_LENGTH: bead_length,
         }
     )
@@ -139,7 +138,7 @@ def test_create_single_bead_input():
 
     # assert
     assert isinstance(input, SingleBeadInput)
-    assert input.id == id
+    assert input.id == "test_id"
     assert input.bead_length == bead_length
     assert input.machine == machine
     assert input.material == material
@@ -287,9 +286,9 @@ def test_simulate_sorts_by_priority(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb = SingleBeadInput(id="test_1", material=material)
-    p = PorosityInput(id="test_2", material=material)
-    ms = MicrostructureInput(id="test_3", material=material)
+    sb = SingleBeadInput(material=material)
+    p = PorosityInput(material=material)
+    ms = MicrostructureInput(material=material)
     study.add_inputs([sb], priority=1)
     study.add_inputs([p], priority=2)
     study.add_inputs([ms], priority=3)
@@ -308,9 +307,9 @@ def test_simulate_filters_by_priority(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb = SingleBeadInput(id="test_1", material=material)
-    p = PorosityInput(id="test_2", material=material)
-    ms = MicrostructureInput(id="test_3", material=material)
+    sb = SingleBeadInput(material=material)
+    p = PorosityInput(material=material)
+    ms = MicrostructureInput(material=material)
     study.add_inputs([sb], priority=1)
     study.add_inputs([p], priority=2)
     study.add_inputs([ms], priority=3)
@@ -329,9 +328,9 @@ def test_simulate_filters_by_iteration(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb1 = SingleBeadInput(id="iteration_1", material=material, bead_length=0.001)
-    sb2 = SingleBeadInput(id="iteration_2", material=material, bead_length=0.002)
-    sb3 = SingleBeadInput(id="iteration_3", material=material, bead_length=0.003)
+    sb1 = SingleBeadInput(material=material, bead_length=0.001)
+    sb2 = SingleBeadInput(material=material, bead_length=0.002)
+    sb3 = SingleBeadInput(material=material, bead_length=0.003)
     study.add_inputs([sb1], iteration=1)
     study.add_inputs([sb2], iteration=2)
     study.add_inputs([sb3], iteration=3)
@@ -350,9 +349,9 @@ def test_simulate_filters_by_single_simulation_type(tmp_path: pytest.TempPathFac
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb = SingleBeadInput(id="test_1", material=material)
-    p = PorosityInput(id="test_2", material=material)
-    ms = MicrostructureInput(id="test_3", material=material)
+    sb = SingleBeadInput(material=material)
+    p = PorosityInput(material=material)
+    ms = MicrostructureInput(material=material)
     study.add_inputs([sb], priority=1)
     study.add_inputs([p], priority=2)
     study.add_inputs([ms], priority=3)
@@ -371,9 +370,9 @@ def test_simulate_filters_by_simulation_type_list(tmp_path: pytest.TempPathFacto
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb = SingleBeadInput(id="test_1", material=material)
-    p = PorosityInput(id="test_2", material=material)
-    ms = MicrostructureInput(id="test_3", material=material)
+    sb = SingleBeadInput(material=material)
+    p = PorosityInput(material=material)
+    ms = MicrostructureInput(material=material)
     study.add_inputs([sb], priority=1)
     study.add_inputs([p], priority=2)
     study.add_inputs([ms], priority=3)
@@ -396,9 +395,9 @@ def test_simulate_skips_simulations_with_missing_materials(tmp_path: pytest.Temp
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb = SingleBeadInput(id="test_1", material=material)
-    p = PorosityInput(id="test_2", material=material)
-    ms = MicrostructureInput(id="test_3", material=material)
+    sb = SingleBeadInput(material=material)
+    p = PorosityInput(material=material)
+    ms = MicrostructureInput(material=material)
     study.add_inputs([sb], priority=1)
     study.add_inputs([p], priority=2)
     study.add_inputs([ms], priority=3)
@@ -419,7 +418,7 @@ def test_simulate_returns_empty_list_when_no_simulations_meet_criteria(
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb = SingleBeadInput(id="test_1", material=material)
+    sb = SingleBeadInput(material=material)
     study.add_inputs([sb], priority=1)
     mock_additive = create_autospec(Additive)
     caplog.set_level(logging.WARNING, logger="PyAdditive_global")
@@ -435,22 +434,15 @@ def test_simulate_returns_empty_list_when_no_simulations_meet_criteria(
         assert "None of the input simulations meet the criteria selected" in record.message
 
 
-@pytest.mark.parametrize(
-    "simulation_ids_input",
-    [
-        ["test_2"],
-        ["test_0", "test_2"],
-    ],
-)
 def test_simulate_filters_by_simulation_ids_if_the_list_has_atleast_one_valid_element(
-    simulation_ids_input, tmp_path: pytest.TempPathFactory
+    tmp_path: pytest.TempPathFactory,
 ):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb = SingleBeadInput(id="test_1", material=material)
-    p = PorosityInput(id="test_2", material=material)
-    ms = MicrostructureInput(id="test_3", material=material)
+    sb = SingleBeadInput(material=material)
+    p = PorosityInput(material=material)
+    ms = MicrostructureInput(material=material)
     study.add_inputs([sb], priority=1)
     study.add_inputs([p], priority=2)
     study.add_inputs([ms], priority=3)
@@ -459,7 +451,7 @@ def test_simulate_filters_by_simulation_ids_if_the_list_has_atleast_one_valid_el
     mock_additive.material.return_value = material
 
     # act
-    pr.simulate(study.data_frame(), mock_additive, simulation_ids=simulation_ids_input)
+    pr.simulate(study.data_frame(), mock_additive, simulation_ids=[p.id, "bogus"])
 
     # assert
     mock_additive.simulate.assert_called_once_with(inputs)
@@ -478,9 +470,9 @@ def test_simulate_skips_filter_by_simulation_ids_if_the_list_is_empty_or_none(
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb = SingleBeadInput(id="test_1", material=material)
-    p = PorosityInput(id="test_2", material=material)
-    ms = MicrostructureInput(id="test_3", material=material)
+    sb = SingleBeadInput(material=material)
+    p = PorosityInput(material=material)
+    ms = MicrostructureInput(material=material)
     study.add_inputs([sb], priority=1)
     study.add_inputs([p], priority=2)
     study.add_inputs([ms], priority=3)
@@ -501,9 +493,9 @@ def test_simulate_is_skipped_if_simulation_ids_list_has_invalid_elements(
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb = SingleBeadInput(id="test_1", material=material)
-    p = PorosityInput(id="test_2", material=material)
-    ms = MicrostructureInput(id="test_3", material=material)
+    sb = SingleBeadInput(material=material)
+    p = PorosityInput(material=material)
+    ms = MicrostructureInput(material=material)
     study.add_inputs([sb], priority=1)
     study.add_inputs([p], priority=2)
     study.add_inputs([ms], priority=3)
@@ -522,15 +514,13 @@ def test_simulate_is_skipped_if_simulation_ids_list_has_invalid_elements(
     assert "None of the input simulations meet the criteria selected" in caplog.records[2].message
 
 
-def test_simulate_filters_by_simulation_ids_and_skips_duplicates(
-    tmp_path: pytest.TempPathFactory, caplog
-):
+def test_simulate_filters_by_simulation_ids_and_skips_duplicates(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb = SingleBeadInput(id="test_1", material=material)
-    p = PorosityInput(id="test_2", material=material)
-    ms = MicrostructureInput(id="test_3", material=material)
+    sb = SingleBeadInput(material=material)
+    p = PorosityInput(material=material)
+    ms = MicrostructureInput(material=material)
     study.add_inputs([sb], priority=1)
     study.add_inputs([p], priority=2)
     study.add_inputs([ms], priority=3)
@@ -539,7 +529,7 @@ def test_simulate_filters_by_simulation_ids_and_skips_duplicates(
     mock_additive.material.return_value = material
 
     # act
-    pr.simulate(study.data_frame(), mock_additive, simulation_ids=["test_1", "test_2", "test_1"])
+    pr.simulate(study.data_frame(), mock_additive, simulation_ids=[sb.id, p.id, sb.id])
 
     # assert
     mock_additive.simulate.assert_called_once_with(inputs)
@@ -549,9 +539,9 @@ def test_simulate_filters_by_simulation_ids_and_sorts_by_priority(tmp_path: pyte
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb = SingleBeadInput(id="test_1", material=material)
-    p = PorosityInput(id="test_2", material=material)
-    ms = MicrostructureInput(id="test_3", material=material)
+    sb = SingleBeadInput(material=material)
+    p = PorosityInput(material=material)
+    ms = MicrostructureInput(material=material)
     study.add_inputs([sb], priority=1)
     study.add_inputs([p], priority=2)
     study.add_inputs([ms], priority=3)
@@ -560,7 +550,7 @@ def test_simulate_filters_by_simulation_ids_and_sorts_by_priority(tmp_path: pyte
     mock_additive.material.return_value = material
 
     # act
-    pr.simulate(study.data_frame(), mock_additive, simulation_ids=["test_3", "test_1"])
+    pr.simulate(study.data_frame(), mock_additive, simulation_ids=[ms.id, sb.id])
 
     # assert
     mock_additive.simulate.assert_called_once_with(inputs)
@@ -570,9 +560,9 @@ def test_simulate_filters_by_simulation_ids_and_iteration(tmp_path: pytest.TempP
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb = SingleBeadInput(id="test_1", material=material)
-    p = PorosityInput(id="test_2", material=material)
-    ms = MicrostructureInput(id="test_3", material=material)
+    sb = SingleBeadInput(material=material)
+    p = PorosityInput(material=material)
+    ms = MicrostructureInput(material=material)
     study.add_inputs([sb], iteration=1)
     study.add_inputs([p], iteration=2)
     study.add_inputs([ms], iteration=3)
@@ -584,7 +574,7 @@ def test_simulate_filters_by_simulation_ids_and_iteration(tmp_path: pytest.TempP
     pr.simulate(
         study.data_frame(),
         mock_additive,
-        simulation_ids=["test_3", "test_2", "test_1"],
+        simulation_ids=[ms.id, p.id, sb.id],
         iteration=1,
     )
 
@@ -596,12 +586,12 @@ def test_simulate_filters_by_simulation_ids_and_type(tmp_path: pytest.TempPathFa
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb_1 = SingleBeadInput(bead_length=0.001, id="test_1", material=material)
-    sb_2 = SingleBeadInput(bead_length=0.002, id="test_2", material=material)
-    sb_3 = SingleBeadInput(bead_length=0.003, id="test_3", material=material)
-    sb_4 = SingleBeadInput(bead_length=0.004, id="test_4", material=material)
-    p = PorosityInput(id="test_5", material=material)
-    ms = MicrostructureInput(id="test_6", material=material)
+    sb_1 = SingleBeadInput(bead_length=0.001, material=material)
+    sb_2 = SingleBeadInput(bead_length=0.002, material=material)
+    sb_3 = SingleBeadInput(bead_length=0.003, material=material)
+    sb_4 = SingleBeadInput(bead_length=0.004, material=material)
+    p = PorosityInput(material=material)
+    ms = MicrostructureInput(material=material)
     study.add_inputs([sb_1, sb_2, sb_3, sb_4], iteration=1)
     study.add_inputs([p], iteration=2)
     study.add_inputs([ms], iteration=3)
@@ -613,7 +603,7 @@ def test_simulate_filters_by_simulation_ids_and_type(tmp_path: pytest.TempPathFa
     pr.simulate(
         study.data_frame(),
         mock_additive,
-        simulation_ids=["test_1", "test_2", "test_5", "test_6"],
+        simulation_ids=[sb_1.id, sb_2.id, "bogus"],
         type=SimulationType.SINGLE_BEAD,
     )
 
@@ -627,12 +617,12 @@ def test_simulate_filters_by_simulation_ids_only_takes_pending_simulations(
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb_1 = SingleBeadInput(bead_length=0.001, id="test_1", material=material)
-    sb_2 = SingleBeadInput(bead_length=0.002, id="test_2", material=material)
-    sb_3 = SingleBeadInput(bead_length=0.003, id="test_3", material=material)
-    sb_4 = SingleBeadInput(bead_length=0.004, id="test_4", material=material)
-    p = PorosityInput(id="test_5", material=material)
-    ms = MicrostructureInput(id="test_6", material=material)
+    sb_1 = SingleBeadInput(bead_length=0.001, material=material)
+    sb_2 = SingleBeadInput(bead_length=0.002, material=material)
+    sb_3 = SingleBeadInput(bead_length=0.003, material=material)
+    sb_4 = SingleBeadInput(bead_length=0.004, material=material)
+    p = PorosityInput(material=material)
+    ms = MicrostructureInput(material=material)
     melt_pool_msg = test_utils.get_test_melt_pool_message()
     summary_1 = SingleBeadSummary(sb_1, melt_pool_msg, None)
     summary_2 = SingleBeadSummary(sb_2, melt_pool_msg, None)
@@ -648,7 +638,7 @@ def test_simulate_filters_by_simulation_ids_only_takes_pending_simulations(
     pr.simulate(
         study.data_frame(),
         mock_additive,
-        simulation_ids=["test_1", "test_2", "test_3", "test_4", "test_5", "test_6"],
+        simulation_ids=[sb_1.id, sb_2.id, sb_3.id, sb_4.id, p.id, ms.id],
     )
 
     # assert

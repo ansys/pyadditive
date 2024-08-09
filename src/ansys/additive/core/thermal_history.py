@@ -36,6 +36,7 @@ from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 from ansys.additive.core.geometry_file import BuildFile, StlFile
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.simulation_input_base import SimulationInputBase
 
 
 class Range:
@@ -135,19 +136,19 @@ class CoaxialAverageSensorInputs:
         return msg
 
 
-class ThermalHistoryInput:
+class ThermalHistoryInput(SimulationInputBase):
     """Provides input parameters for microstructure simulation."""
 
     def __init__(
         self,
-        id: str = "",
+        *,
         machine: AdditiveMachine = AdditiveMachine(),
         material: AdditiveMaterial = AdditiveMaterial(),
         geometry: StlFile | BuildFile = None,
         coax_ave_sensor_inputs: CoaxialAverageSensorInputs = CoaxialAverageSensorInputs(),
     ):
         """Initialize a ``ThermalHistoryInput`` object."""
-        self._id = id
+        super().__init__()
         self._machine = machine
         self._material = material
         self._geometry = geometry
@@ -169,15 +170,6 @@ class ThermalHistoryInput:
             if getattr(self, k) != getattr(other, k):
                 return False
         return True
-
-    @property
-    def id(self) -> str:
-        """User-provided ID for the simulation."""
-        return self._id
-
-    @id.setter
-    def id(self, value):
-        self._id = value
 
     @property
     def machine(self) -> AdditiveMachine:

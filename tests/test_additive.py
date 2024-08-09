@@ -384,11 +384,11 @@ def test_simulate_with_input_list_calls_internal_simulate_n_times(_):
     additive = Additive(enable_beta_features=True)
     additive._simulate = _simulate_patch
     inputs = [
-        SingleBeadInput(id="id1"),
-        PorosityInput(id="id2"),
-        MicrostructureInput(id="id3"),
-        ThermalHistoryInput(id="id4"),
-        Microstructure3DInput(id="id5"),
+        SingleBeadInput(),
+        PorosityInput(),
+        MicrostructureInput(),
+        ThermalHistoryInput(),
+        Microstructure3DInput(),
     ]
     # act
     additive.simulate(inputs)
@@ -405,11 +405,11 @@ def test_simulate_with_input_list_calls_internal_simulate_n_times(_):
     [
         (
             [
-                SingleBeadInput(id="id1"),
-                PorosityInput(id="id2"),
-                MicrostructureInput(id="id3"),
-                ThermalHistoryInput(id="id4"),
-                SingleBeadInput(id="id5"),
+                SingleBeadInput(),
+                PorosityInput(),
+                MicrostructureInput(),
+                ThermalHistoryInput(),
+                SingleBeadInput(),
             ],
             2,
             2,
@@ -417,10 +417,10 @@ def test_simulate_with_input_list_calls_internal_simulate_n_times(_):
         ),
         (
             [
-                SingleBeadInput(id="id1"),
-                PorosityInput(id="id2"),
-                MicrostructureInput(id="id3"),
-                ThermalHistoryInput(id="id4"),
+                SingleBeadInput(),
+                PorosityInput(),
+                MicrostructureInput(),
+                ThermalHistoryInput(),
             ],
             3,
             2,
@@ -462,13 +462,10 @@ def test_simulate_with_duplicate_simulation_ids_raises_exception(_):
         _simulate_patch.return_value = None
     additive = Additive()
     additive._simulate = _simulate_patch
-    inputs = [
-        x
-        for x in [
-            SingleBeadInput(id="id"),
-            PorosityInput(id="id"),
-        ]
-    ]
+    inputs = [SingleBeadInput(), PorosityInput()]
+    # overwrite the second input's ID with the first input's ID
+    inputs[1]._id = inputs[0].id
+
     # act, assert
     with pytest.raises(ValueError, match="Duplicate simulation ID"):
         additive.simulate(inputs)
@@ -869,7 +866,6 @@ def test_remove_material_raises_ValueError_when_removing_reserved_material(mock_
 def test_tune_material_raises_exception_if_output_path_exists(_, tmp_path: pathlib.Path):
     # arrange
     input = MaterialTuningInput(
-        id="id",
         experiment_data_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "experimental_data.csv"
         ),
@@ -891,7 +887,6 @@ def test_tune_material_raises_exception_if_output_path_exists(_, tmp_path: pathl
 def test_tune_material_raises_exception_for_progress_error(mock_connection, tmp_path: pathlib.Path):
     # arrange
     input = MaterialTuningInput(
-        id="id",
         experiment_data_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "experimental_data.csv"
         ),
@@ -904,7 +899,8 @@ def test_tune_material_raises_exception_for_progress_error(mock_connection, tmp_
     )
     message = "error message"
     response = TuneMaterialResponse(
-        id="id", progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_ERROR, message=message)
+        id=input.id,
+        progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_ERROR, message=message),
     )
 
     def iterable_response(_):
@@ -939,7 +935,6 @@ def test_tune_material_filters_progress_messages(
 ):
     # arrange
     input = MaterialTuningInput(
-        id="id",
         experiment_data_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "experimental_data.csv"
         ),
@@ -951,7 +946,8 @@ def test_tune_material_filters_progress_messages(
         ),
     )
     response = TuneMaterialResponse(
-        id="id", progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_EXECUTING, message=text)
+        id=input.id,
+        progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_EXECUTING, message=text),
     )
 
     caplog.set_level(logging.INFO, logger="PyAdditive_global")
@@ -978,7 +974,6 @@ def test_tune_material_returns_expected_result(
 ):
     # arrange
     input = MaterialTuningInput(
-        id="id",
         experiment_data_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "experimental_data.csv"
         ),
@@ -993,7 +988,7 @@ def test_tune_material_returns_expected_result(
     optimized_parameters_bytes = b"optimized_parameters"
     cw_lookup_bytes = b"characteristic width lookup"
     response = TuneMaterialResponse(
-        id="id",
+        id=input.id,
         result=MaterialTuningResult(
             log=log_bytes,
             optimized_parameters=optimized_parameters_bytes,
@@ -1143,10 +1138,10 @@ def test_simulate_thermal_history_returns_expected_summary(
     shutil.copyfile(test_utils.get_test_file_path("thermal_history_results.zip"), str(results_file))
     mock_download_file.side_effect = lambda a, b, c: str(results_file)
 
-    id = "thermal-history-test"
     input = ThermalHistoryInput(
-        id=id, geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))
+        geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))
     )
+    id = input.id
     remote_file_name = "remote/file/name"
     upload_response = UploadFileResponse(
         remote_file_name=remote_file_name,

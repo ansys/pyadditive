@@ -28,9 +28,10 @@ from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.simulation_input_base import SimulationInputBase
 
 
-class PorosityInput:
+class PorosityInput(SimulationInputBase):
     """Provides input parameters for porosity simulation."""
 
     DEFAULT_SAMPLE_SIZE = 3e-3
@@ -42,7 +43,6 @@ class PorosityInput:
 
     def __init__(
         self,
-        id: str = "",
         *,
         size_x: float = DEFAULT_SAMPLE_SIZE,
         size_y: float = DEFAULT_SAMPLE_SIZE,
@@ -51,7 +51,7 @@ class PorosityInput:
         material: AdditiveMaterial = AdditiveMaterial(),
     ):
         """Initialize a ``PorosityInput`` object."""
-        self.id = id
+        super().__init__()
         self.size_x = size_x
         self.size_y = size_y
         self.size_z = size_z
@@ -84,15 +84,6 @@ class PorosityInput:
             raise ValueError("{} must be a number.".format(name))
         if value < min or value > max:
             raise ValueError("{} must be between {} and {}.".format(name, min, max))
-
-    @property
-    def id(self) -> str:
-        """User-provided ID for the simulation."""
-        return self._id
-
-    @id.setter
-    def id(self, value):
-        self._id = value
 
     @property
     def machine(self) -> AdditiveMachine:

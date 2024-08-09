@@ -25,7 +25,7 @@ from ansys.additive.core import SimulationError, SingleBeadInput
 
 def test_SimulationError_init_assigns_values():
     # arrange
-    input = SingleBeadInput(id="id")
+    input = SingleBeadInput()
 
     # act
     error = SimulationError(input=input, message="message")
