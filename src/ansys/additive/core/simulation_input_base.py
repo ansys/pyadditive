@@ -19,17 +19,18 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Provides a base class for simulation inputs."""
+from ansys.additive.core import misc
 
-from ansys.additive.core.misc import short_uuid
 
+class SimulationInputBase:
+    """Provides a base class for simulation inputs."""
 
-def test_short_uuid_returns_string_of_expected_length():
-    # arrange
-    nchars = 13
+    def __init__(self) -> None:
+        """Initialize the simulation input base class."""
+        self._id: str = misc.short_uuid()
 
-    # act
-    result = short_uuid(nchars)
-
-    # assert
-    assert isinstance(result, str)
-    assert len(result) == nchars
+    @property
+    def id(self) -> str:
+        """Return a unique identifier for this simulation."""
+        return self._id

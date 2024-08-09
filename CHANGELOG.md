@@ -3,6 +3,7 @@
 ## PyAdditive 0.19.0
 
 ### Breaking Changes
+* Simulation inputs no longer allow setting the id field.
 
 ### New Features
 * Default version of Additive Server is 25.1 when creating a client connection.

@@ -104,7 +104,6 @@ machine.laser_power = 500  # W
 input = Microstructure3DInput(
     machine=machine,
     material=material,
-    id="micro-3d",
     sample_size_x=0.0001,  # in meters (.1 mm)
     sample_size_y=0.0001,
     sample_size_z=0.0001,
