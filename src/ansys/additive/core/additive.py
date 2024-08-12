@@ -340,7 +340,7 @@ class Additive:
         If only one simulation input is given, will return a SimulationTask.
         If a list of simulation inputs is provided, will return a SimulationTaskManager.
         """
-        # self._check_for_duplicate_id(inputs)
+        self._check_for_duplicate_id(inputs)
 
         if not isinstance(inputs, list):
             if not progress_handler:
@@ -590,11 +590,9 @@ class Additive:
 
         operation = self._servers[0].materials_stub.TuneMaterial(request)
 
-        task = SimulationTask([self._servers[0]], out_dir, self._nsims_per_server)
-        task.add_running_simulation(self._servers[0].channel_str, operation, input)
-        task.wait_all(progress_handler=progress_handler)
-
-        operation = task.get_operation(input.id)
+        task = SimulationTask(self._servers[0], operation, input, out_dir)
+        task.wait(progress_handler=progress_handler)
+        operation = task._long_running_op
         response = TuneMaterialResponse()
         operation.response.Unpack(response)
         if not response.HasField("result"):
@@ -604,27 +602,15 @@ class Additive:
 
     def _check_for_duplicate_id(self, inputs):
         if not isinstance(inputs, list):
+            # An individual input, not a list
+            if inputs.id == "":
+                inputs.id = misc.short_uuid()
             return
-        ids = []
-        for input in inputs:
-            if input.id in ids:
-                raise ValueError(f'Duplicate simulation ID "{input.id}" in input list')
-            ids.append(input.id)
-
-            self._simulation_inputs.append(inputs)
-            return
-
-        # list of inputs
         ids = []
         for i in inputs:
             if not i.id:
-                # give input an id if none given
+                # give input an id if none provided
                 i.id = misc.short_uuid()
-            if any([x for x in self._simulation_inputs if x.id == i.id]):
-                # id given previously
-                raise ValueError(
-                    f'Duplicate simulation ID "{i.id}" given in previous simulation calls'
-                )
             if any([x for x in ids if x == i.id]):
                 raise ValueError(f'Duplicate simulation ID "{i.id}" in input list')
             ids.append(i.id)

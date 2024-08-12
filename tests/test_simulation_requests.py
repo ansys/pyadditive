@@ -20,23 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from unittest.mock import Mock, patch
-import pytest
-import os
 import hashlib
+import os
+from unittest.mock import Mock, patch
 
-from ansys.additive.core.simulation_requests import _create_request, _setup_thermal_history, __file_upload_reader
-
-from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileResponse, UploadFileRequest
 from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
 from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
+from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest, UploadFileResponse
+import pytest
+
 from ansys.additive.core import (
-    MicrostructureInput,
     Microstructure3DInput,
+    MicrostructureInput,
     PorosityInput,
     SingleBeadInput,
     StlFile,
     ThermalHistoryInput,
+)
+from ansys.additive.core.simulation_requests import (
+    __file_upload_reader,
+    _create_request,
+    _setup_thermal_history,
 )
 
 from . import test_utils
@@ -84,6 +88,7 @@ def test_create_request_returns_correct_request(sim_input):
     if isinstance(sim_input, ThermalHistoryInput):
         mock_connection_with_stub.simulation_stub.UploadFile.assert_called_once()
         assert request.HasField("thermal_history_input")
+
 
 @patch("ansys.additive.core.additive.ServerConnection")
 def test_setup_thermal_history_without_geometry_raises_exception(
@@ -144,6 +149,7 @@ def test_setup_thermal_history_returns_expected_request():
     mock_connection_with_stub.simulation_stub.UploadFile.assert_called_once()
     assert request == simulation_request
 
+
 def test_file_upload_reader_returns_expected_number_of_requests():
     # arrange
     file_size = os.path.getsize(__file__)
@@ -154,9 +160,7 @@ def test_file_upload_reader_returns_expected_number_of_requests():
     short_name = os.path.basename(__file__)
 
     # act
-    for n, request in enumerate(
-        __file_upload_reader(os.path.abspath(__file__), chunk_size)
-    ):
+    for n, request in enumerate(__file_upload_reader(os.path.abspath(__file__), chunk_size)):
         assert isinstance(request, UploadFileRequest)
         assert request.name == short_name
         assert request.total_size == file_size

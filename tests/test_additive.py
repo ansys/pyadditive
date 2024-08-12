@@ -22,7 +22,7 @@
 
 import logging
 import pathlib
-from unittest.mock import ANY, MagicMock, Mock, call, create_autospec, patch
+from unittest.mock import ANY, MagicMock, Mock, PropertyMock, call, create_autospec, patch
 
 from ansys.api.additive import __version__ as api_version
 import ansys.api.additive.v0.about_pb2_grpc
@@ -69,6 +69,7 @@ from ansys.additive.core.material_tuning import MaterialTuningInput
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
 import ansys.additive.core.server_connection.server_connection
 import ansys.additive.core.simulation_task
+from ansys.additive.core.simulation_task_manager import SimulationTaskManager
 
 from . import test_utils
 
@@ -328,10 +329,10 @@ def test_simulate_async_with_single_input_calls_internal_simulate_once(_, sim_in
     additive._simulate = _simulate_patch
 
     # act
-    task = additive.simulate_async(sim_input)
+    additive.simulate_async(sim_input)
 
     # assert
-    _simulate_patch.assert_called_once_with(task, sim_input, ANY, ANY)
+    _simulate_patch.assert_called_once_with(sim_input, ANY, ANY)
 
 
 # patch needed for Additive() call
@@ -364,7 +365,7 @@ def test_simulate_logs_error_message_when_SimulationError_returned(_, caplog):
     error_msg = "error message"
     simulation_error = SimulationError(sim_input, error_msg)
     mock_task = Mock(SimulationTask)
-    mock_task.errors.return_value = simulation_error
+    type(mock_task).summary = PropertyMock(return_value=simulation_error)
     with patch("ansys.additive.core.additive.Additive.simulate_async") as sim_async_patch:
         sim_async_patch.return_value = mock_task
     additive = Additive()
@@ -391,9 +392,10 @@ def test_simulate_async_with_input_list_calls_internal_simulate_n_times(_):
     metadata.context = "simulation"
     metadata.percent_complete = 50.0
     expected_operation.metadata.Pack(metadata)
+    sim_task = SimulationTask(ServerConnection(), expected_operation, SingleBeadInput(), "path")
 
     with patch("ansys.additive.core.additive.Additive._simulate") as _simulate_patch:
-        _simulate_patch.return_value = expected_operation
+        _simulate_patch.return_value = sim_task
     additive = Additive(enable_beta_features=True)
     additive._simulate = _simulate_patch
     inputs = [
@@ -408,8 +410,9 @@ def test_simulate_async_with_input_list_calls_internal_simulate_n_times(_):
     task = additive.simulate_async(inputs)
 
     # assert
+    assert isinstance(task, SimulationTaskManager)
     assert _simulate_patch.call_count == len(inputs)
-    calls = [call(task, i, ANY, None) for i in inputs]
+    calls = [call(i, ANY, None) for i in inputs]
     _simulate_patch.assert_has_calls(calls, any_order=True)
 
 
@@ -559,18 +562,11 @@ def test_internal_simulate_called_with_single_input_updates_SimulationTask(
         nsims_per_server=2,
     )
 
-    task = SimulationTask(
-        server_connections=[mock_connection_with_stub], user_data_path="path", nsims_per_server=2
-    )
-
     # act
-    additive._simulate(
-        simulation_task=task, simulation_input=sim_input, server=mock_connection_with_stub
-    )
+    task = additive._simulate(simulation_input=sim_input, server=mock_connection_with_stub)
 
     # assert
-    assert len(task._long_running_ops) == 1
-    operation = task._long_running_ops[server_channel_str][0]
+    operation = task._long_running_op
     assert operation.done
     response = SimulationResponse()
     operation.response.Unpack(response)
@@ -603,11 +599,10 @@ def test_internal_simulate_called_with_single_input_updates_SimulationTask(
 def test_internal_simulate_without_material_raises_exception(server, sim_input):
     # arrange
     additive = Additive(enable_beta_features=True)
-    task = SimulationTask(server_connections=[server], user_data_path="path", nsims_per_server=1)
 
     # act, assert
     with pytest.raises(ValueError, match="A material is not assigned to the simulation input"):
-        additive._simulate(simulation_task=task, simulation_input=sim_input, server=server)
+        additive._simulate(simulation_input=sim_input, server=server)
 
 
 @pytest.mark.parametrize(
@@ -634,18 +629,12 @@ def test_exception_during_internal_simulate_returns_operation_with_error(_, sim_
     mock_connection_with_stub.channel_str = "1.1.1.1"
     sim_input.material = test_utils.get_test_material()
     additive = Additive(enable_beta_features=True)
-    task = SimulationTask(
-        server_connections=[mock_connection_with_stub],
-        user_data_path="path",
-        nsims_per_server=additive.nsims_per_server,
-    )
 
     # act
-    additive._simulate(task, sim_input, mock_connection_with_stub)
+    task = additive._simulate(sim_input, mock_connection_with_stub)
 
     # assert
-    assert len(task._long_running_ops) == 1
-    result = task._long_running_ops[mock_connection_with_stub.channel_str][0]
+    result = task._long_running_op
     assert isinstance(result, Operation)
     assert result.done
 
@@ -683,16 +672,12 @@ def test_internal_simulate_returns_errored_operation_from_server(mock_server):
     mock_connection_with_stub.channel_str = "1.1.1.1"
     mock_server.return_value = mock_connection_with_stub
     additive = Additive(server_connections=["1.1.1.1"], nsims_per_server=1)
-    task = SimulationTask(
-        server_connections=[mock_connection_with_stub], user_data_path="path", nsims_per_server=1
-    )
 
     # act
-    additive._simulate(task, input, mock_connection_with_stub)
+    task = additive._simulate(input, mock_connection_with_stub)
 
     # assert
-    assert len(task._long_running_ops[mock_connection_with_stub.channel_str]) == 1
-    result = task._long_running_ops[mock_connection_with_stub.channel_str][0]
+    result = task._long_running_op
     assert isinstance(result, Operation)
     assert result.name == "diff_id"
 

@@ -26,22 +26,18 @@ from collections.abc import Iterator
 import hashlib
 import os
 
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
-from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest, UploadFileRequest
 
 from ansys.additive.core.microstructure import MicrostructureInput
 from ansys.additive.core.microstructure_3d import Microstructure3DInput
+from ansys.additive.core.porosity import PorosityInput
+from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
+from ansys.additive.core.server_connection import ServerConnection
 from ansys.additive.core.single_bead import SingleBeadInput
 from ansys.additive.core.thermal_history import ThermalHistoryInput
-from ansys.additive.core.porosity import PorosityInput
-
-from ansys.additive.core.server_connection import ServerConnection
-from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
 
 
-def __file_upload_reader(
-    file_name: str, chunk_size=2 * 1024**2
-) -> Iterator[UploadFileRequest]:
+def __file_upload_reader(file_name: str, chunk_size=2 * 1024**2) -> Iterator[UploadFileRequest]:
     """Read a file and return an iterator of UploadFileRequests."""
     file_size = os.path.getsize(file_name)
     short_name = os.path.basename(file_name)
@@ -57,10 +53,12 @@ def __file_upload_reader(
                 content_md5=hashlib.md5(chunk).hexdigest(),
             )
 
+
 def _setup_thermal_history(
     input: ThermalHistoryInput,
     server: ServerConnection,
-    progress_handler: IProgressHandler | None = None) -> SimulationRequest:
+    progress_handler: IProgressHandler | None = None,
+) -> SimulationRequest:
     """Setup a thermal history simulation.
 
     Parameters
@@ -80,9 +78,7 @@ def _setup_thermal_history(
         raise ValueError("The geometry path is not defined in the simulation input")
 
     remote_geometry_path = ""
-    for response in server.simulation_stub.UploadFile(
-        __file_upload_reader(input.geometry.path)
-    ):
+    for response in server.simulation_stub.UploadFile(__file_upload_reader(input.geometry.path)):
         remote_geometry_path = response.remote_file_name
         progress = Progress.from_proto_msg(input.id, response.progress)
         if progress_handler:
@@ -91,6 +87,7 @@ def _setup_thermal_history(
             raise Exception(progress.message)
 
     return input._to_simulation_request(remote_geometry_path=remote_geometry_path)
+
 
 def _create_request(
     simulation_input: (
@@ -101,27 +98,27 @@ def _create_request(
         | Microstructure3DInput
     ),
     server: ServerConnection,
-    progress_handler: IProgressHandler | None = None
+    progress_handler: IProgressHandler | None = None,
 ) -> SimulationRequest:
-            """Create a simulation request and setup any pre-requisites on a server, e.g. STL for thermal history
-            
-            Parameters
-            ----------
-            simulation_input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput,
-            Microstructure3DInput
-                Parameters to use for simulation.
-            server: ServerConnection
-                Server to use for the simulation.
-            progress_handler: IProgressHandler, None, default: None
-                Handler for progress updates. If ``None``, no progress updates are provided.
+    """Create a simulation request and setup any pre-requisites on a server, e.g. STL for thermal history.
 
-            Returns
-            -------
-            A SimulationRequest
-            """
-            if isinstance(simulation_input, ThermalHistoryInput):
-                request = _setup_thermal_history(simulation_input, server, progress_handler)
-            else:
-                request = simulation_input._to_simulation_request()
-            
-            return request
+    Parameters
+    ----------
+    simulation_input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput,
+    Microstructure3DInput
+        Parameters to use for simulation.
+    server: ServerConnection
+        Server to use for the simulation.
+    progress_handler: IProgressHandler, None, default: None
+        Handler for progress updates. If ``None``, no progress updates are provided.
+
+    Returns
+    -------
+    A SimulationRequest
+    """
+    if isinstance(simulation_input, ThermalHistoryInput):
+        request = _setup_thermal_history(simulation_input, server, progress_handler)
+    else:
+        request = simulation_input._to_simulation_request()
+
+    return request

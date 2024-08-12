@@ -19,33 +19,27 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""Manages running and waiting simulations."""
+"""Container for a simulation task."""
 
 from __future__ import annotations
 
 import os
 import zipfile
 
-from ansys.api.additive.v0.additive_domain_pb2 import ProgressState
+from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialResponse
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse
-from google.longrunning.operations_pb2 import (
-    GetOperationRequest,
-    Operation,
-    WaitOperationRequest,
-)
+from google.longrunning.operations_pb2 import GetOperationRequest, Operation, WaitOperationRequest
 from google.protobuf.any_pb2 import Any
 from google.protobuf.duration_pb2 import Duration
+from google.rpc.status_pb2 import Status as RpcStatus
 
 from ansys.additive.core.download import download_file
+from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
 from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
 from ansys.additive.core.microstructure_3d import Microstructure3DInput, Microstructure3DSummary
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
-from ansys.additive.core.progress_handler import (
-    IProgressHandler,
-    Progress,
-    ProgressState,
-)
+from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
 from ansys.additive.core.server_connection import ServerConnection
 from ansys.additive.core.simulation import SimulationError
 from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
@@ -53,6 +47,20 @@ from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHist
 
 
 class SimulationTask:
+    """Provides a simulation task.
+
+    Parameters
+    ----------
+    server_connection: ServerConnection
+        The client connection to the Additive server.
+    long_running_operation: Operation
+        The long running operation representing the simulation on the server.
+    simulation_input: SingleBeadInput | PorosityInput | MicrostructureInput | ThermalHistoryInput | Microstructure3DInput | MaterialTuningInput
+        The simulation input.
+    user_data_path: str
+        The path to the user data directory.
+    """  # noqa: E501
+
     def __init__(
         self,
         server_connection: ServerConnection,
@@ -63,9 +71,11 @@ class SimulationTask:
             | MicrostructureInput
             | ThermalHistoryInput
             | Microstructure3DInput
+            | MaterialTuningInput
         ),
         user_data_path: str,
     ):
+        """Initialize the simulation task."""
         self._server = server_connection
         self._user_data_path = user_data_path
         self._long_running_op = long_running_operation
@@ -73,27 +83,32 @@ class SimulationTask:
         self._summary = None
 
     @property
-    def summary(self) -> (SingleBeadSummary
-                          | PorositySummary
-                          | MicrostructureSummary
-                          | Microstructure3DSummary
-                          | ThermalHistorySummary
-                          | SimulationError
-                          | None):
-        """The summary of the completed simulation. None if simulation is not completed."""
+    def summary(
+        self,
+    ) -> (
+        SingleBeadSummary
+        | PorositySummary
+        | MicrostructureSummary
+        | Microstructure3DSummary
+        | ThermalHistorySummary
+        | MaterialTuningSummary
+        | SimulationError
+        | None
+    ):
+        """The summary of the completed simulation.
+
+        None if simulation is not completed.
+        """
         return self._summary
-    
+
     @property
     def completed(self) -> bool:
+        """Return ``True`` if the simulation is completed."""
         return self._summary is not None
 
-    @property
-    def successful(self) -> bool:
-        return self.completed and not isinstance(self._summary, SimulationError)
+    def status(self, progress_handler: IProgressHandler | None = None) -> Progress:
+        """Fetch status from the server to update progress and results.
 
-    def status(self, progress_handler: IProgressHandler | None = None) -> tuple[str, Progress]:
-        """Fetch status of all simulations from the server to update progress and results.
-        
          Parameters
         ----------
         progress_handler: IProgressHandler, None, default: None
@@ -101,7 +116,8 @@ class SimulationTask:
 
         Return
         ------
-        A dictionary with simulation ids as keys and Progress instances as values
+        Progress
+            The progress of the operation.
         """
         get_request = GetOperationRequest(name=self._long_running_op.name)
         self._long_running_op = self._server.operations_stub.GetOperation(get_request)
@@ -109,22 +125,18 @@ class SimulationTask:
         if progress_handler:
             progress_handler.update(progress)
 
-        if self._long_running_op.done:
-            summary = SimulationResponse()
-            self._long_running_op.response.Unpack(summary)
-            self._summary = summary
-        
-        return self._long_running_op.name, progress
+        return progress
 
-    def wait(self,
-            progress_update_interval: int = 10,
-            progress_handler: IProgressHandler | None = None,
-        ) -> None:
+    def wait(
+        self,
+        progress_update_interval: int = 5,
+        progress_handler: IProgressHandler | None = None,
+    ) -> None:
         """Wait for simulation to finish while updating progress.
 
         Parameters
         ----------
-        progress_update_interval: int, 10
+        progress_update_interval: int, default: 5
             A timeout value (in seconds) to give to the looped WaitOperation() calls to return an
             updated message for a progress update.
         progress_handler: IProgressHandler, None, default: None
@@ -140,7 +152,7 @@ class SimulationTask:
             if awaited_operation.done:
                 break
 
-        # Perform a call to status to ensure all messages are recieved and summary uis updated
+        # Perform a call to status to ensure all messages are received and summary is updated
         self.status(progress_handler)
 
     @staticmethod
@@ -164,19 +176,24 @@ class SimulationTask:
         return Progress.from_operation_metadata(metadata)
 
     def _unpack_summary(
-        self, operation: Operation,
+        self,
+        operation: Operation,
     ) -> Progress:
-        """Update the simulation summaries. If an operation is completed, either the "error" field or
-        the "response" field is available. Update the progress according to which field is available.
+        """Update the simulation summaries.
+
+        If an operation is completed, either the "error" field or
+        the "response" field is available. Update the progress according to which
+        field is available.
 
         Parameters
         ----------
         operation: [google.longrunning.Operation]
-            The long-running operation
+            The long-running operation.
 
         Return
         ------
         Progress
+            The progress of the operation.
         """
         progress = self._convert_metadata_to_progress(operation.metadata)
 
@@ -185,32 +202,38 @@ class SimulationTask:
             return progress
 
         if operation.HasField("response"):
-            response = SimulationResponse()
+            response = (
+                SimulationResponse()
+                if not isinstance(self._simulation_input, MaterialTuningInput)
+                else TuneMaterialResponse()
+            )
             operation.response.Unpack(response)
-            self._summary = self._get_results_from_response(response)
-        # else:
-            # TODO (deleon): Return a SimulationError if there is an rpc error
-            # operation_error = RpcStatus()
-            # operation.error.Unpack(operation_error)
-            # summary = self._create_summary_of_operation_error(operation_error)
+            self._summary = self._create_summary_from_response(response)
+        elif operation.HasField("error"):
+            operation_error = RpcStatus()
+            operation.error.Unpack(operation_error)
+            self._summary = SimulationError(self._simulation_input, operation_error.message)
 
         return progress
 
     def _update_operation_status(
-            self,
-            operation: Operation,
+        self,
+        operation: Operation,
     ) -> Progress:
-        """Update progress or summaries. If operation is done, update summaries and progress.
+        """Update progress or summary.
+
+        If operation is done, update summary and progress.
         Otherwise, update progress only.
 
         Parameters
         ----------
         operation: [google.longrunning.Operation]
-            The long-running operation
+            The long-running operation.
 
         Returns
         -------
-        Progress created from long-running operation metadata
+        Progress
+            Progress created from long-running operation metadata.
         """
         if operation.done:
             # If operation is completed, get the summary and update progress. The server
@@ -223,15 +246,20 @@ class SimulationTask:
 
         return progress
 
-    def _get_results_from_response(
-        self, response: SimulationResponse
+    def _create_summary_from_response(
+        self, response: SimulationResponse | TuneMaterialResponse
     ) -> (
         SingleBeadSummary
         | PorositySummary
         | MicrostructureSummary
         | ThermalHistorySummary
         | Microstructure3DSummary
+        | MaterialTuningSummary
     ):
+        if isinstance(response, TuneMaterialResponse):
+            return MaterialTuningSummary(
+                self._simulation_input, response.result, self._user_data_path
+            )
         if response.HasField("melt_pool"):
             thermal_history_output = None
             if self._check_if_thermal_history_is_present(response):
@@ -243,7 +271,9 @@ class SimulationTask:
                     response.melt_pool.thermal_history_vtk_zip,
                     thermal_history_output,
                 )
-            return SingleBeadSummary(self._simulation_input, response.melt_pool, thermal_history_output)
+            return SingleBeadSummary(
+                self._simulation_input, response.melt_pool, thermal_history_output
+            )
         if response.HasField("porosity_result"):
             return PorositySummary(self._simulation_input, response.porosity_result)
         if response.HasField("microstructure_result"):
