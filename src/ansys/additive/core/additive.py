@@ -292,6 +292,13 @@ class Additive:
         progress_handler: IProgressHandler, None, default: None
             Handler for progress updates. If ``None``, and ``inputs`` contains a single
             simulation input, a default progress handler will be assigned.
+
+        Returns
+        -------
+        SingleBeadSummary, PorositySummary, MicrostructureSummary, ThermalHistorySummary,
+        Microstructure3DSummary, SimulationError, list
+            One or more summaries of simulation results. If a list of inputs is provided, a
+            list is returned.
         """
         summaries = []
         task = self.simulate_async(inputs, progress_handler)
@@ -306,7 +313,7 @@ class Additive:
             if isinstance(summ, SimulationError):
                 LOG.error(f"\nError: {summ.message}")
 
-        return summaries
+        return summaries if isinstance(inputs, list) else summaries[0]
 
     def simulate_async(
         self,
@@ -337,8 +344,9 @@ class Additive:
 
         Returns
         -------
-        If only one simulation input is given, will return a SimulationTask.
-        If a list of simulation inputs is provided, will return a SimulationTaskManager.
+        SimulationTask | SimulationTaskManager
+            If a single simulation input is provided a SimulationTask is returned.
+            If a list of simulation inputs is provided a SimulationTaskManager is returned.
         """
         self._check_for_duplicate_id(inputs)
 
@@ -388,6 +396,11 @@ class Additive:
             Server to use for the simulation.
         progress_handler: IProgressHandler, None, default: None
             Handler for progress updates. If ``None``, no progress updates are provided.
+
+        Returns
+        -------
+        SimulationTask
+            A task that can be used to monitor the simulation progress.
         """
 
         if simulation_input.material == AdditiveMaterial():
@@ -600,6 +613,20 @@ class Additive:
         return MaterialTuningSummary(input, response.result, out_dir)
 
     def _check_for_duplicate_id(self, inputs):
+        """Check for duplicate simulation IDs in a list of inputs.
+
+        If an input does not have an ID, one will be assigned.
+
+        Parameters
+        ----------
+        inputs : SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput, Microstructure3DInput, list
+            A simulation input or a list of simulation inputs.
+
+        Raises
+        ------
+        ValueError
+            If a duplicate ID is found in the list of inputs.
+        """  # noqa: E501
         if not isinstance(inputs, list):
             # An individual input, not a list
             if inputs.id == "":
