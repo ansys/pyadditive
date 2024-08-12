@@ -520,13 +520,10 @@ def test_simulate_async_with_duplicate_simulation_ids_raises_exception(_):
         _simulate_patch.return_value = None
     additive = Additive()
     additive._simulate = _simulate_patch
-    inputs = [
-        x
-        for x in [
-            SingleBeadInput(id="id"),
-            PorosityInput(id="id"),
-        ]
-    ]
+    inputs = [SingleBeadInput(), PorosityInput()]
+    # overwrite the second input's ID with the first input's ID
+    inputs[1]._id = inputs[0].id
+
     # act, assert
     with pytest.raises(ValueError, match="Duplicate simulation ID"):
         additive.simulate_async(inputs)

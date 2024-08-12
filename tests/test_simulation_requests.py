@@ -130,7 +130,7 @@ def test_setup_thermal_history_with_progress_error_during_upload_raises_exceptio
 def test_setup_thermal_history_returns_expected_request():
     id = "thermal-history-test"
     sim_input = ThermalHistoryInput(
-        id=id, geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))
+        geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))
     )
     remote_file_name = "remote/file/name"
     upload_response = UploadFileResponse(
