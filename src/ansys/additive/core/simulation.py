@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides common definitions and classes for simulations."""
+from enum import Enum
 from typing import Union
 
 from ansys.additive.core.microstructure import MicrostructureInput
@@ -28,7 +29,7 @@ from ansys.additive.core.single_bead import SingleBeadInput
 from ansys.additive.core.thermal_history import ThermalHistoryInput
 
 
-class SimulationType:
+class SimulationType(str, Enum):
     """Provides simulation types."""
 
     SINGLE_BEAD = "SingleBead"
@@ -39,7 +40,7 @@ class SimulationType:
     """Microstructure simulation."""
 
 
-class SimulationStatus:
+class SimulationStatus(str, Enum):
     """Provides simulation status values."""
 
     PENDING = "Pending"

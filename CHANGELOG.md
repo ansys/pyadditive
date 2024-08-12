@@ -3,11 +3,13 @@
 ## PyAdditive 0.19.0
 
 ### Breaking Changes
+* Simulation inputs no longer allow setting the id field.
 
 ### New Features
 * Default version of Additive Server is 25.1 when creating a client connection.
 * Single bead simulations with thermal history are now supported.
-* Added description field to AdditiveMaterial
+* Added description field to AdditiveMaterial.
+* Updated the parametric runner to accept a list of simulation ids to be run.
 
 ### Bug Fixes
 

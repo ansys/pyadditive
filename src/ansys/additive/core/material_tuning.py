@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides input and result summary containers for material tuning."""
+from __future__ import annotations
+
 import os
 
 from ansys.api.additive.v0.additive_domain_pb2 import (
@@ -30,14 +32,14 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 )
 from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialRequest
 
+from ansys.additive.core.simulation_input_base import SimulationInputBase
 
-class MaterialTuningInput:
+
+class MaterialTuningInput(SimulationInputBase):
     """Provides input parameters for tuning a custom material.
 
     Parameters
     ----------
-    id: str
-        ID for this set of tuning simulations.
     experiment_data_file: str
         Name of the CSV file containing the experimental results data.
     material_configuration_file: str
@@ -64,7 +66,6 @@ class MaterialTuningInput:
     def __init__(
         self,
         *,
-        id: str,
         experiment_data_file: str,
         material_configuration_file: str,
         thermal_properties_lookup_file: str,
@@ -74,6 +75,7 @@ class MaterialTuningInput:
         base_plate_temperature: float = 353.15,
     ):
         """Initialize a MaterialTuningInput object."""
+        super().__init__()
 
         if not os.path.isfile(experiment_data_file):
             raise FileNotFoundError(f"File not found: {experiment_data_file}")
@@ -85,7 +87,6 @@ class MaterialTuningInput:
             characteristic_width_lookup_file
         ):
             raise FileNotFoundError(f"File not found: {characteristic_width_lookup_file}")
-        self.id = id
         self.allowable_error = allowable_error
         self.max_iterations = max_iterations
         self.experiment_data_file = experiment_data_file
@@ -115,7 +116,10 @@ class MaterialTuningInput:
     def __repr__(self):
         repr = type(self).__name__ + "\n"
         for k in self.__dict__:
-            repr += k + ": " + str(getattr(self, k)) + "\n"
+            if k == "_id":
+                repr += "id: " + str(self.id) + "\n"
+            else:
+                repr += k + ": " + str(getattr(self, k)) + "\n"
         return repr
 
     def __eq__(self, other: object) -> bool:
@@ -140,28 +144,34 @@ class MaterialTuningSummary:
         os.makedirs(out_dir, exist_ok=True)
 
         self._optimized_parameters_file = os.path.join(out_dir, "optimized_parameters.csv")
-        self._coefficients_file = os.path.join(out_dir, "coefficients.csv")
-        self._material_configuration_file = os.path.join(out_dir, "material_configuration.json")
+        self._coefficients_file = None
+        self._material_configuration_file = None
         self._characteristic_width_file = None
         self._log_file = None
 
         with open(self._optimized_parameters_file, "wb") as f:
             f.write(msg.optimized_parameters)
-        with open(self._coefficients_file, "wb") as f:
-            f.write(msg.coefficients)
-        with open(self._material_configuration_file, "wb") as f:
-            f.write(msg.material_parameters)
 
-        if len(msg.characteristic_width_lookup) > 0:
+        if msg.coefficients:
+            self._coefficients_file = os.path.join(out_dir, "coefficients.csv")
+            with open(self._coefficients_file, "wb") as f:
+                f.write(msg.coefficients)
+
+        if msg.material_parameters:
+            self._material_configuration_file = os.path.join(out_dir, "material_configuration.json")
+            with open(self._material_configuration_file, "wb") as f:
+                f.write(msg.material_parameters)
+
+        if msg.characteristic_width_lookup:
             self._characteristic_width_file = os.path.join(
                 out_dir, "characteristic_width_lookup.csv"
             )
             with open(self._characteristic_width_file, "wb") as f:
                 f.write(msg.characteristic_width_lookup)
-        elif len(input.characteristic_width_lookup_file) > 0:
+        elif input.characteristic_width_lookup_file:
             self._characteristic_width_file = input.characteristic_width_lookup_file
 
-        if len(msg.log) > 0:
+        if msg.log:
             self._log_file = os.path.join(out_dir, "log.txt")
             with open(self._log_file, "wb") as f:
                 f.write(msg.log)
@@ -177,12 +187,12 @@ class MaterialTuningSummary:
         return self._optimized_parameters_file
 
     @property
-    def coefficients_file(self) -> str:
+    def coefficients_file(self) -> str | None:
         """Path to the calculated coefficients file."""
         return self._coefficients_file
 
     @property
-    def material_configuration_file(self) -> str:
+    def material_configuration_file(self) -> str | None:
         """Path to the updated material properties file.
 
         Penetration depth and absorptivity coefficients are updated based on the tuning
@@ -191,7 +201,7 @@ class MaterialTuningSummary:
         return self._material_configuration_file
 
     @property
-    def characteristic_width_file(self) -> str:
+    def characteristic_width_file(self) -> str | None:
         """Path to the characteristic width file or ``None``."""
         return self._characteristic_width_file
 

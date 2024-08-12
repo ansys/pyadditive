@@ -98,7 +98,6 @@ machine.laser_power = 300  # W
 input = SingleBeadInput(
     machine=machine,
     material=material,
-    id="single-bead-example",
     bead_length=0.0012,  # meters
     output_thermal_history=True,
     thermal_history_interval=1,

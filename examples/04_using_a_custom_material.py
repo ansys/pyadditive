@@ -75,7 +75,6 @@ custom_material = additive.load_material(
 input = SingleBeadInput(
     machine=AdditiveMachine(),
     material=custom_material,
-    id="single-bead-simulation",
     bead_length=0.001,  # meters
 )
 

@@ -70,7 +70,6 @@ def test_SingleBeadSummary_init_returns_valid_result():
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input = SingleBeadInput(
-        id="id",
         bead_length=0.001,
         machine=machine,
         material=material,
@@ -93,7 +92,6 @@ def test_SingleBeadSummary_init_with_thermal_history_returns_valid_result(
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input = SingleBeadInput(
-        id="id",
         bead_length=0.001,
         machine=machine,
         material=material,
@@ -160,7 +158,6 @@ def test_SingleBeadInput_to_simulation_request_assigns_values():
     machine.laser_power = 99
     material = AdditiveMaterial(name="vibranium")
     input = SingleBeadInput(
-        id="myId",
         machine=machine,
         material=material,
         bead_length=0.01,
@@ -171,7 +168,7 @@ def test_SingleBeadInput_to_simulation_request_assigns_values():
 
     # assert
     assert isinstance(request, SimulationRequest)
-    assert request.id == "myId"
+    assert request.id == input.id
     sb_input = request.single_bead_input
     assert sb_input.machine.laser_power == 99
     assert sb_input.material.name == "vibranium"
@@ -180,13 +177,13 @@ def test_SingleBeadInput_to_simulation_request_assigns_values():
 
 def test_SingleBeadInput_repr_creates_expected_string():
     # arrange
-    input = SingleBeadInput(id="myId")
+    input = SingleBeadInput()
 
     # act
     assert (
         input.__repr__()
         == "SingleBeadInput\n"
-        + "id: myId\n"
+        + f"id: {input.id}\n"
         + "bead_length: 0.003\n"
         + "\n"
         + "machine: AdditiveMachine\n"
@@ -245,7 +242,6 @@ def test_SingleBeadInput_repr_creates_expected_string():
 def test_SingleBeadInput_repr_with_thermal_history_creates_expected_string():
     # arrange
     input = SingleBeadInput(
-        id="myId",
         output_thermal_history=True,
         thermal_history_interval=999,
     )
@@ -254,7 +250,7 @@ def test_SingleBeadInput_repr_with_thermal_history_creates_expected_string():
     assert (
         input.__repr__()
         == "SingleBeadInput\n"
-        + "id: myId\n"
+        + f"id: {input.id}\n"
         + "bead_length: 0.003\n"
         + "\n"
         + "machine: AdditiveMachine\n"
@@ -396,7 +392,7 @@ def test_MeltPool_with_thermal_history_repr_returns_expected_string(
 def test_SingleBeadSummary_repr_returns_expected_string():
     # arrange
     msg = MeltPoolMessage()
-    input = SingleBeadInput(id="myId")
+    input = SingleBeadInput()
     summary = SingleBeadSummary(input, msg, None)
 
     # act, assert
@@ -404,7 +400,7 @@ def test_SingleBeadSummary_repr_returns_expected_string():
         summary.__repr__()
         == "SingleBeadSummary\n"
         + "input: SingleBeadInput\n"
-        + "id: myId\n"
+        + f"id: {input.id}\n"
         + "bead_length: 0.003\n"
         + "\n"
         + "machine: AdditiveMachine\n"

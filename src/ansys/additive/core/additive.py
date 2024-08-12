@@ -53,8 +53,8 @@ from ansys.additive.core.progress_handler import (
     IProgressHandler,
 )
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
-from ansys.additive.core.simulation_requests import _create_request
 from ansys.additive.core.simulation import SimulationError
+from ansys.additive.core.simulation_requests import _create_request
 from ansys.additive.core.simulation_task import SimulationTask
 from ansys.additive.core.simulation_task_manager import SimulationTaskManager
 from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
@@ -305,7 +305,7 @@ class Additive:
         for summ in summaries:
             if isinstance(summ, SimulationError):
                 LOG.error(f"\nError: {summ.message}")
-  
+
         return summaries
 
     def simulate_async(
@@ -319,7 +319,7 @@ class Additive:
             | list
         ),
         progress_handler: IProgressHandler | None = None,
-    ) -> (SimulationTask | SimulationTaskManager):
+    ) -> SimulationTask | SimulationTaskManager:
         """Execute additive simulations asynchronously. This method does not block while the
         simulations are running on the server. This class stores handles of type
         google.longrunning.Operation to the remote tasks that can be used to communicate with
@@ -375,7 +375,7 @@ class Additive:
             | Microstructure3DInput
         ),
         server: ServerConnection,
-        progress_handler: IProgressHandler | None = None
+        progress_handler: IProgressHandler | None = None,
     ) -> SimulationTask:
         """Execute a single simulation.
 
@@ -406,14 +406,18 @@ class Additive:
             request = _create_request(simulation_input, server, progress_handler)
             # server has available job slots, so kick off a simulation
             long_running_op = server.simulation_stub.Simulate(request)
-            simulation_task = SimulationTask(server, long_running_op, simulation_input, self._user_data_path)
+            simulation_task = SimulationTask(
+                server, long_running_op, simulation_input, self._user_data_path
+            )
 
         except Exception as e:
             metadata = OperationMetadata(simulation_id=simulation_input.id, message=str(e))
             errored_op = Operation(name=simulation_input.id, done=True)
             errored_op.metadata.Pack(metadata)
-            simulation_task = SimulationTask(server, errored_op, simulation_input, self._user_data_path)
-        
+            simulation_task = SimulationTask(
+                server, errored_op, simulation_input, self._user_data_path
+            )
+
         return simulation_task
 
     def materials_list(self) -> list[str]:
@@ -600,11 +604,12 @@ class Additive:
 
     def _check_for_duplicate_id(self, inputs):
         if not isinstance(inputs, list):
-            # An individual input, not a list
-            if inputs.id == "":
-                inputs.id = misc.short_uuid()
-            if any([x for x in self._simulation_inputs if x.id == inputs.id]):
-                raise ValueError(f'Duplicate simulation ID "{i.id}" in input list')
+            return
+        ids = []
+        for input in inputs:
+            if input.id in ids:
+                raise ValueError(f'Duplicate simulation ID "{input.id}" in input list')
+            ids.append(input.id)
 
             self._simulation_inputs.append(inputs)
             return

@@ -20,9 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import hashlib
 import logging
-import os
 import pathlib
 from unittest.mock import ANY, MagicMock, Mock, call, create_autospec, patch
 
@@ -46,11 +44,7 @@ from ansys.api.additive.v0.additive_materials_pb2 import (
     TuneMaterialResponse,
 )
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
-from ansys.api.additive.v0.additive_simulation_pb2 import (
-    SimulationResponse,
-    UploadFileRequest,
-    UploadFileResponse
-)
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse, UploadFileResponse
 from google.longrunning.operations_pb2 import ListOperationsResponse, Operation
 import grpc
 import pytest
@@ -75,7 +69,6 @@ from ansys.additive.core.material_tuning import MaterialTuningInput
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
 import ansys.additive.core.server_connection.server_connection
 import ansys.additive.core.simulation_task
-from ansys.additive.core.progress_handler import DefaultSingleSimulationProgressHandler
 
 from . import test_utils
 
@@ -404,11 +397,11 @@ def test_simulate_async_with_input_list_calls_internal_simulate_n_times(_):
     additive = Additive(enable_beta_features=True)
     additive._simulate = _simulate_patch
     inputs = [
-        SingleBeadInput(id="id1"),
-        PorosityInput(id="id2"),
-        MicrostructureInput(id="id3"),
-        ThermalHistoryInput(id="id4"),
-        Microstructure3DInput(id="id5"),
+        SingleBeadInput(),
+        PorosityInput(),
+        MicrostructureInput(),
+        ThermalHistoryInput(),
+        Microstructure3DInput(),
     ]
 
     # act
@@ -425,11 +418,11 @@ def test_simulate_async_with_input_list_calls_internal_simulate_n_times(_):
     [
         (
             [
-                SingleBeadInput(id="id1"),
-                PorosityInput(id="id2"),
-                MicrostructureInput(id="id3"),
-                ThermalHistoryInput(id="id4"),
-                SingleBeadInput(id="id5"),
+                SingleBeadInput(),
+                PorosityInput(),
+                MicrostructureInput(),
+                ThermalHistoryInput(),
+                SingleBeadInput(),
             ],
             2,
             2,
@@ -437,10 +430,10 @@ def test_simulate_async_with_input_list_calls_internal_simulate_n_times(_):
         ),
         (
             [
-                SingleBeadInput(id="id1"),
-                PorosityInput(id="id2"),
-                MicrostructureInput(id="id3"),
-                ThermalHistoryInput(id="id4"),
+                SingleBeadInput(),
+                PorosityInput(),
+                MicrostructureInput(),
+                ThermalHistoryInput(),
             ],
             3,
             2,
@@ -478,13 +471,10 @@ def test_simulate_with_duplicate_simulation_ids_raises_exception(_):
         _simulate_patch.return_value = None
     additive = Additive()
     additive._simulate = _simulate_patch
-    inputs = [
-        x
-        for x in [
-            SingleBeadInput(id="id"),
-            PorosityInput(id="id"),
-        ]
-    ]
+    inputs = [SingleBeadInput(), PorosityInput()]
+    # overwrite the second input's ID with the first input's ID
+    inputs[1]._id = inputs[0].id
+
     # act, assert
     with pytest.raises(ValueError, match="Duplicate simulation ID"):
         additive.simulate(inputs)
@@ -517,7 +507,12 @@ def test_simulate_async_with_duplicate_simulation_ids_raises_exception(_):
         (PorosityInput(), PorosityResult()),
         (MicrostructureInput(), MicrostructureResult()),
         (Microstructure3DInput(), Microstructure3DResult()),
-        (ThermalHistoryInput(geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))), ThermalHistoryResult()),
+        (
+            ThermalHistoryInput(
+                geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))
+            ),
+            ThermalHistoryResult(),
+        ),
     ],
 )
 @patch("ansys.additive.core.additive.ServerConnection")
@@ -558,15 +553,20 @@ def test_internal_simulate_called_with_single_input_updates_SimulationTask(
     mock_connection_with_stub.channel_str = server_channel_str
     mock_connection.return_value = mock_connection_with_stub
 
-    additive = Additive(server_connections=[mock_connection_with_stub],enable_beta_features=True, nsims_per_server=2)
+    additive = Additive(
+        server_connections=[mock_connection_with_stub],
+        enable_beta_features=True,
+        nsims_per_server=2,
+    )
 
-    task = SimulationTask(server_connections=[mock_connection_with_stub], user_data_path="path", nsims_per_server=2)
+    task = SimulationTask(
+        server_connections=[mock_connection_with_stub], user_data_path="path", nsims_per_server=2
+    )
 
     # act
     additive._simulate(
-        simulation_task=task,
-        simulation_input=sim_input,
-        server=mock_connection_with_stub)
+        simulation_task=task, simulation_input=sim_input, server=mock_connection_with_stub
+    )
 
     # assert
     assert len(task._long_running_ops) == 1
@@ -634,7 +634,11 @@ def test_exception_during_internal_simulate_returns_operation_with_error(_, sim_
     mock_connection_with_stub.channel_str = "1.1.1.1"
     sim_input.material = test_utils.get_test_material()
     additive = Additive(enable_beta_features=True)
-    task = SimulationTask(server_connections=[mock_connection_with_stub], user_data_path="path", nsims_per_server=additive.nsims_per_server)
+    task = SimulationTask(
+        server_connections=[mock_connection_with_stub],
+        user_data_path="path",
+        nsims_per_server=additive.nsims_per_server,
+    )
 
     # act
     additive._simulate(task, sim_input, mock_connection_with_stub)
@@ -662,7 +666,11 @@ def test_internal_simulate_returns_errored_operation_from_server(mock_server):
     # make metadata have different values than progress message to
     # allow testing of each field
     metadata = OperationMetadata(
-        simulation_id="diff_id", context="server", message=error_msg, percent_complete=60, state=ProgressMsgState.PROGRESS_STATE_ERROR
+        simulation_id="diff_id",
+        context="server",
+        message=error_msg,
+        percent_complete=60,
+        state=ProgressMsgState.PROGRESS_STATE_ERROR,
     )
     errored_operation = Operation(name="diff_id", done=True)
     errored_operation.metadata.Pack(metadata)
@@ -675,7 +683,9 @@ def test_internal_simulate_returns_errored_operation_from_server(mock_server):
     mock_connection_with_stub.channel_str = "1.1.1.1"
     mock_server.return_value = mock_connection_with_stub
     additive = Additive(server_connections=["1.1.1.1"], nsims_per_server=1)
-    task = SimulationTask(server_connections=[mock_connection_with_stub], user_data_path="path", nsims_per_server=1)
+    task = SimulationTask(
+        server_connections=[mock_connection_with_stub], user_data_path="path", nsims_per_server=1
+    )
 
     # act
     additive._simulate(task, input, mock_connection_with_stub)
@@ -941,7 +951,6 @@ def test_remove_material_raises_ValueError_when_removing_reserved_material(mock_
 def test_tune_material_raises_exception_if_output_path_exists(_, tmp_path: pathlib.Path):
     # arrange
     input = MaterialTuningInput(
-        id="id",
         experiment_data_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "experimental_data.csv"
         ),
@@ -1053,7 +1062,6 @@ def test_tune_material_returns_expected_result(
 ):
     # arrange
     input = MaterialTuningInput(
-        id="id",
         experiment_data_file=test_utils.get_test_file_path(
             pathlib.Path("Material") / "experimental_data.csv"
         ),
@@ -1071,7 +1079,7 @@ def test_tune_material_returns_expected_result(
     operation_started = Operation(name="id")
     operation_completed = Operation(name="id", done=True)
     response = TuneMaterialResponse(
-        id="id",
+        id=input.id,
         result=MaterialTuningResult(
             log=log_bytes,
             optimized_parameters=optimized_parameters_bytes,

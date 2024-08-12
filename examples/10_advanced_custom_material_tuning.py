@@ -66,7 +66,6 @@ input_files = examples.download_material_tuning_input()
 # the field can be omitted when creating the MaterialTuningInput object.
 
 input = MaterialTuningInput(
-    id="custom-material-tuning",
     experiment_data_file=input_files.experiment_data_file,
     material_configuration_file=input_files.material_configuration_file,
     thermal_properties_lookup_file=input_files.thermal_properties_lookup_file,

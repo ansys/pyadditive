@@ -119,7 +119,6 @@ sensor_inputs = CoaxialAverageSensorInputs(
 input = ThermalHistoryInput(
     machine=machine,
     material=material,
-    id="thermal-history-example",
     geometry=stl_file,
     coax_ave_sensor_inputs=sensor_inputs,
 )

@@ -86,7 +86,6 @@ machine.laser_power = 500  # W
 input_with_thermal = MicrostructureInput(
     machine=machine,
     material=material,
-    id="micro-with-thermal",
     sensor_dimension=0.0005,
     sample_size_x=0.001,  # in meters (1 mm), must be >= sensor_dimension + 0.0005
     sample_size_y=0.001,  # in meters (1 mm), must be >= sensor_dimension + 0.0005
@@ -102,7 +101,6 @@ input_with_thermal = MicrostructureInput(
 input_without_thermal = MicrostructureInput(
     machine=machine,
     material=material,
-    id="micro-without-thermal",
     sensor_dimension=0.0005,
     sample_size_x=0.001,  # in meters (1 mm), must be >= sensor_dimension + 0.0005
     sample_size_y=0.001,  # in meters (1 mm), must be >= sensor_dimension + 0.0005
@@ -204,7 +202,7 @@ def add_grain_statistics_to_figure(
     """Convenience function to add grain statistic plots to a figure."""
     xmax = len(plane_data[CircleEquivalenceColumnNames.DIAMETER])
     diameter_axes.hist(plane_data[CircleEquivalenceColumnNames.DIAMETER], bins=20, rwidth=0.75)
-    diameter_axes.set_xlabel(f"Grain Diameter (µm)")
+    diameter_axes.set_xlabel("Grain Diameter (µm)")
     diameter_axes.set_ylabel("Area Fraction")
     diameter_axes.set_title(
         plane_str.upper() + f" Grain Size Distribution, ave: {plane_ave_grain_size:.2f} µm"

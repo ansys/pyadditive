@@ -43,14 +43,13 @@ def test_MaterialTuningInput_init_assigns_defaults():
 
     # act
     input = MaterialTuningInput(
-        id="id",
         experiment_data_file=file_path,
         material_configuration_file=file_path,
         thermal_properties_lookup_file=file_path,
     )
 
     # assert
-    assert input.id == "id"
+    assert input.id
     assert input.experiment_data_file == file_path
     assert input.material_configuration_file == file_path
     assert input.thermal_properties_lookup_file == file_path
@@ -98,7 +97,6 @@ def test_MaterialTuningInput_init_raises_exception_for_missing_file(
     # arrange, act, assert
     with pytest.raises(FileNotFoundError) as exc_info:
         MaterialTuningInput(
-            id="id",
             experiment_data_file=exp_file,
             material_configuration_file=mat_file,
             thermal_properties_lookup_file=therm_file,
@@ -111,7 +109,6 @@ def test_MaterialTuningInput_str_returns_expected_string():
     # we need the files to exist, but we don't care about the contents
     file_path = test_utils.get_test_file_path("slm_build_file.zip")
     input = MaterialTuningInput(
-        id="id",
         experiment_data_file=file_path,
         material_configuration_file=file_path,
         thermal_properties_lookup_file=file_path,
@@ -123,7 +120,7 @@ def test_MaterialTuningInput_str_returns_expected_string():
     # assert
     assert result == (
         "MaterialTuningInput\n"
-        "id: id\n"
+        f"id: {input.id}\n"
         "allowable_error: 0.05\n"
         "max_iterations: 15\n"
         "experiment_data_file: {}\n"
@@ -139,7 +136,6 @@ def test_to_request_creates_expected_TuneMaterialRequest():
     # we need the files to exist, but we don't care about the contents
     file_path = test_utils.get_test_file_path("slm_build_file.zip")
     input = MaterialTuningInput(
-        id="id",
         experiment_data_file=file_path,
         material_configuration_file=file_path,
         thermal_properties_lookup_file=file_path,
@@ -155,7 +151,7 @@ def test_to_request_creates_expected_TuneMaterialRequest():
 
     # assert
     assert isinstance(request, TuneMaterialRequest)
-    assert request.id == "id"
+    assert request.id == input.id
     assert request.input.allowable_error == 1
     assert request.input.max_iterations == 2
     assert request.input.base_plate_temperature == 3
@@ -169,31 +165,24 @@ def test_MaterialTuningInput_eq():
     # arrange
     file_name = test_utils.get_test_file_path("slm_build_file.zip")
     input = MaterialTuningInput(
-        id="id",
         experiment_data_file=file_name,
         material_configuration_file=file_name,
         thermal_properties_lookup_file=file_name,
     )
 
     not_input = MaterialTuningInput(
-        id="not_id",
         experiment_data_file=file_name,
         material_configuration_file=file_name,
         thermal_properties_lookup_file=file_name,
     )
 
     # act, assert
-    assert input == MaterialTuningInput(
-        id="id",
-        experiment_data_file=file_name,
-        material_configuration_file=file_name,
-        thermal_properties_lookup_file=file_name,
-    )
+    assert input == input
     assert input != MaterialTuningInputMessage()
     assert input != not_input
 
 
-def test_MaterialTuningSummary_init_creates_expected_object():
+def test_MaterialTuningSummary_init_with_all_fields_creates_expected_object():
     # arrange
     tmp = tempfile.TemporaryDirectory()
     msg = MaterialTuningResultMessage(
@@ -205,7 +194,6 @@ def test_MaterialTuningSummary_init_creates_expected_object():
     )
     file_name = test_utils.get_test_file_path("slm_build_file.zip")
     input = MaterialTuningInput(
-        id="id",
         experiment_data_file=file_name,
         material_configuration_file=file_name,
         thermal_properties_lookup_file=file_name,
@@ -234,6 +222,38 @@ def test_MaterialTuningSummary_init_creates_expected_object():
         assert f.read() == b"material_parameters"
 
 
+def test_MaterialTuningSummary_init_with_minimum_fields_creates_expected_object():
+    # arrange
+    tmp = tempfile.TemporaryDirectory()
+    msg = MaterialTuningResultMessage(
+        optimized_parameters=b"optimized_parameters",
+        characteristic_width_lookup=b"",
+        coefficients=b"",
+        material_parameters=b"",
+        log=b"",
+    )
+    file_name = test_utils.get_test_file_path("slm_build_file.zip")
+    input = MaterialTuningInput(
+        experiment_data_file=file_name,
+        material_configuration_file=file_name,
+        thermal_properties_lookup_file=file_name,
+    )
+
+    # act
+    summary = MaterialTuningSummary(input, msg, tmp.name)
+
+    # assert
+    assert isinstance(summary, MaterialTuningSummary)
+    assert summary.input == input
+    assert os.path.isfile(summary.optimized_parameters_file)
+    with open(summary.optimized_parameters_file, "rb") as f:
+        assert f.read() == b"optimized_parameters"
+    assert summary.characteristic_width_file is None
+    assert summary.log_file is None
+    assert summary.coefficients_file is None
+    assert summary.material_configuration_file is None
+
+
 @pytest.mark.parametrize(
     "invalid_obj",
     [int(1), None, "string", MaterialTuningInputMessage(), TuneMaterialResponse()],
@@ -252,7 +272,6 @@ def test_MaterialTuningSummary_init_raises_type_error_for_invalid_message(invali
     # arrange
     file_name = test_utils.get_test_file_path("slm_build_file.zip")
     valid_input = MaterialTuningInput(
-        id="id",
         experiment_data_file=file_name,
         material_configuration_file=file_name,
         thermal_properties_lookup_file=file_name,
@@ -269,7 +288,6 @@ def test_MaterialTuningSummary_str_returns_expected_string():
     # arrange
     file_name = test_utils.get_test_file_path("slm_build_file.zip")
     input = MaterialTuningInput(
-        id="id",
         experiment_data_file=file_name,
         material_configuration_file=file_name,
         thermal_properties_lookup_file=file_name,
@@ -278,6 +296,8 @@ def test_MaterialTuningSummary_str_returns_expected_string():
     msg = MaterialTuningResultMessage(
         optimized_parameters=b"optimized_parameters",
         characteristic_width_lookup=b"characteristic_width_lookup",
+        coefficients=b"coefficients",
+        material_parameters=b"material_parameters",
         log=b"log",
     )
     result = MaterialTuningSummary(input, msg, tmp.name)
@@ -289,7 +309,7 @@ def test_MaterialTuningSummary_str_returns_expected_string():
     assert result_str == (
         "MaterialTuningSummary\n"
         "input: MaterialTuningInput\n"
-        "id: id\n"
+        f"id: {input.id}\n"
         "allowable_error: 0.05\n"
         "max_iterations: 15\n"
         "experiment_data_file: {}\n"
