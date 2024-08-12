@@ -58,7 +58,7 @@ from . import test_utils
 )
 def test_create_request_returns_correct_request(sim_input):
     # arrange
-    sim_input.id = "id"
+    sim_input._id = "id"
 
     remote_file_name = "remote/file/name"
     upload_response = UploadFileResponse(

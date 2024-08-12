@@ -100,20 +100,19 @@ def test_convert_metadata_to_progress(server, tmp_path: pathlib.Path):
 @pytest.mark.parametrize(
     "sim_input,result,expected_summary_type",
     [
-        (SingleBeadInput(id="id"), MeltPoolMsg(), SingleBeadSummary),
-        (PorosityInput(id="id"), PorosityResult(), PorositySummary),
-        (MicrostructureInput(id="id"), MicrostructureResult(), MicrostructureSummary),
-        (Microstructure3DInput(id="id"), Microstructure3DResult(), Microstructure3DSummary),
+        (SingleBeadInput(), MeltPoolMsg(), SingleBeadSummary),
+        (PorosityInput(), PorosityResult(), PorositySummary),
+        (MicrostructureInput(), MicrostructureResult(), MicrostructureSummary),
+        (Microstructure3DInput(), Microstructure3DResult(), Microstructure3DSummary),
         (
             ThermalHistoryInput(
-                id="id", geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))
+                geometry=StlFile(test_utils.get_test_file_path("5x5x1_0x_0y_0z.stl"))
             ),
             ThermalHistoryResult(),
             ThermalHistorySummary,
         ),
         (
             MaterialTuningInput(
-                id="id",
                 experiment_data_file=test_utils.get_test_file_path(
                     pathlib.Path("Material") / "experimental_data.csv"
                 ),
