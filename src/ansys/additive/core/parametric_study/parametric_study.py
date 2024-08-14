@@ -1346,7 +1346,7 @@ class ParametricStudy:
 
             dict[ColumnNames.ITERATION] = iteration
             dict[ColumnNames.PRIORITY] = priority
-            dict[ColumnNames.ID] = self._create_unique_id(id=input.id)
+            dict[ColumnNames.ID] = input.id
             dict[ColumnNames.STATUS] = status
             dict[ColumnNames.MATERIAL] = input.material.name
             dict[ColumnNames.LASER_POWER] = input.machine.laser_power
@@ -1584,9 +1584,9 @@ class ParametricStudy:
         if id is not None and not self._data_frame[ColumnNames.ID].str.match(f"{id}").any():
             return id
         _prefix = id or prefix or "sim"
-        uid = f"{_prefix}_{misc.short_uuid()}"
+        uid = f"{_prefix}_{misc.short_uuid(6)}"
         while self._data_frame[ColumnNames.ID].str.match(f"{uid}").any():
-            uid = f"{_prefix}_{misc.short_uuid()}"
+            uid = f"{_prefix}_{misc.short_uuid(6)}"
         return uid
 
     @save_on_return

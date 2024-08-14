@@ -39,7 +39,7 @@ def test_MicrostructureSummary_init_returns_expected_value():
     user_data_path = os.path.join(tempfile.gettempdir(), "microstructure_summary_init")
     if not os.path.exists(user_data_path):
         os.makedirs(user_data_path)
-    input = MicrostructureInput(id="id")
+    input = MicrostructureInput()
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
@@ -59,11 +59,11 @@ def test_MicrostructureSummary_init_returns_expected_value():
     # assert
     assert isinstance(summary, MicrostructureSummary)
     assert input == summary.input
-    assert summary.xy_vtk == os.path.join(user_data_path, "id", "xy.vtk")
+    assert summary.xy_vtk == os.path.join(user_data_path, input.id, "xy.vtk")
     assert os.path.exists(summary.xy_vtk)
-    assert summary.xz_vtk == os.path.join(user_data_path, "id", "xz.vtk")
+    assert summary.xz_vtk == os.path.join(user_data_path, input.id, "xz.vtk")
     assert os.path.exists(summary.xz_vtk)
-    assert summary.yz_vtk == os.path.join(user_data_path, "id", "yz.vtk")
+    assert summary.yz_vtk == os.path.join(user_data_path, input.id, "yz.vtk")
     assert os.path.exists(summary.yz_vtk)
     assert summary.xy_circle_equivalence["grain_number"][0] == 1
     assert summary.xy_circle_equivalence["area_fraction"][0] == 2
@@ -137,7 +137,7 @@ def test_MicrostructureInput_init_creates_default_object():
     input = MicrostructureInput()
 
     # assert
-    assert input.id == ""
+    assert input.id
     assert input.machine.laser_power == 195
     assert input.material.name == ""
     assert input.sample_min_x == 0
@@ -147,7 +147,7 @@ def test_MicrostructureInput_init_creates_default_object():
     assert input.sample_size_y == 0.0015
     assert input.sample_size_z == 0.0015
     assert input.sensor_dimension == 0.0005
-    assert input.use_provided_thermal_parameters == False
+    assert input.use_provided_thermal_parameters is False
     assert input.cooling_rate == 1e6
     assert input.thermal_gradient == 1e7
     assert input.melt_pool_width == 1.5e-4
@@ -163,7 +163,6 @@ def test_MicrostructureInput_init_with_parameters_creates_expected_object():
 
     # act
     input = MicrostructureInput(
-        id="myId",
         machine=machine,
         material=material,
         sample_min_x=1,
@@ -182,7 +181,7 @@ def test_MicrostructureInput_init_with_parameters_creates_expected_object():
     )
 
     # assert
-    assert "myId" == input.id
+    assert input.id
     assert input.machine.laser_power == 99
     assert input.material.name == "vibranium"
     assert input.sample_min_x == 1
@@ -192,7 +191,7 @@ def test_MicrostructureInput_init_with_parameters_creates_expected_object():
     assert input.sample_size_y == 0.002
     assert input.sample_size_z == 0.003
     assert input.sensor_dimension == 1e-4
-    assert input.use_provided_thermal_parameters == True
+    assert input.use_provided_thermal_parameters
     assert input.cooling_rate == 8e6
     assert input.thermal_gradient == 9e6
     assert input.melt_pool_width == 10e-5
@@ -209,7 +208,7 @@ def test_MicrostructureInput_to_simulation_request_returns_expected_object():
 
     # assert
     assert isinstance(request, SimulationRequest)
-    assert request.id == ""
+    assert request.id == input.id
     ms_input = request.microstructure_input
     assert ms_input.cube_min_x == 0
     assert ms_input.cube_min_y == 0
@@ -218,12 +217,12 @@ def test_MicrostructureInput_to_simulation_request_returns_expected_object():
     assert ms_input.cube_size_y == 0.0015
     assert ms_input.cube_size_z == 0.0015
     assert ms_input.sensor_dimension == 0.0005
-    assert ms_input.use_provided_thermal_parameters == False
+    assert ms_input.use_provided_thermal_parameters is False
     assert ms_input.cooling_rate == 1e6
     assert ms_input.thermal_gradient == 1e7
     assert ms_input.melt_pool_width == 1.5e-4
     assert ms_input.melt_pool_depth == 1e-4
-    assert ms_input.use_random_seed == False
+    assert ms_input.use_random_seed is False
     assert ms_input.random_seed == 0
 
 
@@ -233,7 +232,6 @@ def test_MicrostructureInput_to_simulation_request_assigns_values():
     machine.laser_power = 99
     material = AdditiveMaterial(name="vibranium")
     input = MicrostructureInput(
-        id="myId",
         machine=machine,
         material=material,
         sample_min_x=1,
@@ -256,7 +254,7 @@ def test_MicrostructureInput_to_simulation_request_assigns_values():
 
     # assert
     assert isinstance(request, SimulationRequest)
-    assert request.id == "myId"
+    assert request.id == input.id
     ms_input = request.microstructure_input
     assert ms_input.machine.laser_power == 99
     assert ms_input.material.name == "vibranium"
@@ -267,12 +265,12 @@ def test_MicrostructureInput_to_simulation_request_assigns_values():
     assert ms_input.cube_size_y == 0.002
     assert ms_input.cube_size_z == 0.003
     assert ms_input.sensor_dimension == 1e-4
-    assert ms_input.use_provided_thermal_parameters == True
+    assert ms_input.use_provided_thermal_parameters
     assert ms_input.cooling_rate == 8e6
     assert ms_input.thermal_gradient == 9e6
     assert ms_input.melt_pool_width == 10e-5
     assert ms_input.melt_pool_depth == 11e-5
-    assert ms_input.use_random_seed == True
+    assert ms_input.use_random_seed
     assert ms_input.random_seed == 12
 
 
@@ -387,16 +385,16 @@ def test_MicrostructureInput_size_validation_raises_ValueError_for_values_out_of
 
 def test_MicrostructureInput_repr_returns_expected_string():
     # arrange
-    input = MicrostructureInput(id="myId")
+    input = MicrostructureInput()
 
     # act, assert
     assert repr(input) == (
         "MicrostructureInput\n"
+        + f"id: {input.id}\n"
         + "sensor_dimension: 0.0005\n"
         + "sample_size_x: 0.0015\n"
         + "sample_size_y: 0.0015\n"
         + "sample_size_z: 0.0015\n"
-        + "id: myId\n"
         + "sample_min_x: 0\n"
         + "sample_min_y: 0\n"
         + "sample_min_z: 0\n"
@@ -460,7 +458,7 @@ def test_MicrostructureInput_repr_returns_expected_string():
 
 def test_MicrostructureSummary_repr_returns_expected_string():
     # arrange
-    input = MicrostructureInput(id="myId")
+    input = MicrostructureInput()
     user_data_path = os.path.join(tempfile.gettempdir(), "microstructure_summary_repr")
     if not os.path.exists(user_data_path):
         os.makedirs(user_data_path)
@@ -477,17 +475,17 @@ def test_MicrostructureSummary_repr_returns_expected_string():
     result.xz_circle_equivalence.append(xz_stats)
     result.yz_circle_equivalence.append(yz_stats)
     summary = MicrostructureSummary(input=input, result=result, user_data_path=user_data_path)
-    expected_output_dir = os.path.join(user_data_path, "myId")
+    expected_output_dir = os.path.join(user_data_path, input.id)
 
     # act, assert
     assert repr(summary) == (
         "MicrostructureSummary\n"
         + "input: MicrostructureInput\n"
+        + f"id: {input.id}\n"
         + "sensor_dimension: 0.0005\n"
         + "sample_size_x: 0.0015\n"
         + "sample_size_y: 0.0015\n"
         + "sample_size_z: 0.0015\n"
-        + "id: myId\n"
         + "sample_min_x: 0\n"
         + "sample_min_y: 0\n"
         + "sample_min_z: 0\n"

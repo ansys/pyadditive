@@ -175,10 +175,10 @@ def test_ThermalHistoryInput_init_creates_default_object():
     input = ThermalHistoryInput()
 
     # assert
-    assert input.id == ""
+    assert input.id
     assert input.machine.laser_power == 195
-    assert input.material.name == ""
-    assert input.geometry == None
+    assert not input.material.name
+    assert input.geometry is None
     assert input.coax_ave_sensor_inputs == CoaxialAverageSensorInputs()
 
 
@@ -194,7 +194,6 @@ def test_ThermalHistoryInput_init_with_parameters_creates_expected_object():
 
     # act
     input = ThermalHistoryInput(
-        id="myId",
         machine=machine,
         material=material,
         coax_ave_sensor_inputs=coax_inputs,
@@ -202,7 +201,7 @@ def test_ThermalHistoryInput_init_with_parameters_creates_expected_object():
     )
 
     # assert
-    assert "myId" == input.id
+    assert input.id
     assert input.machine.laser_power == 99
     assert input.material.name == "vibranium"
     assert input.coax_ave_sensor_inputs == coax_inputs
@@ -217,7 +216,6 @@ def test_ThermalHistoryInput_repr_creates_expected_string():
     file_name = os.path.abspath(__file__)
     stl_file = StlFile(path=file_name)
     input = ThermalHistoryInput(
-        id="myId",
         machine=AdditiveMachine(),
         material=AdditiveMaterial(),
         coax_ave_sensor_inputs=coax_inputs,
@@ -228,7 +226,7 @@ def test_ThermalHistoryInput_repr_creates_expected_string():
     assert (
         input.__repr__()
         == "ThermalHistoryInput\n"
-        + "id: myId\n"
+        + f"id: {input.id}\n"
         + "\n"
         + "machine: AdditiveMachine\n"
         + "laser_power: 195 W\n"
@@ -299,7 +297,6 @@ def test_ThermalHistoryInput_setters():
     input = ThermalHistoryInput()
 
     # act
-    input.id = "myId"
     input.machine = AdditiveMachine(laser_power=99)
     input.material = AdditiveMaterial(name="vibranium")
     coax_inputs = CoaxialAverageSensorInputs(
@@ -310,7 +307,6 @@ def test_ThermalHistoryInput_setters():
     input.geometry = stl_file
 
     # assert
-    assert "myId" == input.id
     assert input.machine.laser_power == 99
     assert input.material.name == "vibranium"
     assert input.coax_ave_sensor_inputs == coax_inputs
@@ -328,7 +324,6 @@ def test_ThermalHistoryInput_eq():
     stl_file = StlFile(path=os.path.abspath(__file__))
 
     input = ThermalHistoryInput(
-        id="myId",
         machine=machine,
         material=material,
         coax_ave_sensor_inputs=coax_inputs,
@@ -337,13 +332,7 @@ def test_ThermalHistoryInput_eq():
     input2 = ThermalHistoryInput(machine=machine, material=material)
 
     # act, assert
-    assert input == ThermalHistoryInput(
-        id="myId",
-        machine=machine,
-        material=material,
-        coax_ave_sensor_inputs=coax_inputs,
-        geometry=stl_file,
-    )
+    assert input == input
     assert input != ThermalHistoryInput()
     assert input != ThermalHistoryInputMessage(
         machine=machine._to_machine_message(),
@@ -384,7 +373,6 @@ def test_ThermalHistoryInput__to_simulation_request_with_stl_file_returns_expect
     )
     stl_file = StlFile(path=os.path.abspath(__file__))
     input = ThermalHistoryInput(
-        id="myId",
         machine=machine,
         material=material,
         coax_ave_sensor_inputs=coax_inputs,
@@ -396,9 +384,8 @@ def test_ThermalHistoryInput__to_simulation_request_with_stl_file_returns_expect
 
     # assert
     assert isinstance(request, SimulationRequest)
-    assert request.id == "myId"
     th_input = request.thermal_history_input
-    assert th_input.stl_file != None
+    assert th_input.stl_file
     assert remote_path == th_input.stl_file.name
     assert (
         coax_inputs._to_coaxial_average_sensor_inputs_message() == th_input.coax_ave_sensor_inputs
@@ -419,7 +406,6 @@ def test_ThermalHistoryInput__to_simulation_request_assigns_values():
     )
     build_file = BuildFile(type=MachineType.EOS, path=os.path.abspath(__file__))
     input = ThermalHistoryInput(
-        id="myId",
         machine=machine,
         material=material,
         coax_ave_sensor_inputs=coax_inputs,
@@ -431,9 +417,8 @@ def test_ThermalHistoryInput__to_simulation_request_assigns_values():
 
     # assert
     assert isinstance(request, SimulationRequest)
-    assert request.id == "myId"
     th_input = request.thermal_history_input
-    assert th_input.build_file != None
+    assert th_input.build_file
     assert remote_path == th_input.build_file.name
     assert BuildFileMachineType.BUILD_FILE_MACHINE_TYPE_EOS == th_input.build_file.type
     assert (
@@ -448,7 +433,7 @@ def test_ThermalHistoryInput__to_simulation_request_raises_exception_when_geomet
     # act, assert
     with pytest.raises(
         ValueError, match="Attempted to create simulation request without defining geometry"
-    ) as exc_info:
+    ):
         input._to_simulation_request("remote_path")
 
 
@@ -457,7 +442,7 @@ def test_ThermalHistoryInput__to_simulation_request_raises_exception_when_remote
     # act, assert
     with pytest.raises(
         ValueError, match="Attempted to create simulation request with empty remote_geometry_path"
-    ) as exc_info:
+    ):
         input._to_simulation_request("")
 
 

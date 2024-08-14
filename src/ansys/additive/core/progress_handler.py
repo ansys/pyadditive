@@ -27,6 +27,7 @@ from os import getenv
 
 from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
 from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
+from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
 from pydantic import BaseModel
 from tqdm import tqdm
 
@@ -62,6 +63,17 @@ class Progress(BaseModel):
             percent_complete=progress.percent_complete,
             message=progress.message,
             context=progress.context,
+        )
+
+    @classmethod
+    def from_operation_metadata(cls, metadata: OperationMetadata):
+        """Create a ``Progress`` object from an operation metadata (long-running operations) protobuf message."""  # noqa: E501
+        return cls(
+            sim_id=metadata.simulation_id,
+            state=metadata.state,
+            percent_complete=metadata.percent_complete,
+            message=metadata.message,
+            context=metadata.context,
         )
 
     def __str__(self):
