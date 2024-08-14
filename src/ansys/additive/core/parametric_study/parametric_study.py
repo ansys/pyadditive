@@ -281,7 +281,7 @@ class ParametricStudy:
         df = self._data_frame
         df[df[ColumnNames.STATUS].isin([SimulationStatus.PENDING, SimulationStatus.RUNNING])][
             ColumnNames.STATUS
-        ] = SimulationStatus.ADDED
+        ] = SimulationStatus.NEW
 
     @save_on_return
     def add_summaries(
@@ -592,7 +592,7 @@ class ParametricStudy:
                                     ColumnNames.ID: self._create_unique_id(
                                         prefix=f"sb_{iteration}"
                                     ),
-                                    ColumnNames.STATUS: SimulationStatus.ADDED,
+                                    ColumnNames.STATUS: SimulationStatus.NEW,
                                     ColumnNames.MATERIAL: material_name,
                                     ColumnNames.HEATER_TEMPERATURE: t,
                                     ColumnNames.LAYER_THICKNESS: l,
@@ -811,7 +811,7 @@ class ParametricStudy:
                                                     ColumnNames.ID: self._create_unique_id(
                                                         prefix=f"por_{iteration}"
                                                     ),
-                                                    ColumnNames.STATUS: SimulationStatus.ADDED,
+                                                    ColumnNames.STATUS: SimulationStatus.NEW,
                                                     ColumnNames.MATERIAL: material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
                                                     ColumnNames.LAYER_THICKNESS: l,
@@ -1148,7 +1148,7 @@ class ParametricStudy:
                                                     ColumnNames.ID: self._create_unique_id(
                                                         prefix=f"micro_{iteration}"
                                                     ),
-                                                    ColumnNames.STATUS: SimulationStatus.ADDED,
+                                                    ColumnNames.STATUS: SimulationStatus.NEW,
                                                     ColumnNames.MATERIAL: material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
                                                     ColumnNames.LAYER_THICKNESS: l,
@@ -1295,7 +1295,7 @@ class ParametricStudy:
         inputs: list[SingleBeadInput | PorosityInput | MicrostructureInput],
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
-        status: SimulationStatus = SimulationStatus.ADDED,
+        status: SimulationStatus = SimulationStatus.NEW,
     ) -> int:
         """Add new simulations to the parametric study.
 
@@ -1312,17 +1312,17 @@ class ParametricStudy:
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for the simulations.
 
-        status : SimulationStatus, default: :obj:`SimulationStatus.ADDED`
-            Valid types are :obj:`SimulationStatus.ADDED` and :obj:`SimulationStatus.SKIP`.
+        status : SimulationStatus, default: :obj:`SimulationStatus.NEW`
+            Valid types are :obj:`SimulationStatus.NEW` and :obj:`SimulationStatus.SKIP`.
 
         Returns
         -------
         int
             The number of simulations added to the parametric study.
         """
-        if status not in [SimulationStatus.SKIP, SimulationStatus.ADDED]:
+        if status not in [SimulationStatus.SKIP, SimulationStatus.NEW]:
             raise ValueError(
-                f"Simulation status must be '{SimulationStatus.ADDED}' or '{SimulationStatus.SKIP}'"
+                f"Simulation status must be '{SimulationStatus.NEW}' or '{SimulationStatus.SKIP}'"
             )
         for input in inputs:
             dict = {}
@@ -1407,10 +1407,10 @@ class ParametricStudy:
 
         # Filter and arrange as per status so that completed simulations are not overwritten by the
         # ones lower in the list
-        for status in [s.value for s in SimulationStatus]:
-            if len(current_df[current_df[ColumnNames.STATUS] == status]) > 0:
+        for status in SimulationStatus:
+            if len(current_df[current_df[ColumnNames.STATUS] == status.value]) > 0:
                 sorted_df = pd.concat(
-                    [sorted_df, current_df[current_df[ColumnNames.STATUS] == status]],
+                    [sorted_df, current_df[current_df[ColumnNames.STATUS] == status.value]],
                     ignore_index=True,
                 )
 

@@ -32,6 +32,7 @@ from ansys.additive.core import (
     MachineConstants,
     MicrostructureInput,
     PorosityInput,
+    SimulationStatus,
     SimulationType,
     SingleBeadInput,
 )
@@ -39,8 +40,6 @@ from ansys.additive.core.additive import Additive
 import ansys.additive.core.parametric_study as ps
 from ansys.additive.core.parametric_study.constants import ColumnNames
 from ansys.additive.core.parametric_study.parametric_runner import ParametricRunner as pr
-from ansys.additive.core.single_bead import SingleBeadSummary
-from tests import test_utils
 
 
 def test_create_machine_assigns_all_values():
@@ -272,7 +271,7 @@ def test_create_microstructure_input_assigns_defaults_for_nans():
     assert input.sample_size_y == size_y
     assert input.sample_size_z == size_z
     assert input.sensor_dimension == sensor_dim
-    assert input.use_provided_thermal_parameters == False
+    assert input.use_provided_thermal_parameters is False
     assert input.cooling_rate == MicrostructureInput.DEFAULT_COOLING_RATE
     assert input.thermal_gradient == MicrostructureInput.DEFAULT_THERMAL_GRADIENT
     assert input.melt_pool_width == MicrostructureInput.DEFAULT_MELT_POOL_WIDTH
@@ -611,26 +610,23 @@ def test_simulate_filters_by_simulation_ids_and_type(tmp_path: pytest.TempPathFa
     mock_additive.simulate.assert_called_once_with(inputs)
 
 
-def test_simulate_filters_by_simulation_ids_only_takes_pending_simulations(
+def test_simulate_with_simulation_ids_ignores_status(
     tmp_path: pytest.TempPathFactory,
 ):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
     material = AdditiveMaterial(name="test_material")
-    sb_1 = SingleBeadInput(bead_length=0.001, material=material)
-    sb_2 = SingleBeadInput(bead_length=0.002, material=material)
-    sb_3 = SingleBeadInput(bead_length=0.003, material=material)
-    sb_4 = SingleBeadInput(bead_length=0.004, material=material)
-    p = PorosityInput(material=material)
-    ms = MicrostructureInput(material=material)
-    melt_pool_msg = test_utils.get_test_melt_pool_message()
-    summary_1 = SingleBeadSummary(sb_1, melt_pool_msg, None)
-    summary_2 = SingleBeadSummary(sb_2, melt_pool_msg, None)
-    study.add_summaries([summary_1, summary_2])
-    study.add_inputs([sb_3, sb_4], iteration=1)
-    study.add_inputs([p], iteration=2)
-    study.add_inputs([ms], iteration=3)
-    inputs = [sb_3, sb_4, p, ms]
+    ids = []
+    inputs = []
+    for i, s in enumerate(SimulationStatus):
+        sb = SingleBeadInput(bead_length=(0.001 + (i * 0.0001)), material=material)
+        ids.append(sb.id)
+        inputs.append(sb)
+        study.add_inputs([sb])
+        study._data_frame.iloc[i, study._data_frame.columns.get_loc(ColumnNames.STATUS)] = s.value
+    # melt_pool_msg = test_utils.get_test_melt_pool_message()
+    # summary = SingleBeadSummary(sb, melt_pool_msg, None)
+    # study.add_summaries([summary])
     mock_additive = create_autospec(Additive)
     mock_additive.material.return_value = material
 
@@ -638,8 +634,12 @@ def test_simulate_filters_by_simulation_ids_only_takes_pending_simulations(
     pr.simulate(
         study.data_frame(),
         mock_additive,
-        simulation_ids=[sb_1.id, sb_2.id, sb_3.id, sb_4.id, p.id, ms.id],
+        simulation_ids=ids,
     )
 
     # assert
-    mock_additive.simulate.assert_called_once_with(inputs)
+    mock_additive.simulate.assert_called_once()
+    args = mock_additive.simulate.call_args.args[0]
+    assert len(args) == len(inputs)
+    for input in inputs:
+        assert input in args

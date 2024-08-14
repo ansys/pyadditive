@@ -43,16 +43,22 @@ class SimulationType(str, Enum):
 class SimulationStatus(str, Enum):
     """Provides simulation status values."""
 
-    ADDED = "Added"
-    """Simulation was added to the parametric study."""
-    PENDING = "Pending"
-    """Simulation is waiting to run."""
+    # NOTE: Values are listed in order of precedence when deduping.
+    # For example, if duplicate COMPLETED and WARNING simulations are
+    # found when removing duplicates, the COMPLETED simulation will be
+    # kept.
+    COMPLETED = "Completed"
+    """Simulation completed successfully."""
+    WARNING = "Warning"
+    """Simulation completed with warnings."""
+    ERROR = "Error"
+    """Simulation errored before completion."""
     RUNNING = "Running"
     """Simulation is running."""
-    COMPLETED = "Completed"
-    """Simulation was run."""
-    ERROR = "Error"
-    """Simulation errored."""
+    PENDING = "Pending"
+    """Simulation is queued and waiting to run."""
+    NEW = "New"
+    """Simulation is created but not yet queued to run."""
     SKIP = "Skip"
     """Do not run this simulation, only applies to parametric studies."""
 

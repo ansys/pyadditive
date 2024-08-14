@@ -55,7 +55,7 @@ class ParametricRunner:
         priority: int = None,
         iteration: int = None,
     ) -> list[SingleBeadSummary, PorositySummary, MicrostructureSummary]:
-        """Run the simulations in the parametric study with ``Status`` equal to ``Pending``.
+        """Run the simulations in the parametric study.
 
         Execution order is determined by the ``Priority`` value assigned to the simulations.
         Lower values are interpreted as having higher priority and are run first.
@@ -68,8 +68,8 @@ class ParametricRunner:
             Additive service connection to use for running simulations.
         simulation_ids: list[str], default: None
             List of simulation IDs to run. The default is ``None``, in which case
-            all simulations in the parametric study are run. Any other filtering criteria
-            if provided, are applied on this list.
+            all simulations in the parametric study with status of :obj:`SimulationStatus.NEW`
+            are run. Any other filtering criteria, if provided, are applied on this list.
         type : list, default: None
             List of the simulation types to run. The default is ``None``, in which case all
             simulation types are run.
@@ -85,36 +85,8 @@ class ParametricRunner:
         list[SingleBeadSummary, PorositySummary, MicrostructureSummary]
             List of simulation summaries.
         """
-        if type is None:
-            type = [
-                SimulationType.SINGLE_BEAD,
-                SimulationType.POROSITY,
-                SimulationType.MICROSTRUCTURE,
-            ]
-        elif not isinstance(type, list):
-            type = [type]
 
-        view = df[
-            (df[ColumnNames.STATUS] == SimulationStatus.ADDED) & df[ColumnNames.TYPE].isin(type)
-        ]
-
-        if isinstance(simulation_ids, list) and len(simulation_ids) > 0:
-            simulation_ids_list = list()
-            for sim_id in simulation_ids:
-                if sim_id not in view[ColumnNames.ID].values:
-                    LOG.warning(f"Simulation ID '{sim_id}' not found in the parametric study")
-                elif sim_id in simulation_ids_list:
-                    LOG.debug(f"Simulation ID '{sim_id}' has already been added")
-                else:
-                    simulation_ids_list.append(sim_id)
-            view = view[view[ColumnNames.ID].isin(simulation_ids_list)]
-
-        if priority is not None:
-            view = view[view[ColumnNames.PRIORITY] == priority]
-        view = view.sort_values(by=ColumnNames.PRIORITY, ascending=True)
-
-        if iteration is not None:
-            view = df[(df[ColumnNames.ITERATION] == iteration)]
+        view = ParametricRunner._apply_filters(df, simulation_ids, type, priority, iteration)
 
         inputs = []
         # NOTICE: We use iterrows() instead of itertuples() here to
@@ -272,3 +244,68 @@ class ParametricRunner:
         # overwrite the ID value with the simulation ID from the table
         ms_input._id = row[ColumnNames.ID]
         return ms_input
+
+    @staticmethod
+    def _apply_filters(
+        df: pd.DataFrame,
+        simulation_ids: list[str] = None,
+        type: list[SimulationType] = None,
+        priority: int = None,
+        iteration: int = None,
+    ) -> pd.DataFrame:
+        """Apply filters to the parametric study data frame.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Parametric study data frame to filter.
+        simulation_ids: list[str], default: None
+            List of simulation IDs to include. The default is ``None``, in which case
+            all simulations with status of :obj:`SimulationStatus.NEW` are selected.
+        type : list, default: None
+            List of simulation types to include. The default is ``None``, in which case
+            all simulation types are selected.
+        priority : int, default: None
+            Priority of simulations to include. The default is ``None``, in which case
+            all priorities are selected.
+        iteration : int, default: None
+            Iteration number of simulations to include. The default is ``None``, in which case
+            all iterations are selected.
+        """
+
+        # Initialize the filtered view of the data frame
+        view = df
+
+        # Filter the data frame based on the provided simulation IDs
+        if isinstance(simulation_ids, list) and len(simulation_ids) > 0:
+            simulation_ids_list = list()
+            for sim_id in simulation_ids:
+                if sim_id not in view[ColumnNames.ID].values:
+                    LOG.warning(f"Simulation ID '{sim_id}' not found in the parametric study")
+                elif sim_id in simulation_ids_list:
+                    LOG.debug(f"Simulation ID '{sim_id}' has already been added")
+                else:
+                    simulation_ids_list.append(sim_id)
+            view = view[view[ColumnNames.ID].isin(simulation_ids_list)]
+        else:
+            # Select only the simulations with status NEW if no simulation IDs are provided
+            view = view[view[ColumnNames.STATUS] == SimulationStatus.NEW]
+
+        if type:
+            # Ensure that the simulation types are provided as a list
+            if not isinstance(type, list):
+                type = [type]
+            # Filter the data frame based on the provided simulation types
+            view = view[view[ColumnNames.TYPE].isin(type)]
+
+        # Filter the data frame based on the provided priority then sort by priority
+        if priority is not None:
+            view = view[view[ColumnNames.PRIORITY] == priority]
+
+        view = view.sort_values(by=ColumnNames.PRIORITY, ascending=True)
+
+        # Filter the data frame based on the provided iteration
+        if iteration is not None:
+            view = df[(df[ColumnNames.ITERATION] == iteration)]
+
+        return view
