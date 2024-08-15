@@ -1958,7 +1958,7 @@ class ParametricStudy:
         """
 
         # Initialize the filtered view of the data frame
-        view = df
+        view = df.copy()
 
         # Filter the data frame based on the provided simulation IDs
         if isinstance(simulation_ids, list) and len(simulation_ids) > 0:
