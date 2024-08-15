@@ -20,12 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import logging
 import os
 import pathlib
 import platform
 import shutil
 import tempfile
-from unittest.mock import PropertyMock, create_autospec, patch
+from unittest import mock
+from unittest.mock import Mock, PropertyMock, call, create_autospec, patch
 import uuid
 
 from ansys.api.additive.v0.additive_domain_pb2 import (
@@ -1767,72 +1769,6 @@ def test_run_simulations_calls_simulate_correctly(monkeypatch, tmp_path: pytest.
     assert patched_simulate.call_args[0][1] == mock_additive
 
 
-def test_run_simulations_with_priority_calls_simulate_correctly(
-    monkeypatch, tmp_path: pytest.TempPathFactory
-):
-    study = ps.ParametricStudy(tmp_path / "test_study")
-    sb1 = SingleBeadInput()
-    sb2 = SingleBeadInput()
-    sb3 = SingleBeadInput()
-    study.add_inputs([sb1], priority=1)
-    study.add_inputs([sb2], priority=2)
-    study.add_inputs([sb3], priority=3)
-    mock_additive = create_autospec(Additive)
-    # mock_additive.material.return_value = material
-    patched_simulate = create_autospec(ParametricRunner.simulate, return_value=[])
-    monkeypatch.setattr(ParametricRunner, "simulate", patched_simulate)
-
-    # act
-    study.run_simulations(mock_additive, priority=2)
-
-    # assert
-    assert patched_simulate.call_args[1]["priority"] == 2
-
-
-def test_run_simulations_with_iteration_calls_simulate_correctly(
-    monkeypatch, tmp_path: pytest.TempPathFactory
-):
-    study = ps.ParametricStudy(tmp_path / "test_study")
-    sb1 = SingleBeadInput()
-    sb2 = SingleBeadInput()
-    sb3 = SingleBeadInput()
-    study.add_inputs([sb1], iteration=1)
-    study.add_inputs([sb2], iteration=2)
-    study.add_inputs([sb3], iteration=3)
-    mock_additive = create_autospec(Additive)
-    # mock_additive.material.return_value = material
-    patched_simulate = create_autospec(ParametricRunner.simulate, return_value=[])
-    monkeypatch.setattr(ParametricRunner, "simulate", patched_simulate)
-
-    # act
-    study.run_simulations(mock_additive, iteration=2)
-
-    # assert
-    assert patched_simulate.call_args[1]["iteration"] == 2
-
-
-def test_rum_simulations_with_simulation_ids_calls_simulate_correctly(
-    monkeypatch, tmp_path: pytest.TempPathFactory
-):
-    study = ps.ParametricStudy(tmp_path / "test_study")
-    sb1 = SingleBeadInput(bead_length=0.001)
-    sb2 = SingleBeadInput(bead_length=0.002)
-    sb3 = SingleBeadInput(bead_length=0.003)
-    study.add_inputs([sb1])
-    study.add_inputs([sb2])
-    study.add_inputs([sb3])
-    mock_additive = create_autospec(Additive)
-    # mock_additive.material.return_value = material
-    patched_simulate = create_autospec(ParametricRunner.simulate, return_value=[])
-    monkeypatch.setattr(ParametricRunner, "simulate", patched_simulate)
-
-    # act
-    study.run_simulations(mock_additive, simulation_ids=["test_3"])
-
-    # assert
-    assert patched_simulate.call_args[1]["simulation_ids"] == ["test_3"]
-
-
 def test_remove_deletes_multiple_rows_from_dataframe(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
@@ -2276,3 +2212,343 @@ def test_import_csv_study_does_not_add_simulations_with_invalid_status_or_type_a
     assert len(error_list) == 2
     assert "Invalid simulation type" in error_list[0]
     assert "Invalid simulation status" in error_list[1]
+
+
+@patch("ansys.additive.core.parametric_study.ParametricStudy._filter_dataframe")
+@patch("ansys.additive.core.parametric_study.ParametricRunner.simulate")
+def test_run_simulations_calls_filter_dataframe_called_before_simulate(
+    mock_simulate,
+    mock_filter_dataframe,
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    manager = Mock()
+    manager.attach_mock(mock_filter_dataframe, "filter_dataframe")
+    manager.attach_mock(mock_simulate, "simulate")
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()])
+    mock_filter_dataframe.return_value = study._data_frame
+    mock_additive = create_autospec(Additive)
+
+    # act
+    study.run_simulations(mock_additive)
+
+    # assert
+    assert manager.mock_calls[0] == call.filter_dataframe(study._data_frame, None, None, None, None)
+    assert manager.mock_calls[1] == call.simulate(mock.ANY, mock_additive)
+
+
+def test_filter_dataframe_sorts_by_priority(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()], priority=3)
+    study.add_inputs([PorosityInput()], priority=2)
+    study.add_inputs([MicrostructureInput()], priority=1)
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(study.data_frame())
+
+    # assert
+    assert df.iloc[0][ps.ColumnNames.PRIORITY] == 1
+    assert df.iloc[1][ps.ColumnNames.PRIORITY] == 2
+    assert df.iloc[2][ps.ColumnNames.PRIORITY] == 3
+
+
+def test_filter_dataframe_filters_by_priority(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()], priority=3)
+    study.add_inputs([PorosityInput()], priority=2)
+    study.add_inputs([MicrostructureInput()], priority=1)
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(study._data_frame, priority=1)
+
+    # assert
+    assert len(df) == 1
+    assert df.iloc[0][ps.ColumnNames.PRIORITY] == 1
+
+
+def test_filter_dataframe_filters_by_iteration(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()], iteration=1)
+    study.add_inputs([PorosityInput()], iteration=2)
+    study.add_inputs([MicrostructureInput()], iteration=3)
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(study._data_frame, iteration=2)
+
+    # assert
+    assert len(df) == 1
+    assert df.iloc[0][ps.ColumnNames.ITERATION] == 2
+
+
+def test_filter_dataframe_filters_by_simulation_type(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()])
+    study.add_inputs([PorosityInput()])
+    study.add_inputs([MicrostructureInput()])
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(study._data_frame, type=SimulationType.POROSITY)
+
+    # assert
+    assert len(df) == 1
+    assert df.iloc[0][ps.ColumnNames.TYPE] == SimulationType.POROSITY
+
+
+def test_filter_dataframe_filters_by_multiple_simulation_types(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()])
+    study.add_inputs([PorosityInput()])
+    study.add_inputs([MicrostructureInput()])
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(
+        study._data_frame, type=[SimulationType.POROSITY, SimulationType.SINGLE_BEAD]
+    )
+
+    # assert
+    assert len(df) == 2
+    types = df[ps.ColumnNames.TYPE].array
+    assert SimulationType.POROSITY in types
+    assert SimulationType.SINGLE_BEAD in types
+
+
+@patch("ansys.additive.core.parametric_study.ParametricRunner.simulate")
+def test_run_simulations_logs_warning_when_no_simulations_meet_criteria(
+    mock_simulate,
+    tmp_path: pytest.TempPathFactory,
+    caplog,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()])
+    mock_additive = create_autospec(Additive)
+    caplog.set_level(logging.WARNING, logger="PyAdditive_global")
+
+    # act
+    study.run_simulations(mock_additive, type=SimulationType.POROSITY)
+
+    # assert
+    assert len(caplog.records) == 1
+    for record in caplog.records:
+        assert record.levelname == "WARNING"
+        assert "None of the input simulations meet the criteria selected" in record.message
+    mock_simulate.assert_not_called()
+
+
+def test_filter_dataframe_filters_by_simulation_ids(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()])
+    study.add_inputs([PorosityInput()])
+    study.add_inputs([MicrostructureInput()])
+    ids = study.data_frame()[ps.ColumnNames.ID].array
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(
+        study._data_frame, simulation_ids=[ids[0], ids[2], "bogus"]
+    )
+
+    # assert
+    assert len(df) == 2
+    assert df.iloc[0][ps.ColumnNames.ID] in ids
+    assert df.iloc[1][ps.ColumnNames.ID] in ids
+    assert df.iloc[0][ps.ColumnNames.ID] != df.iloc[1][ps.ColumnNames.ID]
+
+
+@pytest.mark.parametrize(
+    "simulation_ids_input",
+    [
+        [],
+        None,
+    ],
+)
+def test_filter_dataframe_skips_filter_by_simulation_ids_if_the_list_is_empty_or_none(
+    simulation_ids_input, tmp_path: pytest.TempPathFactory
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()])
+    study.add_inputs([PorosityInput()])
+    study.add_inputs([MicrostructureInput()])
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(
+        study._data_frame, simulation_ids=simulation_ids_input
+    )
+
+    # assert
+    assert len(df) == 3
+
+
+def test_filter_dataframe_logs_warnings_for_simulation_ids_not_found(
+    tmp_path: pytest.TempPathFactory, caplog
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()])
+    study.add_inputs([PorosityInput()])
+    study.add_inputs([MicrostructureInput()])
+    caplog.set_level(logging.WARNING, logger="PyAdditive_global")
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(study._data_frame, simulation_ids=["bogus", "bogus2"])
+
+    # assert
+    assert len(df) == 0
+    assert len(caplog.records) == 2
+    assert "Simulation ID 'bogus' not found in the parametric study" in caplog.records[0].message
+    assert "Simulation ID 'bogus2' not found in the parametric study" in caplog.records[1].message
+
+
+def test_filter_dataframe_logs_debug_for_duplicate_simulation_id(
+    tmp_path: pytest.TempPathFactory, caplog
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()])
+    id = study._data_frame.iloc[0][ps.ColumnNames.ID]
+    caplog.set_level(logging.DEBUG, logger="PyAdditive_global")
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(study._data_frame, simulation_ids=[id, id])
+
+    # assert
+    assert len(df) == 1
+    assert len(caplog.records) == 1
+    assert "has already been added" in caplog.records[0].message
+
+
+def test_filter_dataframe_filters_by_simulation_id_and_sorts_by_priority(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()], priority=3)
+    study.add_inputs([PorosityInput()], priority=2)
+    study.add_inputs([MicrostructureInput()], priority=1)
+    ids = [
+        study.data_frame().iloc[0][ps.ColumnNames.ID],
+        study.data_frame().iloc[2][ps.ColumnNames.ID],
+    ]
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(study._data_frame, simulation_ids=ids)
+
+    # assert
+    assert len(df) == 2
+    assert df.iloc[0][ps.ColumnNames.PRIORITY] == 1
+    assert df.iloc[1][ps.ColumnNames.PRIORITY] == 3
+
+
+def test_filter_dataframe_filters_by_simulation_id_and_iteration(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()], iteration=1)
+    study.add_inputs([PorosityInput()], iteration=2)
+    study.add_inputs([MicrostructureInput()], iteration=1)
+    ids = study.data_frame()[ps.ColumnNames.ID].array
+    # act
+    df = ps.ParametricStudy._filter_dataframe(study._data_frame, simulation_ids=ids, iteration=1)
+
+    # assert
+    assert len(df) == 2
+    assert SimulationType.SINGLE_BEAD in df[ps.ColumnNames.TYPE].array
+    assert SimulationType.MICROSTRUCTURE in df[ps.ColumnNames.TYPE].array
+
+
+def test_filter_dataframe_filters_by_simulation_id_and_type(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()])
+    study.add_inputs([PorosityInput()])
+    study.add_inputs([MicrostructureInput()])
+    ids = [
+        study.data_frame().iloc[0][ps.ColumnNames.ID],
+        study.data_frame().iloc[1][ps.ColumnNames.ID],
+    ]
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(
+        study._data_frame, simulation_ids=ids, type=SimulationType.POROSITY
+    )
+
+    # assert
+    assert len(df) == 1
+    assert df.iloc[0][ps.ColumnNames.TYPE] == SimulationType.POROSITY
+
+
+def test_filter_dataframe_filters_by_simulation_id_and_priority(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    study.add_inputs([SingleBeadInput()], priority=3)
+    study.add_inputs([PorosityInput()], priority=2)
+    study.add_inputs([MicrostructureInput()], priority=1)
+    ids = [
+        study.data_frame().iloc[0][ps.ColumnNames.ID],
+        study.data_frame().iloc[2][ps.ColumnNames.ID],
+    ]
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(study._data_frame, simulation_ids=ids, priority=1)
+
+    # assert
+    assert len(df) == 1
+    assert df.iloc[0][ps.ColumnNames.PRIORITY] == 1
+
+
+def test_filter_dataframe_with_simulation_ids_ignores_status(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    material = AdditiveMaterial(name="test_material")
+    ids = []
+    for i, s in enumerate(SimulationStatus):
+        sb = SingleBeadInput(bead_length=(0.001 + (i * 0.0001)), material=material)
+        ids.append(sb.id)
+        study.add_inputs([sb])
+        study._data_frame.iloc[i, study._data_frame.columns.get_loc(ColumnNames.STATUS)] = s
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(
+        study.data_frame(),
+        simulation_ids=ids,
+    )
+
+    # assert
+    assert len(df) == len(ids)
+
+
+def test_filter_dataframe_without_simulations_ids_only_adds_new_simulations(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    material = AdditiveMaterial(name="test_material")
+    ids = []
+    for i, s in enumerate(SimulationStatus):
+        sb = SingleBeadInput(bead_length=(0.001 + (i * 0.0001)), material=material)
+        ids.append(sb.id)
+        study.add_inputs([sb])
+        study._data_frame.iloc[i, study._data_frame.columns.get_loc(ColumnNames.STATUS)] = s
+
+    # act
+    df = ps.ParametricStudy._filter_dataframe(
+        study.data_frame(),
+    )
+
+    # assert
+    assert len(df) == 1
+    assert df.iloc[0][ps.ColumnNames.STATUS] == SimulationStatus.NEW

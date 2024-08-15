@@ -203,13 +203,16 @@ class ParametricStudy:
             Iteration number of simulations to run. The default is ``None``,
             all iterations are run.
         """
+        filtered_dataframe = ParametricStudy._filter_dataframe(
+            self._data_frame, simulation_ids, type, priority, iteration
+        )
+        if len(filtered_dataframe) == 0:
+            LOG.warning("None of the input simulations meet the criteria selected")
+            return
+
         summaries = ParametricRunner.simulate(
-            self.data_frame(),
+            filtered_dataframe,
             additive,
-            simulation_ids=simulation_ids,
-            type=type,
-            priority=priority,
-            iteration=iteration,
         )
         self.update(summaries)
 
@@ -1830,7 +1833,7 @@ class ParametricStudy:
         """
 
         try:
-            test_porosity_input = PorosityInput(
+            PorosityInput(
                 size_x=input[ColumnNames.POROSITY_SIZE_X],
                 size_y=input[ColumnNames.POROSITY_SIZE_Y],
                 size_z=input[ColumnNames.POROSITY_SIZE_Z],
@@ -1880,7 +1883,7 @@ class ParametricStudy:
             else:
                 test_use_provided_thermal_parameters = True
 
-            test_microstructure_input = MicrostructureInput(
+            MicrostructureInput(
                 sample_min_x=input[ColumnNames.MICRO_MIN_X],
                 sample_min_y=input[ColumnNames.MICRO_MIN_Y],
                 sample_min_z=input[ColumnNames.MICRO_MIN_Z],
@@ -1920,3 +1923,73 @@ class ParametricStudy:
             return (True, "")
         except ValueError as e:
             return (False, (f"Invalid parameter combination: {e}"))
+
+    @staticmethod
+    def _filter_dataframe(
+        df: pd.DataFrame,
+        simulation_ids: list[str] = None,
+        type: list[SimulationType] = None,
+        priority: int = None,
+        iteration: int = None,
+    ) -> pd.DataFrame:
+        """Apply filters to the parametric study data frame.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Parametric study data frame to filter.
+        simulation_ids: list[str], default: None
+            List of simulation IDs to include. The default is ``None``, in which case
+            all simulations with status of :obj:`SimulationStatus.NEW` are selected.
+        type : list, default: None
+            List of simulation types to include. The default is ``None``, in which case
+            all simulation types are selected.
+        priority : int, default: None
+            Priority of simulations to include. The default is ``None``, in which case
+            all priorities are selected.
+        iteration : int, default: None
+            Iteration number of simulations to include. The default is ``None``, in which case
+            all iterations are selected.
+
+        Returns
+        -------
+        pd.DataFrame
+            Filtered view of the parametric study data frame
+        """
+
+        # Initialize the filtered view of the data frame
+        view = df
+
+        # Filter the data frame based on the provided simulation IDs
+        if isinstance(simulation_ids, list) and len(simulation_ids) > 0:
+            simulation_ids_list = list()
+            for sim_id in simulation_ids:
+                if sim_id not in view[ColumnNames.ID].values:
+                    LOG.warning(f"Simulation ID '{sim_id}' not found in the parametric study")
+                elif sim_id in simulation_ids_list:
+                    LOG.debug(f"Simulation ID '{sim_id}' has already been added")
+                else:
+                    simulation_ids_list.append(sim_id)
+            view = view[view[ColumnNames.ID].isin(simulation_ids_list)]
+        else:
+            # Select only the simulations with status NEW if no simulation IDs are provided
+            view = view[view[ColumnNames.STATUS] == SimulationStatus.NEW]
+
+        if type:
+            # Ensure that the simulation types are provided as a list
+            if not isinstance(type, list):
+                type = [type]
+            # Filter the data frame based on the provided simulation types
+            view = view[view[ColumnNames.TYPE].isin(type)]
+
+        # Filter the data frame based on the provided priority then sort by priority
+        if priority is not None:
+            view = view[view[ColumnNames.PRIORITY] == priority]
+
+        view = view.sort_values(by=ColumnNames.PRIORITY, ascending=True)
+
+        # Filter the data frame based on the provided iteration
+        if iteration is not None:
+            view = df[(df[ColumnNames.ITERATION] == iteration)]
+
+        return view
