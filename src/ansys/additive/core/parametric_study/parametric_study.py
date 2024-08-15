@@ -280,7 +280,7 @@ class ParametricStudy:
 
     @save_on_return
     def reset_status(self):
-        """Reset the status of any ``Pending`` or ``Running`` simulations to ``Added``."""
+        """Reset the status of any ``Pending`` or ``Running`` simulations to ``New``."""
         df = self._data_frame
         df[df[ColumnNames.STATUS].isin([SimulationStatus.PENDING, SimulationStatus.RUNNING])][
             ColumnNames.STATUS
