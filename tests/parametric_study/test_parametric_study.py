@@ -2216,7 +2216,7 @@ def test_import_csv_study_does_not_add_simulations_with_invalid_status_or_type_a
 
 @patch("ansys.additive.core.parametric_study.ParametricStudy._filter_dataframe")
 @patch("ansys.additive.core.parametric_study.ParametricRunner.simulate")
-def test_run_simulations_calls_filter_dataframe_called_before_simulate(
+def test_run_simulations_calls_filter_dataframe_before_simulate(
     mock_simulate,
     mock_filter_dataframe,
     tmp_path: pytest.TempPathFactory,
