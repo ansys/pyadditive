@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides a class to update progress when running parametric study simulations."""
-from __future__ import annotations
 
 import tempfile
 import threading

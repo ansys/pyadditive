@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides a class to run parametric study simulations."""
-from __future__ import annotations
 
 import numpy as np
 import pandas as pd

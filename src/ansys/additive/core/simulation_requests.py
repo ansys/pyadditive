@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Set up methods for grpc simulation requests."""
-from __future__ import annotations
 
 from collections.abc import Iterator
 import hashlib

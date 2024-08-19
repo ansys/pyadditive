@@ -21,8 +21,6 @@
 # SOFTWARE.
 """Container for a simulation task."""
 
-from __future__ import annotations
-
 import os
 import zipfile
 
