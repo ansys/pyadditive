@@ -53,6 +53,8 @@ class SimulationStatus(str, Enum):
     """Simulation completed with warnings."""
     ERROR = "Error"
     """Simulation errored before completion."""
+    CANCELLED = "Cancelled"
+    """Simulation was cancelled."""
     RUNNING = "Running"
     """Simulation is running."""
     PENDING = "Pending"

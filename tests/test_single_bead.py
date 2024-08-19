@@ -61,6 +61,13 @@ def test_MeltPool_init_converts_MeltPoolMessage(thermal_history_output):
     assert df.iloc[0]["depth"] == 6
     assert df.iloc[0]["reference_depth"] == 7
     assert melt_pool.thermal_history_output == thermal_history_output
+    assert melt_pool.median_depth() == 6
+    assert melt_pool.median_width() == 4
+    assert melt_pool.median_reference_depth() == 7
+    assert melt_pool.median_reference_width() == 5
+    assert melt_pool.median_length() == 3
+    assert melt_pool.depth_over_width() == 7 / 5
+    assert melt_pool.length_over_width() == 3 / 4
 
 
 def test_SingleBeadSummary_init_returns_valid_result():
@@ -81,7 +88,7 @@ def test_SingleBeadSummary_init_returns_valid_result():
     # assert
     assert input == summary.input
     assert expected_melt_pool == summary.melt_pool
-    assert summary.melt_pool.thermal_history_output == None
+    assert summary.melt_pool.thermal_history_output is None
 
 
 def test_SingleBeadSummary_init_with_thermal_history_returns_valid_result(
