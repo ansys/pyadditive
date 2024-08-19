@@ -21,8 +21,6 @@
 # SOFTWARE.
 """Manages simulation tasks."""
 
-from __future__ import annotations
-
 import time
 
 from ansys.additive.core.progress_handler import IProgressHandler, Progress

@@ -21,8 +21,6 @@
 # SOFTWARE.
 """Provides network connection utility functions."""
 
-from __future__ import annotations
-
 import socket
 
 import grpc
