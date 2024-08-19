@@ -40,6 +40,7 @@ from ansys.additive.core import (
     SingleBeadSummary,
 )
 from ansys.additive.core.parametric_study.constants import ColumnNames
+from ansys.additive.core.progress_handler import IProgressHandler
 from ansys.additive.core.simulation import SimulationError
 
 
@@ -50,6 +51,7 @@ class ParametricRunner:
     def simulate(
         df: pd.DataFrame,
         additive: Additive,
+        progress_handler: IProgressHandler = None,
     ) -> list[SingleBeadSummary, PorositySummary, MicrostructureSummary, SimulationError]:
         """Run the simulations in the parametric study.
 
@@ -62,19 +64,8 @@ class ParametricRunner:
             Parametric study data frame.
         additive : Additive
             Additive service connection to use for running simulations.
-        simulation_ids: list[str], default: None
-            List of simulation IDs to run. The default is ``None``, in which case
-            all simulations in the parametric study with status of :obj:`SimulationStatus.NEW`
-            are run. Any other filtering criteria, if provided, are applied on this list.
-        type : list, default: None
-            List of the simulation types to run. The default is ``None``, in which case all
-            simulation types are run.
-        priority : int, default: None
-            Priority of simulations to run. The default is ``None``, in which case
-            all priorities are run.
-        iteration : int, default: None
-            Iteration number of simulations to run. The default is ``None``, in which case
-            all iterations are run.
+        progress_handler : IProgressHandler, default None
+            Progress handler to update the status of the simulations.
 
         Returns
         -------
@@ -107,10 +98,8 @@ class ParametricRunner:
                 )
                 continue
 
-        summaries = additive.simulate(inputs)
+        summaries = additive.simulate(inputs, progress_handler)
 
-        # TODO: Return the summaries one at a time, possibly as an iterator,
-        # so that the data frame can be updated as each simulation completes.
         return summaries
 
     @staticmethod

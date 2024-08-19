@@ -299,6 +299,6 @@ def test_simulate_skips_simulations_with_missing_materials(
     pr.simulate(study.data_frame(), mock_additive)
 
     # assert
-    mock_additive.simulate.assert_called_once_with([sb, ms])
+    mock_additive.simulate.assert_called_once_with([sb, ms], None)
     assert len(caplog.records) == 1
     assert f"Material test_material not found, skipping {p.id}" in caplog.text

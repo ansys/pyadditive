@@ -1830,6 +1830,33 @@ def test_set_status_changes_status(tmp_path: pytest.TempPathFactory):
             assert status2[i] == status1[i]
 
 
+def test_set_status_updates_error_message(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ps.ParametricStudy(tmp_path / "test_study")
+    for i in range(4):
+        study.add_inputs([SingleBeadInput(bead_length=(i + 1) * 0.001)])
+    df = study.data_frame()
+    ids = [
+        df.iloc[0][ps.ColumnNames.ID],
+        df.iloc[1][ps.ColumnNames.ID],
+    ]
+    error_message = "error message"
+
+    # act
+    study.set_status(ids, SimulationStatus.ERROR, error_message)
+
+    # assert
+    status2 = study.data_frame()[ps.ColumnNames.STATUS]
+    df = study.data_frame()
+    for i in range(len(df)):
+        if i in [0, 1]:
+            assert status2[i] == SimulationStatus.ERROR
+            assert df.iloc[i][ps.ColumnNames.ERROR_MESSAGE] == "error message"
+        else:
+            assert status2[i] == SimulationStatus.NEW
+            assert pd.isna(df.iloc[i][ps.ColumnNames.ERROR_MESSAGE])
+
+
 def test_set_status_changes_status_for_single_id(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ps.ParametricStudy(tmp_path / "test_study")
@@ -2235,7 +2262,7 @@ def test_run_simulations_calls_filter_dataframe_before_simulate(
 
     # assert
     assert manager.mock_calls[0] == call.filter_dataframe(study._data_frame, None, None, None, None)
-    assert manager.mock_calls[1] == call.simulate(mock.ANY, mock_additive)
+    assert manager.mock_calls[1] == call.simulate(mock.ANY, mock_additive, None)
 
 
 def test_filter_dataframe_sorts_by_priority(tmp_path: pytest.TempPathFactory):
