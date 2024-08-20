@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides input and result summary containers for thermal history simulations."""
-from __future__ import annotations
 
 from ansys.api.additive.v0.additive_domain_pb2 import (
     CoaxialAverageSensorInputs as CoaxialAverageSensorInputsMessage,

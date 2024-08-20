@@ -32,7 +32,7 @@ from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 from ansys.additive.core import misc
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
-from ansys.additive.core.microstructure import _Microstructure2DResult
+from ansys.additive.core.microstructure import Microstructure2DResult
 
 
 class Microstructure3DInput:
@@ -375,7 +375,7 @@ class Microstructure3DSummary:
         self._grain_3d_vtk = os.path.join(outpath, self._3D_GRAIN_VTK_NAME)
         with open(self._grain_3d_vtk, "wb") as f:
             f.write(result.three_d_vtk)
-        self._2d_result = _Microstructure2DResult(result.two_d_result, outpath)
+        self._2d_result = Microstructure2DResult(result.two_d_result, outpath)
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"

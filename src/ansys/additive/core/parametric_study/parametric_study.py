@@ -39,7 +39,7 @@ from ansys.additive.core import (
     AdditiveMachine,
     AdditiveMaterial,
     MachineConstants,
-    MeltPoolColumnNames,
+    MeltPool,
     MicrostructureInput,
     MicrostructureSummary,
     PorosityInput,
@@ -51,6 +51,7 @@ from ansys.additive.core import (
     SingleBeadSummary,
 )
 import ansys.additive.core.misc as misc
+from ansys.additive.core.progress_handler import IProgressHandler
 
 from .constants import DEFAULT_ITERATION, DEFAULT_PRIORITY, FORMAT_VERSION, ColumnNames
 from .parametric_runner import ParametricRunner
@@ -179,6 +180,7 @@ class ParametricStudy:
         type: list[SimulationType] | None = None,
         priority: int | None = None,
         iteration: int = None,
+        progress_handler: IProgressHandler = None,
     ):
         """Run the simulations with ``Pending`` for their ``Status`` values.
 
@@ -202,6 +204,8 @@ class ParametricStudy:
         iteration : int, default: None
             Iteration number of simulations to run. The default is ``None``,
             all iterations are run.
+        progress_handler: IProgressHandler, default: None
+            Progress handler to update the status of the simulations.
         """
         filtered_dataframe = ParametricStudy._filter_dataframe(
             self._data_frame, simulation_ids, type, priority, iteration
@@ -213,6 +217,7 @@ class ParametricStudy:
         summaries = ParametricRunner.simulate(
             filtered_dataframe,
             additive,
+            progress_handler,
         )
         self.update(summaries)
 
@@ -327,18 +332,7 @@ class ParametricStudy:
     def _add_single_bead_summary(
         self, summary: SingleBeadSummary, iteration: int = DEFAULT_ITERATION
     ):
-        median_mp = summary.melt_pool.data_frame().median()
-        dw = (
-            median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]
-            / median_mp[MeltPoolColumnNames.REFERENCE_WIDTH]
-            if median_mp[MeltPoolColumnNames.REFERENCE_WIDTH]
-            else np.nan
-        )
-        lw = (
-            median_mp[MeltPoolColumnNames.LENGTH] / median_mp[MeltPoolColumnNames.WIDTH]
-            if median_mp[MeltPoolColumnNames.WIDTH]
-            else np.nan
-        )
+        mp = summary.melt_pool
         br = build_rate(summary.input.machine.scan_speed, summary.input.machine.layer_thickness)
         ed = energy_density(
             summary.input.machine.laser_power,
@@ -352,17 +346,13 @@ class ParametricStudy:
                 ColumnNames.BUILD_RATE: br,
                 ColumnNames.ENERGY_DENSITY: ed,
                 ColumnNames.SINGLE_BEAD_LENGTH: summary.input.bead_length,
-                ColumnNames.MELT_POOL_WIDTH: median_mp[MeltPoolColumnNames.WIDTH],
-                ColumnNames.MELT_POOL_DEPTH: median_mp[MeltPoolColumnNames.DEPTH],
-                ColumnNames.MELT_POOL_LENGTH: median_mp[MeltPoolColumnNames.LENGTH],
-                ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH: lw,
-                ColumnNames.MELT_POOL_REFERENCE_WIDTH: median_mp[
-                    MeltPoolColumnNames.REFERENCE_WIDTH
-                ],
-                ColumnNames.MELT_POOL_REFERENCE_DEPTH: median_mp[
-                    MeltPoolColumnNames.REFERENCE_DEPTH
-                ],
-                ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH: dw,
+                ColumnNames.MELT_POOL_WIDTH: mp.median_width(),
+                ColumnNames.MELT_POOL_DEPTH: mp.median_depth(),
+                ColumnNames.MELT_POOL_LENGTH: mp.median_length(),
+                ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH: mp.length_over_width(),
+                ColumnNames.MELT_POOL_REFERENCE_WIDTH: mp.median_reference_width(),
+                ColumnNames.MELT_POOL_REFERENCE_DEPTH: mp.median_reference_depth(),
+                ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH: mp.depth_over_width(),
             }
         )
         self._data_frame = pd.concat([self._data_frame, row.to_frame().T], ignore_index=True)
@@ -1206,7 +1196,12 @@ class ParametricStudy:
         return num_permutations_added - self._remove_duplicate_entries(overwrite=False)
 
     @save_on_return
-    def update(self, summaries: list[SingleBeadSummary | PorositySummary | MicrostructureSummary]):
+    def update(
+        self,
+        summaries: list[
+            SingleBeadSummary | PorositySummary | MicrostructureSummary | SimulationError
+        ],
+    ):
         """Update the results of simulations in the parametric study.
 
         This method updates values for existing simulations in the parametric study. To add
@@ -1220,11 +1215,16 @@ class ParametricStudy:
         """
         for summary in summaries:
             if isinstance(summary, SingleBeadSummary):
-                self._update_single_bead(summary)
+                self._update_single_bead(summary.input.id, summary.melt_pool)
             elif isinstance(summary, PorositySummary):
-                self._update_porosity(summary)
+                self._update_porosity(summary.input.id, summary.relative_density)
             elif isinstance(summary, MicrostructureSummary):
-                self._update_microstructure(summary)
+                self._update_microstructure(
+                    summary.input.id,
+                    summary.xy_average_grain_size,
+                    summary.xz_average_grain_size,
+                    summary.yz_average_grain_size,
+                )
             elif isinstance(summary, SimulationError):
                 idx = self._data_frame[self._data_frame[ColumnNames.ID] == summary.input.id].index
                 self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.ERROR
@@ -1232,65 +1232,55 @@ class ParametricStudy:
             else:
                 raise TypeError(f"Invalid simulation summary type: {type(summary)}")
 
-    def _update_single_bead(self, summary: SingleBeadSummary):
+    def _update_single_bead(self, id: str, melt_pool: MeltPool):
         """Update the results of a single bead simulation in the parametric
         study data frame."""
-        median_df = summary.melt_pool.data_frame().median()
         idx = self._data_frame[
-            (self._data_frame[ColumnNames.ID] == summary.input.id)
+            (self._data_frame[ColumnNames.ID] == id)
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD)
         ].index
         self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_WIDTH] = median_df[
-            MeltPoolColumnNames.WIDTH
-        ]
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_DEPTH] = median_df[
-            MeltPoolColumnNames.DEPTH
-        ]
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH] = median_df[
-            MeltPoolColumnNames.LENGTH
-        ]
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] = (
-            median_df[MeltPoolColumnNames.LENGTH] / median_df[MeltPoolColumnNames.WIDTH]
-            if median_df[MeltPoolColumnNames.WIDTH] > 0
-            else np.nan
-        )
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH] = median_df[
-            MeltPoolColumnNames.REFERENCE_DEPTH
-        ]
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_WIDTH] = median_df[
-            MeltPoolColumnNames.REFERENCE_WIDTH
-        ]
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] = (
-            median_df[MeltPoolColumnNames.REFERENCE_DEPTH]
-            / median_df[MeltPoolColumnNames.REFERENCE_WIDTH]
-            if median_df[MeltPoolColumnNames.REFERENCE_WIDTH] > 0
-            else np.nan
-        )
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_WIDTH] = melt_pool.median_width()
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_DEPTH] = melt_pool.median_depth()
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH] = melt_pool.median_length()
+        self._data_frame.loc[
+            idx, ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH
+        ] = melt_pool.length_over_width()
+        self._data_frame.loc[
+            idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH
+        ] = melt_pool.median_reference_depth()
+        self._data_frame.loc[
+            idx, ColumnNames.MELT_POOL_REFERENCE_WIDTH
+        ] = melt_pool.median_reference_width()
+        self._data_frame.loc[
+            idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH
+        ] = melt_pool.depth_over_width()
 
-    def _update_porosity(self, summary: PorositySummary):
+    def _update_porosity(self, id: str, relative_density: float):
         """Update the results of a porosity simulation in the parametric study
         data frame."""
         idx = self._data_frame[
-            (self._data_frame[ColumnNames.ID] == summary.input.id)
+            (self._data_frame[ColumnNames.ID] == id)
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.POROSITY)
         ].index
 
         self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
-        self._data_frame.loc[idx, ColumnNames.RELATIVE_DENSITY] = summary.relative_density
+        self._data_frame.loc[idx, ColumnNames.RELATIVE_DENSITY] = relative_density
 
-    def _update_microstructure(self, summary: MicrostructureSummary):
+    def _update_microstructure(
+        self, id: str, xy_avg_grain_size: float, xz_avg_grain_size: float, yz_avg_grain_size: float
+    ):
         """Update the results of a microstructure simulation in the parametric
         study data frame."""
         idx = self._data_frame[
-            (self._data_frame[ColumnNames.ID] == summary.input.id)
+            (self._data_frame[ColumnNames.ID] == id)
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE)
         ].index
 
         self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
-        self._data_frame.loc[idx, ColumnNames.XY_AVERAGE_GRAIN_SIZE] = summary.xy_average_grain_size
-        self._data_frame.loc[idx, ColumnNames.XZ_AVERAGE_GRAIN_SIZE] = summary.xz_average_grain_size
-        self._data_frame.loc[idx, ColumnNames.YZ_AVERAGE_GRAIN_SIZE] = summary.yz_average_grain_size
+        self._data_frame.loc[idx, ColumnNames.XY_AVERAGE_GRAIN_SIZE] = xy_avg_grain_size
+        self._data_frame.loc[idx, ColumnNames.XZ_AVERAGE_GRAIN_SIZE] = xz_avg_grain_size
+        self._data_frame.loc[idx, ColumnNames.YZ_AVERAGE_GRAIN_SIZE] = yz_avg_grain_size
 
     @save_on_return
     def add_inputs(
@@ -1518,7 +1508,7 @@ class ParametricStudy:
         self._data_frame.drop(index=idx, inplace=True)
 
     @save_on_return
-    def set_status(self, ids: str | list[str], status: SimulationStatus):
+    def set_status(self, ids: str | list[str], status: SimulationStatus, err_msg: str = ""):
         """Set the status of simulations in the parametric study.
 
         Parameters
@@ -1533,6 +1523,8 @@ class ParametricStudy:
             ids = [ids]
         idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)]
         self._data_frame.loc[idx, ColumnNames.STATUS] = status
+        if status == SimulationStatus.ERROR:
+            self._data_frame.loc[idx, ColumnNames.ERROR_MESSAGE] = err_msg
 
     @save_on_return
     def set_priority(self, ids: str | list[str], priority: int):
