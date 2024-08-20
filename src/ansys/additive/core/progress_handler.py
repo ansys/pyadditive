@@ -35,14 +35,20 @@ from tqdm import tqdm
 class ProgressState(IntEnum):
     """Simulation progress status."""
 
+    NEW = ProgressMsgState.PROGRESS_STATE_NEW
+    """Simulation created and not yet queued to run."""
     WAITING = ProgressMsgState.PROGRESS_STATE_WAITING
-    """Waiting for the simulation to start."""
+    """Simulation is queued and waiting to start."""
     RUNNING = ProgressMsgState.PROGRESS_STATE_EXECUTING
     """Simulation is running."""
     COMPLETED = ProgressMsgState.PROGRESS_STATE_COMPLETED
     """Simulation has completed."""
     ERROR = ProgressMsgState.PROGRESS_STATE_ERROR
     """Simulation has errored."""
+    CANCELLED = ProgressMsgState.PROGRESS_STATE_CANCELLED
+    """Simulation has been cancelled."""
+    WARNING = ProgressMsgState.PROGRESS_STATE_WARNING
+    """Simulation completed with warnings."""
 
 
 class Progress(BaseModel):

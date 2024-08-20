@@ -512,7 +512,7 @@ class MicrostructureSummary:
         self._input = input
         id = input.id if input.id else misc.short_uuid()
         outpath = os.path.join(user_data_path, id)
-        self._result = _Microstructure2DResult(result, outpath)
+        self._result = Microstructure2DResult(result, outpath)
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
@@ -627,7 +627,7 @@ class MicrostructureSummary:
         ).sum()
 
 
-class _Microstructure2DResult:
+class Microstructure2DResult:
     """Provides the results of a 2D microstructure simulation."""
 
     def __init__(self, msg: MicrostructureResultMessage, output_data_path: str) -> None:
@@ -667,6 +667,21 @@ class _Microstructure2DResult:
         self._yz_average_grain_size = MicrostructureSummary._average_grain_size(
             self._yz_circle_equivalence
         )
+
+    @property
+    def xy_average_grain_size(self) -> float:
+        """Average grain size (µm) for the XY plane."""
+        return self._xy_average_grain_size
+
+    @property
+    def xz_average_grain_size(self) -> float:
+        """Average grain size (µm) for the XZ plane."""
+        return self._xz_average_grain_size
+
+    @property
+    def yz_average_grain_size(self) -> float:
+        """Average grain size (µm) for the YZ plane."""
+        return self._yz_average_grain_size
 
     def __repr__(self):
         repr = ""

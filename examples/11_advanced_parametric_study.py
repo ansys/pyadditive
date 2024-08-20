@@ -143,7 +143,7 @@ print(study.data_frame()[[ColumnNames.ID, ColumnNames.TYPE, ColumnNames.STATUS]]
 # Run single bead simulations
 # ---------------------------
 # Run the simulations using the :meth:`~ParametricStudy.run_simulations` method. All simulations
-# with a :obj:`SimulationStatus.PENDING` status are executed.
+# with a :obj:`SimulationStatus.NEW` status are executed.
 
 study.run_simulations(additive)
 

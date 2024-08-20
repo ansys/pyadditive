@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides input and result summary containers for single bead simulations."""
-from __future__ import annotations
 
 import math
 import os
@@ -29,6 +28,7 @@ import zipfile
 from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
 from ansys.api.additive.v0.additive_domain_pb2 import SingleBeadInput as SingleBeadInputMessage
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
+import numpy as np
 from pandas import DataFrame
 
 from ansys.additive.core.machine import AdditiveMachine
@@ -232,6 +232,38 @@ class MeltPool:
             - :obj:`MeltPoolColumnNames.REFERENCE_DEPTH`.
         """
         return self._df.copy()
+
+    def depth_over_width(self) -> float:
+        """Return the median reference depth over reference width."""
+        depth = self.median_reference_depth()
+        width = self.median_reference_width()
+        return depth / width if width != 0 else np.nan
+
+    def length_over_width(self) -> float:
+        """Return the median length over width."""
+        length = self.median_length()
+        width = self.median_width()
+        return length / width if width != 0 else np.nan
+
+    def median_width(self) -> float:
+        """Return the median width."""
+        return self._df[MeltPoolColumnNames.WIDTH].median()
+
+    def median_depth(self) -> float:
+        """Return the median depth."""
+        return self._df[MeltPoolColumnNames.DEPTH].median()
+
+    def median_length(self) -> float:
+        """Return the median length."""
+        return self._df[MeltPoolColumnNames.LENGTH].median()
+
+    def median_reference_width(self) -> float:
+        """Return the median reference width."""
+        return self._df[MeltPoolColumnNames.REFERENCE_WIDTH].median()
+
+    def median_reference_depth(self) -> float:
+        """Return the median reference depth."""
+        return self._df[MeltPoolColumnNames.REFERENCE_DEPTH].median()
 
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, MeltPool):

@@ -21,15 +21,18 @@
 # SOFTWARE.
 """Container for a simulation task."""
 
-from __future__ import annotations
-
 import os
 import zipfile
 
 from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialResponse
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse
-from google.longrunning.operations_pb2 import GetOperationRequest, Operation, WaitOperationRequest
+from google.longrunning.operations_pb2 import (
+    CancelOperationRequest,
+    GetOperationRequest,
+    Operation,
+    WaitOperationRequest,
+)
 from google.protobuf.any_pb2 import Any
 from google.protobuf.duration_pb2 import Duration
 from google.rpc.status_pb2 import Status as RpcStatus
@@ -154,6 +157,11 @@ class SimulationTask:
 
         # Perform a call to status to ensure all messages are received and summary is updated
         self.status(progress_handler)
+
+    def cancel(self) -> None:
+        """Cancel a running simulation."""
+        request = CancelOperationRequest(name=self._long_running_op.name)
+        self._server.operations_stub.CancelOperation(request)
 
     @staticmethod
     def _convert_metadata_to_progress(

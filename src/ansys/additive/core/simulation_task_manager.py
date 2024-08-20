@@ -21,7 +21,7 @@
 # SOFTWARE.
 """Manages simulation tasks."""
 
-from __future__ import annotations
+import time
 
 from ansys.additive.core.progress_handler import IProgressHandler, Progress
 from ansys.additive.core.simulation_task import SimulationTask
@@ -58,11 +58,11 @@ class SimulationTaskManager:
         -------
         List of tuples with each tuple containing the operation name and an instance of Progress
         """
-        status_all = list[tuple[str, Progress]]
+        status_all = []
 
         for t in self._tasks:
             progress = t.status(progress_handler)
-            status_all.append((t._long_running_op.name, progress))
+            status_all.append((progress.sim_id, progress))
 
         return status_all
 
@@ -77,6 +77,12 @@ class SimulationTaskManager:
         """
         for t in self._tasks:
             t.wait(progress_handler=progress_handler)
+
+    def cancel_all(self) -> None:
+        """Cancel all simulations belonging to this simulation task manager."""
+        for t in self._tasks:
+            t.cancel()
+            time.sleep(0.1)
 
     def summaries(self):
         """Get a list of the summaries of completed simulations only."""

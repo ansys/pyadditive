@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides a class to run parametric study simulations."""
-from __future__ import annotations
 
 import numpy as np
 import pandas as pd
@@ -35,12 +34,13 @@ from ansys.additive.core import (
     MicrostructureSummary,
     PorosityInput,
     PorositySummary,
-    SimulationStatus,
     SimulationType,
     SingleBeadInput,
     SingleBeadSummary,
 )
 from ansys.additive.core.parametric_study.constants import ColumnNames
+from ansys.additive.core.progress_handler import IProgressHandler
+from ansys.additive.core.simulation import SimulationError
 
 
 class ParametricRunner:
@@ -50,12 +50,9 @@ class ParametricRunner:
     def simulate(
         df: pd.DataFrame,
         additive: Additive,
-        simulation_ids: list[str] = None,
-        type: list[SimulationType] = None,
-        priority: int = None,
-        iteration: int = None,
-    ) -> list[SingleBeadSummary, PorositySummary, MicrostructureSummary]:
-        """Run the simulations in the parametric study with ``Status`` equal to ``Pending``.
+        progress_handler: IProgressHandler = None,
+    ) -> list[SingleBeadSummary, PorositySummary, MicrostructureSummary, SimulationError]:
+        """Run the simulations in the parametric study.
 
         Execution order is determined by the ``Priority`` value assigned to the simulations.
         Lower values are interpreted as having higher priority and are run first.
@@ -66,64 +63,23 @@ class ParametricRunner:
             Parametric study data frame.
         additive : Additive
             Additive service connection to use for running simulations.
-        simulation_ids: list[str], default: None
-            List of simulation IDs to run. The default is ``None``, in which case
-            all simulations in the parametric study are run. Any other filtering criteria
-            if provided, are applied on this list.
-        type : list, default: None
-            List of the simulation types to run. The default is ``None``, in which case all
-            simulation types are run.
-        priority : int, default: None
-            Priority of simulations to run. The default is ``None``, in which case
-            all priorities are run.
-        iteration : int, default: None
-            Iteration number of simulations to run. The default is ``None``, in which case
-            all iterations are run.
+        progress_handler : IProgressHandler, default None
+            Progress handler to update the status of the simulations.
 
         Returns
         -------
         list[SingleBeadSummary, PorositySummary, MicrostructureSummary]
             List of simulation summaries.
         """
-        if type is None:
-            type = [
-                SimulationType.SINGLE_BEAD,
-                SimulationType.POROSITY,
-                SimulationType.MICROSTRUCTURE,
-            ]
-        elif not isinstance(type, list):
-            type = [type]
-
-        view = df[
-            (df[ColumnNames.STATUS] == SimulationStatus.PENDING) & df[ColumnNames.TYPE].isin(type)
-        ]
-
-        if isinstance(simulation_ids, list) and len(simulation_ids) > 0:
-            simulation_ids_list = list()
-            for sim_id in simulation_ids:
-                if sim_id not in view[ColumnNames.ID].values:
-                    LOG.warning(f"Simulation ID '{sim_id}' not found in the parametric study")
-                elif sim_id in simulation_ids_list:
-                    LOG.debug(f"Simulation ID '{sim_id}' has already been added")
-                else:
-                    simulation_ids_list.append(sim_id)
-            view = view[view[ColumnNames.ID].isin(simulation_ids_list)]
-
-        if priority is not None:
-            view = view[view[ColumnNames.PRIORITY] == priority]
-        view = view.sort_values(by=ColumnNames.PRIORITY, ascending=True)
-
-        if iteration is not None:
-            view = df[(df[ColumnNames.ITERATION] == iteration)]
 
         inputs = []
         # NOTICE: We use iterrows() instead of itertuples() here to
         # access values by column name
-        for _, row in view.iterrows():
+        for _, row in df.iterrows():
             try:
                 material = additive.material(row[ColumnNames.MATERIAL])
             except Exception:
-                print(
+                LOG.warning(
                     f"Material {row[ColumnNames.MATERIAL]} not found, skipping {row[ColumnNames.ID]}"
                 )
                 continue
@@ -136,19 +92,13 @@ class ParametricRunner:
             elif sim_type == SimulationType.MICROSTRUCTURE:
                 inputs.append(ParametricRunner._create_microstructure_input(row, material, machine))
             else:  # pragma: no cover
-                print(
+                LOG.warning(
                     f"Invalid simulation type: {row[ColumnNames.TYPE]} for {row[ColumnNames.ID]}, skipping"
                 )
                 continue
 
-        if len(inputs) == 0:
-            LOG.warning("None of the input simulations meet the criteria selected")
-            return []
+        summaries = additive.simulate(inputs, progress_handler)
 
-        summaries = additive.simulate(inputs)
-
-        # TODO: Return the summaries one at a time, possibly as an iterator,
-        # so that the data frame can be updated as each simulation completes.
         return summaries
 
     @staticmethod

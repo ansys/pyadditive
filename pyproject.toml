@@ -8,7 +8,7 @@ name = "ansys-additive-core"
 version = "0.19.0b12"
 description = "A Python client for the Ansys Additive service"
 readme = "README.rst"
-requires-python = ">=3.9,<4"
+requires-python = ">=3.10,<4"
 license = { file = "LICENSE" }
 authors = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
 maintainers = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
@@ -18,14 +18,13 @@ classifiers = [
     "Topic :: Scientific/Engineering",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
 
 dependencies = [
-    "ansys-api-additive==2.0.0",
+    "ansys-api-additive==2.1.0",
     "ansys-platform-instancemanagement>=1.1.1",
     "dill>=0.3.7",
     "google-api-python-client>=1.7.11",
@@ -47,7 +46,7 @@ dependencies = [
 tests = [
     "ansys-platform-instancemanagement==1.1.2",
     "dill==0.3.8",
-    "google-api-python-client==2.140.0",
+    "google-api-python-client==2.141.0",
     "googleapis-common-protos==1.63.2",
     "grpcio==1.60.0",
     "grpcio-health-checking==1.48.2",
@@ -63,11 +62,11 @@ tests = [
 ]
 
 doc = [
-    "ansys-sphinx-theme[autoapi]==0.16.6",
+    "ansys-sphinx-theme[autoapi]==1.0.5",
     "enum-tools==0.12.0",
     "jupyter_sphinx==0.5.3",
-    "matplotlib==3.9.1",
-    "numpydoc==1.7.0",
+    "matplotlib==3.9.2",
+    "numpydoc==1.8.0",
     "phantomjs==1.4.1",
     "pypandoc==1.13",
     "pyvista==0.44.1",
@@ -76,15 +75,15 @@ doc = [
     "trame-vtk==2.8.10",
     "trame-plotly==3.0.2",
     "trame-vuetify==2.6.2",
-    "imageio==2.34.2",
-    "sphinx==7.4.7",
+    "imageio==2.35.1",
+    "sphinx==8.0.2",
     "sphinx-autodoc-typehints==2.2.3",
     "sphinx-copybutton==0.5.2",
-    "sphinx-design==0.6.0",
-    "sphinx-gallery==0.17.0",
+    "sphinx-design==0.6.1",
+    "sphinx-gallery==0.17.1",
     "sphinx-jinja==2.0.2",
-    "sphinx-notfound-page==1.0.2",
-    "sphinx-toolbox==3.7.0",
+    "sphinx-notfound-page==1.0.4",
+    "sphinx-toolbox==3.8.0",
     "sphinxemoji==0.3.1",
     "ipython>=7.0.0",
 ]

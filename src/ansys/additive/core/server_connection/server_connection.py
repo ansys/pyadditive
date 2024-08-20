@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides definitions and untilities for connecting to the Additive server."""
-from __future__ import annotations
 
 from dataclasses import dataclass
 import logging

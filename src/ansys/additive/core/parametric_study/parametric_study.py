@@ -39,7 +39,7 @@ from ansys.additive.core import (
     AdditiveMachine,
     AdditiveMaterial,
     MachineConstants,
-    MeltPoolColumnNames,
+    MeltPool,
     MicrostructureInput,
     MicrostructureSummary,
     PorosityInput,
@@ -51,6 +51,7 @@ from ansys.additive.core import (
     SingleBeadSummary,
 )
 import ansys.additive.core.misc as misc
+from ansys.additive.core.progress_handler import IProgressHandler
 
 from .constants import DEFAULT_ITERATION, DEFAULT_PRIORITY, FORMAT_VERSION, ColumnNames
 from .parametric_runner import ParametricRunner
@@ -179,6 +180,7 @@ class ParametricStudy:
         type: list[SimulationType] | None = None,
         priority: int | None = None,
         iteration: int = None,
+        progress_handler: IProgressHandler = None,
     ):
         """Run the simulations with ``Pending`` for their ``Status`` values.
 
@@ -202,14 +204,20 @@ class ParametricStudy:
         iteration : int, default: None
             Iteration number of simulations to run. The default is ``None``,
             all iterations are run.
+        progress_handler: IProgressHandler, default: None
+            Progress handler to update the status of the simulations.
         """
+        filtered_dataframe = ParametricStudy._filter_dataframe(
+            self._data_frame, simulation_ids, type, priority, iteration
+        )
+        if len(filtered_dataframe) == 0:
+            LOG.warning("None of the input simulations meet the criteria selected")
+            return
+
         summaries = ParametricRunner.simulate(
-            self.data_frame(),
+            filtered_dataframe,
             additive,
-            simulation_ids=simulation_ids,
-            type=type,
-            priority=priority,
-            iteration=iteration,
+            progress_handler,
         )
         self.update(summaries)
 
@@ -272,7 +280,16 @@ class ParametricStudy:
 
         study.file_name = file_name
         study = ParametricStudy.update_format(study)
+        study.reset_status()
         return study
+
+    @save_on_return
+    def reset_status(self):
+        """Reset the status of any ``Pending`` or ``Running`` simulations to ``New``."""
+        df = self._data_frame
+        df[df[ColumnNames.STATUS].isin([SimulationStatus.PENDING, SimulationStatus.RUNNING])][
+            ColumnNames.STATUS
+        ] = SimulationStatus.NEW
 
     @save_on_return
     def add_summaries(
@@ -315,18 +332,7 @@ class ParametricStudy:
     def _add_single_bead_summary(
         self, summary: SingleBeadSummary, iteration: int = DEFAULT_ITERATION
     ):
-        median_mp = summary.melt_pool.data_frame().median()
-        dw = (
-            median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]
-            / median_mp[MeltPoolColumnNames.REFERENCE_WIDTH]
-            if median_mp[MeltPoolColumnNames.REFERENCE_WIDTH]
-            else np.nan
-        )
-        lw = (
-            median_mp[MeltPoolColumnNames.LENGTH] / median_mp[MeltPoolColumnNames.WIDTH]
-            if median_mp[MeltPoolColumnNames.WIDTH]
-            else np.nan
-        )
+        mp = summary.melt_pool
         br = build_rate(summary.input.machine.scan_speed, summary.input.machine.layer_thickness)
         ed = energy_density(
             summary.input.machine.laser_power,
@@ -340,17 +346,13 @@ class ParametricStudy:
                 ColumnNames.BUILD_RATE: br,
                 ColumnNames.ENERGY_DENSITY: ed,
                 ColumnNames.SINGLE_BEAD_LENGTH: summary.input.bead_length,
-                ColumnNames.MELT_POOL_WIDTH: median_mp[MeltPoolColumnNames.WIDTH],
-                ColumnNames.MELT_POOL_DEPTH: median_mp[MeltPoolColumnNames.DEPTH],
-                ColumnNames.MELT_POOL_LENGTH: median_mp[MeltPoolColumnNames.LENGTH],
-                ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH: lw,
-                ColumnNames.MELT_POOL_REFERENCE_WIDTH: median_mp[
-                    MeltPoolColumnNames.REFERENCE_WIDTH
-                ],
-                ColumnNames.MELT_POOL_REFERENCE_DEPTH: median_mp[
-                    MeltPoolColumnNames.REFERENCE_DEPTH
-                ],
-                ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH: dw,
+                ColumnNames.MELT_POOL_WIDTH: mp.median_width(),
+                ColumnNames.MELT_POOL_DEPTH: mp.median_depth(),
+                ColumnNames.MELT_POOL_LENGTH: mp.median_length(),
+                ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH: mp.length_over_width(),
+                ColumnNames.MELT_POOL_REFERENCE_WIDTH: mp.median_reference_width(),
+                ColumnNames.MELT_POOL_REFERENCE_DEPTH: mp.median_reference_depth(),
+                ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH: mp.depth_over_width(),
             }
         )
         self._data_frame = pd.concat([self._data_frame, row.to_frame().T], ignore_index=True)
@@ -583,7 +585,7 @@ class ParametricStudy:
                                     ColumnNames.ID: self._create_unique_id(
                                         prefix=f"sb_{iteration}"
                                     ),
-                                    ColumnNames.STATUS: SimulationStatus.PENDING,
+                                    ColumnNames.STATUS: SimulationStatus.NEW,
                                     ColumnNames.MATERIAL: material_name,
                                     ColumnNames.HEATER_TEMPERATURE: t,
                                     ColumnNames.LAYER_THICKNESS: l,
@@ -802,7 +804,7 @@ class ParametricStudy:
                                                     ColumnNames.ID: self._create_unique_id(
                                                         prefix=f"por_{iteration}"
                                                     ),
-                                                    ColumnNames.STATUS: SimulationStatus.PENDING,
+                                                    ColumnNames.STATUS: SimulationStatus.NEW,
                                                     ColumnNames.MATERIAL: material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
                                                     ColumnNames.LAYER_THICKNESS: l,
@@ -1139,7 +1141,7 @@ class ParametricStudy:
                                                     ColumnNames.ID: self._create_unique_id(
                                                         prefix=f"micro_{iteration}"
                                                     ),
-                                                    ColumnNames.STATUS: SimulationStatus.PENDING,
+                                                    ColumnNames.STATUS: SimulationStatus.NEW,
                                                     ColumnNames.MATERIAL: material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
                                                     ColumnNames.LAYER_THICKNESS: l,
@@ -1194,7 +1196,12 @@ class ParametricStudy:
         return num_permutations_added - self._remove_duplicate_entries(overwrite=False)
 
     @save_on_return
-    def update(self, summaries: list[SingleBeadSummary | PorositySummary | MicrostructureSummary]):
+    def update(
+        self,
+        summaries: list[
+            SingleBeadSummary | PorositySummary | MicrostructureSummary | SimulationError
+        ],
+    ):
         """Update the results of simulations in the parametric study.
 
         This method updates values for existing simulations in the parametric study. To add
@@ -1208,11 +1215,16 @@ class ParametricStudy:
         """
         for summary in summaries:
             if isinstance(summary, SingleBeadSummary):
-                self._update_single_bead(summary)
+                self._update_single_bead(summary.input.id, summary.melt_pool)
             elif isinstance(summary, PorositySummary):
-                self._update_porosity(summary)
+                self._update_porosity(summary.input.id, summary.relative_density)
             elif isinstance(summary, MicrostructureSummary):
-                self._update_microstructure(summary)
+                self._update_microstructure(
+                    summary.input.id,
+                    summary.xy_average_grain_size,
+                    summary.xz_average_grain_size,
+                    summary.yz_average_grain_size,
+                )
             elif isinstance(summary, SimulationError):
                 idx = self._data_frame[self._data_frame[ColumnNames.ID] == summary.input.id].index
                 self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.ERROR
@@ -1220,65 +1232,55 @@ class ParametricStudy:
             else:
                 raise TypeError(f"Invalid simulation summary type: {type(summary)}")
 
-    def _update_single_bead(self, summary: SingleBeadSummary):
+    def _update_single_bead(self, id: str, melt_pool: MeltPool):
         """Update the results of a single bead simulation in the parametric
         study data frame."""
-        median_df = summary.melt_pool.data_frame().median()
         idx = self._data_frame[
-            (self._data_frame[ColumnNames.ID] == summary.input.id)
+            (self._data_frame[ColumnNames.ID] == id)
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD)
         ].index
         self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_WIDTH] = median_df[
-            MeltPoolColumnNames.WIDTH
-        ]
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_DEPTH] = median_df[
-            MeltPoolColumnNames.DEPTH
-        ]
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH] = median_df[
-            MeltPoolColumnNames.LENGTH
-        ]
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] = (
-            median_df[MeltPoolColumnNames.LENGTH] / median_df[MeltPoolColumnNames.WIDTH]
-            if median_df[MeltPoolColumnNames.WIDTH] > 0
-            else np.nan
-        )
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH] = median_df[
-            MeltPoolColumnNames.REFERENCE_DEPTH
-        ]
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_WIDTH] = median_df[
-            MeltPoolColumnNames.REFERENCE_WIDTH
-        ]
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] = (
-            median_df[MeltPoolColumnNames.REFERENCE_DEPTH]
-            / median_df[MeltPoolColumnNames.REFERENCE_WIDTH]
-            if median_df[MeltPoolColumnNames.REFERENCE_WIDTH] > 0
-            else np.nan
-        )
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_WIDTH] = melt_pool.median_width()
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_DEPTH] = melt_pool.median_depth()
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH] = melt_pool.median_length()
+        self._data_frame.loc[
+            idx, ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH
+        ] = melt_pool.length_over_width()
+        self._data_frame.loc[
+            idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH
+        ] = melt_pool.median_reference_depth()
+        self._data_frame.loc[
+            idx, ColumnNames.MELT_POOL_REFERENCE_WIDTH
+        ] = melt_pool.median_reference_width()
+        self._data_frame.loc[
+            idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH
+        ] = melt_pool.depth_over_width()
 
-    def _update_porosity(self, summary: PorositySummary):
+    def _update_porosity(self, id: str, relative_density: float):
         """Update the results of a porosity simulation in the parametric study
         data frame."""
         idx = self._data_frame[
-            (self._data_frame[ColumnNames.ID] == summary.input.id)
+            (self._data_frame[ColumnNames.ID] == id)
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.POROSITY)
         ].index
 
         self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
-        self._data_frame.loc[idx, ColumnNames.RELATIVE_DENSITY] = summary.relative_density
+        self._data_frame.loc[idx, ColumnNames.RELATIVE_DENSITY] = relative_density
 
-    def _update_microstructure(self, summary: MicrostructureSummary):
+    def _update_microstructure(
+        self, id: str, xy_avg_grain_size: float, xz_avg_grain_size: float, yz_avg_grain_size: float
+    ):
         """Update the results of a microstructure simulation in the parametric
         study data frame."""
         idx = self._data_frame[
-            (self._data_frame[ColumnNames.ID] == summary.input.id)
+            (self._data_frame[ColumnNames.ID] == id)
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE)
         ].index
 
         self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
-        self._data_frame.loc[idx, ColumnNames.XY_AVERAGE_GRAIN_SIZE] = summary.xy_average_grain_size
-        self._data_frame.loc[idx, ColumnNames.XZ_AVERAGE_GRAIN_SIZE] = summary.xz_average_grain_size
-        self._data_frame.loc[idx, ColumnNames.YZ_AVERAGE_GRAIN_SIZE] = summary.yz_average_grain_size
+        self._data_frame.loc[idx, ColumnNames.XY_AVERAGE_GRAIN_SIZE] = xy_avg_grain_size
+        self._data_frame.loc[idx, ColumnNames.XZ_AVERAGE_GRAIN_SIZE] = xz_avg_grain_size
+        self._data_frame.loc[idx, ColumnNames.YZ_AVERAGE_GRAIN_SIZE] = yz_avg_grain_size
 
     @save_on_return
     def add_inputs(
@@ -1286,7 +1288,7 @@ class ParametricStudy:
         inputs: list[SingleBeadInput | PorosityInput | MicrostructureInput],
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
-        status: SimulationStatus = SimulationStatus.PENDING,
+        status: SimulationStatus = SimulationStatus.NEW,
     ) -> int:
         """Add new simulations to the parametric study.
 
@@ -1303,17 +1305,17 @@ class ParametricStudy:
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for the simulations.
 
-        status : SimulationStatus, default: :obj:`SimulationStatus.PENDING`
-            Valid types are :obj:`SimulationStatus.PENDING` and :obj:`SimulationStatus.SKIP`.
+        status : SimulationStatus, default: :obj:`SimulationStatus.NEW`
+            Valid types are :obj:`SimulationStatus.NEW` and :obj:`SimulationStatus.SKIP`.
 
         Returns
         -------
         int
             The number of simulations added to the parametric study.
         """
-        if status not in [SimulationStatus.SKIP, SimulationStatus.PENDING]:
+        if status not in [SimulationStatus.SKIP, SimulationStatus.NEW]:
             raise ValueError(
-                f"Simulation status must be '{SimulationStatus.PENDING}' or '{SimulationStatus.SKIP}'"
+                f"Simulation status must be '{SimulationStatus.NEW}' or '{SimulationStatus.SKIP}'"
             )
         for input in inputs:
             dict = {}
@@ -1398,15 +1400,10 @@ class ParametricStudy:
 
         # Filter and arrange as per status so that completed simulations are not overwritten by the
         # ones lower in the list
-        for status in [
-            SimulationStatus.COMPLETED,
-            SimulationStatus.PENDING,
-            SimulationStatus.SKIP,
-            SimulationStatus.ERROR,
-        ]:
-            if len(current_df[current_df[ColumnNames.STATUS] == status]) > 0:
+        for status in SimulationStatus:
+            if len(current_df[current_df[ColumnNames.STATUS] == status.value]) > 0:
                 sorted_df = pd.concat(
-                    [sorted_df, current_df[current_df[ColumnNames.STATUS] == status]],
+                    [sorted_df, current_df[current_df[ColumnNames.STATUS] == status.value]],
                     ignore_index=True,
                 )
 
@@ -1511,7 +1508,7 @@ class ParametricStudy:
         self._data_frame.drop(index=idx, inplace=True)
 
     @save_on_return
-    def set_status(self, ids: str | list[str], status: SimulationStatus):
+    def set_status(self, ids: str | list[str], status: SimulationStatus, err_msg: str = ""):
         """Set the status of simulations in the parametric study.
 
         Parameters
@@ -1526,6 +1523,8 @@ class ParametricStudy:
             ids = [ids]
         idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)]
         self._data_frame.loc[idx, ColumnNames.STATUS] = status
+        if status == SimulationStatus.ERROR:
+            self._data_frame.loc[idx, ColumnNames.ERROR_MESSAGE] = err_msg
 
     @save_on_return
     def set_priority(self, ids: str | list[str], priority: int):
@@ -1667,12 +1666,7 @@ class ParametricStudy:
         # check valid inputs
         drop_indices, error_list = list(), list()
         duplicates = 0
-        allowed_status = [
-            SimulationStatus.COMPLETED,
-            SimulationStatus.PENDING,
-            SimulationStatus.SKIP,
-            SimulationStatus.ERROR,
-        ]
+        allowed_status = [s.value for s in SimulationStatus]
         for index, row in df.iterrows():
             valid = False
             if row[ColumnNames.STATUS] in allowed_status:
@@ -1687,18 +1681,15 @@ class ParametricStudy:
         df = df.drop(drop_indices)
 
         # add simulations to the parametric study and drop duplicates
-        for status, overwrite in [
-            (SimulationStatus.COMPLETED, True),
-            (SimulationStatus.PENDING, False),
-            (SimulationStatus.SKIP, False),
-            (SimulationStatus.ERROR, False),
-        ]:
+        for status in [s.value for s in SimulationStatus]:
             if len(df[df[ColumnNames.STATUS] == status]) > 0:
                 self._data_frame = pd.concat(
                     [self._data_frame, df[df[ColumnNames.STATUS] == status]],
                     ignore_index=True,
                 )
-                duplicates += self._remove_duplicate_entries(overwrite=overwrite)
+                duplicates += self._remove_duplicate_entries(
+                    overwrite=(status == SimulationStatus.COMPLETED)
+                )
 
         # convert priority, iteration, and random seed to int type explicitly
         self._data_frame[ColumnNames.PRIORITY] = self._data_frame[ColumnNames.PRIORITY].astype(
@@ -1803,11 +1794,9 @@ class ParametricStudy:
             string, Error message if the single bead input is invalid.
         """
         try:
-            test_bead_length = input[ColumnNames.SINGLE_BEAD_LENGTH]
+            bead_length = input[ColumnNames.SINGLE_BEAD_LENGTH]
 
-            test_single_bead_input = SingleBeadInput(
-                bead_length=test_bead_length, machine=machine, material=material
-            )
+            SingleBeadInput(bead_length=bead_length, machine=machine, material=material)
             return (True, "")
         except ValueError as e:
             return (False, (f"Invalid parameter combination: {e}"))
@@ -1836,7 +1825,7 @@ class ParametricStudy:
         """
 
         try:
-            test_porosity_input = PorosityInput(
+            PorosityInput(
                 size_x=input[ColumnNames.POROSITY_SIZE_X],
                 size_y=input[ColumnNames.POROSITY_SIZE_Y],
                 size_z=input[ColumnNames.POROSITY_SIZE_Z],
@@ -1886,7 +1875,7 @@ class ParametricStudy:
             else:
                 test_use_provided_thermal_parameters = True
 
-            test_microstructure_input = MicrostructureInput(
+            MicrostructureInput(
                 sample_min_x=input[ColumnNames.MICRO_MIN_X],
                 sample_min_y=input[ColumnNames.MICRO_MIN_Y],
                 sample_min_z=input[ColumnNames.MICRO_MIN_Z],
@@ -1926,3 +1915,73 @@ class ParametricStudy:
             return (True, "")
         except ValueError as e:
             return (False, (f"Invalid parameter combination: {e}"))
+
+    @staticmethod
+    def _filter_dataframe(
+        df: pd.DataFrame,
+        simulation_ids: list[str] = None,
+        type: list[SimulationType] = None,
+        priority: int = None,
+        iteration: int = None,
+    ) -> pd.DataFrame:
+        """Apply filters to the parametric study data frame.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Parametric study data frame to filter.
+        simulation_ids: list[str], default: None
+            List of simulation IDs to include. The default is ``None``, in which case
+            all simulations with status of :obj:`SimulationStatus.NEW` are selected.
+        type : list, default: None
+            List of simulation types to include. The default is ``None``, in which case
+            all simulation types are selected.
+        priority : int, default: None
+            Priority of simulations to include. The default is ``None``, in which case
+            all priorities are selected.
+        iteration : int, default: None
+            Iteration number of simulations to include. The default is ``None``, in which case
+            all iterations are selected.
+
+        Returns
+        -------
+        pd.DataFrame
+            Filtered view of the parametric study data frame
+        """
+
+        # Initialize the filtered view of the data frame
+        view = df.copy()
+
+        # Filter the data frame based on the provided simulation IDs
+        if isinstance(simulation_ids, list) and len(simulation_ids) > 0:
+            simulation_ids_list = list()
+            for sim_id in simulation_ids:
+                if sim_id not in view[ColumnNames.ID].values:
+                    LOG.warning(f"Simulation ID '{sim_id}' not found in the parametric study")
+                elif sim_id in simulation_ids_list:
+                    LOG.debug(f"Simulation ID '{sim_id}' has already been added")
+                else:
+                    simulation_ids_list.append(sim_id)
+            view = view[view[ColumnNames.ID].isin(simulation_ids_list)]
+        else:
+            # Select only the simulations with status NEW if no simulation IDs are provided
+            view = view[view[ColumnNames.STATUS] == SimulationStatus.NEW]
+
+        if type:
+            # Ensure that the simulation types are provided as a list
+            if not isinstance(type, list):
+                type = [type]
+            # Filter the data frame based on the provided simulation types
+            view = view[view[ColumnNames.TYPE].isin(type)]
+
+        # Filter the data frame based on the provided priority then sort by priority
+        if priority is not None:
+            view = view[view[ColumnNames.PRIORITY] == priority]
+
+        view = view.sort_values(by=ColumnNames.PRIORITY, ascending=True)
+
+        # Filter the data frame based on the provided iteration
+        if iteration is not None:
+            view = df[(df[ColumnNames.ITERATION] == iteration)]
+
+        return view
