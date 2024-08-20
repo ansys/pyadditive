@@ -33,6 +33,7 @@ from ansys.api.additive.v0.additive_materials_pb2 import (
     TuneMaterialResponse,
 )
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
+from ansys.api.additive.v0.additive_settings_pb2 import SettingsRequest
 from google.longrunning.operations_pb2 import Operation
 from google.protobuf.empty_pb2 import Empty
 import grpc
@@ -160,6 +161,9 @@ class Additive:
             server_connections, host, port, nservers, product_version, self._log, linux_install_path
         )
         self._nsims_per_server = nsims_per_server
+        if self._nsims_per_server > 1:
+            self.apply_server_settings()
+
         self._enable_beta_features = enable_beta_features
 
         # Setup data directory
@@ -258,6 +262,41 @@ class Additive:
         else:
             for server in self._servers:
                 print(server.status())
+
+    def apply_server_settings(self) -> dict[str, list[str]]:
+        """Apply settings to each server.
+
+        Current settings include:
+        - number of concurrent simulations per server, defined by nsims_per_server.
+        """
+        request = SettingsRequest()
+        nsims_per_server_setting = request.settings.add()
+        nsims_per_server_setting.key = "NumConcurrentSims"
+        nsims_per_server_setting.value = str(self._nsims_per_server)
+
+        responses = {}
+        for server in self._servers:
+            responses[server.channel_str] = server.settings_stub.ApplySettings(request)
+
+        unpacked_responses = {}
+        for key, value in responses.items():
+            unpacked_responses[key] = value.messages
+
+        return unpacked_responses
+
+    def list_server_settings(self) -> dict[str, dict[str, str]]:
+        """Get a dictionary of settings for each server by channel."""
+        responses = {}
+        for server in self._servers:
+            responses[server.channel_str] = server.settings_stub.ListSettings(Empty())
+
+        unpacked_responses = {}
+        for key, list_response in responses.items():
+            unpacked_responses[key] = {}
+            for setting in list_response.settings:
+                unpacked_responses[key][setting.key] = setting.value
+
+        return unpacked_responses
 
     def simulate(
         self,

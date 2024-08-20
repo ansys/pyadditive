@@ -28,6 +28,7 @@ import time
 
 from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
 from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
+from ansys.api.additive.v0.additive_settings_pb2_grpc import SettingsServiceStub
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 import ansys.platform.instancemanagement as pypim
 from google.longrunning.operations_pb2_grpc import OperationsStub
@@ -137,6 +138,7 @@ class ServerConnection:
         self._simulation_stub = SimulationServiceStub(self._channel)
         self._about_stub = AboutServiceStub(self._channel)
         self._operations_stub = OperationsStub(self._channel)
+        self._settings_stub = SettingsServiceStub(self._channel)
 
         if not self.ready():
             raise RuntimeError(f"Unable to connect to server {self.channel_str}")
@@ -172,8 +174,13 @@ class ServerConnection:
 
     @property
     def operations_stub(self) -> OperationsStub:
-        """Simulation service stub."""
+        """Operations service stub."""
         return self._operations_stub
+
+    @property
+    def settings_stub(self) -> SettingsServiceStub:
+        """Settings service stub."""
+        return self._settings_stub
 
     def status(self) -> ServerConnectionStatus:
         """Return the server connection status."""
