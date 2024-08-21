@@ -4,12 +4,15 @@
 
 ### Breaking Changes
 * Simulation inputs no longer allow setting the id field.
+* Removed nsims_per_server property from Additive class.
 
 ### New Features
 * Default version of Additive Server is 25.1 when creating a client connection.
 * Single bead simulations with thermal history are now supported.
 * Added description field to AdditiveMaterial.
 * Updated the parametric runner to accept a list of simulation ids to be run.
+* Asynchronous simulate functionality added.
+* Added apply and list server settings functionality.
 
 ### Bug Fixes
 
