@@ -160,9 +160,9 @@ class Additive:
         self._servers = Additive._connect_to_servers(
             server_connections, host, port, nservers, product_version, self._log, linux_install_path
         )
-        self._nsims_per_server = nsims_per_server
-        if self._nsims_per_server > 1:
-            self.apply_server_settings()
+
+        initial_settings = {"NumConcurrentSims": str(nsims_per_server)}
+        print(self.apply_server_settings(initial_settings))
 
         self._enable_beta_features = enable_beta_features
 
@@ -232,18 +232,6 @@ class Additive:
         return connections
 
     @property
-    def nsims_per_server(self) -> int:
-        """Number of simultaneous simulations to run on each server."""
-        return self._nsims_per_server
-
-    @nsims_per_server.setter
-    def nsims_per_server(self, value: int) -> None:
-        """Set the number of simultaneous simulations to run on each server."""
-        if value < 1:
-            raise ValueError("Number of simulations per server must be greater than zero.")
-        self._nsims_per_server = value
-
-    @property
     def enable_beta_features(self) -> bool:
         """Flag indicating if beta features are enabled."""
         return self._enable_beta_features
@@ -263,16 +251,17 @@ class Additive:
             for server in self._servers:
                 print(server.status())
 
-    def apply_server_settings(self) -> dict[str, list[str]]:
+    def apply_server_settings(self, settings: dict[str, str]) -> dict[str, list[str]]:
         """Apply settings to each server.
 
         Current settings include:
         - number of concurrent simulations per server, defined by nsims_per_server.
         """
         request = SettingsRequest()
-        nsims_per_server_setting = request.settings.add()
-        nsims_per_server_setting.key = "NumConcurrentSims"
-        nsims_per_server_setting.value = str(self._nsims_per_server)
+        for setting_key, setting_value in settings.items():
+            setting = request.settings.add()
+            setting.key = setting_key
+            setting.value = setting_value
 
         responses = {}
         for server in self._servers:
