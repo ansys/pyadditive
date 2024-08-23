@@ -162,7 +162,7 @@ class Additive:
         )
 
         initial_settings = {"NumConcurrentSims": str(nsims_per_server)}
-        print(self.apply_server_settings(initial_settings))
+        LOG.info(self.apply_server_settings(initial_settings))
 
         self._enable_beta_features = enable_beta_features
 
@@ -255,7 +255,7 @@ class Additive:
         """Apply settings to each server.
 
         Current settings include:
-        - number of concurrent simulations per server, defined by nsims_per_server.
+        - ``NumConcurrentSims``: number of concurrent simulations per server.
         """
         request = SettingsRequest()
         for setting_key, setting_value in settings.items():
