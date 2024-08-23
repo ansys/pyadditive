@@ -33,6 +33,7 @@ from ansys.api.additive.v0.additive_materials_pb2 import (
     TuneMaterialResponse,
 )
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
+from ansys.api.additive.v0.additive_settings_pb2 import SettingsRequest
 from google.longrunning.operations_pb2 import Operation
 from google.protobuf.empty_pb2 import Empty
 import grpc
@@ -159,7 +160,10 @@ class Additive:
         self._servers = Additive._connect_to_servers(
             server_connections, host, port, nservers, product_version, self._log, linux_install_path
         )
-        self._nsims_per_server = nsims_per_server
+
+        initial_settings = {"NumConcurrentSims": str(nsims_per_server)}
+        LOG.info(self.apply_server_settings(initial_settings))
+
         self._enable_beta_features = enable_beta_features
 
         # Setup data directory
@@ -228,18 +232,6 @@ class Additive:
         return connections
 
     @property
-    def nsims_per_server(self) -> int:
-        """Number of simultaneous simulations to run on each server."""
-        return self._nsims_per_server
-
-    @nsims_per_server.setter
-    def nsims_per_server(self, value: int) -> None:
-        """Set the number of simultaneous simulations to run on each server."""
-        if value < 1:
-            raise ValueError("Number of simulations per server must be greater than zero.")
-        self._nsims_per_server = value
-
-    @property
     def enable_beta_features(self) -> bool:
         """Flag indicating if beta features are enabled."""
         return self._enable_beta_features
@@ -258,6 +250,42 @@ class Additive:
         else:
             for server in self._servers:
                 print(server.status())
+
+    def apply_server_settings(self, settings: dict[str, str]) -> dict[str, list[str]]:
+        """Apply settings to each server.
+
+        Current settings include:
+        - ``NumConcurrentSims``: number of concurrent simulations per server.
+        """
+        request = SettingsRequest()
+        for setting_key, setting_value in settings.items():
+            setting = request.settings.add()
+            setting.key = setting_key
+            setting.value = setting_value
+
+        responses = {}
+        for server in self._servers:
+            responses[server.channel_str] = server.settings_stub.ApplySettings(request)
+
+        unpacked_responses = {}
+        for key, value in responses.items():
+            unpacked_responses[key] = value.messages
+
+        return unpacked_responses
+
+    def list_server_settings(self) -> dict[str, dict[str, str]]:
+        """Get a dictionary of settings for each server by channel."""
+        responses = {}
+        for server in self._servers:
+            responses[server.channel_str] = server.settings_stub.ListSettings(Empty())
+
+        unpacked_responses = {}
+        for key, list_response in responses.items():
+            unpacked_responses[key] = {}
+            for setting in list_response.settings:
+                unpacked_responses[key][setting.key] = setting.value
+
+        return unpacked_responses
 
     def simulate(
         self,
