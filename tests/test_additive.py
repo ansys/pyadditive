@@ -44,6 +44,13 @@ from ansys.api.additive.v0.additive_materials_pb2 import (
     TuneMaterialResponse,
 )
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
+import ansys.api.additive.v0.additive_settings_pb2
+from ansys.api.additive.v0.additive_settings_pb2 import (
+    ListSettingsResponse,
+    SettingsRequest,
+    SettingsResponse,
+)
+import ansys.api.additive.v0.additive_settings_pb2_grpc
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse, UploadFileResponse
 from google.longrunning.operations_pb2 import ListOperationsResponse, Operation
 import grpc
@@ -119,41 +126,84 @@ def test_Additive_init_calls_connect_to_servers_correctly(
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_Additive_init_assigns_nsims_per_servers(_):
+def test_Additive_init_assigns_nsims_per_servers(server):
     # arrange
     nsims_per_server = 99
 
+    # Mock makes SettingsServiceStub unable to use assert_called_once (somehow it's considered
+    # a NonCallable mock). So we manually create the mock and test the calls manually.
+    mock_connection_with_stub = Mock(ServerConnection)
+    mock_connection_with_stub.settings_stub.ApplySettings.return_value = SettingsResponse(
+        messages="applied"
+    )
+    server.return_value = mock_connection_with_stub
+    expected_request = SettingsRequest()
+    setting = expected_request.settings.add()
+    setting.key = "NumConcurrentSims"
+    setting.value = str(nsims_per_server)
+
     # act
-    additive_default = Additive()
-    additive = Additive(nsims_per_server=nsims_per_server)
+    Additive(nsims_per_server=nsims_per_server)
 
     # assert
-    assert additive_default.nsims_per_server == 1
-    assert additive.nsims_per_server == nsims_per_server
+    assert mock_connection_with_stub.settings_stub.ApplySettings.call_count == 1
+    assert mock_connection_with_stub.settings_stub.ApplySettings.call_args[0][0] == expected_request
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_nsims_per_servers_setter_raises_exception_for_invalid_value(_):
+def test_apply_server_settings_returns_appropriate_responses(server):
     # arrange
-    nsims_per_server = -1
-    additive = Additive()
+    settings = {"key": "value"}
+    # Mock makes SettingsServiceStub unable to use assert_called_once (somehow it's considered
+    # a NonCallable mock). So we manually create the mock and test the calls manually.
+    channel_str = "1.1.1.1"
+    mock_connection_with_stub = Mock(ServerConnection)
+    mock_connection_with_stub.channel_str = channel_str
+    response = SettingsResponse()
+    response.messages.append("applied")
+    mock_connection_with_stub.settings_stub.ApplySettings = Mock(return_value=response)
+    server.return_value = mock_connection_with_stub
+    expected_request = SettingsRequest()
+    setting = expected_request.settings.add()
+    setting.key = "key"
+    setting.value = "value"
 
-    # act, assert
-    with pytest.raises(ValueError, match="must be greater than zero"):
-        additive.nsims_per_server = nsims_per_server
-
-
-@patch("ansys.additive.core.additive.ServerConnection")
-def test_nsims_per_servers_setter_correctly_assigns_valid_value(_):
-    # arrange
-    nsims_per_server = 99
+    # ApplySettings is called once here
     additive = Additive()
 
     # act
-    additive.nsims_per_server = nsims_per_server
+    result = additive.apply_server_settings(settings)
 
     # assert
-    assert additive._nsims_per_server == nsims_per_server
+    assert mock_connection_with_stub.settings_stub.ApplySettings.call_count == 2
+    assert mock_connection_with_stub.settings_stub.ApplySettings.call_args[0][0] == expected_request
+    assert result[channel_str] == ["applied"]
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_list_server_settings_returns_appropriate_responses(server):
+    # arrange
+    # Mock makes SettingsServiceStub unable to use assert_called_once (somehow it's considered
+    # a NonCallable mock). So we manually create the mock and test the calls manually.
+    channel_str = "1.1.1.1"
+    mock_connection_with_stub = Mock(ServerConnection)
+    mock_connection_with_stub.channel_str = channel_str
+    response = ListSettingsResponse()
+    setting = response.settings.add()
+    setting.key = "key"
+    setting.value = "value"
+    mock_connection_with_stub.settings_stub.ListSettings.return_value = response
+    server.return_value = mock_connection_with_stub
+
+    # ApplySettings is called once here
+    additive = Additive()
+
+    # act
+    result = additive.list_server_settings()
+
+    # assert
+    assert mock_connection_with_stub.settings_stub.ListSettings.call_count == 1
+    assert result[channel_str] == {"key": "value"}
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
@@ -474,14 +524,11 @@ def test_simulate_async_with_input_list_calls_internal_simulate_n_times(connecti
     ],
 )
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_simulate_with_n_servers_m_sims_per_server_uses_n_x_m_threads(
+def test_simulate_with_n_servers_uses_uses_n_mock_connections(
     mock_connection, inputs, nservers, nsims_per_server, expected_n_threads
 ):
     # arrange
     mock_connection.return_value = Mock(ServerConnection)
-
-    def raise_exception(_):
-        raise Exception("exception")
 
     additive = Additive(nservers=nservers, nsims_per_server=nsims_per_server)
 
