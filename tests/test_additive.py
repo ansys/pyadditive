@@ -380,10 +380,11 @@ def test_simulate_async_with_single_input_calls_internal_simulate_once(_, sim_in
     additive._simulate = _simulate_patch
 
     # act
-    additive.simulate_async(sim_input)
+    task_manager = additive.simulate_async(sim_input)
 
     # assert
     _simulate_patch.assert_called_once_with(sim_input, ANY, ANY)
+    assert isinstance(task_manager, SimulationTaskManager)
 
 
 # patch needed for Additive() call
@@ -486,10 +487,10 @@ def test_simulate_async_with_input_list_calls_internal_simulate_n_times(connecti
     ]
 
     # act
-    task = additive.simulate_async(inputs)
+    task_manager = additive.simulate_async(inputs)
 
     # assert
-    assert isinstance(task, SimulationTaskManager)
+    assert isinstance(task_manager, SimulationTaskManager)
     assert _simulate_patch.call_count == len(inputs)
     calls = [call(i, ANY, None) for i in inputs]
     _simulate_patch.assert_has_calls(calls, any_order=True)
