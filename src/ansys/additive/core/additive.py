@@ -352,7 +352,7 @@ class Additive:
             | list
         ),
         progress_handler: IProgressHandler | None = None,
-    ) -> SimulationTask | SimulationTaskManager:
+    ) -> SimulationTaskManager:
         """Execute additive simulations asynchronously. This method does not block while the
         simulations are running on the server. This class stores handles of type
         google.longrunning.Operation to the remote tasks that can be used to communicate with
@@ -370,18 +370,19 @@ class Additive:
 
         Returns
         -------
-        SimulationTask | SimulationTaskManager
-            If a single simulation input is provided a SimulationTask is returned.
-            If a list of simulation inputs is provided a SimulationTaskManager is returned.
+        SimulationTaskManager
+            A SimulationTaskManager to handle all tasks sent to the server by this function call.
         """
         self._check_for_duplicate_id(inputs)
 
+        task_manager = SimulationTaskManager()
         if not isinstance(inputs, list):
             if not progress_handler:
                 progress_handler = DefaultSingleSimulationProgressHandler()
             server = self._servers[0]
             simulation_task = self._simulate(inputs, server, progress_handler)
-            return simulation_task
+            task_manager.add_task(simulation_task)
+            return task_manager
 
         if len(inputs) == 0:
             raise ValueError("No simulation inputs provided")
@@ -390,7 +391,6 @@ class Additive:
             f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Starting {len(inputs)} simulations",
             end="",
         )
-        task_manager = SimulationTaskManager()
         for i, sim_input in enumerate(inputs):
             server_id = i % len(self._servers)
             server = self._servers[server_id]
