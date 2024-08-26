@@ -524,14 +524,11 @@ def test_simulate_async_with_input_list_calls_internal_simulate_n_times(connecti
     ],
 )
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_simulate_with_n_servers_m_sims_per_server_uses_n_x_m_threads(
+def test_simulate_with_n_servers_uses_uses_n_mock_connections(
     mock_connection, inputs, nservers, nsims_per_server, expected_n_threads
 ):
     # arrange
     mock_connection.return_value = Mock(ServerConnection)
-
-    def raise_exception(_):
-        raise Exception("exception")
 
     additive = Additive(nservers=nservers, nsims_per_server=nsims_per_server)
 
