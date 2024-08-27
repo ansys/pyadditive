@@ -37,7 +37,7 @@ from ansys.additive.core import (
 from ansys.additive.core.additive import Additive
 import ansys.additive.core.parametric_study as ps
 from ansys.additive.core.parametric_study.constants import ColumnNames
-from ansys.additive.core.parametric_study.parametric_runner import ParametricRunner as pr
+from ansys.additive.core.parametric_study.parametric_runner import ParametricRunner
 
 
 def test_create_machine_assigns_all_values():
@@ -66,7 +66,7 @@ def test_create_machine_assigns_all_values():
     )
 
     # act
-    machine = pr._create_machine(series)
+    machine = ParametricRunner._create_machine(series)
 
     # assert
     assert isinstance(machine, AdditiveMachine)
@@ -103,7 +103,7 @@ def test_create_machine_assigns_default_values():
     )
 
     # act
-    machine = pr._create_machine(series)
+    machine = ParametricRunner._create_machine(series)
 
     # assert
     assert isinstance(machine, AdditiveMachine)
@@ -131,7 +131,7 @@ def test_create_single_bead_input():
     material = AdditiveMaterial(elastic_modulus=456)
 
     # act
-    input = pr._create_single_bead_input(series, material=material, machine=machine)
+    input = ParametricRunner._create_single_bead_input(series, material=material, machine=machine)
 
     # assert
     assert isinstance(input, SingleBeadInput)
@@ -159,7 +159,7 @@ def test_create_porosity_input():
     material = AdditiveMaterial(elastic_modulus=456)
 
     # act
-    input = pr._create_porosity_input(series, material=material, machine=machine)
+    input = ParametricRunner._create_porosity_input(series, material=material, machine=machine)
 
     # assert
     assert isinstance(input, PorosityInput)
@@ -207,7 +207,9 @@ def test_create_microstructure_input_assigns_all_values():
     material = AdditiveMaterial(elastic_modulus=456)
 
     # act
-    input = pr._create_microstructure_input(series, material=material, machine=machine)
+    input = ParametricRunner._create_microstructure_input(
+        series, material=material, machine=machine
+    )
 
     # assert
     assert isinstance(input, MicrostructureInput)
@@ -257,7 +259,9 @@ def test_create_microstructure_input_assigns_defaults_for_nans():
     material = AdditiveMaterial(elastic_modulus=456)
 
     # act
-    input = pr._create_microstructure_input(series, material=material, machine=machine)
+    input = ParametricRunner._create_microstructure_input(
+        series, material=material, machine=machine
+    )
 
     # assert
     assert isinstance(input, MicrostructureInput)
@@ -294,9 +298,10 @@ def test_simulate_skips_simulations_with_missing_materials(
     mock_additive = create_autospec(Additive)
     mock_additive.material.side_effect = [material, Exception(), material]
     caplog.set_level(logging.WARNING, logger="PyAdditive_global")
+    runner = ParametricRunner()
 
     # act
-    pr.simulate(study.data_frame(), mock_additive)
+    runner.simulate(study.data_frame(), mock_additive)
 
     # assert
     mock_additive.simulate.assert_called_once_with([sb, ms], None)

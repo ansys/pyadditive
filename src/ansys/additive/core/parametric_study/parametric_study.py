@@ -96,7 +96,8 @@ class ParametricStudy:
             self.__dict__ = ParametricStudy.load(study_path).__dict__
         else:
             self._init_new_study(study_path)
-        print(f"Saving parametric study to {self.file_name}")
+        LOG.info(f"Saving parametric study to {self.file_name}")
+        self._runner = ParametricRunner()
 
     def _init_new_study(self, study_path: pathlib.Path):
         self._file_name = study_path
@@ -214,12 +215,20 @@ class ParametricStudy:
             LOG.warning("None of the input simulations meet the criteria selected")
             return
 
-        summaries = ParametricRunner.simulate(
-            filtered_dataframe,
-            additive,
-            progress_handler,
-        )
-        self.update(summaries)
+        ids = filtered_dataframe[ColumnNames.ID].array
+        self.set_simulation_status(ids, SimulationStatus.PENDING)
+        self.clear_errors(ids)
+
+        try:
+            summaries = self._runner.simulate(
+                filtered_dataframe,
+                additive,
+                progress_handler,
+            )
+            self.update(summaries)
+        except Exception as e:
+            LOG.error(f"Error running simulations: {e}")
+            self.reset_simulation_status()
 
     def save(self, file_name: str | os.PathLike):
         """Save the parametric study to a file.
@@ -280,16 +289,35 @@ class ParametricStudy:
 
         study.file_name = file_name
         study = ParametricStudy.update_format(study)
-        study.reset_status()
+        study.reset_simulation_status()
         return study
 
     @save_on_return
-    def reset_status(self):
+    def reset_simulation_status(self):
         """Reset the status of any ``Pending`` or ``Running`` simulations to ``New``."""
-        df = self._data_frame
-        df[df[ColumnNames.STATUS].isin([SimulationStatus.PENDING, SimulationStatus.RUNNING])][
-            ColumnNames.STATUS
-        ] = SimulationStatus.NEW
+        idx = self._data_frame[
+            self._data_frame[ColumnNames.STATUS].isin(
+                [SimulationStatus.PENDING, SimulationStatus.RUNNING]
+            )
+        ].index
+        self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.NEW
+
+    @save_on_return
+    def clear_errors(self, simulation_ids: list[str] | None = None):
+        """Clear the error messages for the specified simulations.
+
+        Parameters
+        ----------
+        simulation_ids : list[str], default: None
+            List of simulation IDs to clear the error messages for. If this value
+            is ``None``, all error messages are cleared.
+        """
+        LOG.debug(f"Clearing errors {', '.join(simulation_ids) if simulation_ids else ''}")
+        if simulation_ids is None:
+            idx = self._data_frame.index
+        else:
+            idx = self._data_frame[self._data_frame[ColumnNames.ID].isin(simulation_ids)].index
+        self._data_frame.loc[idx, ColumnNames.ERROR_MESSAGE] = None
 
     @save_on_return
     def add_summaries(
@@ -784,7 +812,7 @@ class ParametricStudy:
                                                     hatch_spacing=h,
                                                     slicing_stripe_width=w,
                                                 )
-                                                input = PorosityInput(
+                                                PorosityInput(
                                                     size_x=size_x,
                                                     size_y=size_y,
                                                     size_z=size_z,
@@ -792,7 +820,7 @@ class ParametricStudy:
                                                     material=AdditiveMaterial(),
                                                 )
                                             except ValueError as e:
-                                                print(f"Invalid parameter combination: {e}")
+                                                LOG.error(f"Invalid parameter combination: {e}")
                                                 continue
 
                                             # add row to parametric study data frame
@@ -1086,7 +1114,7 @@ class ParametricStudy:
                                                     hatch_spacing=h,
                                                     slicing_stripe_width=w,
                                                 )
-                                                input = MicrostructureInput(
+                                                MicrostructureInput(
                                                     sample_min_x=min_x,
                                                     sample_min_y=min_y,
                                                     sample_min_z=min_z,
@@ -1129,7 +1157,7 @@ class ParametricStudy:
                                                     material=AdditiveMaterial(),
                                                 )
                                             except ValueError as e:
-                                                print(f"Invalid parameter combination: {e}")
+                                                LOG.error(f"Invalid parameter combination: {e}")
                                                 continue
 
                                             # add row to parametric study data frame
@@ -1268,7 +1296,11 @@ class ParametricStudy:
         self._data_frame.loc[idx, ColumnNames.RELATIVE_DENSITY] = relative_density
 
     def _update_microstructure(
-        self, id: str, xy_avg_grain_size: float, xz_avg_grain_size: float, yz_avg_grain_size: float
+        self,
+        id: str,
+        xy_avg_grain_size: float,
+        xz_avg_grain_size: float,
+        yz_avg_grain_size: float,
     ):
         """Update the results of a microstructure simulation in the parametric
         study data frame."""
@@ -1403,7 +1435,10 @@ class ParametricStudy:
         for status in SimulationStatus:
             if len(current_df[current_df[ColumnNames.STATUS] == status.value]) > 0:
                 sorted_df = pd.concat(
-                    [sorted_df, current_df[current_df[ColumnNames.STATUS] == status.value]],
+                    [
+                        sorted_df,
+                        current_df[current_df[ColumnNames.STATUS] == status.value],
+                    ],
                     ignore_index=True,
                 )
 
@@ -1508,7 +1543,9 @@ class ParametricStudy:
         self._data_frame.drop(index=idx, inplace=True)
 
     @save_on_return
-    def set_status(self, ids: str | list[str], status: SimulationStatus, err_msg: str = ""):
+    def set_simulation_status(
+        self, ids: str | list[str], status: SimulationStatus, err_msg: str = ""
+    ):
         """Set the status of simulations in the parametric study.
 
         Parameters
@@ -1521,6 +1558,7 @@ class ParametricStudy:
         """
         if isinstance(ids, str):
             ids = [ids]
+        LOG.debug(f"Setting status of simulations {', '.join(ids)} to {status}.")
         idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)]
         self._data_frame.loc[idx, ColumnNames.STATUS] = status
         if status == SimulationStatus.ERROR:
@@ -1672,7 +1710,10 @@ class ParametricStudy:
             if row[ColumnNames.STATUS] in allowed_status:
                 valid, error = self._validate_input(row)
             else:
-                valid, error = (False, f"Invalid simulation status {row[ColumnNames.STATUS]}")
+                valid, error = (
+                    False,
+                    f"Invalid simulation status {row[ColumnNames.STATUS]}",
+                )
             if not valid:
                 drop_indices.append(index)
                 error_list.append(error)

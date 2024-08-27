@@ -38,6 +38,7 @@ from google.protobuf.duration_pb2 import Duration
 from google.rpc.status_pb2 import Status as RpcStatus
 
 from ansys.additive.core.download import download_file
+from ansys.additive.core.logger import LOG
 from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
 from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
 from ansys.additive.core.microstructure_3d import Microstructure3DInput, Microstructure3DSummary
@@ -109,7 +110,7 @@ class SimulationTask:
         """Return ``True`` if the simulation is completed."""
         return self._summary is not None
 
-    def status(self, progress_handler: IProgressHandler | None = None) -> Progress:
+    def status(self) -> Progress:
         """Fetch status from the server to update progress and results.
 
          Parameters
@@ -122,12 +123,10 @@ class SimulationTask:
         Progress
             The progress of the operation.
         """
-        get_request = GetOperationRequest(name=self._long_running_op.name)
-        self._long_running_op = self._server.operations_stub.GetOperation(get_request)
+        if not self._long_running_op.done:
+            get_request = GetOperationRequest(name=self._long_running_op.name)
+            self._long_running_op = self._server.operations_stub.GetOperation(get_request)
         progress = self._update_operation_status(self._long_running_op)
-        if progress_handler:
-            progress_handler.update(progress)
-
         return progress
 
     def wait(
@@ -145,21 +144,30 @@ class SimulationTask:
         progress_handler: IProgressHandler, None, default: None
             Handler for progress updates. If ``None``, no progress updates are provided.
         """
-        while True:
-            timeout = Duration(seconds=progress_update_interval)
-            wait_request = WaitOperationRequest(name=self._long_running_op.name, timeout=timeout)
-            awaited_operation = self._server.operations_stub.WaitOperation(wait_request)
-            progress = self._update_operation_status(awaited_operation)
-            if progress_handler:
-                progress_handler.update(progress)
-            if awaited_operation.done:
-                break
+        LOG.debug(f"Waiting for {self._long_running_op.name} to complete")
+        try:
+            while True:
+                timeout = Duration(seconds=progress_update_interval)
+                wait_request = WaitOperationRequest(
+                    name=self._long_running_op.name, timeout=timeout
+                )
+                awaited_operation = self._server.operations_stub.WaitOperation(wait_request)
+                progress = self._update_operation_status(awaited_operation)
+                if progress_handler:
+                    progress_handler.update(progress)
+                if awaited_operation.done:
+                    break
+        except Exception as e:
+            LOG.error(f"Error while awaiting operation: {e}")
 
         # Perform a call to status to ensure all messages are received and summary is updated
-        self.status(progress_handler)
+        progress = self.status()
+        if progress_handler:
+            progress_handler.update(progress)
 
     def cancel(self) -> None:
         """Cancel a running simulation."""
+        LOG.debug(f"Cancelling {self._long_running_op.name}")
         request = CancelOperationRequest(name=self._long_running_op.name)
         self._server.operations_stub.CancelOperation(request)
 
@@ -286,11 +294,15 @@ class SimulationTask:
             return PorositySummary(self._simulation_input, response.porosity_result)
         if response.HasField("microstructure_result"):
             return MicrostructureSummary(
-                self._simulation_input, response.microstructure_result, self._user_data_path
+                self._simulation_input,
+                response.microstructure_result,
+                self._user_data_path,
             )
         if response.HasField("microstructure_3d_result"):
             return Microstructure3DSummary(
-                self._simulation_input, response.microstructure_3d_result, self._user_data_path
+                self._simulation_input,
+                response.microstructure_3d_result,
+                self._user_data_path,
             )
         if response.HasField("thermal_history_result"):
             path = os.path.join(self._user_data_path, self._simulation_input.id, "coax_ave_output")

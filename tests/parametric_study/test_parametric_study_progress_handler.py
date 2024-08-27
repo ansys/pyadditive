@@ -57,8 +57,10 @@ def test_init_correctly_initializes(tmp_path: pathlib.Path):
     handler = ParametricStudyProgressHandler(study, additive)
 
     # assert
-    handler._study == study
-    handler._additive == additive
+    assert handler._study == study
+    assert handler._additive == additive
+    assert handler._study_lock is not None
+    assert handler._last_progress_states == {}
 
 
 @pytest.mark.parametrize(
@@ -159,7 +161,8 @@ def test_update_updates_completed_porosity_simulation(tmp_path: pathlib.Path):
         context="test context",
     )
     response = SimulationResponse(
-        id=input.id, porosity_result=PorosityResult(void_ratio=1, powder_ratio=2, solid_ratio=3)
+        id=input.id,
+        porosity_result=PorosityResult(void_ratio=1, powder_ratio=2, solid_ratio=3),
     )
     operation = Operation(name=input.id, done=True)
     operation.response.Pack(response)

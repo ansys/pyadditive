@@ -71,3 +71,10 @@ repos:
   #     - id: add-license-headers
   #       args:
   #         - --start_year=2023
+
+  - repo: local
+    hooks:
+      - id: uncomment-coverage-options
+        name: uncomment-coverage-options
+        language: python
+        entry: python dev/scripts/uncomment_code_coverage.py
