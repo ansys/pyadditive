@@ -21,9 +21,9 @@
 # SOFTWARE.
 """Provides a client for interacting with the Additive service."""
 
-from datetime import datetime
 import logging
 import os
+import time
 
 from ansys.api.additive import __version__ as api_version
 from ansys.api.additive.v0.additive_materials_pb2 import (
@@ -99,8 +99,9 @@ class Additive:
         2024 R1 would be specified as ``241``. This parameter is only applicable in
         `PyPIM`_-enabled cloud environments and on localhost. Using an empty string
         or ``None`` uses the default product version.
-    log_level: str, default: "INFO"
-        Minimum severity level of messages to log.
+    log_level: str, default: ""
+        Minimum severity level of messages to log. Valid values are "DEBUG", "INFO",
+        "WARNING", "ERROR", and "CRITICAL". The default value equates to "WARNING".
     log_file: str, default: ""
         File name to write log messages to.
     enable_beta_features: bool, default: False
@@ -145,7 +146,7 @@ class Additive:
         nsims_per_server: int = 1,
         nservers: int = 1,
         product_version: str = DEFAULT_PRODUCT_VERSION,
-        log_level: str = "INFO",
+        log_level: str = "",
         log_file: str = "",
         enable_beta_features: bool = False,
         linux_install_path: os.PathLike | None = None,
@@ -154,11 +155,19 @@ class Additive:
         if not product_version:
             product_version = DEFAULT_PRODUCT_VERSION
 
-        self._log = Additive._create_logger(log_file, log_level)
-        self._log.debug("Logging set to %s", log_level)
+        if log_level:
+            LOG.setLevel(log_level)
+        if log_file:
+            LOG.log_to_file(filename=log_file, level=log_level)
 
         self._servers = Additive._connect_to_servers(
-            server_connections, host, port, nservers, product_version, self._log, linux_install_path
+            server_connections,
+            host,
+            port,
+            nservers,
+            product_version,
+            LOG,
+            linux_install_path,
         )
 
         initial_settings = {"NumConcurrentSims": str(nsims_per_server)}
@@ -171,28 +180,6 @@ class Additive:
         if not os.path.exists(self._user_data_path):  # pragma: no cover
             os.makedirs(self._user_data_path)
         LOG.info("user data path: " + self._user_data_path)
-
-    @staticmethod
-    def _create_logger(log_file, log_level) -> logging.Logger:
-        """Instantiate the logger."""
-        format = "%(asctime)s %(message)s"
-        datefmt = "%Y-%m-%d %H:%M:%S"
-        numeric_level = getattr(logging, log_level.upper(), None)
-        if not isinstance(numeric_level, int):
-            raise ValueError("Invalid log level: %s" % log_level)
-        logging.basicConfig(
-            level=numeric_level,
-            format=format,
-            datefmt=datefmt,
-        )
-        log = logging.getLogger(__name__)
-        if log_file:
-            file_handler = logging.FileHandler(str(log_file))
-            file_handler.setLevel(numeric_level)
-            file_handler.setFormatter(logging.Formatter(format))
-            log.file_handler = file_handler
-            log.addHandler(file_handler)
-        return log
 
     @staticmethod
     def _connect_to_servers(
@@ -327,13 +314,9 @@ class Additive:
             list is returned.
         """
         summaries = []
-        task = self.simulate_async(inputs, progress_handler)
-        if isinstance(task, SimulationTaskManager):
-            task.wait_all()
-            summaries = task.summaries()
-        else:
-            task.wait()
-            summaries.append(task.summary)
+        task_mgr = self.simulate_async(inputs, progress_handler)
+        task_mgr.wait_all(progress_handler=progress_handler)
+        summaries = task_mgr.summaries()
 
         for summ in summaries:
             if isinstance(summ, SimulationError):
@@ -387,10 +370,7 @@ class Additive:
         if len(inputs) == 0:
             raise ValueError("No simulation inputs provided")
 
-        LOG.info(
-            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Starting {len(inputs)} simulations",
-            end="",
-        )
+        LOG.info(f"Starting {len(inputs)} simulations")
         for i, sim_input in enumerate(inputs):
             server_id = i % len(self._servers)
             server = self._servers[server_id]
@@ -447,6 +427,7 @@ class Additive:
             simulation_task = SimulationTask(
                 server, long_running_op, simulation_input, self._user_data_path
             )
+            LOG.debug(f"Simulation task created for {simulation_input.id}")
 
         except Exception as e:
             metadata = OperationMetadata(simulation_id=simulation_input.id, message=str(e))
@@ -455,6 +436,9 @@ class Additive:
             simulation_task = SimulationTask(
                 server, errored_op, simulation_input, self._user_data_path
             )
+        if progress_handler:
+            time.sleep(0.1)  # Allow time for the server to start the simulation
+            progress_handler.update(simulation_task.status())
 
         return simulation_task
 
@@ -489,7 +473,9 @@ class Additive:
 
     @staticmethod
     def load_material(
-        parameters_file: str, thermal_lookup_file: str, characteristic_width_lookup_file: str
+        parameters_file: str,
+        thermal_lookup_file: str,
+        characteristic_width_lookup_file: str,
     ) -> AdditiveMaterial:
         """Load a custom material definition for the current session. The resulting
         ``AdditiveMaterial`` object will not be saved to the library.
@@ -525,7 +511,10 @@ class Additive:
         return material
 
     def add_material(
-        self, parameters_file: str, thermal_lookup_file: str, characteristic_width_lookup_file: str
+        self,
+        parameters_file: str,
+        thermal_lookup_file: str,
+        characteristic_width_lookup_file: str,
     ) -> AdditiveMaterial | None:
         """Add a custom material to the library for use in additive simulations.
 

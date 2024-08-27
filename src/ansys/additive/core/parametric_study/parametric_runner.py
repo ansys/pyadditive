@@ -46,8 +46,8 @@ from ansys.additive.core.simulation import SimulationError
 class ParametricRunner:
     """Provides methods to run parametric study simulations."""
 
-    @staticmethod
     def simulate(
+        self,
         df: pd.DataFrame,
         additive: Additive,
         progress_handler: IProgressHandler = None,
@@ -98,7 +98,6 @@ class ParametricRunner:
                 continue
 
         summaries = additive.simulate(inputs, progress_handler)
-
         return summaries
 
     @staticmethod

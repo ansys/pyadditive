@@ -22,7 +22,7 @@
 
 import logging
 import pathlib
-from unittest.mock import ANY, MagicMock, Mock, PropertyMock, call, create_autospec, patch
+from unittest.mock import ANY, MagicMock, Mock, call, create_autospec, patch
 
 from ansys.api.additive import __version__ as api_version
 import ansys.api.additive.v0.about_pb2_grpc
@@ -44,7 +44,6 @@ from ansys.api.additive.v0.additive_materials_pb2 import (
     TuneMaterialResponse,
 )
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
-import ansys.api.additive.v0.additive_settings_pb2
 from ansys.api.additive.v0.additive_settings_pb2 import (
     ListSettingsResponse,
     SettingsRequest,
@@ -73,6 +72,7 @@ import ansys.additive.core.additive
 from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput
+from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
 import ansys.additive.core.server_connection.server_connection
 import ansys.additive.core.simulation_task
@@ -121,7 +121,6 @@ def test_Additive_init_calls_connect_to_servers_correctly(
         server_connections, host, port, nservers, expected_prod_version, ANY, None
     )
     assert additive._servers == mock_server_connections
-    assert isinstance(additive._log, logging.Logger)
     assert additive._user_data_path == USER_DATA_PATH
 
 
@@ -207,7 +206,9 @@ def test_list_server_settings_returns_appropriate_responses(server):
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_connect_to_servers_with_server_connections_creates_server_connections(mock_connection):
+def test_connect_to_servers_with_server_connections_creates_server_connections(
+    mock_connection,
+):
     # arrange
     mock_connection.return_value = Mock(ServerConnection)
     host1 = "localhost:1234"
@@ -229,7 +230,11 @@ def test_connect_to_servers_with_server_connections_creates_server_connections(m
     assert len(servers) == len(connections)
     assert len(mock_connection.mock_calls) == 3
     mock_connection.assert_has_calls(
-        [call(addr=host1, log=log), call(channel=channel, log=log), call(addr=host2, log=log)]
+        [
+            call(addr=host1, log=log),
+            call(channel=channel, log=log),
+            call(addr=host2, log=log),
+        ]
     )
 
 
@@ -291,33 +296,6 @@ def test_connect_to_servers_with_nservers_creates_server_connections(mock_connec
     mock_connection.assert_called_with(
         product_version=product_version, log=log, linux_install_path=None
     )
-
-
-def test_create_logger_raises_exception_for_invalid_log_level():
-    # arrange, act, assert
-    with pytest.raises(ValueError, match="Invalid log level"):
-        Additive._create_logger(None, "Tragic")
-
-
-def test_create_logger_creates_expected_logger(
-    tmp_path: pathlib.Path, caplog: pytest.LogCaptureFixture
-):
-    # arrange
-    log_file = tmp_path / "test.log"
-    message = "log message"
-
-    # act
-    log = Additive._create_logger(log_file, "INFO")
-    with caplog.at_level(logging.INFO, logger="ansys.additive.core.additive"):
-        log.info(message)
-    # assert
-    assert isinstance(log, logging.Logger)
-    assert message in caplog.text
-    assert hasattr(log, "file_handler")
-    assert log_file.exists()
-    with open(log_file, "r") as fid:
-        text = "".join(fid.readlines())
-    assert message in text
 
 
 def test_about_prints_not_connected_message(capsys: pytest.CaptureFixture[str]):
@@ -405,10 +383,10 @@ def test_simulate_logs_error_message_when_SimulationError_returned(_, caplog):
     sim_input = SingleBeadInput(material=test_utils.get_test_material())
     error_msg = "error message"
     simulation_error = SimulationError(sim_input, error_msg)
-    mock_task = Mock(SimulationTask)
-    type(mock_task).summary = PropertyMock(return_value=simulation_error)
+    mock_task_mgr = Mock(SimulationTaskManager)
+    mock_task_mgr.summaries.return_value = [simulation_error]
     with patch("ansys.additive.core.additive.Additive.simulate_async") as sim_async_patch:
-        sim_async_patch.return_value = mock_task
+        sim_async_patch.return_value = mock_task_mgr
     additive = Additive()
     additive.simulate_async = sim_async_patch
     caplog.set_level(logging.ERROR, "PyAdditive_global")
@@ -427,10 +405,10 @@ def test_simulate_returns_single_summary_for_single_input(_):
     # arrange
     sim_input = SingleBeadInput(material=test_utils.get_test_material())
     summary = SingleBeadSummary(sim_input, test_utils.get_test_melt_pool_message())
-    mock_task = Mock(SimulationTask)
-    type(mock_task).summary = PropertyMock(return_value=summary)
+    mock_task_mgr = Mock(SimulationTaskManager)
+    mock_task_mgr.summaries.return_value = [summary]
     with patch("ansys.additive.core.additive.Additive.simulate_async") as sim_async_patch:
-        sim_async_patch.return_value = mock_task
+        sim_async_patch.return_value = mock_task_mgr
     additive = Additive()
     additive.simulate_async = sim_async_patch
 
@@ -446,10 +424,10 @@ def test_simulate_returns_list_of_summaries_for_list_of_inputs(_):
     # arrange
     sim_input = SingleBeadInput(material=test_utils.get_test_material())
     summary = SingleBeadSummary(sim_input, test_utils.get_test_melt_pool_message())
-    mock_task = Mock(SimulationTask)
-    type(mock_task).summary = PropertyMock(return_value=summary)
+    mock_task_mgr = Mock(SimulationTaskManager)
+    mock_task_mgr.summaries.return_value = [summary]
     with patch("ansys.additive.core.additive.Additive.simulate_async") as sim_async_patch:
-        sim_async_patch.return_value = mock_task
+        sim_async_patch.return_value = mock_task_mgr
     additive = Additive()
     additive.simulate_async = sim_async_patch
 
@@ -595,10 +573,22 @@ def test_simulate_async_with_duplicate_simulation_ids_raises_exception(_):
 @patch("ansys.additive.core.additive.ServerConnection")
 def test_internal_simulate_called_with_single_input_updates_SimulationTask(
     mock_connection,
+    monkeypatch: pytest.MonkeyPatch,
     sim_input,
     result,
 ):
     # arrange
+    mock_status = create_autospec(
+        ansys.additive.core.additive.SimulationTask.status,
+        return_value=Progress(
+            sim_id="id",
+            state=ProgressState.COMPLETED,
+            percent_complete=100,
+            message="done",
+            context="simulation",
+        ),
+    )
+    monkeypatch.setattr(ansys.additive.core.additive.SimulationTask, "status", mock_status)
     sim_input.material = test_utils.get_test_material()
 
     if isinstance(result, MeltPoolMsg):
@@ -614,8 +604,16 @@ def test_internal_simulate_called_with_single_input_updates_SimulationTask(
     else:
         assert False, "Invalid result type"
 
+    metadata = OperationMetadata(
+        simulation_id="id",
+        state=ProgressState.COMPLETED,
+        percent_complete=100,
+        message="done",
+        context="simulation",
+    )
     long_running_operation = Operation(name="id", done=True)
     long_running_operation.response.Pack(sim_response)
+    long_running_operation.metadata.Pack(metadata)
 
     remote_file_name = "remote/file/name"
     upload_response = UploadFileResponse(
@@ -627,6 +625,7 @@ def test_internal_simulate_called_with_single_input_updates_SimulationTask(
     mock_connection_with_stub = Mock()
     mock_connection_with_stub.simulation_stub.Simulate.return_value = long_running_operation
     mock_connection_with_stub.simulation_stub.UploadFile.return_value = [upload_response]
+    mock_connection_with_stub.operations_stub.GetOperation.return_value = long_running_operation
     mock_connection_with_stub.channel_str = server_channel_str
     mock_connection.return_value = mock_connection_with_stub
 
@@ -635,9 +634,14 @@ def test_internal_simulate_called_with_single_input_updates_SimulationTask(
         enable_beta_features=True,
         nsims_per_server=2,
     )
+    mock_progress_handler = Mock(IProgressHandler)
 
     # act
-    task = additive._simulate(simulation_input=sim_input, server=mock_connection_with_stub)
+    task = additive._simulate(
+        simulation_input=sim_input,
+        server=mock_connection_with_stub,
+        progress_handler=mock_progress_handler,
+    )
 
     # assert
     operation = task._long_running_op
@@ -656,6 +660,10 @@ def test_internal_simulate_called_with_single_input_updates_SimulationTask(
         assert response.HasField("thermal_history_result")
     else:
         assert False, "Invalid result type"
+    if not isinstance(sim_input, ThermalHistoryInput):
+        mock_progress_handler.update.assert_called_once()
+    else:
+        assert mock_progress_handler.update.call_count == 2
 
 
 @pytest.mark.parametrize(
@@ -1000,7 +1008,9 @@ def test_remove_material_calls_material_service_remove_material(mock_connection)
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_remove_material_raises_ValueError_when_removing_reserved_material(mock_connection):
+def test_remove_material_raises_ValueError_when_removing_reserved_material(
+    mock_connection,
+):
     material_name = "ALSI10MG"
     mock_connection_with_stub = Mock()
     mock_connection_with_stub.materials_stub.RemoveMaterial.return_value = None

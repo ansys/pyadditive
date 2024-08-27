@@ -37,6 +37,8 @@ def run_before_and_after_tests():
     yield
     # teardown code
     LOG.logger.setLevel(default_level)
+    for handler in LOG.logger.handlers:
+        handler.setLevel(default_level)
 
 
 def test_global_logger_exists():
@@ -46,15 +48,15 @@ def test_global_logger_exists():
 
 def test_global_logger_has_only_stdout_handler_enabled_by_default():
     assert hasattr(LOG, "file_handler")
-    assert hasattr(LOG, "std_out_handler")
+    assert hasattr(LOG, "stdout_handler")
     assert LOG.logger.hasHandlers
     assert not LOG.file_handler
-    assert LOG.std_out_handler
+    assert LOG.stdout_handler
 
 
 def test_global_logger_logging_with_level_debug(caplog: pytest.LogCaptureFixture):
     LOG.logger.setLevel("DEBUG")
-    LOG.std_out_handler.setLevel("DEBUG")
+    LOG.stdout_handler.setLevel("DEBUG")
     for each_log_name, each_log_number in LOG_LEVELS.items():
         msg = f"This is an {each_log_name} message."
         LOG.logger.log(each_log_number, msg)
@@ -102,6 +104,28 @@ def test_global_logger_debug_levels(level: int, caplog: pytest.LogCaptureFixture
                 )
 
 
+@pytest.mark.parametrize(
+    "level",
+    [
+        "DEBUG",
+        "INFO",
+        "WARNING",
+        "ERROR",
+        "CRITICAL",
+    ],
+)
+def test_setLevel_sets_log_level(level: str):
+    assert LOG.logger.level == LOG_LEVELS["WARNING"]
+
+    # act
+    LOG.setLevel(level)
+
+    # assert
+    assert LOG.logger.level == LOG_LEVELS[level]
+    for handler in LOG.logger.handlers:
+        assert handler.level == LOG_LEVELS[level]
+
+
 def test_global_logger_log_to_file(tmp_path_factory: pytest.TempPathFactory):
     file_path = tmp_path_factory.mktemp("log_files") / "instance.log"
     file_msg_error = "This is a error message"
@@ -110,7 +134,7 @@ def test_global_logger_log_to_file(tmp_path_factory: pytest.TempPathFactory):
     # The LOG loglevel is changed in previous test,
     # hence making sure now it is the "default" one.
     LOG.logger.setLevel("ERROR")
-    LOG.std_out_handler.setLevel("ERROR")
+    LOG.stdout_handler.setLevel("ERROR")
 
     if not LOG.file_handler:
         LOG.log_to_file(file_path)
