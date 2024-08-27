@@ -57,10 +57,10 @@ def test_init_correctly_initializes(tmp_path: pathlib.Path):
     handler = ParametricStudyProgressHandler(study, additive)
 
     # assert
-    handler._study == study
-    handler._additive == additive
-    handler._study_lock is not None
-    handler._last_progress_states == {}
+    assert handler._study == study
+    assert handler._additive == additive
+    assert handler._study_lock is not None
+    assert handler._last_progress_states == {}
 
 
 @pytest.mark.parametrize(
