@@ -42,37 +42,22 @@ from ansys.additive.core import USER_DATA_PATH, __version__
 from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
 from ansys.additive.core.logger import LOG
 from ansys.additive.core.material import RESERVED_MATERIAL_NAMES, AdditiveMaterial
-from ansys.additive.core.material_tuning import (
-    MaterialTuningInput,
-    MaterialTuningSummary,
-)
-from ansys.additive.core.microstructure import (
-    MicrostructureInput,
-    MicrostructureSummary,
-)
-from ansys.additive.core.microstructure_3d import (
-    Microstructure3DInput,
-    Microstructure3DSummary,
-)
+from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
+from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
+from ansys.additive.core.microstructure_3d import Microstructure3DInput, Microstructure3DSummary
 import ansys.additive.core.misc as misc
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
 from ansys.additive.core.progress_handler import (
     DefaultSingleSimulationProgressHandler,
     IProgressHandler,
 )
-from ansys.additive.core.server_connection import (
-    DEFAULT_PRODUCT_VERSION,
-    ServerConnection,
-)
+from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
 from ansys.additive.core.simulation import SimulationError
 from ansys.additive.core.simulation_requests import _create_request
 from ansys.additive.core.simulation_task import SimulationTask
 from ansys.additive.core.simulation_task_manager import SimulationTaskManager
 from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
-from ansys.additive.core.thermal_history import (
-    ThermalHistoryInput,
-    ThermalHistorySummary,
-)
+from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHistorySummary
 
 
 class Additive:
@@ -220,9 +205,7 @@ class Additive:
         elif host:
             connections.append(ServerConnection(addr=f"{host}:{port}", log=log))
         elif os.getenv("ANSYS_ADDITIVE_ADDRESS"):
-            connections.append(
-                ServerConnection(addr=os.getenv("ANSYS_ADDITIVE_ADDRESS"), log=log)
-            )
+            connections.append(ServerConnection(addr=os.getenv("ANSYS_ADDITIVE_ADDRESS"), log=log))
         else:
             for _ in range(nservers):
                 connections.append(
@@ -447,9 +430,7 @@ class Additive:
             LOG.debug(f"Simulation task created for {simulation_input.id}")
 
         except Exception as e:
-            metadata = OperationMetadata(
-                simulation_id=simulation_input.id, message=str(e)
-            )
+            metadata = OperationMetadata(simulation_id=simulation_input.id, message=str(e))
             errored_op = Operation(name=simulation_input.id, done=True)
             errored_op.metadata.Pack(metadata)
             simulation_task = SimulationTask(
@@ -567,13 +548,9 @@ class Additive:
 
         names = self.materials_list()
         if material.name.lower() in (name.lower() for name in names):
-            raise ValueError(
-                f"Material {material.name} already exists. Unable to add material."
-            )
+            raise ValueError(f"Material {material.name} already exists. Unable to add material.")
 
-        request = AddMaterialRequest(
-            id=misc.short_uuid(), material=material._to_material_message()
-        )
+        request = AddMaterialRequest(id=misc.short_uuid(), material=material._to_material_message())
         print(f"Adding material {request.material.description}")
         response = self._servers[0].materials_stub.AddMaterial(request)
 

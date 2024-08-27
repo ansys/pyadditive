@@ -39,31 +39,15 @@ from google.rpc.status_pb2 import Status as RpcStatus
 
 from ansys.additive.core.download import download_file
 from ansys.additive.core.logger import LOG
-from ansys.additive.core.material_tuning import (
-    MaterialTuningInput,
-    MaterialTuningSummary,
-)
-from ansys.additive.core.microstructure import (
-    MicrostructureInput,
-    MicrostructureSummary,
-)
-from ansys.additive.core.microstructure_3d import (
-    Microstructure3DInput,
-    Microstructure3DSummary,
-)
+from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
+from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
+from ansys.additive.core.microstructure_3d import Microstructure3DInput, Microstructure3DSummary
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
-from ansys.additive.core.progress_handler import (
-    IProgressHandler,
-    Progress,
-    ProgressState,
-)
+from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
 from ansys.additive.core.server_connection import ServerConnection
 from ansys.additive.core.simulation import SimulationError
 from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
-from ansys.additive.core.thermal_history import (
-    ThermalHistoryInput,
-    ThermalHistorySummary,
-)
+from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHistorySummary
 
 
 class SimulationTask:
@@ -141,9 +125,7 @@ class SimulationTask:
         """
         if not self._long_running_op.done:
             get_request = GetOperationRequest(name=self._long_running_op.name)
-            self._long_running_op = self._server.operations_stub.GetOperation(
-                get_request
-            )
+            self._long_running_op = self._server.operations_stub.GetOperation(get_request)
         progress = self._update_operation_status(self._long_running_op)
         return progress
 
@@ -169,9 +151,7 @@ class SimulationTask:
                 wait_request = WaitOperationRequest(
                     name=self._long_running_op.name, timeout=timeout
                 )
-                awaited_operation = self._server.operations_stub.WaitOperation(
-                    wait_request
-                )
+                awaited_operation = self._server.operations_stub.WaitOperation(wait_request)
                 progress = self._update_operation_status(awaited_operation)
                 if progress_handler:
                     progress_handler.update(progress)
@@ -248,9 +228,7 @@ class SimulationTask:
         elif operation.HasField("error"):
             operation_error = RpcStatus()
             operation.error.Unpack(operation_error)
-            self._summary = SimulationError(
-                self._simulation_input, operation_error.message
-            )
+            self._summary = SimulationError(self._simulation_input, operation_error.message)
 
         return progress
 
@@ -327,9 +305,7 @@ class SimulationTask:
                 self._user_data_path,
             )
         if response.HasField("thermal_history_result"):
-            path = os.path.join(
-                self._user_data_path, self._simulation_input.id, "coax_ave_output"
-            )
+            path = os.path.join(self._user_data_path, self._simulation_input.id, "coax_ave_output")
             local_zip = download_file(
                 self._server.simulation_stub,
                 response.thermal_history_result.coax_ave_zip_file,

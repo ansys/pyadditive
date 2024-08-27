@@ -124,9 +124,7 @@ def test_update_updates_completed_single_bead_simulation(tmp_path: pathlib.Path)
         message="done",
         context="test context",
     )
-    response = SimulationResponse(
-        id=input.id, melt_pool=test_utils.get_test_melt_pool_message()
-    )
+    response = SimulationResponse(id=input.id, melt_pool=test_utils.get_test_melt_pool_message())
     operation = Operation(name=input.id, done=True)
     operation.response.Pack(response)
     mock_server_connection = Mock(ServerConnection)
@@ -198,18 +196,12 @@ def test_update_updates_completed_microstructure_simulation(tmp_path: pathlib.Pa
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
-    xy_stats = GrainStatistics(
-        grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4
-    )
-    xz_stats = GrainStatistics(
-        grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8
-    )
+    xy_stats = GrainStatistics(grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4)
+    xz_stats = GrainStatistics(grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8)
     yz_stats = GrainStatistics(
         grain_number=9, area_fraction=10, diameter_um=11, orientation_angle=12
     )
-    result = MicrostructureResult(
-        xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes
-    )
+    result = MicrostructureResult(xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes)
     result.xy_circle_equivalence.append(xy_stats)
     result.xz_circle_equivalence.append(xz_stats)
     result.yz_circle_equivalence.append(yz_stats)

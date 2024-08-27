@@ -78,9 +78,7 @@ LOG_LEVEL = logging.DEBUG
 FILE_NAME = "pyadditive.log"
 
 # Formatting
-STDOUT_MSG_FORMAT = (
-    "%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(message)s"
-)
+STDOUT_MSG_FORMAT = "%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(message)s"
 FILE_MSG_FORMAT = STDOUT_MSG_FORMAT
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
@@ -242,9 +240,7 @@ class Logger:
             if issubclass(exc_type, KeyboardInterrupt):
                 sys.__excepthook__(exc_type, exc_value, exc_traceback)
                 return
-            logger.critical(
-                "Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback)
-            )
+            logger.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
 
         sys.excepthook = handle_exception
 

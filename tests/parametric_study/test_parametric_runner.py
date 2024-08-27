@@ -131,9 +131,7 @@ def test_create_single_bead_input():
     material = AdditiveMaterial(elastic_modulus=456)
 
     # act
-    input = ParametricRunner._create_single_bead_input(
-        series, material=material, machine=machine
-    )
+    input = ParametricRunner._create_single_bead_input(series, material=material, machine=machine)
 
     # assert
     assert isinstance(input, SingleBeadInput)
@@ -161,9 +159,7 @@ def test_create_porosity_input():
     material = AdditiveMaterial(elastic_modulus=456)
 
     # act
-    input = ParametricRunner._create_porosity_input(
-        series, material=material, machine=machine
-    )
+    input = ParametricRunner._create_porosity_input(series, material=material, machine=machine)
 
     # assert
     assert isinstance(input, PorosityInput)

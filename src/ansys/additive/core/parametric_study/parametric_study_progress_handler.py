@@ -30,11 +30,7 @@ from google.longrunning.operations_pb2 import GetOperationRequest
 from ansys.additive.core import LOG, Additive
 from ansys.additive.core.microstructure import Microstructure2DResult
 from ansys.additive.core.parametric_study import ParametricStudy
-from ansys.additive.core.progress_handler import (
-    IProgressHandler,
-    Progress,
-    ProgressState,
-)
+from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
 from ansys.additive.core.simulation import SimulationStatus
 from ansys.additive.core.single_bead import MeltPool
 
@@ -146,9 +142,7 @@ class ParametricStudyProgressHandler(IProgressHandler):
                 melt_pool = MeltPool(response.melt_pool)
                 self._study._update_single_bead(sim_id, melt_pool)
             elif response.HasField("porosity_result"):
-                self._study._update_porosity(
-                    sim_id, response.porosity_result.solid_ratio
-                )
+                self._study._update_porosity(sim_id, response.porosity_result.solid_ratio)
             elif response.HasField("microstructure_result"):
                 result = Microstructure2DResult(
                     response.microstructure_result, tempfile.TemporaryDirectory().name
