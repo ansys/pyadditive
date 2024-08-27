@@ -96,11 +96,16 @@ class ParametricStudy:
             self.__dict__ = ParametricStudy.load(study_path).__dict__
         else:
             self._init_new_study(study_path)
-        print(f"Saving parametric study to {self.file_name}")
+        LOG.info(f"Saving parametric study to {self.file_name}")
+        self._runner = ParametricRunner()
 
     def _init_new_study(self, study_path: pathlib.Path):
         self._file_name = study_path
-        columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
+        columns = [
+            getattr(ColumnNames, k)
+            for k in ColumnNames.__dict__
+            if not k.startswith("_")
+        ]
         self._data_frame = pd.DataFrame(columns=columns)
         self._format_version = FORMAT_VERSION
         self.save(self.file_name)
@@ -141,9 +146,17 @@ class ParametricStudy:
             raise ValueError(f"{file_name} does not exist.")
 
         # The first column of the CSV file is expected to be the index column.
-        columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
-        if all([set(pd.read_csv(file_path, index_col=0, nrows=0).columns) == set(columns)]):
-            return self.add_simulations_from_data_frame(pd.read_csv(file_path, index_col=0))
+        columns = [
+            getattr(ColumnNames, k)
+            for k in ColumnNames.__dict__
+            if not k.startswith("_")
+        ]
+        if all(
+            [set(pd.read_csv(file_path, index_col=0, nrows=0).columns) == set(columns)]
+        ):
+            return self.add_simulations_from_data_frame(
+                pd.read_csv(file_path, index_col=0)
+            )
         else:
             raise ValueError(f"{file_name} does not have the expected columns.")
 
@@ -214,12 +227,20 @@ class ParametricStudy:
             LOG.warning("None of the input simulations meet the criteria selected")
             return
 
-        summaries = ParametricRunner.simulate(
-            filtered_dataframe,
-            additive,
-            progress_handler,
-        )
-        self.update(summaries)
+        ids = filtered_dataframe[ColumnNames.ID].array
+        self.set_simulation_status(ids, SimulationStatus.PENDING)
+        self.clear_errors(ids)
+
+        try:
+            summaries = self._runner.simulate(
+                filtered_dataframe,
+                additive,
+                progress_handler,
+            )
+            self.update(summaries)
+        except Exception as e:
+            LOG.error(f"Error running simulations: {e}")
+            self.reset_simulation_status()
 
     def save(self, file_name: str | os.PathLike):
         """Save the parametric study to a file.
@@ -280,16 +301,39 @@ class ParametricStudy:
 
         study.file_name = file_name
         study = ParametricStudy.update_format(study)
-        study.reset_status()
+        study.reset_simulation_status()
         return study
 
     @save_on_return
-    def reset_status(self):
+    def reset_simulation_status(self):
         """Reset the status of any ``Pending`` or ``Running`` simulations to ``New``."""
-        df = self._data_frame
-        df[df[ColumnNames.STATUS].isin([SimulationStatus.PENDING, SimulationStatus.RUNNING])][
-            ColumnNames.STATUS
-        ] = SimulationStatus.NEW
+        idx = self._data_frame[
+            self._data_frame[ColumnNames.STATUS].isin(
+                [SimulationStatus.PENDING, SimulationStatus.RUNNING]
+            )
+        ].index
+        self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.NEW
+
+    @save_on_return
+    def clear_errors(self, simulation_ids: list[str] | None = None):
+        """Clear the error messages for the specified simulations.
+
+        Parameters
+        ----------
+        simulation_ids : list[str], default: None
+            List of simulation IDs to clear the error messages for. If this value
+            is ``None``, all error messages are cleared.
+        """
+        LOG.debug(
+            f"Clearing errors {', '.join(simulation_ids) if simulation_ids else ''}"
+        )
+        if simulation_ids is None:
+            idx = self._data_frame.index
+        else:
+            idx = self._data_frame[
+                self._data_frame[ColumnNames.ID].isin(simulation_ids)
+            ].index
+        self._data_frame.loc[idx, ColumnNames.ERROR_MESSAGE] = None
 
     @save_on_return
     def add_summaries(
@@ -333,7 +377,9 @@ class ParametricStudy:
         self, summary: SingleBeadSummary, iteration: int = DEFAULT_ITERATION
     ):
         mp = summary.melt_pool
-        br = build_rate(summary.input.machine.scan_speed, summary.input.machine.layer_thickness)
+        br = build_rate(
+            summary.input.machine.scan_speed, summary.input.machine.layer_thickness
+        )
         ed = energy_density(
             summary.input.machine.laser_power,
             summary.input.machine.scan_speed,
@@ -355,9 +401,13 @@ class ParametricStudy:
                 ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH: mp.depth_over_width(),
             }
         )
-        self._data_frame = pd.concat([self._data_frame, row.to_frame().T], ignore_index=True)
+        self._data_frame = pd.concat(
+            [self._data_frame, row.to_frame().T], ignore_index=True
+        )
 
-    def _add_porosity_summary(self, summary: PorositySummary, iteration: int = DEFAULT_ITERATION):
+    def _add_porosity_summary(
+        self, summary: PorositySummary, iteration: int = DEFAULT_ITERATION
+    ):
         br = build_rate(
             summary.input.machine.scan_speed,
             summary.input.machine.layer_thickness,
@@ -381,7 +431,9 @@ class ParametricStudy:
                 ColumnNames.RELATIVE_DENSITY: summary.relative_density,
             }
         )
-        self._data_frame = pd.concat([self._data_frame, row.to_frame().T], ignore_index=True)
+        self._data_frame = pd.concat(
+            [self._data_frame, row.to_frame().T], ignore_index=True
+        )
 
     def _add_microstructure_summary(
         self, summary: MicrostructureSummary, iteration: int = DEFAULT_ITERATION
@@ -397,7 +449,9 @@ class ParametricStudy:
             summary.input.machine.layer_thickness,
             summary.input.machine.hatch_spacing,
         )
-        random_seed = summary.input.random_seed if summary.input.random_seed > 0 else np.nan
+        random_seed = (
+            summary.input.random_seed if summary.input.random_seed > 0 else np.nan
+        )
         cooling_rate = thermal_gradient = melt_pool_width = melt_pool_depth = np.nan
         if summary.input.use_provided_thermal_parameters:
             cooling_rate = summary.input.cooling_rate
@@ -428,7 +482,9 @@ class ParametricStudy:
                 ColumnNames.YZ_AVERAGE_GRAIN_SIZE: summary.yz_average_grain_size,
             }
         )
-        self._data_frame = pd.concat([self._data_frame, row.to_frame().T], ignore_index=True)
+        self._data_frame = pd.concat(
+            [self._data_frame, row.to_frame().T], ignore_index=True
+        )
 
     def _common_param_to_dict(
         self,
@@ -784,7 +840,7 @@ class ParametricStudy:
                                                     hatch_spacing=h,
                                                     slicing_stripe_width=w,
                                                 )
-                                                input = PorosityInput(
+                                                PorosityInput(
                                                     size_x=size_x,
                                                     size_y=size_y,
                                                     size_z=size_z,
@@ -792,7 +848,9 @@ class ParametricStudy:
                                                     material=AdditiveMaterial(),
                                                 )
                                             except ValueError as e:
-                                                print(f"Invalid parameter combination: {e}")
+                                                LOG.error(
+                                                    f"Invalid parameter combination: {e}"
+                                                )
                                                 continue
 
                                             # add row to parametric study data frame
@@ -1054,9 +1112,15 @@ class ParametricStudy:
         if use_thermal_params:
             # set any uninitialized thermal parameters to default values
             cooling_rate = cooling_rate or MicrostructureInput.DEFAULT_COOLING_RATE
-            thermal_gradient = thermal_gradient or MicrostructureInput.DEFAULT_THERMAL_GRADIENT
-            melt_pool_width = melt_pool_width or MicrostructureInput.DEFAULT_MELT_POOL_WIDTH
-            melt_pool_depth = melt_pool_depth or MicrostructureInput.DEFAULT_MELT_POOL_DEPTH
+            thermal_gradient = (
+                thermal_gradient or MicrostructureInput.DEFAULT_THERMAL_GRADIENT
+            )
+            melt_pool_width = (
+                melt_pool_width or MicrostructureInput.DEFAULT_MELT_POOL_WIDTH
+            )
+            melt_pool_depth = (
+                melt_pool_depth or MicrostructureInput.DEFAULT_MELT_POOL_DEPTH
+            )
 
         num_permutations_added = int()
         for p in laser_powers:
@@ -1086,7 +1150,7 @@ class ParametricStudy:
                                                     hatch_spacing=h,
                                                     slicing_stripe_width=w,
                                                 )
-                                                input = MicrostructureInput(
+                                                MicrostructureInput(
                                                     sample_min_x=min_x,
                                                     sample_min_y=min_y,
                                                     sample_min_z=min_z,
@@ -1129,7 +1193,9 @@ class ParametricStudy:
                                                     material=AdditiveMaterial(),
                                                 )
                                             except ValueError as e:
-                                                print(f"Invalid parameter combination: {e}")
+                                                LOG.error(
+                                                    f"Invalid parameter combination: {e}"
+                                                )
                                                 continue
 
                                             # add row to parametric study data frame
@@ -1199,7 +1265,10 @@ class ParametricStudy:
     def update(
         self,
         summaries: list[
-            SingleBeadSummary | PorositySummary | MicrostructureSummary | SimulationError
+            SingleBeadSummary
+            | PorositySummary
+            | MicrostructureSummary
+            | SimulationError
         ],
     ):
         """Update the results of simulations in the parametric study.
@@ -1226,7 +1295,9 @@ class ParametricStudy:
                     summary.yz_average_grain_size,
                 )
             elif isinstance(summary, SimulationError):
-                idx = self._data_frame[self._data_frame[ColumnNames.ID] == summary.input.id].index
+                idx = self._data_frame[
+                    self._data_frame[ColumnNames.ID] == summary.input.id
+                ].index
                 self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.ERROR
                 self._data_frame.loc[idx, ColumnNames.ERROR_MESSAGE] = summary.message
             else:
@@ -1240,21 +1311,27 @@ class ParametricStudy:
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD)
         ].index
         self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_WIDTH] = melt_pool.median_width()
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_DEPTH] = melt_pool.median_depth()
-        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH] = melt_pool.median_length()
-        self._data_frame.loc[
-            idx, ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH
-        ] = melt_pool.length_over_width()
-        self._data_frame.loc[
-            idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH
-        ] = melt_pool.median_reference_depth()
-        self._data_frame.loc[
-            idx, ColumnNames.MELT_POOL_REFERENCE_WIDTH
-        ] = melt_pool.median_reference_width()
-        self._data_frame.loc[
-            idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH
-        ] = melt_pool.depth_over_width()
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_WIDTH] = (
+            melt_pool.median_width()
+        )
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_DEPTH] = (
+            melt_pool.median_depth()
+        )
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH] = (
+            melt_pool.median_length()
+        )
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] = (
+            melt_pool.length_over_width()
+        )
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH] = (
+            melt_pool.median_reference_depth()
+        )
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_WIDTH] = (
+            melt_pool.median_reference_width()
+        )
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] = (
+            melt_pool.depth_over_width()
+        )
 
     def _update_porosity(self, id: str, relative_density: float):
         """Update the results of a porosity simulation in the parametric study
@@ -1268,7 +1345,11 @@ class ParametricStudy:
         self._data_frame.loc[idx, ColumnNames.RELATIVE_DENSITY] = relative_density
 
     def _update_microstructure(
-        self, id: str, xy_avg_grain_size: float, xz_avg_grain_size: float, yz_avg_grain_size: float
+        self,
+        id: str,
+        xy_avg_grain_size: float,
+        xz_avg_grain_size: float,
+        yz_avg_grain_size: float,
     ):
         """Update the results of a microstructure simulation in the parametric
         study data frame."""
@@ -1389,7 +1470,9 @@ class ParametricStudy:
         # - Completed simulations will be overwritten by newer completed simulations if overwrite is True
 
         column_names = [
-            getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")
+            getattr(ColumnNames, k)
+            for k in ColumnNames.__dict__
+            if not k.startswith("_")
         ]
         sorted_df = pd.DataFrame(columns=column_names)
         duplicates_removed_df = pd.DataFrame(columns=column_names)
@@ -1403,7 +1486,10 @@ class ParametricStudy:
         for status in SimulationStatus:
             if len(current_df[current_df[ColumnNames.STATUS] == status.value]) > 0:
                 sorted_df = pd.concat(
-                    [sorted_df, current_df[current_df[ColumnNames.STATUS] == status.value]],
+                    [
+                        sorted_df,
+                        current_df[current_df[ColumnNames.STATUS] == status.value],
+                    ],
                     ignore_index=True,
                 )
 
@@ -1450,9 +1536,13 @@ class ParametricStudy:
             ColumnNames.RANDOM_SEED,
         ]
 
-        single_bead_df = sorted_df[sorted_df[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD]
+        single_bead_df = sorted_df[
+            sorted_df[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD
+        ]
         porosity_df = sorted_df[sorted_df[ColumnNames.TYPE] == SimulationType.POROSITY]
-        microstructure_df = sorted_df[sorted_df[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE]
+        microstructure_df = sorted_df[
+            sorted_df[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE
+        ]
 
         if overwrite:
             # Drop duplicates and keep the latest completed simulation entry in case of adding a
@@ -1483,7 +1573,9 @@ class ParametricStudy:
                 duplicates_removed_df = pd.concat(
                     [
                         duplicates_removed_df,
-                        df.drop_duplicates(subset=params, ignore_index=True, keep="first"),
+                        df.drop_duplicates(
+                            subset=params, ignore_index=True, keep="first"
+                        ),
                     ]
                 )
 
@@ -1504,11 +1596,15 @@ class ParametricStudy:
         """
         if isinstance(ids, str):
             ids = [ids]
-        idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)].tolist()
+        idx = self._data_frame.index[
+            self._data_frame[ColumnNames.ID].isin(ids)
+        ].tolist()
         self._data_frame.drop(index=idx, inplace=True)
 
     @save_on_return
-    def set_status(self, ids: str | list[str], status: SimulationStatus, err_msg: str = ""):
+    def set_simulation_status(
+        self, ids: str | list[str], status: SimulationStatus, err_msg: str = ""
+    ):
         """Set the status of simulations in the parametric study.
 
         Parameters
@@ -1521,6 +1617,7 @@ class ParametricStudy:
         """
         if isinstance(ids, str):
             ids = [ids]
+        LOG.debug(f"Setting status of simulations {', '.join(ids)} to {status}.")
         idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)]
         self._data_frame.loc[idx, ColumnNames.STATUS] = status
         if status == SimulationStatus.ERROR:
@@ -1563,7 +1660,9 @@ class ParametricStudy:
         idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)]
         self._data_frame.loc[idx, ColumnNames.ITERATION] = iteration
 
-    def _create_unique_id(self, prefix: str | None = None, id: str | None = None) -> str:
+    def _create_unique_id(
+        self, prefix: str | None = None, id: str | None = None
+    ) -> str:
         """Create a unique simulation ID for a permutation.
 
         Parameters
@@ -1580,7 +1679,10 @@ class ParametricStudy:
             Unique ID.
         """
 
-        if id is not None and not self._data_frame[ColumnNames.ID].str.match(f"{id}").any():
+        if (
+            id is not None
+            and not self._data_frame[ColumnNames.ID].str.match(f"{id}").any()
+        ):
             return id
         _prefix = id or prefix or "sim"
         uid = f"{_prefix}_{misc.short_uuid(6)}"
@@ -1672,7 +1774,10 @@ class ParametricStudy:
             if row[ColumnNames.STATUS] in allowed_status:
                 valid, error = self._validate_input(row)
             else:
-                valid, error = (False, f"Invalid simulation status {row[ColumnNames.STATUS]}")
+                valid, error = (
+                    False,
+                    f"Invalid simulation status {row[ColumnNames.STATUS]}",
+                )
             if not valid:
                 drop_indices.append(index)
                 error_list.append(error)
@@ -1692,12 +1797,12 @@ class ParametricStudy:
                 )
 
         # convert priority, iteration, and random seed to int type explicitly
-        self._data_frame[ColumnNames.PRIORITY] = self._data_frame[ColumnNames.PRIORITY].astype(
-            pd.Int64Dtype()
-        )
-        self._data_frame[ColumnNames.ITERATION] = self._data_frame[ColumnNames.ITERATION].astype(
-            pd.Int64Dtype()
-        )
+        self._data_frame[ColumnNames.PRIORITY] = self._data_frame[
+            ColumnNames.PRIORITY
+        ].astype(pd.Int64Dtype())
+        self._data_frame[ColumnNames.ITERATION] = self._data_frame[
+            ColumnNames.ITERATION
+        ].astype(pd.Int64Dtype())
         self._data_frame[ColumnNames.RANDOM_SEED] = self._data_frame[
             ColumnNames.RANDOM_SEED
         ].astype(pd.Int64Dtype())
@@ -1734,15 +1839,21 @@ class ParametricStudy:
             # for other simulation types, nan values are not allowed
             if input[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
                 if np.isnan(input[ColumnNames.START_ANGLE]):
-                    input[ColumnNames.START_ANGLE] = MachineConstants.DEFAULT_STARTING_LAYER_ANGLE
+                    input[ColumnNames.START_ANGLE] = (
+                        MachineConstants.DEFAULT_STARTING_LAYER_ANGLE
+                    )
                 if np.isnan(input[ColumnNames.ROTATION_ANGLE]):
-                    input[
-                        ColumnNames.ROTATION_ANGLE
-                    ] = MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE
+                    input[ColumnNames.ROTATION_ANGLE] = (
+                        MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE
+                    )
                 if np.isnan(input[ColumnNames.HATCH_SPACING]):
-                    input[ColumnNames.HATCH_SPACING] = MachineConstants.DEFAULT_HATCH_SPACING
+                    input[ColumnNames.HATCH_SPACING] = (
+                        MachineConstants.DEFAULT_HATCH_SPACING
+                    )
                 if np.isnan(input[ColumnNames.STRIPE_WIDTH]):
-                    input[ColumnNames.STRIPE_WIDTH] = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH
+                    input[ColumnNames.STRIPE_WIDTH] = (
+                        MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH
+                    )
 
             machine = AdditiveMachine(
                 laser_power=input[ColumnNames.LASER_POWER],
@@ -1759,11 +1870,15 @@ class ParametricStudy:
             material = AdditiveMaterial(name=str(input[ColumnNames.MATERIAL]))
 
             if input[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
-                valid, error = self._validate_single_bead_input(machine, material, input)
+                valid, error = self._validate_single_bead_input(
+                    machine, material, input
+                )
             if input[ColumnNames.TYPE] == SimulationType.POROSITY:
                 valid, error = self._validate_porosity_input(machine, material, input)
             if input[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE:
-                valid, error = self._validate_microstructure_input(machine, material, input)
+                valid, error = self._validate_microstructure_input(
+                    machine, material, input
+                )
             if not valid:
                 return (False, error)
             return (True, "")
@@ -1891,17 +2006,24 @@ class ParametricStudy:
                 ),
                 thermal_gradient=(
                     MicrostructureInput.DEFAULT_THERMAL_GRADIENT
-                    if (test_thermal_gradient is None or math.isnan(test_thermal_gradient))
+                    if (
+                        test_thermal_gradient is None
+                        or math.isnan(test_thermal_gradient)
+                    )
                     else test_thermal_gradient
                 ),
                 melt_pool_width=(
                     MicrostructureInput.DEFAULT_MELT_POOL_WIDTH
-                    if (test_melt_pool_width is None or math.isnan(test_melt_pool_width))
+                    if (
+                        test_melt_pool_width is None or math.isnan(test_melt_pool_width)
+                    )
                     else test_melt_pool_width
                 ),
                 melt_pool_depth=(
                     MicrostructureInput.DEFAULT_MELT_POOL_DEPTH
-                    if (test_melt_pool_depth is None or math.isnan(test_melt_pool_depth))
+                    if (
+                        test_melt_pool_depth is None or math.isnan(test_melt_pool_depth)
+                    )
                     else test_melt_pool_depth
                 ),
                 random_seed=(
@@ -1957,7 +2079,9 @@ class ParametricStudy:
             simulation_ids_list = list()
             for sim_id in simulation_ids:
                 if sim_id not in view[ColumnNames.ID].values:
-                    LOG.warning(f"Simulation ID '{sim_id}' not found in the parametric study")
+                    LOG.warning(
+                        f"Simulation ID '{sim_id}' not found in the parametric study"
+                    )
                 elif sim_id in simulation_ids_list:
                     LOG.debug(f"Simulation ID '{sim_id}' has already been added")
                 else:

@@ -23,6 +23,7 @@
 
 import time
 
+from ansys.additive.core.logger import LOG
 from ansys.additive.core.progress_handler import IProgressHandler, Progress
 from ansys.additive.core.simulation_task import SimulationTask
 
@@ -75,11 +76,13 @@ class SimulationTaskManager:
         progress_handler: IProgressHandler, None, default: None
             Handler for progress updates. If ``None``, no progress updates are provided.
         """
+        LOG.debug(f"Waiting for {len(self._tasks)} tasks to complete")
         for t in self._tasks:
             t.wait(progress_handler=progress_handler)
 
     def cancel_all(self) -> None:
         """Cancel all simulations belonging to this simulation task manager."""
+        LOG.debug("Cancelling all tasks")
         for t in self._tasks:
             t.cancel()
             time.sleep(0.1)

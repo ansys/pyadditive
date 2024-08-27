@@ -30,7 +30,11 @@ from google.longrunning.operations_pb2 import GetOperationRequest
 from ansys.additive.core import LOG, Additive
 from ansys.additive.core.microstructure import Microstructure2DResult
 from ansys.additive.core.parametric_study import ParametricStudy
-from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
+from ansys.additive.core.progress_handler import (
+    IProgressHandler,
+    Progress,
+    ProgressState,
+)
 from ansys.additive.core.simulation import SimulationStatus
 from ansys.additive.core.single_bead import MeltPool
 
@@ -56,6 +60,10 @@ class ParametricStudyProgressHandler(IProgressHandler):
         self._study_lock = threading.Lock()
         self._study = study
         self._additive = additive
+        # Store the last state of each simulation to avoid
+        # unnecessary disk writes when setting the simulation status
+        # on the study.
+        self._last_progress_states = {}
 
     def update(self, progress: Progress) -> None:
         """Update the progress of a simulation.
@@ -65,6 +73,13 @@ class ParametricStudyProgressHandler(IProgressHandler):
         progress : Progress
             Progress information for the simulation.
         """
+        if (
+            progress.sim_id in self._last_progress_states
+            and progress.state == self._last_progress_states[progress.sim_id]
+        ):
+            return
+
+        LOG.debug(f"Updating progress for {progress.sim_id}")
 
         if progress.state == ProgressState.WAITING:
             self._update_simulation_status(progress.sim_id, SimulationStatus.PENDING)
@@ -82,6 +97,8 @@ class ParametricStudyProgressHandler(IProgressHandler):
             self._update_simulation_results(progress.sim_id)
             self._update_simulation_status(progress.sim_id, SimulationStatus.COMPLETED)
 
+        self._last_progress_states[progress.sim_id] = progress.state
+
     def _update_simulation_status(
         self, sim_id: str, status: SimulationStatus, message: str = None
     ) -> None:
@@ -98,7 +115,7 @@ class ParametricStudyProgressHandler(IProgressHandler):
         """
 
         with self._study_lock:
-            self._study.set_status(sim_id, status, message)
+            self._study.set_simulation_status(sim_id, status, message)
 
     def _update_simulation_results(self, sim_id: str) -> None:
         """Update the results of a completed simulation.
@@ -129,7 +146,9 @@ class ParametricStudyProgressHandler(IProgressHandler):
                 melt_pool = MeltPool(response.melt_pool)
                 self._study._update_single_bead(sim_id, melt_pool)
             elif response.HasField("porosity_result"):
-                self._study._update_porosity(sim_id, response.porosity_result.solid_ratio)
+                self._study._update_porosity(
+                    sim_id, response.porosity_result.solid_ratio
+                )
             elif response.HasField("microstructure_result"):
                 result = Microstructure2DResult(
                     response.microstructure_result, tempfile.TemporaryDirectory().name

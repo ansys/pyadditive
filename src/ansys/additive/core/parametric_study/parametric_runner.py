@@ -46,12 +46,14 @@ from ansys.additive.core.simulation import SimulationError
 class ParametricRunner:
     """Provides methods to run parametric study simulations."""
 
-    @staticmethod
     def simulate(
+        self,
         df: pd.DataFrame,
         additive: Additive,
         progress_handler: IProgressHandler = None,
-    ) -> list[SingleBeadSummary, PorositySummary, MicrostructureSummary, SimulationError]:
+    ) -> list[
+        SingleBeadSummary, PorositySummary, MicrostructureSummary, SimulationError
+    ]:
         """Run the simulations in the parametric study.
 
         Execution order is determined by the ``Priority`` value assigned to the simulations.
@@ -86,20 +88,35 @@ class ParametricRunner:
             machine = ParametricRunner._create_machine(row)
             sim_type = row[ColumnNames.TYPE]
             if sim_type == SimulationType.SINGLE_BEAD:
-                inputs.append(ParametricRunner._create_single_bead_input(row, material, machine))
+                inputs.append(
+                    ParametricRunner._create_single_bead_input(row, material, machine)
+                )
             elif sim_type == SimulationType.POROSITY:
-                inputs.append(ParametricRunner._create_porosity_input(row, material, machine))
+                inputs.append(
+                    ParametricRunner._create_porosity_input(row, material, machine)
+                )
             elif sim_type == SimulationType.MICROSTRUCTURE:
-                inputs.append(ParametricRunner._create_microstructure_input(row, material, machine))
+                inputs.append(
+                    ParametricRunner._create_microstructure_input(
+                        row, material, machine
+                    )
+                )
             else:  # pragma: no cover
                 LOG.warning(
                     f"Invalid simulation type: {row[ColumnNames.TYPE]} for {row[ColumnNames.ID]}, skipping"
                 )
                 continue
 
-        summaries = additive.simulate(inputs, progress_handler)
+        # self.running_tasks = additive.simulate_async(inputs, progress_handler)
+        # self.running_tasks.wait_all(progress_handler=progress_handler)
 
+        # return self.running_tasks.summaries
+        summaries = additive.simulate(inputs, progress_handler)
         return summaries
+
+    # def cancel(self):
+    #     if self.running_tasks:
+    #         self.running_tasks.cancel_all()
 
     @staticmethod
     def _create_machine(row: pd.Series) -> AdditiveMachine:

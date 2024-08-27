@@ -67,6 +67,7 @@ add a file handler with this code:
    file_path = os.path.join(os.getcwd(), "pyadditive.log")
    LOG.log_to_file(file_path)
 """
+
 import logging
 import sys
 
@@ -77,8 +78,11 @@ LOG_LEVEL = logging.DEBUG
 FILE_NAME = "pyadditive.log"
 
 # Formatting
-STDOUT_MSG_FORMAT = "%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(message)s"
+STDOUT_MSG_FORMAT = (
+    "%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(message)s"
+)
 FILE_MSG_FORMAT = STDOUT_MSG_FORMAT
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
 def is_notebook() -> bool:
@@ -164,7 +168,7 @@ class Logger:
     """
 
     file_handler = None
-    std_out_handler = None
+    stdout_handler = None
     _level = logging.DEBUG
     _instances = {}
 
@@ -238,9 +242,26 @@ class Logger:
             if issubclass(exc_type, KeyboardInterrupt):
                 sys.__excepthook__(exc_type, exc_value, exc_traceback)
                 return
-            logger.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+            logger.critical(
+                "Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback)
+            )
 
         sys.excepthook = handle_exception
+
+    def setLevel(self, level: str | int) -> None:
+        """Set the logging level for the logger.
+
+        Parameters
+        ----------
+        level : str or int
+            Logging level to filter the message severity allowed in the logger.
+            If int, it must be one of the levels defined in the :obj:`~logging` module.
+            Valid string values are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``, ``"ERROR"``,
+            and ``"CRITICAL"``.
+        """
+        self.logger.setLevel(level)
+        for handler in self.logger.handlers:
+            handler.setLevel(level)
 
 
 def addfile_handler(logger, filename=FILE_NAME, level=LOG_LEVEL):
@@ -290,16 +311,16 @@ def add_stdout_handler(logger, level=LOG_LEVEL):
     Logger
         :class:`Logger` or :class:`logging.Logger` object.
     """
-    std_out_handler = logging.StreamHandler()
-    std_out_handler.setLevel(level)
-    std_out_handler.setFormatter(PyAdditiveFormatter(STDOUT_MSG_FORMAT))
+    stdout_handler = logging.StreamHandler()
+    stdout_handler.setLevel(level)
+    stdout_handler.setFormatter(PyAdditiveFormatter(STDOUT_MSG_FORMAT, DATE_FORMAT))
 
     if isinstance(logger, Logger):
-        logger.std_out_handler = std_out_handler
-        logger.logger.addHandler(std_out_handler)
+        logger.stdout_handler = stdout_handler
+        logger.logger.addHandler(stdout_handler)
 
     elif isinstance(logger, logging.Logger):
-        logger.addHandler(std_out_handler)
+        logger.addHandler(stdout_handler)
 
     return logger
 
