@@ -36,6 +36,7 @@ for of parametric study results. An example is available at
 
 Units are SI (m, kg, s, K) unless otherwise noted.
 """
+
 ###############################################################################
 # Perform required imports and create a study
 # -------------------------------------------
@@ -136,7 +137,7 @@ ids = df.loc[
     (df[ColumnNames.LASER_POWER] < 75) & (df[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD),
     ColumnNames.ID,
 ].tolist()
-study.set_status(ids, SimulationStatus.SKIP)
+study.set_simulation_status(ids, SimulationStatus.SKIP)
 print(study.data_frame()[[ColumnNames.ID, ColumnNames.TYPE, ColumnNames.STATUS]])
 
 ###############################################################################

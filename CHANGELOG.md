@@ -5,6 +5,7 @@
 ### Breaking Changes
 * Simulation inputs no longer allow setting the id field.
 * Removed nsims_per_server property from Additive class.
+* ParametricStudy.set_status() has been changed to ParametricStudy.set_simulation_status().
 
 ### New Features
 * Default version of Additive Server is 25.1 when creating a client connection.
