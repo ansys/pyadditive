@@ -440,8 +440,6 @@ class Additive:
             simulation_task = SimulationTask(
                 server, errored_op, simulation_input, self._user_data_path
             )
-            if progress_handler:
-                progress_handler.update_exception(simulation_input, e)
 
         if progress_handler:
             time.sleep(0.1)  # Allow time for the server to start the simulation
