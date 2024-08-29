@@ -2295,7 +2295,7 @@ def test_simulation_inputs_calls_filter_data_frame(
     study.simulation_inputs(mock_client_call)
 
     # assert
-    assert mock_filter_data_frame.called_once()
+    mock_filter_data_frame.assert_called_once()
 
 
 def test_simulation_inputs_calls_client_call_for_material(
