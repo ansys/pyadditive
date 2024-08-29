@@ -105,11 +105,6 @@ class SimulationTask:
         """
         return self._summary
 
-    @property
-    def completed(self) -> bool:
-        """Return ``True`` if the simulation is completed."""
-        return self._summary is not None
-
     def status(self) -> Progress:
         """Fetch status from the server to update progress and results.
 
@@ -174,7 +169,7 @@ class SimulationTask:
 
     @property
     def done(self) -> bool:
-        """Check if the simulation is completed."""
+        """Check if the task is completed."""
         return self._long_running_op.done
 
     @staticmethod
