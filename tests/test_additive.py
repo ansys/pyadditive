@@ -22,7 +22,8 @@
 
 import logging
 import pathlib
-from unittest.mock import ANY, MagicMock, Mock, call, create_autospec, patch
+from unittest import mock
+from unittest.mock import ANY, MagicMock, Mock, PropertyMock, call, create_autospec, patch
 
 from ansys.api.additive import __version__ as api_version
 import ansys.api.additive.v0.about_pb2_grpc
@@ -72,9 +73,15 @@ import ansys.additive.core.additive
 from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput
+from ansys.additive.core.parametric_study.constants import ColumnNames
+from ansys.additive.core.parametric_study.parametric_study import ParametricStudy
+from ansys.additive.core.parametric_study.parametric_study_progress_handler import (
+    ParametricStudyProgressHandler,
+)
 from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
 import ansys.additive.core.server_connection.server_connection
+from ansys.additive.core.simulation import SimulationStatus, SimulationType
 import ansys.additive.core.simulation_task
 from ansys.additive.core.simulation_task_manager import SimulationTaskManager
 from ansys.additive.core.single_bead import SingleBeadSummary
@@ -472,6 +479,94 @@ def test_simulate_async_with_input_list_calls_internal_simulate_n_times(connecti
     assert _simulate_patch.call_count == len(inputs)
     calls = [call(i, ANY, None) for i in inputs]
     _simulate_patch.assert_has_calls(calls, any_order=True)
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_simulate_study_async_performs_expected_steps(tmp_path: pathlib.Path):
+    # arrange
+    additive = Additive()
+    additive.simulate_async = MagicMock(return_value=SimulationTaskManager())
+    material = AdditiveMaterial(name="material")
+    additive.material = Mock(return_value=material)
+    sb = SingleBeadInput(material=material)
+    p = PorosityInput(material=material)
+    inputs = [sb, p]
+    study = ParametricStudy(tmp_path / "test-study", "material")
+    study.add_inputs(inputs)
+    study._data_frame[ColumnNames.ERROR_MESSAGE] = "error message"
+
+    # act
+    task_mgr = additive.simulate_study_async(study)
+
+    # assert
+    assert isinstance(task_mgr, SimulationTaskManager)
+    assert all(s == SimulationStatus.PENDING for s in study.data_frame()[ColumnNames.STATUS].values)
+    assert all(e is None for e in study.data_frame()[ColumnNames.ERROR_MESSAGE].values)
+    additive.simulate_async.assert_called_once_with(inputs, None)
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_simulate_study_async_passes_params_to_simulation_inputs(_, tmp_path: pathlib.Path):
+    # arrange
+    additive = Additive()
+    additive.simulate_async = MagicMock(return_value=SimulationTaskManager())
+    material = AdditiveMaterial(name="material")
+    additive.material = Mock(return_value=material)
+    sb = SingleBeadInput(material=material)
+    p = PorosityInput(material=material)
+    inputs = [sb, p]
+    study = ParametricStudy(tmp_path / "test-study", "material")
+    study.add_inputs(inputs)
+    study._data_frame[ColumnNames.ERROR_MESSAGE] = "error message"
+    study.simulation_inputs = Mock(return_value=inputs)
+    # Since we're mocking simulation_inputs(), we need to mock the save method
+    study.save = MagicMock()
+    sim_ids = [sb.id, p.id]
+    types = [SimulationType.SINGLE_BEAD, SimulationType.POROSITY]
+    priority = 0
+    iteration = 1
+
+    # act
+    additive.simulate_study_async(study, sim_ids, types, priority, iteration)
+
+    # assert
+    study.simulation_inputs.assert_called_once_with(
+        additive.material, sim_ids, types, priority, iteration
+    )
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_simulate_study_performs_expected_steps(_, tmp_path: pathlib.Path):
+    # arrange
+    additive = Additive()
+    mock_task_mgr = Mock(SimulationTaskManager)
+    mock_done = PropertyMock(side_effect=[False, True])
+    type(mock_task_mgr).done = mock_done
+    mock_summaries_list = [test_utils.get_test_SingleBeadSummary()]
+    mock_task_mgr.summaries.return_value = mock_summaries_list
+    mock_task_mgr.status = Mock(SimulationTaskManager.status)
+    additive.simulate_study_async = MagicMock(return_value=mock_task_mgr)
+    sb = SingleBeadInput()
+    p = PorosityInput()
+    inputs = [sb, p]
+    study = ParametricStudy(tmp_path / "test-study", "material")
+    study.add_inputs(inputs)
+    study.update = MagicMock()
+    simIds = [sb.id, p.id]
+    types = [SimulationType.SINGLE_BEAD, SimulationType.POROSITY]
+    priority = 0
+    iteration = 1
+
+    # act
+    additive.simulate_study(study, simIds, types, priority, iteration)
+
+    # assert
+    additive.simulate_study_async.assert_called_once_with(
+        study, simIds, types, priority, iteration, mock.ANY
+    )
+    assert isinstance(additive.simulate_study_async.call_args[0][5], ParametricStudyProgressHandler)
+    mock_task_mgr.status.assert_called_once()
+    assert isinstance(mock_task_mgr.status.call_args[0][0], ParametricStudyProgressHandler)
 
 
 @pytest.mark.parametrize(

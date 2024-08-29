@@ -131,6 +131,7 @@ class SimulationTask:
 
     def wait(
         self,
+        *,
         progress_update_interval: int = 5,
         progress_handler: IProgressHandler | None = None,
     ) -> None:
@@ -170,6 +171,11 @@ class SimulationTask:
         LOG.debug(f"Cancelling {self._long_running_op.name}")
         request = CancelOperationRequest(name=self._long_running_op.name)
         self._server.operations_stub.CancelOperation(request)
+
+    @property
+    def done(self) -> bool:
+        """Check if the simulation is completed."""
+        return self._long_running_op.done
 
     @staticmethod
     def _convert_metadata_to_progress(

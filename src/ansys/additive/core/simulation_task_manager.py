@@ -35,6 +35,16 @@ class SimulationTaskManager:
         """Initialize the simulation task manager."""
         self._tasks: list[SimulationTask] = []
 
+    @property
+    def tasks(self) -> list[SimulationTask]:
+        """Get the list of tasks managed by this manager."""
+        return self._tasks
+
+    @property
+    def done(self) -> bool:
+        """Check if all tasks are done."""
+        return all(t.done for t in self._tasks)
+
     def add_task(self, task: SimulationTask):
         """Add a task to this manager.
 
@@ -62,8 +72,10 @@ class SimulationTaskManager:
         status_all = []
 
         for t in self._tasks:
-            progress = t.status(progress_handler)
+            progress = t.status()
             status_all.append((progress.sim_id, progress))
+            if progress_handler:
+                progress_handler.update(progress)
 
         return status_all
 
