@@ -1161,8 +1161,7 @@ class ParametricStudy:
         """Update the results of simulations in the parametric study.
 
         This method updates values for existing simulations in the parametric study. To add
-        completed simulations, use the :meth:`add_summaries` method instead. This method is
-        automatically called by the :meth:`run_simulations` method when simulations are completed.
+        completed simulations, use the :meth:`add_summaries` method instead.
 
         Parameters
         ----------
