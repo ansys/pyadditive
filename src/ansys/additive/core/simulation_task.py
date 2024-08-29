@@ -105,11 +105,6 @@ class SimulationTask:
         """
         return self._summary
 
-    @property
-    def completed(self) -> bool:
-        """Return ``True`` if the simulation is completed."""
-        return self._summary is not None
-
     def status(self) -> Progress:
         """Fetch status from the server to update progress and results.
 
@@ -131,6 +126,7 @@ class SimulationTask:
 
     def wait(
         self,
+        *,
         progress_update_interval: int = 5,
         progress_handler: IProgressHandler | None = None,
     ) -> None:
@@ -170,6 +166,11 @@ class SimulationTask:
         LOG.debug(f"Cancelling {self._long_running_op.name}")
         request = CancelOperationRequest(name=self._long_running_op.name)
         self._server.operations_stub.CancelOperation(request)
+
+    @property
+    def done(self) -> bool:
+        """Check if the task is completed."""
+        return self._long_running_op.done
 
     @staticmethod
     def _convert_metadata_to_progress(

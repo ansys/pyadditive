@@ -20,14 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides data storage and utility methods for a parametric study."""
+
 from ansys.additive.core.parametric_study.constants import (  # noqa: F401
     DEFAULT_ITERATION,
     DEFAULT_PRIORITY,
     FORMAT_VERSION,
     ColumnNames,
 )
-from ansys.additive.core.parametric_study.parametric_runner import ParametricRunner  # noqa: F401
 from ansys.additive.core.parametric_study.parametric_study import ParametricStudy  # noqa: F401
+from ansys.additive.core.parametric_study.parametric_study_progress_handler import (  # noqa: F401
+    ParametricStudyProgressHandler,
+)
 from ansys.additive.core.parametric_study.parametric_utils import (  # noqa: F401
     build_rate,
     energy_density,

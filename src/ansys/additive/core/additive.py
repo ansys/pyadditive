@@ -46,13 +46,17 @@ from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTun
 from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
 from ansys.additive.core.microstructure_3d import Microstructure3DInput, Microstructure3DSummary
 import ansys.additive.core.misc as misc
+from ansys.additive.core.parametric_study import ParametricStudy
+from ansys.additive.core.parametric_study.parametric_study_progress_handler import (
+    ParametricStudyProgressHandler,
+)
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
 from ansys.additive.core.progress_handler import (
     DefaultSingleSimulationProgressHandler,
     IProgressHandler,
 )
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
-from ansys.additive.core.simulation import SimulationError
+from ansys.additive.core.simulation import SimulationError, SimulationStatus, SimulationType
 from ansys.additive.core.simulation_requests import _create_request
 from ansys.additive.core.simulation_task import SimulationTask
 from ansys.additive.core.simulation_task_manager import SimulationTaskManager
@@ -436,6 +440,7 @@ class Additive:
             simulation_task = SimulationTask(
                 server, errored_op, simulation_input, self._user_data_path
             )
+
         if progress_handler:
             time.sleep(0.1)  # Allow time for the server to start the simulation
             progress_handler.update(simulation_task.status())
@@ -626,6 +631,97 @@ class Additive:
             raise Exception("Material tuning result not found")
 
         return MaterialTuningSummary(input, response.result, out_dir)
+
+    def simulate_study(
+        self,
+        study: ParametricStudy,
+        simulation_ids: list[str] | None = None,
+        types: list[SimulationType] | None = None,
+        priority: int | None = None,
+        iteration: int = None,
+    ):
+        """Run the simulations in a parametric study.
+
+        Parameters
+        ----------
+        study : ParametricStudy
+            Parametric study to run.
+        simulation_ids : list[str], default: None
+            List of simulation IDs to run. If this value is ``None``,
+            all simulations with a status of ``Pending`` are run.
+        types : list[SimulationType], default: None
+            Type of simulations to run. If this value is ``None``,
+            all simulation types are run.
+        priority : int, default: None
+            Priority of simulations to run. If this value is ``None``,
+            all priorities are run.
+        iteration : int, default: None
+            Iteration number of simulations to run. The default is ``None``,
+            all iterations are run.
+        progress_handler : IProgressHandler, None, default: None
+            Handler for progress updates. If ``None``, a :class:`ParametricStudyProcessHandler` will be used.
+        """
+        SLEEP_INTERVAL = 2
+        progress_handler = ParametricStudyProgressHandler(study)
+        num_summaries = 0
+
+        try:
+            task_mgr = self.simulate_study_async(
+                study, simulation_ids, types, priority, iteration, progress_handler
+            )
+            # Allow time for the server to start the simulations
+            time.sleep(SLEEP_INTERVAL)
+            while not task_mgr.done:
+                task_mgr.status(progress_handler)
+                if len(task_mgr.summaries()) > num_summaries:
+                    # TODO: Only update the study with new summaries
+                    study.update(task_mgr.summaries())
+                    num_summaries = len(task_mgr.summaries())
+                time.sleep(SLEEP_INTERVAL)
+
+        except Exception as e:
+            LOG.error(f"Error running study: {e}")
+            study.reset_simulation_status()
+            raise RuntimeError() from e
+
+    def simulate_study_async(
+        self,
+        study: ParametricStudy,
+        simulation_ids: list[str] | None = None,
+        types: list[SimulationType] | None = None,
+        priority: int | None = None,
+        iteration: int = None,
+        progress_handler: IProgressHandler = None,
+    ) -> SimulationTaskManager:
+        """Run the simulations in a parametric study asynchronously.
+
+        Parameters
+        ----------
+        study : ParametricStudy
+            Parametric study to run.
+        simulation_ids : list[str], default: None
+            List of simulation IDs to run. If this value is ``None``,
+            all simulations with a status of ``Pending`` are run.
+        types : list[SimulationType], default: None
+            Type of simulations to run. If this value is ``None``,
+            all simulation types are run.
+        priority : int, default: None
+            Priority of simulations to run. If this value is ``None``,
+            all priorities are run.
+        iteration : int, default: None
+            Iteration number of simulations to run. The default is ``None``,
+            all iterations are run.
+        progress_handler : IProgressHandler, None, default: None
+            Handler for progress updates.
+        """
+        inputs = study.simulation_inputs(self.material, simulation_ids, types, priority, iteration)
+        if not inputs:
+            # no simulations met the provided criteria, return an empty task manager
+            return SimulationTaskManager()
+        ids = [i.id for i in inputs]
+        study.set_simulation_status(ids, SimulationStatus.PENDING)
+        study.clear_errors(ids)
+        return self.simulate_async(inputs, progress_handler)
 
     def _check_for_duplicate_id(self, inputs):
         """Check for duplicate simulation IDs in a list of inputs.
