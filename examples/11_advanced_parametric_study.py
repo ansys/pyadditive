@@ -180,7 +180,7 @@ study.data_frame().to_csv("demo-study.csv")
 # simulation that failed to import and the number of duplicate simulations removed (if any).
 # All other valid simulations will be added to the study.
 
-study2 = ParametricStudy("demo-csv-study.ps")
+study2 = ParametricStudy("demo-csv-study.ps", material)
 errors = study2.import_csv_study("demo-study.csv")
 study2.data_frame().head()
 

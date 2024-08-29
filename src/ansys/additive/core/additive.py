@@ -717,6 +717,9 @@ class Additive:
             Handler for progress updates.
         """
         inputs = study.simulation_inputs(self.material, simulation_ids, types, priority, iteration)
+        if not inputs:
+            # no simulations met the provided criteria, return an empty task manager
+            return SimulationTaskManager()
         ids = [i.id for i in inputs]
         study.set_simulation_status(ids, SimulationStatus.PENDING)
         study.clear_errors(ids)
