@@ -6,11 +6,7 @@ from pathlib import Path
 import sys
 import warnings
 
-from ansys_sphinx_theme import (
-    ansys_favicon,
-    get_autoapi_templates_dir_relative_path,
-    get_version_match,
-)
+from ansys_sphinx_theme import ansys_favicon, get_version_match
 import numpy as np
 import pyvista
 from sphinx_gallery.sorting import FileNameSortKey
@@ -91,6 +87,9 @@ html_theme_options = {
     "check_switcher": False,
     "navigation_with_keys": True,
     "logo": "pyansys",
+    "ansys_sphinx_theme_autoapi": {
+        "project": project,
+    },
 }
 
 html_context = {
@@ -103,6 +102,7 @@ html_context = {
 
 # Sphinx extensions
 extensions = [
+    "ansys_sphinx_theme.extension.autoapi",
     "enum_tools.autoenum",
     "jupyter_sphinx",
     "notfound.extension",
@@ -213,29 +213,8 @@ copybutton_prompt_is_regexp = True
 
 # -- Declare the Jinja context -----------------------------------------------
 BUILD_API = True if os.environ.get("BUILD_API", "true") == "true" else False
-if not BUILD_API:
-    exclude_patterns.append("autoapi")
-else:
-    # Configuration for Sphinx autoapi
-    extensions.append("autoapi.extension")
-    autoapi_root = "api"
-    autoapi_type = "python"
-    autoapi_dirs = ["../../src/ansys"]
-    autoapi_options = [
-        "members",
-        "undoc-members",
-        "show-inheritance",
-        "show-module-summary",
-        # "special-members", - don't doc dunder methods
-    ]
-    autoapi_template_dir = get_autoapi_templates_dir_relative_path(Path(__file__))
-    suppress_warnings = ["autoapi.python_import_resolution"]
-    exclude_patterns.append("_autoapi_templates/index.rst")
-    autoapi_python_use_implicit_namespaces = True
-    autoapi_keep_files = True
-    autoapi_render_in_single_page = ["class", "enum", "exception"]
-
-
+if BUILD_API is True:
+    suppress_warnings = ["autoapi.python_import_resolution", "design.grid", "config.cache"]
 BUILD_EXAMPLES = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
 BUILD_EXAMPLES_LONG = True if os.environ.get("BUILD_EXAMPLES_LONG", "true") == "true" else False
 PLOT_GALLERY = True if os.environ.get("PLOT_GALLERY", "true") == "true" else False
