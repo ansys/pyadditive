@@ -28,33 +28,22 @@ import math
 import os
 import pathlib
 import platform
+from typing import Callable
 import warnings
 
 import dill
 import numpy as np
 
-from ansys.additive.core import (
-    LOG,
-    Additive,
-    AdditiveMachine,
-    AdditiveMaterial,
-    MachineConstants,
-    MeltPool,
-    MicrostructureInput,
-    MicrostructureSummary,
-    PorosityInput,
-    PorositySummary,
-    SimulationError,
-    SimulationStatus,
-    SimulationType,
-    SingleBeadInput,
-    SingleBeadSummary,
-)
+from ansys.additive.core.logger import LOG
+from ansys.additive.core.machine import AdditiveMachine, MachineConstants
+from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
 import ansys.additive.core.misc as misc
-from ansys.additive.core.progress_handler import IProgressHandler
+from ansys.additive.core.porosity import PorosityInput, PorositySummary
+from ansys.additive.core.simulation import SimulationError, SimulationStatus, SimulationType
+from ansys.additive.core.single_bead import MeltPool, SingleBeadInput, SingleBeadSummary
 
 from .constants import DEFAULT_ITERATION, DEFAULT_PRIORITY, FORMAT_VERSION, ColumnNames
-from .parametric_runner import ParametricRunner
 from .parametric_utils import build_rate, energy_density
 
 # Suppress: FutureWarning in pandas: The behavior of DataFrame concatenation with empty or
@@ -80,7 +69,7 @@ def save_on_return(func):
 class ParametricStudy:
     """Provides data storage and utility methods for a parametric study."""
 
-    def __init__(self, file_name: str | os.PathLike):
+    def __init__(self, file_name: str | os.PathLike, material_name: str):
         """Initialize the parametric study.
 
         Parameters
@@ -96,7 +85,8 @@ class ParametricStudy:
             self.__dict__ = ParametricStudy.load(study_path).__dict__
         else:
             self._init_new_study(study_path)
-        print(f"Saving parametric study to {self.file_name}")
+        self._material_name = material_name
+        LOG.info(f"Saving parametric study to {self.file_name}")
 
     def _init_new_study(self, study_path: pathlib.Path):
         self._file_name = study_path
@@ -157,6 +147,11 @@ class ParametricStudy:
         """Name of the file where the parametric study is stored."""
         return self._file_name
 
+    @property
+    def material_name(self) -> str:
+        """Name of material used in the parametric study."""
+        return self._material_name
+
     @file_name.setter
     def file_name(self, value: str | os.PathLike):
         self._file_name = pathlib.Path(value)
@@ -171,55 +166,6 @@ class ParametricStudy:
            Updating the returned data frame does not update this parametric study.
         """
         return self._data_frame.copy()
-
-    @save_on_return
-    def run_simulations(
-        self,
-        additive: Additive,
-        simulation_ids: list[str] | None = None,
-        type: list[SimulationType] | None = None,
-        priority: int | None = None,
-        iteration: int = None,
-        progress_handler: IProgressHandler = None,
-    ):
-        """Run the simulations with ``Pending`` for their ``Status`` values.
-
-        Execution order is determined by the simulations
-        ``Priority`` values. Lower values are interpreted as having
-        higher priority and are run first.
-
-        Parameters
-        ----------
-        additive : Additive
-            Additive service connection to use for running simulations.
-        simulation_ids : list[str], default: None
-            List of simulation IDs to run. If this value is ``None``,
-            all simulations with a status of ``Pending`` are run.
-        type : list[SimulationType], default: None
-            Type of simulations to run. If this value is ``None``,
-            all simulation types are run.
-        priority : int, default: None
-            Priority of simulations to run. If this value is ``None``,
-            all priorities are run.
-        iteration : int, default: None
-            Iteration number of simulations to run. The default is ``None``,
-            all iterations are run.
-        progress_handler: IProgressHandler, default: None
-            Progress handler to update the status of the simulations.
-        """
-        filtered_dataframe = ParametricStudy._filter_dataframe(
-            self._data_frame, simulation_ids, type, priority, iteration
-        )
-        if len(filtered_dataframe) == 0:
-            LOG.warning("None of the input simulations meet the criteria selected")
-            return
-
-        summaries = ParametricRunner.simulate(
-            filtered_dataframe,
-            additive,
-            progress_handler,
-        )
-        self.update(summaries)
 
     def save(self, file_name: str | os.PathLike):
         """Save the parametric study to a file.
@@ -280,16 +226,35 @@ class ParametricStudy:
 
         study.file_name = file_name
         study = ParametricStudy.update_format(study)
-        study.reset_status()
+        study.reset_simulation_status()
         return study
 
     @save_on_return
-    def reset_status(self):
+    def reset_simulation_status(self):
         """Reset the status of any ``Pending`` or ``Running`` simulations to ``New``."""
-        df = self._data_frame
-        df[df[ColumnNames.STATUS].isin([SimulationStatus.PENDING, SimulationStatus.RUNNING])][
-            ColumnNames.STATUS
-        ] = SimulationStatus.NEW
+        idx = self._data_frame[
+            self._data_frame[ColumnNames.STATUS].isin(
+                [SimulationStatus.PENDING, SimulationStatus.RUNNING]
+            )
+        ].index
+        self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.NEW
+
+    @save_on_return
+    def clear_errors(self, simulation_ids: list[str] | None = None):
+        """Clear the error messages for the specified simulations.
+
+        Parameters
+        ----------
+        simulation_ids : list[str], default: None
+            List of simulation IDs to clear the error messages for. If this value
+            is ``None``, all error messages are cleared.
+        """
+        LOG.debug(f"Clearing errors {', '.join(simulation_ids) if simulation_ids else ''}")
+        if simulation_ids is None:
+            idx = self._data_frame.index
+        else:
+            idx = self._data_frame[self._data_frame[ColumnNames.ID].isin(simulation_ids)].index
+        self._data_frame.loc[idx, ColumnNames.ERROR_MESSAGE] = None
 
     @save_on_return
     def add_summaries(
@@ -469,7 +434,6 @@ class ParametricStudy:
     @save_on_return
     def generate_single_bead_permutations(
         self,
-        material_name: str,
         laser_powers: list[float],
         scan_speeds: list[float],
         bead_length: float = SingleBeadInput.DEFAULT_BEAD_LENGTH,
@@ -485,8 +449,6 @@ class ParametricStudy:
 
         Parameters
         ----------
-        material_name : str
-            Material name.
         laser_powers : list[float]
             Laser powers (W) to use for single bead simulations. Valid values
             are from :obj:`MIN_LASER_POWER <MachineConstants.MIN_LASER_POWER>`
@@ -567,7 +529,7 @@ class ParametricStudy:
                                     layer_thickness=l,
                                     beam_diameter=d,
                                 )
-                                sb_input = SingleBeadInput(
+                                SingleBeadInput(
                                     bead_length=bead_length,
                                     machine=machine,
                                     material=AdditiveMaterial(),
@@ -586,7 +548,7 @@ class ParametricStudy:
                                         prefix=f"sb_{iteration}"
                                     ),
                                     ColumnNames.STATUS: SimulationStatus.NEW,
-                                    ColumnNames.MATERIAL: material_name,
+                                    ColumnNames.MATERIAL: self.material_name,
                                     ColumnNames.HEATER_TEMPERATURE: t,
                                     ColumnNames.LAYER_THICKNESS: l,
                                     ColumnNames.BEAM_DIAMETER: d,
@@ -606,7 +568,6 @@ class ParametricStudy:
     @save_on_return
     def generate_porosity_permutations(
         self,
-        material_name: str,
         laser_powers: list[float],
         scan_speeds: list[float],
         size_x: float = PorosityInput.DEFAULT_SAMPLE_SIZE,
@@ -630,8 +591,6 @@ class ParametricStudy:
 
         Parameters
         ----------
-        material_name : str
-            Material name.
         laser_powers : list[float]
             Laser powers (W) to use for porosity simulations. Valid values
             are from :obj:`MIN_LASER_POWER <MachineConstants.MIN_LASER_POWER>`
@@ -784,7 +743,7 @@ class ParametricStudy:
                                                     hatch_spacing=h,
                                                     slicing_stripe_width=w,
                                                 )
-                                                input = PorosityInput(
+                                                PorosityInput(
                                                     size_x=size_x,
                                                     size_y=size_y,
                                                     size_z=size_z,
@@ -792,7 +751,7 @@ class ParametricStudy:
                                                     material=AdditiveMaterial(),
                                                 )
                                             except ValueError as e:
-                                                print(f"Invalid parameter combination: {e}")
+                                                LOG.error(f"Invalid parameter combination: {e}")
                                                 continue
 
                                             # add row to parametric study data frame
@@ -805,7 +764,7 @@ class ParametricStudy:
                                                         prefix=f"por_{iteration}"
                                                     ),
                                                     ColumnNames.STATUS: SimulationStatus.NEW,
-                                                    ColumnNames.MATERIAL: material_name,
+                                                    ColumnNames.MATERIAL: self.material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
                                                     ColumnNames.LAYER_THICKNESS: l,
                                                     ColumnNames.BEAM_DIAMETER: d,
@@ -832,7 +791,6 @@ class ParametricStudy:
     @save_on_return
     def generate_microstructure_permutations(
         self,
-        material_name: str,
         laser_powers: list[float],
         scan_speeds: list[float],
         min_x: float = MicrostructureInput.DEFAULT_POSITION_COORDINATE,
@@ -865,8 +823,6 @@ class ParametricStudy:
 
         Parameters
         ----------
-        material_name : str
-            Material name.
         laser_powers : list[float]
             Laser powers (W) to use for microstructure simulations. Valid values
             are from :obj:`MIN_LASER_POWER <MachineConstants.MIN_LASER_POWER>`
@@ -1086,7 +1042,7 @@ class ParametricStudy:
                                                     hatch_spacing=h,
                                                     slicing_stripe_width=w,
                                                 )
-                                                input = MicrostructureInput(
+                                                MicrostructureInput(
                                                     sample_min_x=min_x,
                                                     sample_min_y=min_y,
                                                     sample_min_z=min_z,
@@ -1129,7 +1085,7 @@ class ParametricStudy:
                                                     material=AdditiveMaterial(),
                                                 )
                                             except ValueError as e:
-                                                print(f"Invalid parameter combination: {e}")
+                                                LOG.error(f"Invalid parameter combination: {e}")
                                                 continue
 
                                             # add row to parametric study data frame
@@ -1142,7 +1098,7 @@ class ParametricStudy:
                                                         prefix=f"micro_{iteration}"
                                                     ),
                                                     ColumnNames.STATUS: SimulationStatus.NEW,
-                                                    ColumnNames.MATERIAL: material_name,
+                                                    ColumnNames.MATERIAL: self.material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
                                                     ColumnNames.LAYER_THICKNESS: l,
                                                     ColumnNames.BEAM_DIAMETER: d,
@@ -1205,8 +1161,7 @@ class ParametricStudy:
         """Update the results of simulations in the parametric study.
 
         This method updates values for existing simulations in the parametric study. To add
-        completed simulations, use the :meth:`add_summaries` method instead. This method is
-        automatically called by the :meth:`run_simulations` method when simulations are completed.
+        completed simulations, use the :meth:`add_summaries` method instead.
 
         Parameters
         ----------
@@ -1268,7 +1223,11 @@ class ParametricStudy:
         self._data_frame.loc[idx, ColumnNames.RELATIVE_DENSITY] = relative_density
 
     def _update_microstructure(
-        self, id: str, xy_avg_grain_size: float, xz_avg_grain_size: float, yz_avg_grain_size: float
+        self,
+        id: str,
+        xy_avg_grain_size: float,
+        xz_avg_grain_size: float,
+        yz_avg_grain_size: float,
     ):
         """Update the results of a microstructure simulation in the parametric
         study data frame."""
@@ -1350,7 +1309,7 @@ class ParametricStudy:
             dict[ColumnNames.PRIORITY] = priority
             dict[ColumnNames.ID] = input.id
             dict[ColumnNames.STATUS] = status
-            dict[ColumnNames.MATERIAL] = input.material.name
+            dict[ColumnNames.MATERIAL] = self.material_name
             dict[ColumnNames.LASER_POWER] = input.machine.laser_power
             dict[ColumnNames.SCAN_SPEED] = input.machine.scan_speed
             dict[ColumnNames.LAYER_THICKNESS] = input.machine.layer_thickness
@@ -1403,7 +1362,10 @@ class ParametricStudy:
         for status in SimulationStatus:
             if len(current_df[current_df[ColumnNames.STATUS] == status.value]) > 0:
                 sorted_df = pd.concat(
-                    [sorted_df, current_df[current_df[ColumnNames.STATUS] == status.value]],
+                    [
+                        sorted_df,
+                        current_df[current_df[ColumnNames.STATUS] == status.value],
+                    ],
                     ignore_index=True,
                 )
 
@@ -1508,7 +1470,9 @@ class ParametricStudy:
         self._data_frame.drop(index=idx, inplace=True)
 
     @save_on_return
-    def set_status(self, ids: str | list[str], status: SimulationStatus, err_msg: str = ""):
+    def set_simulation_status(
+        self, ids: str | list[str], status: SimulationStatus, err_msg: str = ""
+    ):
         """Set the status of simulations in the parametric study.
 
         Parameters
@@ -1521,6 +1485,7 @@ class ParametricStudy:
         """
         if isinstance(ids, str):
             ids = [ids]
+        LOG.debug(f"Setting status of simulations {', '.join(ids)} to {status}.")
         idx = self._data_frame.index[self._data_frame[ColumnNames.ID].isin(ids)]
         self._data_frame.loc[idx, ColumnNames.STATUS] = status
         if status == SimulationStatus.ERROR:
@@ -1672,7 +1637,10 @@ class ParametricStudy:
             if row[ColumnNames.STATUS] in allowed_status:
                 valid, error = self._validate_input(row)
             else:
-                valid, error = (False, f"Invalid simulation status {row[ColumnNames.STATUS]}")
+                valid, error = (
+                    False,
+                    f"Invalid simulation status {row[ColumnNames.STATUS]}",
+                )
             if not valid:
                 drop_indices.append(index)
                 error_list.append(error)
@@ -1916,24 +1884,204 @@ class ParametricStudy:
         except ValueError as e:
             return (False, (f"Invalid parameter combination: {e}"))
 
-    @staticmethod
-    def _filter_dataframe(
-        df: pd.DataFrame,
+    def simulation_inputs(
+        self,
+        get_material_func: Callable[[str], AdditiveMaterial],
         simulation_ids: list[str] = None,
-        type: list[SimulationType] = None,
+        types: list[SimulationType] = None,
         priority: int = None,
         iteration: int = None,
-    ) -> pd.DataFrame:
-        """Apply filters to the parametric study data frame.
+    ) -> list[SingleBeadInput | PorosityInput | MicrostructureInput]:
+        """Get a list of simulation inputs from the parametric study.
 
         Parameters
         ----------
-        df : pd.DataFrame
-            Parametric study data frame to filter.
+        get_material_func: Callable[[str], AdditiveMaterial]
+            Function to get the material object from the material name.
+            This can be a call to the Additive server or another source.
+        simulation_ids : list[str], default: None
+            List of simulation IDs to run. If this value is ``None``,
+            all simulations with a status of ``New`` are run.
+        types : list[SimulationType], default: None
+            Type of simulations to run. If this value is ``None``,
+            all simulation types are run.
+        priority : int, default: None
+            Priority of simulations to run. If this value is ``None``,
+            all priorities are run.
+        iteration : int, default: None
+            Iteration number of simulations to run. The default is ``None``,
+            all iterations are run.
+
+        Returns
+        -------
+        list[SingleBeadInput, PorosityInput, MicrostructureInput]
+            List of simulation inputs.
+        """
+        inputs = []
+
+        df = self.filter_data_frame(simulation_ids, types, priority, iteration)
+
+        material = get_material_func(self.material_name)
+
+        # NOTE: We use iterrows() instead of itertuples() here to
+        # access values by column name
+        for _, row in df.iterrows():
+            machine = ParametricStudy._create_machine(row)
+            sim_type = row[ColumnNames.TYPE]
+            if sim_type == SimulationType.SINGLE_BEAD:
+                inputs.append(ParametricStudy._create_single_bead_input(row, material, machine))
+            elif sim_type == SimulationType.POROSITY:
+                inputs.append(ParametricStudy._create_porosity_input(row, material, machine))
+            elif sim_type == SimulationType.MICROSTRUCTURE:
+                inputs.append(ParametricStudy._create_microstructure_input(row, material, machine))
+            else:  # pragma: no cover
+                LOG.warning(
+                    f"Invalid simulation type: {row[ColumnNames.TYPE]} for {row[ColumnNames.ID]}, skipping"
+                )
+                continue
+
+        if len(inputs) == 0:
+            LOG.warning("No simulations meet the specified crtiteria.")
+
+        return inputs
+
+    @staticmethod
+    def _create_machine(row: pd.Series) -> AdditiveMachine:
+        return AdditiveMachine(
+            laser_power=row[ColumnNames.LASER_POWER],
+            scan_speed=row[ColumnNames.SCAN_SPEED],
+            layer_thickness=row[ColumnNames.LAYER_THICKNESS],
+            beam_diameter=row[ColumnNames.BEAM_DIAMETER],
+            heater_temperature=row[ColumnNames.HEATER_TEMPERATURE],
+            starting_layer_angle=(
+                row[ColumnNames.START_ANGLE]
+                if not np.isnan(row[ColumnNames.START_ANGLE])
+                else MachineConstants.DEFAULT_STARTING_LAYER_ANGLE
+            ),
+            layer_rotation_angle=(
+                row[ColumnNames.ROTATION_ANGLE]
+                if not np.isnan(row[ColumnNames.ROTATION_ANGLE])
+                else MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE
+            ),
+            hatch_spacing=(
+                row[ColumnNames.HATCH_SPACING]
+                if not np.isnan(row[ColumnNames.HATCH_SPACING])
+                else MachineConstants.DEFAULT_HATCH_SPACING
+            ),
+            slicing_stripe_width=(
+                row[ColumnNames.STRIPE_WIDTH]
+                if not np.isnan(row[ColumnNames.STRIPE_WIDTH])
+                else MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH
+            ),
+        )
+
+    @staticmethod
+    def _create_single_bead_input(
+        row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine
+    ) -> SingleBeadInput:
+        sb_input = SingleBeadInput(
+            material=material,
+            machine=machine,
+            bead_length=row[ColumnNames.SINGLE_BEAD_LENGTH],
+        )
+        # overwrite the ID value with the simulation ID from the table
+        sb_input._id = row[ColumnNames.ID]
+        return sb_input
+
+    @staticmethod
+    def _create_porosity_input(
+        row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine
+    ) -> PorosityInput:
+        p_input = PorosityInput(
+            material=material,
+            machine=machine,
+            size_x=row[ColumnNames.POROSITY_SIZE_X],
+            size_y=row[ColumnNames.POROSITY_SIZE_Y],
+            size_z=row[ColumnNames.POROSITY_SIZE_Z],
+        )
+        # overwrite the ID value with the simulation ID from the table
+        p_input._id = row[ColumnNames.ID]
+        return p_input
+
+    @staticmethod
+    def _create_microstructure_input(
+        row: pd.Series, material: AdditiveMaterial, machine: AdditiveMachine
+    ) -> MicrostructureInput:
+        use_provided_thermal_param = (
+            not np.isnan(row[ColumnNames.COOLING_RATE])
+            or not np.isnan(row[ColumnNames.THERMAL_GRADIENT])
+            or not np.isnan(row[ColumnNames.MICRO_MELT_POOL_WIDTH])
+            or not np.isnan(row[ColumnNames.MICRO_MELT_POOL_DEPTH])
+        )
+
+        ms_input = MicrostructureInput(
+            material=material,
+            machine=machine,
+            sample_size_x=row[ColumnNames.MICRO_SIZE_X],
+            sample_size_y=row[ColumnNames.MICRO_SIZE_Y],
+            sample_size_z=row[ColumnNames.MICRO_SIZE_Z],
+            sensor_dimension=row[ColumnNames.MICRO_SENSOR_DIM],
+            use_provided_thermal_parameters=use_provided_thermal_param,
+            sample_min_x=(
+                row[ColumnNames.MICRO_MIN_X]
+                if not np.isnan(row[ColumnNames.MICRO_MIN_X])
+                else MicrostructureInput.DEFAULT_POSITION_COORDINATE
+            ),
+            sample_min_y=(
+                row[ColumnNames.MICRO_MIN_Y]
+                if not np.isnan(row[ColumnNames.MICRO_MIN_Y])
+                else MicrostructureInput.DEFAULT_POSITION_COORDINATE
+            ),
+            sample_min_z=(
+                row[ColumnNames.MICRO_MIN_Z]
+                if not np.isnan(row[ColumnNames.MICRO_MIN_Z])
+                else MicrostructureInput.DEFAULT_POSITION_COORDINATE
+            ),
+            cooling_rate=(
+                row[ColumnNames.COOLING_RATE]
+                if not np.isnan(row[ColumnNames.COOLING_RATE])
+                else MicrostructureInput.DEFAULT_COOLING_RATE
+            ),
+            thermal_gradient=(
+                row[ColumnNames.THERMAL_GRADIENT]
+                if not np.isnan(row[ColumnNames.THERMAL_GRADIENT])
+                else MicrostructureInput.DEFAULT_THERMAL_GRADIENT
+            ),
+            melt_pool_width=(
+                row[ColumnNames.MICRO_MELT_POOL_WIDTH]
+                if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_WIDTH])
+                else MicrostructureInput.DEFAULT_MELT_POOL_WIDTH
+            ),
+            melt_pool_depth=(
+                row[ColumnNames.MICRO_MELT_POOL_DEPTH]
+                if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_DEPTH])
+                else MicrostructureInput.DEFAULT_MELT_POOL_DEPTH
+            ),
+            random_seed=(
+                row[ColumnNames.RANDOM_SEED]
+                if not np.isnan(row[ColumnNames.RANDOM_SEED])
+                else MicrostructureInput.DEFAULT_RANDOM_SEED
+            ),
+        )
+        # overwrite the ID value with the simulation ID from the table
+        ms_input._id = row[ColumnNames.ID]
+        return ms_input
+
+    def filter_data_frame(
+        self,
+        simulation_ids: list[str] = None,
+        types: list[SimulationType] = None,
+        priority: int = None,
+        iteration: int = None,
+    ) -> pd.DataFrame:
+        """Apply filters to the parametric study and return the filtered data frame.
+
+        Parameters
+        ----------
         simulation_ids: list[str], default: None
             List of simulation IDs to include. The default is ``None``, in which case
             all simulations with status of :obj:`SimulationStatus.NEW` are selected.
-        type : list, default: None
+        types : list, default: None
             List of simulation types to include. The default is ``None``, in which case
             all simulation types are selected.
         priority : int, default: None
@@ -1949,8 +2097,8 @@ class ParametricStudy:
             Filtered view of the parametric study data frame
         """
 
-        # Initialize the filtered view of the data frame
-        view = df.copy()
+        # Initialize the filtered view with a copy of the data frame
+        view = self.data_frame()
 
         # Filter the data frame based on the provided simulation IDs
         if isinstance(simulation_ids, list) and len(simulation_ids) > 0:
@@ -1967,21 +2115,18 @@ class ParametricStudy:
             # Select only the simulations with status NEW if no simulation IDs are provided
             view = view[view[ColumnNames.STATUS] == SimulationStatus.NEW]
 
-        if type:
-            # Ensure that the simulation types are provided as a list
-            if not isinstance(type, list):
-                type = [type]
+        if types:
             # Filter the data frame based on the provided simulation types
-            view = view[view[ColumnNames.TYPE].isin(type)]
+            view = view[view[ColumnNames.TYPE].isin(types)]
 
         # Filter the data frame based on the provided priority then sort by priority
-        if priority is not None:
+        if priority:
             view = view[view[ColumnNames.PRIORITY] == priority]
 
         view = view.sort_values(by=ColumnNames.PRIORITY, ascending=True)
 
         # Filter the data frame based on the provided iteration
-        if iteration is not None:
-            view = df[(df[ColumnNames.ITERATION] == iteration)]
+        if iteration:
+            view = view[(view[ColumnNames.ITERATION] == iteration)]
 
         return view

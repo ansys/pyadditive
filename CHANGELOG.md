@@ -4,12 +4,20 @@
 
 ### Breaking Changes
 * Simulation inputs no longer allow setting the id field.
+* Removed nsims_per_server property from Additive class.
+* ParametricStudy.set_status() and ParametricStudy.reset_status() have been renamed to ParametricStudy.set_simulation_status() and ParametricStudy.reset_simulation_status().
+* ParametricStudy() now requires a material name parameter. As a consequence, the material_name parameter has been removed from ParametricStudy.generate_single_bead_permutations(), ParametricStudy.generate_porosity_permutations(), and ParametricStudy.generate_microstructure_permutations().
+* The ParametricRunner class has been removed. To run a parametric study, use Additive.simulate_study() or Additive.simulate_study_async().
 
 ### New Features
 * Default version of Additive Server is 25.1 when creating a client connection.
 * Single bead simulations with thermal history are now supported.
 * Added description field to AdditiveMaterial.
-* Updated the parametric runner to accept a list of simulation ids to be run.
+* Updated the parametric runner to run a list of simulation ids.
+* Asynchronous simulate functionality added.
+* Added apply and list server settings functionality.
+* Parametric study data is updated as simulations are running.
+* Use LOG for logging in Additive object.
 
 ### Bug Fixes
 

@@ -36,6 +36,7 @@ for of parametric study results. An example is available at
 
 Units are SI (m, kg, s, K) unless otherwise noted.
 """
+
 ###############################################################################
 # Perform required imports and create a study
 # -------------------------------------------
@@ -45,17 +46,6 @@ import pandas as pd
 
 from ansys.additive.core import Additive, SimulationStatus, SimulationType
 from ansys.additive.core.parametric_study import ColumnNames, ParametricStudy
-
-study = ParametricStudy("demo-study")
-
-###############################################################################
-# Get the study file name
-# -----------------------
-# The current state of the parametric study is saved to a file upon each
-# update. You can retrieve the name of the file as shown below. This file
-# uses a binary format and is not human readable.
-
-print(study.file_name)
 
 ###############################################################################
 # Select a material for the study
@@ -67,6 +57,23 @@ print(study.file_name)
 additive = Additive()
 print("Available material names: {}".format(additive.materials_list()))
 material = "IN718"
+
+###############################################################################
+# Create the study
+# ----------------
+# Create the parametric study with a name and the selected material.
+
+study = ParametricStudy("demo-study", material)
+
+###############################################################################
+# Get the study file name
+# -----------------------
+# The current state of the parametric study is saved to a file upon each
+# update. You can retrieve the name of the file as shown below. This file
+# uses a binary format and is not human readable.
+
+print(study.file_name)
+
 
 ###############################################################################
 # Create a single bead evaluation
@@ -98,7 +105,6 @@ max_energy_density = 8e6
 bead_length = 0.001
 
 study.generate_single_bead_permutations(
-    material_name=material,
     bead_length=bead_length,
     laser_powers=initial_powers,
     scan_speeds=initial_scan_speeds,
@@ -136,16 +142,16 @@ ids = df.loc[
     (df[ColumnNames.LASER_POWER] < 75) & (df[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD),
     ColumnNames.ID,
 ].tolist()
-study.set_status(ids, SimulationStatus.SKIP)
+study.set_simulation_status(ids, SimulationStatus.SKIP)
 print(study.data_frame()[[ColumnNames.ID, ColumnNames.TYPE, ColumnNames.STATUS]])
 
 ###############################################################################
 # Run single bead simulations
 # ---------------------------
-# Run the simulations using the :meth:`~ParametricStudy.run_simulations` method. All simulations
+# Run the simulations using the :meth:`~Additive.simulate_study` method. All simulations
 # with a :obj:`SimulationStatus.NEW` status are executed.
 
-study.run_simulations(additive)
+additive.simulate_study(study)
 
 ###############################################################################
 # View single bead results
@@ -174,7 +180,7 @@ study.data_frame().to_csv("demo-study.csv")
 # simulation that failed to import and the number of duplicate simulations removed (if any).
 # All other valid simulations will be added to the study.
 
-study2 = ParametricStudy("demo-csv-study.ps")
+study2 = ParametricStudy("demo-csv-study.ps", material)
 errors = study2.import_csv_study("demo-study.csv")
 study2.data_frame().head()
 
@@ -208,7 +214,6 @@ df = df[
 ]
 
 study.generate_porosity_permutations(
-    material_name=material,
     laser_powers=df[ColumnNames.LASER_POWER].unique(),
     scan_speeds=df[ColumnNames.SCAN_SPEED].unique(),
     size_x=1e-3,
@@ -227,9 +232,9 @@ study.generate_porosity_permutations(
 ################################################################################
 # Run porosity simulations
 # ------------------------
-# Run the simulations using the :meth:`~ParametricStudy.run_simulations` method.
+# Run the simulations using the :meth:`~Additive.simulate_study` method.
 
-study.run_simulations(additive)
+additive.simulate_study(study)
 
 ###############################################################################
 # View porosity results
@@ -255,7 +260,6 @@ df = study.data_frame()
 df = df[df[ColumnNames.TYPE] == SimulationType.POROSITY]
 
 study.generate_microstructure_permutations(
-    material_name=material,
     laser_powers=df[ColumnNames.LASER_POWER].unique(),
     scan_speeds=df[ColumnNames.SCAN_SPEED].unique(),
     size_x=1e-3,
@@ -274,9 +278,9 @@ study.generate_microstructure_permutations(
 ###############################################################################
 # Run microstructure simulations
 # ------------------------------
-# Run the simulations using the :meth:`~ParametricStudy.run_simulations` method.
+# Run the simulations using the :meth:`~Additive.simulate_study` method.
 
-study.run_simulations(additive)
+additive.simulate_study(study)
 
 ###############################################################################
 # View microstructure results

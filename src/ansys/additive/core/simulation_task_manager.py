@@ -23,6 +23,7 @@
 
 import time
 
+from ansys.additive.core.logger import LOG
 from ansys.additive.core.progress_handler import IProgressHandler, Progress
 from ansys.additive.core.simulation_task import SimulationTask
 
@@ -33,6 +34,16 @@ class SimulationTaskManager:
     def __init__(self):
         """Initialize the simulation task manager."""
         self._tasks: list[SimulationTask] = []
+
+    @property
+    def tasks(self) -> list[SimulationTask]:
+        """Get the list of tasks managed by this manager."""
+        return self._tasks
+
+    @property
+    def done(self) -> bool:
+        """Check if all tasks are done."""
+        return all(t.done for t in self._tasks)
 
     def add_task(self, task: SimulationTask):
         """Add a task to this manager.
@@ -61,8 +72,10 @@ class SimulationTaskManager:
         status_all = []
 
         for t in self._tasks:
-            progress = t.status(progress_handler)
+            progress = t.status()
             status_all.append((progress.sim_id, progress))
+            if progress_handler:
+                progress_handler.update(progress)
 
         return status_all
 
@@ -75,11 +88,13 @@ class SimulationTaskManager:
         progress_handler: IProgressHandler, None, default: None
             Handler for progress updates. If ``None``, no progress updates are provided.
         """
+        LOG.debug(f"Waiting for {len(self._tasks)} tasks to complete")
         for t in self._tasks:
             t.wait(progress_handler=progress_handler)
 
     def cancel_all(self) -> None:
         """Cancel all simulations belonging to this simulation task manager."""
+        LOG.debug("Cancelling all tasks")
         for t in self._tasks:
             t.cancel()
             time.sleep(0.1)
