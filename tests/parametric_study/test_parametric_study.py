@@ -152,7 +152,6 @@ def test_save_and_load_returns_original_object(tmp_path: pytest.TempPathFactory)
     study_name = tmp_path / "test_study.ps"
     test_path = tmp_path / "parametric_save_and_load_test" / "study_copy.ps"
     study = ParametricStudy(study_name, "material")
-    study.generate_single_bead_permutations([200], [1])
 
     # act
     study.save(test_path)
