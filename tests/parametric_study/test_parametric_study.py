@@ -1911,7 +1911,7 @@ def test_format_version_returns_proper_version(tmp_path: pytest.TempPathFactory)
 def test_update_format_updates_version_1_to_latest(tmp_path: pytest.TempPathFactory):
     # arrange
     v1_file = tmp_path / "version1.ps"
-    shutil.copyfile(test_utils.get_test_file_path("v1.ps"), v1_file)
+    shutil.copyfile(test_utils.get_test_file_path("v1.with-simulations.ps"), v1_file)
     with open(v1_file, "rb") as f:
         v1_study = dill.load(f)
     # Ensure our source study is version 1. If format_version is not present, assume version 1.
@@ -1937,25 +1937,24 @@ def test_update_format_updates_version_1_to_latest(tmp_path: pytest.TempPathFact
     assert ColumnNames.YZ_AVERAGE_GRAIN_SIZE in columns
     assert ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH in columns
     assert ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH in columns
-    assert latest_study.material_name is None
+    assert latest_study.material_name == "test-material"
 
 
 @pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
-def test_material_name_updates_value_when_simulations_present(tmp_path: pytest.TempPathFactory):
+def test_update_format_raises_error_when_no_simulations_present(tmp_path: pytest.TempPathFactory):
     # arrange
     # load a version 1 study with no simulations
-    test_material_name = "test_material"
     v1_file = tmp_path / "version1.ps"
-    shutil.copyfile(test_utils.get_test_file_path("v1.ps"), v1_file)
-    study = ParametricStudy.load(v1_file)
-    # ensure the material name is None
-    assert study.material_name is None
+    shutil.copyfile(test_utils.get_test_file_path("v1.no-simulations.ps"), v1_file)
+    with open(v1_file, "rb") as f:
+        v1_study = dill.load(f)
+    # Ensure our source study is version 1. If format_version is not present, assume version 1.
+    assert "Heater Temp (°C)" in v1_study.data_frame().columns
+    v1_study.file_name = v1_file
 
-    # act
-    study.add_inputs([SingleBeadInput(material=AdditiveMaterial(name=test_material_name))])
-
-    # assert
-    assert study.material_name == test_material_name
+    # act, assert
+    with pytest.raises(ValueError, match="Unable to determine material"):
+        ParametricStudy.update_format(v1_study)
 
 
 def test_reset_simulation_status_sets_status_to_new(tmp_path: pytest.TempPathFactory):
