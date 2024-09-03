@@ -149,9 +149,11 @@ def test_load_reads_windows_file_on_linux(tmp_path: pytest.TempPathFactory):
 
 def test_save_and_load_returns_original_object(tmp_path: pytest.TempPathFactory):
     # arrange
+    material = "material"
     study_name = tmp_path / "test_study.ps"
     test_path = tmp_path / "parametric_save_and_load_test" / "study_copy.ps"
-    study = ParametricStudy(study_name, "material")
+    study = ParametricStudy(study_name, material)
+    study.generate_single_bead_permutations([200], [1])
 
     # act
     study.save(test_path)
@@ -161,6 +163,7 @@ def test_save_and_load_returns_original_object(tmp_path: pytest.TempPathFactory)
     assert study.data_frame().equals(study2.data_frame())
     assert study2.file_name == test_path
     assert study.file_name == study_name
+    assert study2.material_name == study.material_name
 
 
 def test_add_summaries_with_porosity_summary_adds_row(tmp_path: pytest.TempPathFactory):
@@ -1934,6 +1937,25 @@ def test_update_format_updates_version_1_to_latest(tmp_path: pytest.TempPathFact
     assert ColumnNames.YZ_AVERAGE_GRAIN_SIZE in columns
     assert ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH in columns
     assert ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH in columns
+    assert latest_study.material_name is None
+
+
+@pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
+def test_material_name_updates_value_when_simulations_present(tmp_path: pytest.TempPathFactory):
+    # arrange
+    # load a version 1 study with no simulations
+    test_material_name = "test_material"
+    v1_file = tmp_path / "version1.ps"
+    shutil.copyfile(test_utils.get_test_file_path("v1.ps"), v1_file)
+    study = ParametricStudy.load(v1_file)
+    # ensure the material name is None
+    assert study.material_name is None
+
+    # act
+    study.add_inputs([SingleBeadInput(material=AdditiveMaterial(name=test_material_name))])
+
+    # assert
+    assert study.material_name == test_material_name
 
 
 def test_reset_simulation_status_sets_status_to_new(tmp_path: pytest.TempPathFactory):
