@@ -149,10 +149,9 @@ def test_load_reads_windows_file_on_linux(tmp_path: pytest.TempPathFactory):
 
 def test_save_and_load_returns_original_object(tmp_path: pytest.TempPathFactory):
     # arrange
-    material = "material"
     study_name = tmp_path / "test_study.ps"
     test_path = tmp_path / "parametric_save_and_load_test" / "study_copy.ps"
-    study = ParametricStudy(study_name, material)
+    study = ParametricStudy(study_name, "material")
     study.generate_single_bead_permutations([200], [1])
 
     # act
