@@ -147,14 +147,14 @@ class ParametricStudy:
         """Name of the file where the parametric study is stored."""
         return self._file_name
 
-    @property
-    def material_name(self) -> str:
-        """Name of material used in the parametric study."""
-        return self._material_name
-
     @file_name.setter
     def file_name(self, value: str | os.PathLike):
         self._file_name = pathlib.Path(value)
+
+    @property
+    def material_name(self) -> str | None:
+        """Name of material used in the parametric study."""
+        return self._material_name
 
     def data_frame(self) -> pd.DataFrame:
         """Return a :class:`DataFrame <pandas.DataFrame>` containing the study simulations.
@@ -227,6 +227,7 @@ class ParametricStudy:
         study.file_name = file_name
         study = ParametricStudy.update_format(study)
         study.reset_simulation_status()
+        # study._material_name = study._data_frame[ColumnNames.MATERIAL].values[0]
         return study
 
     @save_on_return
@@ -1589,28 +1590,37 @@ class ParametricStudy:
         if version == FORMAT_VERSION:
             return study
 
-        print("Updating parametric study to latest version.")
-
-        df = study.data_frame()
-        if version < 2:
-            df = df.rename(
-                columns={
-                    "Heater Temp (°C)": ColumnNames.HEATER_TEMPERATURE,
-                    "Start Angle (°)": ColumnNames.START_ANGLE,
-                    "Rotation Angle (°)": ColumnNames.ROTATION_ANGLE,
-                    "Cooling Rate (°K/s)": ColumnNames.COOLING_RATE,
-                    "Thermal Gradient (°K/m)": ColumnNames.THERMAL_GRADIENT,
-                    "XY Average Grain Size (µm)": ColumnNames.XY_AVERAGE_GRAIN_SIZE,
-                    "XZ Average Grain Size (µm)": ColumnNames.XZ_AVERAGE_GRAIN_SIZE,
-                    "YZ Average Grain Size (µm)": ColumnNames.YZ_AVERAGE_GRAIN_SIZE,
-                    "Melt Pool Length/Width (m)": ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH,
-                    "Melt Pool Ref Depth/Width (m)": ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH,
-                }
-            )
-            version = 2
+        LOG.warning("Updating parametric study to latest version.")
 
         new_study = ParametricStudy._new(study.file_name)
-        new_study._data_frame = df
+        if version < 2:
+            df = study.data_frame().rename(
+                columns={
+                    "Heater Temp (°C)": "Heater Temp (C)",
+                    "Start Angle (°)": "Start Angle (degrees)",
+                    "Rotation Angle (°)": "Rotation Angle (degrees)",
+                    "Cooling Rate (°K/s)": "Cooling Rate (K/s)",
+                    "Thermal Gradient (°K/m)": "Thermal Gradient (K/m)",
+                    "XY Average Grain Size (µm)": "XY Average Grain Size (microns)",
+                    "XZ Average Grain Size (µm)": "XZ Average Grain Size (microns)",
+                    "YZ Average Grain Size (µm)": "YZ Average Grain Size (microns)",
+                    "Melt Pool Length/Width (m)": "Melt Pool Length/Width",
+                    "Melt Pool Ref Depth/Width (m)": "Melt Pool Ref Depth/Width",
+                }
+            )
+            new_study._data_frame = df
+            version = 2
+        if version < 3:
+            materials = study.data_frame()[ColumnNames.MATERIAL].array
+            if not materials:
+                raise ValueError(
+                    "Unable to determine material. "
+                    "Study has no simulations. "
+                    "Create new study instead of loading from file."
+                )
+            new_study._material_name = materials[0]
+            version = 3
+
         return new_study
 
     @save_on_return

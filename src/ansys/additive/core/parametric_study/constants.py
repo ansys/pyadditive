@@ -126,5 +126,5 @@ DEFAULT_ITERATION = 0
 """Default iteration assigned to new simulations."""
 DEFAULT_PRIORITY = 1
 """Default priority assigned to new simulations."""
-FORMAT_VERSION = 2
+FORMAT_VERSION = 3
 """Parametric study file format version."""
