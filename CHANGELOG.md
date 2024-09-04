@@ -6,7 +6,7 @@
 * Simulation inputs no longer allow setting the id field.
 * Removed nsims_per_server property from Additive class.
 * ParametricStudy.set_status() and ParametricStudy.reset_status() have been renamed to ParametricStudy.set_simulation_status() and ParametricStudy.reset_simulation_status().
-* ParametricStudy() now requires a material name parameter. As a consequence, the material_name parameter has been removed from ParametricStudy.generate_single_bead_permutations(), ParametricStudy.generate_porosity_permutations(), and ParametricStudy.generate_microstructure_permutations().
+* ParametricStudy() now requires a material name parameter. As a consequence, the material_name parameter has been removed from ParametricStudy.generate_single_bead_permutations(), ParametricStudy.generate_porosity_permutations(), and ParametricStudy.generate_microstructure_permutations(). The parametric study FORMAT_VERSION value has been incremented to 3.
 * The ParametricRunner class has been removed. To run a parametric study, use Additive.simulate_study() or Additive.simulate_study_async().
 
 ### New Features
