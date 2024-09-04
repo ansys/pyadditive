@@ -120,7 +120,8 @@ def test_update_format_raises_exception_when_version_too_great(
             ParametricStudy.update_format(study)
 
 
-@pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
+# @pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
+@pytest.mark.skip(reason="Invalid test data file.")
 def test_load_reads_linux_file_on_windows(tmp_path: pytest.TempPathFactory):
     # arrange
     test_file = test_utils.get_test_file_path("linux.ps")
