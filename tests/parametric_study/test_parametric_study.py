@@ -1956,6 +1956,7 @@ def test_update_format_raises_error_when_no_simulations_present(tmp_path: pytest
         ParametricStudy.update_format(v1_study)
 
 
+@pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
 def test_update_format_updates_Ansys_242_to_latest(tmp_path: pytest.TempPathFactory):
     # arrange
     study_file = tmp_path / "v242.ps"
