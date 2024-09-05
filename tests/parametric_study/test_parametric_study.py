@@ -1956,6 +1956,24 @@ def test_update_format_raises_error_when_no_simulations_present(tmp_path: pytest
         ParametricStudy.update_format(v1_study)
 
 
+def test_update_format_updates_Ansys_242_to_latest(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study_file = tmp_path / "v242.ps"
+    shutil.copyfile(test_utils.get_test_file_path("242demo-study-IN718.ps"), study_file)
+    with open(study_file, "rb") as f:
+        study = dill.load(f)
+    study.file_name = study_file
+
+    # act
+    updated_study = ParametricStudy.update_format(study)
+
+    # assert
+    assert updated_study is not None
+    assert updated_study.format_version == FORMAT_VERSION
+    assert len(updated_study.data_frame()) == 48
+    assert updated_study.material_name == "IN718"
+
+
 def test_reset_simulation_status_sets_status_to_new(tmp_path: pytest.TempPathFactory):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
