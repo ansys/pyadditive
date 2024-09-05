@@ -58,6 +58,7 @@ coverage.xml
 .pytest_cache/
 cover/
 .cov/
+MagicMock/
 
 # Translations
 *.mo

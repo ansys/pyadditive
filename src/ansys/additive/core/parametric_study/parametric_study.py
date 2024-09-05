@@ -97,7 +97,7 @@ class ParametricStudy:
 
     @classmethod
     def _new(cls, study_path: pathlib.Path):
-        """Create a new parametric study.
+        """Create a new parametric study with an empty dataframe.
 
         Parameters
         ----------
@@ -1592,9 +1592,12 @@ class ParametricStudy:
 
         LOG.warning("Updating parametric study to latest version.")
 
+        # WARNING: Create a new study with the same file name but empty data frame
         new_study = ParametricStudy._new(study.file_name)
+        df = study.data_frame()
+
         if version < 2:
-            df = study.data_frame().rename(
+            df = df.rename(
                 columns={
                     "Heater Temp (°C)": "Heater Temp (C)",
                     "Start Angle (°)": "Start Angle (degrees)",
@@ -1608,10 +1611,9 @@ class ParametricStudy:
                     "Melt Pool Ref Depth/Width (m)": "Melt Pool Ref Depth/Width",
                 }
             )
-            new_study._data_frame = df
             version = 2
         if version < 3:
-            materials = study.data_frame()[ColumnNames.MATERIAL].array
+            materials = df[ColumnNames.MATERIAL].array
             if not materials:
                 raise ValueError(
                     "Unable to determine material. "
@@ -1621,6 +1623,8 @@ class ParametricStudy:
             new_study._material_name = materials[0]
             version = 3
 
+        # Update the dataframe in the new study
+        new_study._data_frame = df
         return new_study
 
     @save_on_return
