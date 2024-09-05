@@ -174,6 +174,10 @@ class Additive:
             linux_install_path,
         )
 
+        # HACK: Set the number of concurrent simulations per server
+        # when generating documentation to reduce time.
+        if os.getenv("GENERATING_DOCS", None):
+            nsims_per_server = 8
         initial_settings = {"NumConcurrentSims": str(nsims_per_server)}
         LOG.info(self.apply_server_settings(initial_settings))
 
