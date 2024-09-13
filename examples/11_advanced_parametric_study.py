@@ -99,8 +99,8 @@ initial_beam_diameters = [80e-6]
 initial_heater_temps = [80]
 # Restrict the permutations within a range of energy densities
 # For single bead, the energy density is laser power / (laser scan speed * layer thickness).
-min_energy_density = 2e6
-max_energy_density = 8e6
+min_energy_density = 2e10
+max_energy_density = 8e10
 # Specify a bead length in meters.
 bead_length = 0.001
 
@@ -111,8 +111,8 @@ study.generate_single_bead_permutations(
     layer_thicknesses=initial_layer_thicknesses,
     beam_diameters=initial_beam_diameters,
     heater_temperatures=initial_heater_temps,
-    min_area_energy_density=min_energy_density,
-    max_area_energy_density=max_energy_density,
+    min_energy_density=min_energy_density,
+    max_energy_density=max_energy_density,
 )
 
 ###############################################################################

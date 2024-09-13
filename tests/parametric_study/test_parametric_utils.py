@@ -30,7 +30,7 @@ def test_build_rate_calculates_correctly():
     # act
     # assert
     assert build_rate(2, 3, 4) == 24
-    assert build_rate(2, 3) == 6
+    assert build_rate(2, 3) == 6e-4
 
 
 def test_energy_density_calulcates_correctly():
@@ -38,5 +38,5 @@ def test_energy_density_calulcates_correctly():
     # act
     # assert
     assert energy_density(24, 2, 3, 4) == 1
-    assert energy_density(6, 2, 3) == 1
+    assert energy_density(6, 2, 3) == 1e4
     assert math.isnan(energy_density(6, 0, 3, 4))

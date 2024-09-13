@@ -23,9 +23,13 @@
 
 from typing import Optional
 
+from ansys.additive.core.machine import MachineConstants as mc
+
 
 def build_rate(
-    scan_speed: float, layer_thickness: float, hatch_spacing: Optional[float] = None
+    scan_speed: float,
+    layer_thickness: float,
+    hatch_spacing: Optional[float] = mc.DEFAULT_HATCH_SPACING,
 ) -> float:
     """Calculate the build rate.
 
@@ -39,26 +43,24 @@ def build_rate(
         Laser scan speed.
     layer_thickness : float
         Powder deposit layer thickness.
-    hatch_spacing : float, default: None
+    hatch_spacing : float
         Distance between hatch scan lines.
 
     Returns
     -------
     float
-        Volumetric build rate is returned if hatch spacing is provided.
-        Otherwise, an area build rate is returned. If input units are m/s and m,
-        the output units are m^3/s or m^2/s.
+        The volumetric build rate is returned. For single bead simulations,
+        the default hatch spacing provided in machine constants is used.
+        If input units are m/s and m, the output units are m^3/s or m^2/s.
     """
-    if hatch_spacing is None:
-        return scan_speed * layer_thickness
-    return scan_speed * layer_thickness * hatch_spacing
+    return round(scan_speed * layer_thickness * hatch_spacing, 16)
 
 
 def energy_density(
     laser_power: float,
     scan_speed: float,
     layer_thickness: float,
-    hatch_spacing: Optional[float] = None,
+    hatch_spacing: Optional[float] = mc.DEFAULT_HATCH_SPACING,
 ) -> float:
     """Calculate the energy density.
 
@@ -74,15 +76,15 @@ def energy_density(
         Laser scan speed.
     layer_thickness : float
         Powder deposit layer thickness.
-    hatch_spacing : float, default: None
+    hatch_spacing : float
         Distance between hatch scan lines.
 
     Returns
     -------
     float
-        Volumetric energy density is returned if hatch spacing is provided.
-        Otherwise an area energy density is returned. If input units are W, m/s, m, or m,
-        the output units are J/m^3 or J/m^2.
+        The volumetric energy density is returned. For single bead simulations,
+        the default hatch spacing provided in machine constants is used.
+        If input units are m/s and m, the output units are m^3/s or m^2/s.
     """
     br = build_rate(scan_speed, layer_thickness, hatch_spacing)
     return laser_power / br if br else float("nan")

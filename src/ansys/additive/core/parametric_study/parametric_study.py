@@ -441,8 +441,8 @@ class ParametricStudy:
         layer_thicknesses: list[float] | None = None,
         heater_temperatures: list[float] | None = None,
         beam_diameters: list[float] | None = None,
-        min_area_energy_density: float | None = None,
-        max_area_energy_density: float | None = None,
+        min_energy_density: float | None = None,
+        max_energy_density: float | None = None,
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
     ) -> int:
@@ -476,14 +476,16 @@ class ParametricStudy:
             If this value is ``None``, :obj:`DEFAULT_BEAM_DIAMETER <MachineConstants.DEFAULT_BEAM_DIAMETER>`
             is used. Valid values are from :obj:`MIN_BEAM_DIAMETER <MachineConstants.MIN_BEAM_DIAMETER>`
             to :obj:`MAX_BEAM_DIAMETER <MachineConstants.MAX_BEAM_DIAMETER>`.
-        min_area_energy_density : float, default: None
-            Minimum area energy density (J/m^2) to use for single bead simulations.
-            Parameter combinations with an area energy density below this value are
-            not included. Area energy density is defined as laser power / (layer thickness * scan speed).
-        max_area_energy_density : float, default: None
-            Maximum area energy density (J/m^2) to use for single bead simulations.
-            Parameter combinations with an area energy density above this value are
-            not included. Area energy density is defined as laser power / (layer thickness * scan speed).
+        min_energy_density : float, default: None
+            Minimum energy density (J/m^3) to use for single bead simulations. The default hatch
+            spacing value of :obj:`DEFAULT_HATCH_SPACING <MachineConstants.DEFAULT_HATCH_SPACING>` is used.
+            Parameter combinations with an energy density below this value are not included. Energy density is
+            defined as laser power / (layer thickness * scan speed * hatch spacing).
+        max_energy_density : float, default: None
+            Maximum energy density (J/m^3) to use for single bead simulations. The default hatch
+            spacing value of :obj:`DEFAULT_HATCH_SPACING <MachineConstants.DEFAULT_HATCH_SPACING>` is used.
+            Parameter combinations with an energy density above this value are not included. Energy density is
+            defined as laser power / (layer thickness * scan speed * hatch spacing).
         iteration : int, default: :obj:`DEFAULT_ITERATION <constants.DEFAULT_ITERATION>`
             Iteration number for this set of simulations.
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
@@ -509,8 +511,8 @@ class ParametricStudy:
             if heater_temperatures is not None
             else [MachineConstants.DEFAULT_HEATER_TEMP]
         )
-        min_aed = min_area_energy_density or 0.0
-        max_aed = max_area_energy_density or float("inf")
+        min_aed = min_energy_density or 0.0
+        max_aed = max_energy_density or float("inf")
         num_permutations_added = int()
         for p in laser_powers:
             for v in scan_speeds:
@@ -653,11 +655,11 @@ class ParametricStudy:
             to :obj:`MAX_SLICING_STRIPE_WIDTH <MachineConstants.MAX_SLICING_STRIPE_WIDTH>`.
         min_energy_density : float, default: None
             Minimum energy density (J/m^3) to use for porosity simulations. Parameter combinations
-            with an area energy density below this value are not included. Area energy density is
+            with an energy density below this value are not included. Energy density is
             defined as laser power / (layer thickness * scan speed * hatch spacing).
         max_energy_density : float, default: None
             Maximum energy density (J/m^3) to use for porosity simulations. Parameter combinations
-            with an area energy density above this value are not included. Energy density is defined
+            with an energy density above this value are not included. Energy density is defined
             as laser power / (layer thickness * scan speed * hatch spacing).
         min_build_rate : float, default: None
             Minimum build rate (m^3/s) to use for porosity simulations. Parameter combinations
@@ -905,11 +907,11 @@ class ParametricStudy:
             to :obj:`MAX_SLICING_STRIPE_WIDTH <MachineConstants.MAX_SLICING_STRIPE_WIDTH>`.
         min_energy_density : float, default: None
             Minimum energy density (J/m^3) to use for microstructure simulations.
-            Parameter combinations with an area energy density below this value are not included.
-            Area energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
+            Parameter combinations with an energy density below this value are not included.
+            Energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
         max_energy_density : float, default: None
             The maximum energy density (J/m^3) to use for microstructure simulations.
-            Parameter combinations with an area energy density above this value will not be included.
+            Parameter combinations with an energy density above this value will not be included.
             Energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
         min_build_rate : float, default: None
             The minimum build rate (m^3/s) to use for microstructure simulations.
