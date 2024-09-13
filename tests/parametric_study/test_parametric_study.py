@@ -620,16 +620,16 @@ def test_generate_single_bead_permutations_filters_by_energy_density(
     powers = [50, 250, 700]
     scan_speeds = [1]
     layer_thicknesses = [50e-6]
-    min_energy_density = 1.1e6
-    max_energy_density = 5.1e6
+    min_energy_density = 1.1e10
+    max_energy_density = 5.1e10
 
     # act
     study.generate_single_bead_permutations(
         powers,
         scan_speeds,
         layer_thicknesses=layer_thicknesses,
-        min_area_energy_density=min_energy_density,
-        max_area_energy_density=max_energy_density,
+        min_energy_density=min_energy_density,
+        max_energy_density=max_energy_density,
     )
 
     # assert
