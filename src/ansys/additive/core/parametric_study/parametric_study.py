@@ -477,15 +477,15 @@ class ParametricStudy:
             is used. Valid values are from :obj:`MIN_BEAM_DIAMETER <MachineConstants.MIN_BEAM_DIAMETER>`
             to :obj:`MAX_BEAM_DIAMETER <MachineConstants.MAX_BEAM_DIAMETER>`.
         min_energy_density : float, default: None
-            Minimum energy density (J/m^3) to use for single bead simulations. The default hatch
+            Minimum energy density (J/m^3) to use for single bead simulations. Energy density is
+            defined as laser power / (layer thickness * scan speed * hatch spacing). The default hatch
             spacing value of :obj:`DEFAULT_HATCH_SPACING <MachineConstants.DEFAULT_HATCH_SPACING>` is used.
-            Parameter combinations with an energy density below this value are not included. Energy density is
-            defined as laser power / (layer thickness * scan speed * hatch spacing).
+            Parameter combinations with an energy density below this value are not included.
         max_energy_density : float, default: None
-            Maximum energy density (J/m^3) to use for single bead simulations. The default hatch
+            Maximum energy density (J/m^3) to use for single bead simulations. Energy density is
+            defined as laser power / (layer thickness * scan speed * hatch spacing). The default hatch
             spacing value of :obj:`DEFAULT_HATCH_SPACING <MachineConstants.DEFAULT_HATCH_SPACING>` is used.
-            Parameter combinations with an energy density above this value are not included. Energy density is
-            defined as laser power / (layer thickness * scan speed * hatch spacing).
+            Parameter combinations with an energy density above this value are not included.
         iteration : int, default: :obj:`DEFAULT_ITERATION <constants.DEFAULT_ITERATION>`
             Iteration number for this set of simulations.
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`

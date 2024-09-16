@@ -44,14 +44,15 @@ def build_rate(
     layer_thickness : float
         Powder deposit layer thickness.
     hatch_spacing : float
-        Distance between hatch scan lines.
+        Distance between hatch scan lines.  If not specified, the default value is used which is
+        in meters and assumes the other values are in meters per second and meters.
+
 
     Returns
     -------
     float
-        The volumetric build rate is returned. For single bead simulations,
-        the default hatch spacing provided in machine constants is used.
-        If input units are m/s and m, the output units are m^3/s or m^2/s.
+        The volumetric build rate is returned. If input units are m/s and m, the output units
+        are m^3/s or m^2/s.
     """
     return round(scan_speed * layer_thickness * hatch_spacing, 16)
 
@@ -77,14 +78,14 @@ def energy_density(
     layer_thickness : float
         Powder deposit layer thickness.
     hatch_spacing : float
-        Distance between hatch scan lines.
+        Distance between hatch scan lines.  If not specified, the default value is used which is
+        in meters and assumes the other values are in meters per second and meters.
 
     Returns
     -------
     float
-        The volumetric energy density is returned. For single bead simulations,
-        the default hatch spacing provided in machine constants is used.
-        If input units are m/s and m, the output units are m^3/s or m^2/s.
+        The volumetric build rate is returned. If input units are m/s and m, the output units
+        are m^3/s or m^2/s.
     """
     br = build_rate(scan_speed, layer_thickness, hatch_spacing)
     return laser_power / br if br else float("nan")
