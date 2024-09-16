@@ -98,7 +98,8 @@ initial_beam_diameters = [80e-6]
 # Specify heater temperatures. Valid values are 20 - 500 C.
 initial_heater_temps = [80]
 # Restrict the permutations within a range of energy densities
-# For single bead, the energy density is laser power / (laser scan speed * layer thickness).
+# For single bead, the energy density is laser power / (laser scan speed *  100 µm).
+# The units are J/m^3.
 min_energy_density = 2e10
 max_energy_density = 8e10
 # Specify a bead length in meters.
