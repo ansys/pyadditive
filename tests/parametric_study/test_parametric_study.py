@@ -2639,7 +2639,7 @@ def test_filter_data_frame_with_simulation_ids_ignores_status(
     assert len(df) == len(ids)
 
 
-def test_filter_data_frame_without_simulations_ids_only_adds_new_simulations(
+def test_filter_data_frame_without_simulations_ids_adds_expected_simulations(
     tmp_path: pytest.TempPathFactory,
 ):
     # arrange
@@ -2656,8 +2656,13 @@ def test_filter_data_frame_without_simulations_ids_only_adds_new_simulations(
     df = study.filter_data_frame()
 
     # assert
-    assert len(df) == 1
-    assert df.iloc[0][ColumnNames.STATUS] == SimulationStatus.NEW
+    assert len(df) == 3
+    for row in df.iterrows():
+        row[1].at[ColumnNames.STATUS] in [
+            SimulationStatus.NEW,
+            SimulationStatus.ERROR,
+            SimulationStatus.CANCELLED,
+        ]
 
 
 def test_create_machine_assigns_all_values():

@@ -1483,6 +1483,8 @@ class ParametricStudy:
 
         status : SimulationStatus
             Status for the simulations.
+        err_msg : str, default: ""
+            Error message to associate with simulations that have an error status.
         """
         if isinstance(ids, str):
             ids = [ids]
@@ -1906,7 +1908,10 @@ class ParametricStudy:
         priority: int = None,
         iteration: int = None,
     ) -> list[SingleBeadInput | PorosityInput | MicrostructureInput]:
-        """Get a list of simulation inputs from the parametric study.
+        """Get a list of simulation inputs from the parametric study filtered by the given criteria.
+
+        If no filter criteria are provided, all simulations with status of :obj:`SimulationStatus.NEW`,
+        :obj:`SimulationStatus.CANCELLED`, or :obj:`SimulationStatus.ERROR` are selected.
 
         Parameters
         ----------
@@ -2090,6 +2095,9 @@ class ParametricStudy:
     ) -> pd.DataFrame:
         """Apply filters to the parametric study and return the filtered data frame.
 
+        If no filter criteria are provided, all simulations with status of :obj:`SimulationStatus.NEW`,
+        :obj:`SimulationStatus.CANCELLED`, or :obj:`SimulationStatus.ERROR` are selected.
+
         Parameters
         ----------
         simulation_ids: list[str], default: None
@@ -2115,19 +2123,27 @@ class ParametricStudy:
         view = self.data_frame()
 
         # Filter the data frame based on the provided simulation IDs
-        if isinstance(simulation_ids, list) and len(simulation_ids) > 0:
-            simulation_ids_list = list()
+        if simulation_ids:
+            valid_ids = list()
             for sim_id in simulation_ids:
                 if sim_id not in view[ColumnNames.ID].values:
                     LOG.warning(f"Simulation ID '{sim_id}' not found in the parametric study")
-                elif sim_id in simulation_ids_list:
+                elif sim_id in valid_ids:
                     LOG.debug(f"Simulation ID '{sim_id}' has already been added")
                 else:
-                    simulation_ids_list.append(sim_id)
-            view = view[view[ColumnNames.ID].isin(simulation_ids_list)]
+                    valid_ids.append(sim_id)
+            view = view[view[ColumnNames.ID].isin(valid_ids)]
         else:
-            # Select only the simulations with status NEW if no simulation IDs are provided
-            view = view[view[ColumnNames.STATUS] == SimulationStatus.NEW]
+            # Select only the simulations with runnable status if no simulation IDs are provided
+            view = view[
+                view[ColumnNames.STATUS].isin(
+                    [
+                        SimulationStatus.NEW,
+                        SimulationStatus.CANCELLED,
+                        SimulationStatus.ERROR,
+                    ]
+                )
+            ]
 
         if types:
             # Filter the data frame based on the provided simulation types

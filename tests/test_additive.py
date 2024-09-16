@@ -352,15 +352,13 @@ def test_about_prints_server_status_messages(capsys: pytest.CaptureFixture[str])
 )
 # patch needed for Additive() call
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_simulate_async_with_single_input_calls_internal_simulate_once(_, sim_input):
+def test_simulate_async_with_single_input_calls_internal_simulate_once(_, sim_input, tmp_path):
     # arrange
     sim_input.material = test_utils.get_test_material()
 
-    metadata = OperationMetadata(simulation_id=sim_input.id, message="Simulation Started")
-    expected_operation = Operation(name=sim_input.id)
-    expected_operation.metadata.Pack(metadata)
+    task = SimulationTask(Mock(ServerConnection), Mock(Operation), sim_input, tmp_path)
     with patch("ansys.additive.core.additive.Additive._simulate") as _simulate_patch:
-        _simulate_patch.return_value = expected_operation
+        _simulate_patch.return_value = task
     additive = Additive(enable_beta_features=True)
     additive._simulate = _simulate_patch
 

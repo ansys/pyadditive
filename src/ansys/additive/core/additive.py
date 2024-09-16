@@ -438,6 +438,7 @@ class Additive:
             LOG.debug(f"Simulation task created for {simulation_input.id}")
 
         except Exception as e:
+            LOG.error(f"Error creating task for {simulation_input.id}: {e}")
             metadata = OperationMetadata(simulation_id=simulation_input.id, message=str(e))
             errored_op = Operation(name=simulation_input.id, done=True)
             errored_op.metadata.Pack(metadata)
