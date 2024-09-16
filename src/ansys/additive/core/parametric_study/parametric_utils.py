@@ -52,7 +52,7 @@ def build_rate(
     -------
     float
         The volumetric build rate is returned. If input units are m/s and m, the output units
-        are m^3/s or m^2/s.
+        are m^3/s.
     """
     return round(scan_speed * layer_thickness * hatch_spacing, 16)
 
@@ -84,8 +84,8 @@ def energy_density(
     Returns
     -------
     float
-        The volumetric build rate is returned. If input units are m/s and m, the output units
-        are m^3/s or m^2/s.
+        Volumetric energy density is returned. If input units are W, m/s and m, the output units
+        are J/m^3.
     """
     br = build_rate(scan_speed, layer_thickness, hatch_spacing)
     return laser_power / br if br else float("nan")
