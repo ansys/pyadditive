@@ -1936,6 +1936,7 @@ def test_update_format_updates_version_1_to_latest(tmp_path: pytest.TempPathFact
     assert ColumnNames.YZ_AVERAGE_GRAIN_SIZE in columns
     assert ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH in columns
     assert ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH in columns
+    assert ColumnNames.PV_RATIO in columns
     assert latest_study.material_name == "test-material"
 
 
