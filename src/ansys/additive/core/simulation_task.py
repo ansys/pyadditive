@@ -35,7 +35,6 @@ from google.longrunning.operations_pb2 import (
 )
 from google.protobuf.any_pb2 import Any
 from google.protobuf.duration_pb2 import Duration
-from google.rpc.status_pb2 import Status as RpcStatus
 
 from ansys.additive.core.download import download_file
 from ansys.additive.core.logger import LOG
@@ -227,9 +226,7 @@ class SimulationTask:
             operation.response.Unpack(response)
             self._summary = self._create_summary_from_response(response)
         elif operation.HasField("error"):
-            operation_error = RpcStatus()
-            operation.error.Unpack(operation_error)
-            self._summary = SimulationError(self._simulation_input, operation_error.message)
+            self._summary = SimulationError(self._simulation_input, operation.error.message)
 
         return progress
 
