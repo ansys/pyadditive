@@ -602,6 +602,7 @@ def test_generate_single_bead_permutations_creates_permutations(
                             & (df[ColumnNames.BEAM_DIAMETER] == d)
                             & (df[ColumnNames.LASER_POWER] == p)
                             & (df[ColumnNames.SCAN_SPEED] == v)
+                            & (df[ColumnNames.PV_RATIO] == p / v)
                             & (df[ColumnNames.START_ANGLE].isnull())
                             & (df[ColumnNames.ROTATION_ANGLE].isnull())
                             & (df[ColumnNames.HATCH_SPACING].isnull())
@@ -756,6 +757,7 @@ def test_generate_porosity_permutations_creates_permutations(
                                             & (df[ColumnNames.BEAM_DIAMETER] == d)
                                             & (df[ColumnNames.LASER_POWER] == p)
                                             & (df[ColumnNames.SCAN_SPEED] == v)
+                                            & (df[ColumnNames.PV_RATIO] == p / v)
                                             & (df[ColumnNames.START_ANGLE] == a)
                                             & (df[ColumnNames.ROTATION_ANGLE] == r)
                                             & (df[ColumnNames.HATCH_SPACING] == h)
@@ -980,6 +982,7 @@ def test_generate_microstructure_permutations_creates_permutations(
                                             & (df[ColumnNames.BEAM_DIAMETER] == d)
                                             & (df[ColumnNames.LASER_POWER] == p)
                                             & (df[ColumnNames.SCAN_SPEED] == v)
+                                            & (df[ColumnNames.PV_RATIO] == p / v)
                                             & (df[ColumnNames.START_ANGLE] == a)
                                             & (df[ColumnNames.ROTATION_ANGLE] == r)
                                             & (df[ColumnNames.HATCH_SPACING] == h)
@@ -1974,6 +1977,7 @@ def test_update_format_updates_Ansys_242_to_latest(tmp_path: pytest.TempPathFact
     assert updated_study.format_version == FORMAT_VERSION
     assert len(updated_study.data_frame()) == 48
     assert updated_study.material_name == "IN718"
+    assert ColumnNames.PV_RATIO in updated_study.data_frame().columns
 
 
 def test_reset_simulation_status_sets_status_to_new(tmp_path: pytest.TempPathFactory):
@@ -2129,6 +2133,23 @@ def test_import_csv_study_adds_simulations_to_new_study(
     assert len(errors) == 0
     assert len(study.data_frame()) == 5
     assert len(study.data_frame()[ColumnNames.LASER_POWER].unique()) == 5
+
+
+def test_import_csv_study_adds_pv_column_correctly(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study_name = "test_study"
+    single_bead_demo_csv_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "single-bead-test-study.csv"
+    )
+    # act
+    study = ParametricStudy(tmp_path / study_name, "material")
+    errors = study.import_csv_study(single_bead_demo_csv_file)
+
+    # assert
+    assert len(errors) == 0
+    assert len(study.data_frame()[ColumnNames.PV_RATIO].unique()) == 5
 
 
 def test_import_csv_study_adds_simulations_of_multiple_input_types_to_new_study(

@@ -1651,11 +1651,9 @@ class ParametricStudy:
         """
         if ColumnNames.PV_RATIO not in df.columns:
             scan_speed_index = df.columns.get_loc(ColumnNames.SCAN_SPEED)
-            df.insert(
-                scan_speed_index + 1,
-                ColumnNames.PV_RATIO,
-                df[ColumnNames.LASER_POWER] / df[ColumnNames.SCAN_SPEED],
-            )
+            df.insert(scan_speed_index + 1, ColumnNames.PV_RATIO, None)
+
+        df[ColumnNames.PV_RATIO] = df[ColumnNames.LASER_POWER] / df[ColumnNames.SCAN_SPEED]
         return df
 
     @save_on_return
