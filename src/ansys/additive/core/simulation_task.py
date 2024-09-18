@@ -86,6 +86,11 @@ class SimulationTask:
         self._summary = None
 
     @property
+    def simulation_id(self) -> str:
+        """Get the simulation id associated with this task."""
+        return self._simulation_input.id
+
+    @property
     def summary(
         self,
     ) -> (
@@ -117,9 +122,8 @@ class SimulationTask:
         Progress
             The progress of the operation.
         """
-        if not self._long_running_op.done:
-            get_request = GetOperationRequest(name=self._long_running_op.name)
-            self._long_running_op = self._server.operations_stub.GetOperation(get_request)
+        get_request = GetOperationRequest(name=self._long_running_op.name)
+        self._long_running_op = self._server.operations_stub.GetOperation(get_request)
         progress = self._update_operation_status(self._long_running_op)
         return progress
 
