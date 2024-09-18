@@ -234,3 +234,14 @@ def test_wait_calls_update_progress_and_break_with_completed_operations(
     # assert
     # Note: status is updated twice within wait().
     assert update_mock.call_count == 2
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_simulation_id_property_returns_id_from_input(mock_server, tmp_path: pathlib.Path):
+    # arrange
+    sim_input = SingleBeadInput()
+
+    task = SimulationTask(mock_server, Operation(name="some_other_name"), sim_input, tmp_path)
+
+    # act & assert
+    assert task.simulation_id == sim_input.id
