@@ -35,7 +35,6 @@ from google.longrunning.operations_pb2 import (
 )
 from google.protobuf.any_pb2 import Any
 from google.protobuf.duration_pb2 import Duration
-from google.rpc.status_pb2 import Status as RpcStatus
 
 from ansys.additive.core.download import download_file
 from ansys.additive.core.logger import LOG
@@ -87,6 +86,11 @@ class SimulationTask:
         self._summary = None
 
     @property
+    def simulation_id(self) -> str:
+        """Get the simulation id associated with this task."""
+        return self._simulation_input.id
+
+    @property
     def summary(
         self,
     ) -> (
@@ -118,9 +122,8 @@ class SimulationTask:
         Progress
             The progress of the operation.
         """
-        if not self._long_running_op.done:
-            get_request = GetOperationRequest(name=self._long_running_op.name)
-            self._long_running_op = self._server.operations_stub.GetOperation(get_request)
+        get_request = GetOperationRequest(name=self._long_running_op.name)
+        self._long_running_op = self._server.operations_stub.GetOperation(get_request)
         progress = self._update_operation_status(self._long_running_op)
         return progress
 
@@ -227,9 +230,7 @@ class SimulationTask:
             operation.response.Unpack(response)
             self._summary = self._create_summary_from_response(response)
         elif operation.HasField("error"):
-            operation_error = RpcStatus()
-            operation.error.Unpack(operation_error)
-            self._summary = SimulationError(self._simulation_input, operation_error.message)
+            self._summary = SimulationError(self._simulation_input, operation.error.message)
 
         return progress
 

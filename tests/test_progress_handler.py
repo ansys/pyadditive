@@ -33,6 +33,23 @@ from ansys.additive.core.progress_handler import (
 )
 
 
+def test_progress_prints_correctly():
+    # arrange
+    progress = Progress(
+        sim_id="sim_id",
+        state=ProgressState.RUNNING,
+        percent_complete=50,
+        message="message",
+        context="context",
+    )
+
+    # act
+    progress_str = str(progress)
+
+    # assert
+    assert "sim_id: RUNNING - 50% - context - message" == progress_str
+
+
 def test_from_proto_msg_returns_correct_object():
     # arrange
     msg = ProgressMsg(

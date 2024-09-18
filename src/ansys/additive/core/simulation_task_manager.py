@@ -41,6 +41,11 @@ class SimulationTaskManager:
         return self._tasks
 
     @property
+    def simulation_ids(self) -> list[str]:
+        """Get the list of the simulation ids managed by this manager."""
+        return [x.simulation_id for x in self._tasks]
+
+    @property
     def done(self) -> bool:
         """Check if all tasks are done."""
         return all(t.done for t in self._tasks)

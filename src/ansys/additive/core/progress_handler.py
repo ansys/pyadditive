@@ -83,7 +83,7 @@ class Progress(BaseModel):
         )
 
     def __str__(self):
-        return f"{self.id}: {self.state.name} - {self.percent_complete}% - {self.context} - {self.message}"
+        return f"{self.sim_id}: {self.state.name} - {self.percent_complete}% - {self.context} - {self.message}"  # noqa: E501
 
 
 class IProgressHandler(ABC):

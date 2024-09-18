@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from unittest.mock import Mock
+from unittest.mock import Mock, PropertyMock
 
 from ansys.additive.core.progress_handler import Progress, ProgressState
 from ansys.additive.core.simulation_task_manager import SimulationTask, SimulationTaskManager
@@ -105,3 +105,21 @@ def test_cancel_all_calls_each_task_cancel():
     # assert
     mock_task1.cancel.assert_called_once()
     mock_task2.cancel.assert_called_once()
+
+
+def test_simulation_ids():
+    # arrange
+    mock_task1 = Mock(SimulationTask)
+    mock_task2 = Mock(SimulationTask)
+    type(mock_task1).simulation_id = PropertyMock(return_value="sim1")
+    type(mock_task2).simulation_id = PropertyMock(return_value="sim2")
+
+    taskMgr = SimulationTaskManager()
+    taskMgr.add_task(mock_task1)
+    taskMgr.add_task(mock_task2)
+
+    # act
+    sim_ids = taskMgr.simulation_ids
+
+    # assert
+    assert sim_ids == ["sim1", "sim2"]
