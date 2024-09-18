@@ -129,15 +129,7 @@ class ParametricStudy:
         file_path = pathlib.Path(file_name).absolute()
         if not file_path.exists():
             raise ValueError(f"{file_name} does not exist.")
-
-        # The first column of the CSV file is expected to be the index column.
-        columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
-        columns.remove(ColumnNames.PV_RATIO)
-        # check if all columns in the CSV file are a subset of the expected columns
-        if all([set(pd.read_csv(file_path, index_col=0, nrows=0).columns) == set(columns)]):
-            return self.add_simulations_from_data_frame(pd.read_csv(file_path, index_col=0))
-        else:
-            raise ValueError(f"{file_name} does not have the expected columns.")
+        return self.add_simulations_from_data_frame(file_path)
 
     @property
     def format_version(self) -> int:
@@ -1629,14 +1621,14 @@ class ParametricStudy:
             version = 3
 
             # add p/v column to the dataframe
-            df = ParametricStudy.add_pv_ratio(df)
+            df = ParametricStudy._add_pv_ratio(df)
 
         # Update the dataframe in the new study
         new_study._data_frame = df
         return new_study
 
     @staticmethod
-    def add_pv_ratio(df: pd.DataFrame) -> pd.DataFrame:
+    def _add_pv_ratio(df: pd.DataFrame) -> pd.DataFrame:
         """Add PV Ratio column to the parametric study.
 
         Parameters
@@ -1657,19 +1649,32 @@ class ParametricStudy:
         return df
 
     @save_on_return
-    def add_simulations_from_data_frame(self, df: pd.DataFrame) -> list[str]:
+    def add_simulations_from_data_frame(self, file_path: str | os.PathLike) -> list[str]:
         """Add simulations from an imported CSV file to the parametric study.
 
         Parameters
         ----------
-        df : pd.DataFrame
-            Data frame of the csv file containing simulations to be added to the parametric study.
+        file_path : str, os.PathLike
+            Absolute path to the CSV file containing simulation data.
 
         Returns
         -------
         list[str]
             List of error messages for invalid simulations.
         """
+        try:
+            df = pd.read_csv(file_path, index_col=0)
+        except Exception as e:
+            raise ValueError(f"Unable to read CSV file: {e}")
+
+        columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
+        required_columns = [col for col in columns if col != ColumnNames.PV_RATIO]
+
+        if all([set(df.columns) == set(required_columns)]):
+            df = ParametricStudy._add_pv_ratio(df)
+
+        if not all([set(df.columns) == set(columns)]):
+            raise ValueError("CSV file does not have the expected columns.")
 
         # check valid inputs
         drop_indices, error_list = list(), list()
@@ -1712,9 +1717,6 @@ class ParametricStudy:
         self._data_frame[ColumnNames.RANDOM_SEED] = self._data_frame[
             ColumnNames.RANDOM_SEED
         ].astype(pd.Int64Dtype())
-
-        # add p/v column to the dataframe
-        ParametricStudy.add_pv_ratio(self._data_frame)
 
         if duplicates > 0:
             error_list.append(f"Removed {duplicates} duplicate simulation(s).")

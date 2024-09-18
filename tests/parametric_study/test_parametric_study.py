@@ -2096,7 +2096,7 @@ def test_import_csv_study_raises_exception_when_file_is_not_a_csv(
     study = ParametricStudy(tmp_path / study_name, "material")
 
     # assert
-    with pytest.raises(ValueError, match="does not have the expected columns"):
+    with pytest.raises(ValueError, match="Unable to read CSV file"):
         study.import_csv_study(filename)
 
 
@@ -2135,7 +2135,7 @@ def test_import_csv_study_adds_simulations_to_new_study(
     assert len(study.data_frame()[ColumnNames.LASER_POWER].unique()) == 5
 
 
-def test_import_csv_study_adds_pv_column_correctly(
+def test_import_csv_study_adds_pv_column_for_csv_file_without_the_column(
     tmp_path: pytest.TempPathFactory,
 ):
     # arrange
@@ -2150,6 +2150,23 @@ def test_import_csv_study_adds_pv_column_correctly(
     # assert
     assert len(errors) == 0
     assert len(study.data_frame()[ColumnNames.PV_RATIO].unique()) == 5
+
+
+def test_import_csv_study_reads_pv_column_for_csv_file_containing_the_column(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study_name = "test_study"
+    single_bead_demo_csv_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "pv-column-study.csv"
+    )
+    # act
+    study = ParametricStudy(tmp_path / study_name, "material")
+    errors = study.import_csv_study(single_bead_demo_csv_file)
+
+    # assert
+    assert len(errors) == 0
+    assert len(study.data_frame()[ColumnNames.PV_RATIO].unique()) == 6
 
 
 def test_import_csv_study_adds_simulations_of_multiple_input_types_to_new_study(
