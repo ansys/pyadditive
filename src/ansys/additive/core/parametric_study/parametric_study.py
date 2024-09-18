@@ -129,13 +129,7 @@ class ParametricStudy:
         file_path = pathlib.Path(file_name).absolute()
         if not file_path.exists():
             raise ValueError(f"{file_name} does not exist.")
-
-        # The first column of the CSV file is expected to be the index column.
-        columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
-        if all([set(pd.read_csv(file_path, index_col=0, nrows=0).columns) == set(columns)]):
-            return self.add_simulations_from_data_frame(pd.read_csv(file_path, index_col=0))
-        else:
-            raise ValueError(f"{file_name} does not have the expected columns.")
+        return self._add_simulations_from_csv(file_path)
 
     @property
     def format_version(self) -> int:
@@ -555,6 +549,7 @@ class ParametricStudy:
                                     ColumnNames.BEAM_DIAMETER: d,
                                     ColumnNames.LASER_POWER: p,
                                     ColumnNames.SCAN_SPEED: v,
+                                    ColumnNames.PV_RATIO: p / v,
                                     ColumnNames.ENERGY_DENSITY: aed,
                                     ColumnNames.BUILD_RATE: build_rate(v, l),
                                     ColumnNames.SINGLE_BEAD_LENGTH: bead_length,
@@ -771,6 +766,7 @@ class ParametricStudy:
                                                     ColumnNames.BEAM_DIAMETER: d,
                                                     ColumnNames.LASER_POWER: p,
                                                     ColumnNames.SCAN_SPEED: v,
+                                                    ColumnNames.PV_RATIO: p / v,
                                                     ColumnNames.START_ANGLE: a,
                                                     ColumnNames.ROTATION_ANGLE: r,
                                                     ColumnNames.HATCH_SPACING: h,
@@ -1105,6 +1101,7 @@ class ParametricStudy:
                                                     ColumnNames.BEAM_DIAMETER: d,
                                                     ColumnNames.LASER_POWER: p,
                                                     ColumnNames.SCAN_SPEED: v,
+                                                    ColumnNames.PV_RATIO: p / v,
                                                     ColumnNames.START_ANGLE: a,
                                                     ColumnNames.ROTATION_ANGLE: r,
                                                     ColumnNames.HATCH_SPACING: h,
@@ -1623,24 +1620,61 @@ class ParametricStudy:
             new_study._material_name = materials[0]
             version = 3
 
+            # add p/v column to the dataframe
+            df = ParametricStudy._add_pv_ratio(df)
+
         # Update the dataframe in the new study
         new_study._data_frame = df
         return new_study
 
+    @staticmethod
+    def _add_pv_ratio(df: pd.DataFrame) -> pd.DataFrame:
+        """Add PV Ratio column to the parametric study.
+
+        Parameters
+        ----------
+        study : ParametricStudy
+            Parametric study to update.
+
+        Returns
+        -------
+        ParametricStudy
+            Updated parametric study.
+        """
+        if ColumnNames.PV_RATIO not in df.columns:
+            scan_speed_index = df.columns.get_loc(ColumnNames.SCAN_SPEED)
+            df.insert(scan_speed_index + 1, ColumnNames.PV_RATIO, None)
+
+        df[ColumnNames.PV_RATIO] = df[ColumnNames.LASER_POWER] / df[ColumnNames.SCAN_SPEED]
+        return df
+
     @save_on_return
-    def add_simulations_from_data_frame(self, df: pd.DataFrame) -> list[str]:
+    def _add_simulations_from_csv(self, file_path: str | os.PathLike) -> list[str]:
         """Add simulations from an imported CSV file to the parametric study.
 
         Parameters
         ----------
-        df : pd.DataFrame
-            Data frame of the csv file containing simulations to be added to the parametric study.
+        file_path : str, os.PathLike
+            Absolute path to the CSV file containing simulation data.
 
         Returns
         -------
         list[str]
             List of error messages for invalid simulations.
         """
+        try:
+            df = pd.read_csv(file_path, index_col=0)
+        except Exception as e:
+            raise ValueError(f"Unable to read CSV file: {e}")
+
+        columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
+        required_columns = [col for col in columns if col != ColumnNames.PV_RATIO]
+
+        if all([set(df.columns) == set(required_columns)]):
+            df = ParametricStudy._add_pv_ratio(df)
+
+        if not all([set(df.columns) == set(columns)]):
+            raise ValueError("CSV file does not have the expected columns.")
 
         # check valid inputs
         drop_indices, error_list = list(), list()

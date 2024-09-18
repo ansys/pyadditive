@@ -52,6 +52,8 @@ class ColumnNames:
     """Laser power (W)."""
     SCAN_SPEED = "Scan Speed (m/s)"
     """Laser scan speed (m/s)."""
+    PV_RATIO = "Laser Power/Scan Speed (J/m)"
+    """Ratio of laser power to scan speed (J/m)."""
     START_ANGLE = "Start Angle (degrees)"
     """Hatch scan angle for first layer (degrees)."""
     ROTATION_ANGLE = "Rotation Angle (degrees)"
