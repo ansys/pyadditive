@@ -129,7 +129,7 @@ class ParametricStudy:
         file_path = pathlib.Path(file_name).absolute()
         if not file_path.exists():
             raise ValueError(f"{file_name} does not exist.")
-        return self.add_simulations_from_data_frame(file_path)
+        return self._add_simulations_from_csv(file_path)
 
     @property
     def format_version(self) -> int:
@@ -1649,7 +1649,7 @@ class ParametricStudy:
         return df
 
     @save_on_return
-    def add_simulations_from_data_frame(self, file_path: str | os.PathLike) -> list[str]:
+    def _add_simulations_from_csv(self, file_path: str | os.PathLike) -> list[str]:
         """Add simulations from an imported CSV file to the parametric study.
 
         Parameters
