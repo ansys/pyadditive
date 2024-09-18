@@ -98,9 +98,9 @@ initial_beam_diameters = [80e-6]
 # Specify heater temperatures. Valid values are 20 - 500 C.
 initial_heater_temps = [80]
 # Restrict the permutations within a range of energy densities
-# For single bead, the energy density is laser power / (laser scan speed * layer thickness).
-min_energy_density = 2e6
-max_energy_density = 8e6
+# For single bead, the pv ratio is laser power / laser scan speed.
+min_pv_ratio = 80
+max_pv_ratio = 400
 # Specify a bead length in meters.
 bead_length = 0.001
 
@@ -111,8 +111,8 @@ study.generate_single_bead_permutations(
     layer_thicknesses=initial_layer_thicknesses,
     beam_diameters=initial_beam_diameters,
     heater_temperatures=initial_heater_temps,
-    min_area_energy_density=min_energy_density,
-    max_area_energy_density=max_energy_density,
+    min_pv_ratio=min_pv_ratio,
+    max_pv_ratio=max_pv_ratio,
 )
 
 ###############################################################################

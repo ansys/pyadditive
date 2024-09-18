@@ -21,12 +21,8 @@
 # SOFTWARE.
 """Provides utility functions used during a parametric study."""
 
-from typing import Optional
 
-
-def build_rate(
-    scan_speed: float, layer_thickness: float, hatch_spacing: Optional[float] = None
-) -> float:
+def build_rate(scan_speed: float, layer_thickness: float, hatch_spacing: float) -> float:
     """Calculate the build rate.
 
     This is an approximate value useful for comparison but not for an accurate prediction
@@ -39,26 +35,23 @@ def build_rate(
         Laser scan speed.
     layer_thickness : float
         Powder deposit layer thickness.
-    hatch_spacing : float, default: None
+    hatch_spacing : float
         Distance between hatch scan lines.
 
     Returns
     -------
     float
-        Volumetric build rate is returned if hatch spacing is provided.
-        Otherwise, an area build rate is returned. If input units are m/s and m,
-        the output units are m^3/s or m^2/s.
+        Volumetric build rate is returned. If input units are m/s and m,
+        the output units are m^3/s.
     """
-    if hatch_spacing is None:
-        return scan_speed * layer_thickness
-    return scan_speed * layer_thickness * hatch_spacing
+    return round(scan_speed * layer_thickness * hatch_spacing, 16)
 
 
 def energy_density(
     laser_power: float,
     scan_speed: float,
     layer_thickness: float,
-    hatch_spacing: Optional[float] = None,
+    hatch_spacing: float,
 ) -> float:
     """Calculate the energy density.
 
@@ -74,15 +67,14 @@ def energy_density(
         Laser scan speed.
     layer_thickness : float
         Powder deposit layer thickness.
-    hatch_spacing : float, default: None
+    hatch_spacing : float
         Distance between hatch scan lines.
 
     Returns
     -------
     float
-        Volumetric energy density is returned if hatch spacing is provided.
-        Otherwise an area energy density is returned. If input units are W, m/s, m, or m,
-        the output units are J/m^3 or J/m^2.
+        Volumetric energy density is returned. If input units are W, m/s, m, or m,
+        the output units are J/m^3.
     """
     br = build_rate(scan_speed, layer_thickness, hatch_spacing)
     return laser_power / br if br else float("nan")
