@@ -73,7 +73,7 @@ def energy_density(
     Returns
     -------
     float
-        Volumetric energy density is returned. If input units are W, m/s, m, or m,
+        Volumetric energy density is returned. If input units are W, m/s, and m,
         the output units are J/m^3.
     """
     br = build_rate(scan_speed, layer_thickness, hatch_spacing)
