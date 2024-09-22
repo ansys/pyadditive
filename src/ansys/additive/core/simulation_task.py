@@ -35,6 +35,7 @@ from google.longrunning.operations_pb2 import (
 )
 from google.protobuf.any_pb2 import Any
 from google.protobuf.duration_pb2 import Duration
+from google.rpc.code_pb2 import Code
 
 from ansys.additive.core.download import download_file
 from ansys.additive.core.logger import LOG
@@ -229,7 +230,7 @@ class SimulationTask:
             )
             operation.response.Unpack(response)
             self._summary = self._create_summary_from_response(response)
-        elif operation.HasField("error"):
+        elif operation.HasField("error") and operation.error.code not in [Code.CANCELLED, Code.OK]:
             self._summary = SimulationError(self._simulation_input, operation.error.message)
 
         return progress
