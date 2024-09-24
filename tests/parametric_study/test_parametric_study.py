@@ -561,7 +561,7 @@ def test_generate_single_bead_permutations_creates_permutations(
     study = ParametricStudy(tmp_path / "test_study", "material")
     bead_length = 0.005
     powers = [50, 250, 700]
-    scan_speeds = [0.35, 1, 2.4]
+    scan_speeds = [0.35, 1, 2.5]
     layer_thicknesses = [30e-6, 50e-6]
     heater_temperatures = [80, 100]
     beam_diameters = [2e-5]
@@ -629,6 +629,28 @@ def test_generate_single_bead_permutations_filters_by_pv_ratio(
     df = study.data_frame()
     assert len(df) == 1
     assert df.loc[0, ColumnNames.LASER_POWER] == 250
+
+
+def test_generate_single_bead_parameters_correctly_filters_at_limits(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study = ParametricStudy(tmp_path / "test_study", "material")
+    powers = [50, 700]
+    scan_speeds = [0.35, 2.5]
+    min_pv_ratio = 50 / 2.5
+    max_pv_ratio = 700 / 0.35
+
+    # act
+    study.generate_single_bead_permutations(
+        powers,
+        scan_speeds,
+        min_pv_ratio=min_pv_ratio,
+        max_pv_ratio=max_pv_ratio,
+    )
+
+    # assert
+    assert len(study.data_frame()) == 4
 
 
 def test_generate_single_bead_permutations_only_adds_valid_permutations(
