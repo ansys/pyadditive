@@ -229,10 +229,6 @@ def test_add_summaries_with_single_bead_summary_adds_row(
         material=material,
     )
     summary = SingleBeadSummary(input, melt_pool_msg, None)
-    expected_build_rate = build_rate(
-        machine.scan_speed,
-        machine.layer_thickness,
-    )
     median_mp = summary.melt_pool.data_frame().median()
     expected_dw = (
         median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]
@@ -266,8 +262,8 @@ def test_add_summaries_with_single_bead_summary_adds_row(
     assert row[ColumnNames.ROTATION_ANGLE] == machine.layer_rotation_angle
     assert row[ColumnNames.STRIPE_WIDTH] == machine.slicing_stripe_width
     assert row[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD
-    assert row[ColumnNames.BUILD_RATE] == expected_build_rate
-    assert row[ColumnNames.ENERGY_DENSITY] == machine.laser_power / expected_build_rate
+    assert row[ColumnNames.BUILD_RATE] == None
+    assert row[ColumnNames.ENERGY_DENSITY] == None
     assert row[ColumnNames.SINGLE_BEAD_LENGTH] == 0.01
     assert row[ColumnNames.MELT_POOL_DEPTH] == median_mp[MeltPoolColumnNames.DEPTH]
     assert row[ColumnNames.MELT_POOL_WIDTH] == median_mp[MeltPoolColumnNames.WIDTH]
@@ -442,10 +438,6 @@ def test_add_summaries_overwrites_duplicate_entries_with_simulation_status_compl
     )
     melt_pool_msg = test_utils.get_test_melt_pool_message()
     summary = SingleBeadSummary(input_sb_1, melt_pool_msg, None)
-    expected_build_rate = build_rate(
-        machine.scan_speed,
-        machine.layer_thickness,
-    )
     median_mp = summary.melt_pool.data_frame().median()
     expected_dw = (
         median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]
@@ -480,8 +472,8 @@ def test_add_summaries_overwrites_duplicate_entries_with_simulation_status_compl
     assert row[ColumnNames.ROTATION_ANGLE] == machine.layer_rotation_angle
     assert row[ColumnNames.STRIPE_WIDTH] == machine.slicing_stripe_width
     assert row[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD
-    assert row[ColumnNames.BUILD_RATE] == expected_build_rate
-    assert row[ColumnNames.ENERGY_DENSITY] == machine.laser_power / expected_build_rate
+    assert row[ColumnNames.BUILD_RATE] == None
+    assert row[ColumnNames.ENERGY_DENSITY] == None
     assert row[ColumnNames.SINGLE_BEAD_LENGTH] == 0.01
     assert row[ColumnNames.MELT_POOL_DEPTH] == median_mp[MeltPoolColumnNames.DEPTH]
     assert row[ColumnNames.MELT_POOL_WIDTH] == median_mp[MeltPoolColumnNames.WIDTH]
@@ -607,13 +599,13 @@ def test_generate_single_bead_permutations_creates_permutations(
                             & (df[ColumnNames.ROTATION_ANGLE].isnull())
                             & (df[ColumnNames.HATCH_SPACING].isnull())
                             & (df[ColumnNames.STRIPE_WIDTH].isnull())
-                            & (df[ColumnNames.ENERGY_DENSITY].notnull())
-                            & (df[ColumnNames.BUILD_RATE].notnull())
+                            & (df[ColumnNames.ENERGY_DENSITY].isnull())
+                            & (df[ColumnNames.BUILD_RATE].isnull())
                             & (df[ColumnNames.SINGLE_BEAD_LENGTH] == bead_length)
                         )
 
 
-def test_generate_single_bead_permutations_filters_by_energy_density(
+def test_generate_single_bead_permutations_filters_by_pv_ratio(
     tmp_path: pytest.TempPathFactory,
 ):
     # arrange
@@ -621,16 +613,16 @@ def test_generate_single_bead_permutations_filters_by_energy_density(
     powers = [50, 250, 700]
     scan_speeds = [1]
     layer_thicknesses = [50e-6]
-    min_energy_density = 1.1e6
-    max_energy_density = 5.1e6
+    min_pv_ratio = 100
+    max_pv_ratio = 400
 
     # act
     study.generate_single_bead_permutations(
         powers,
         scan_speeds,
         layer_thicknesses=layer_thicknesses,
-        min_area_energy_density=min_energy_density,
-        max_area_energy_density=max_energy_density,
+        min_pv_ratio=min_pv_ratio,
+        max_pv_ratio=max_pv_ratio,
     )
 
     # assert
