@@ -37,6 +37,7 @@ from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialResponse
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse
 from google.longrunning.operations_pb2 import ListOperationsResponse, Operation
+from google.rpc.code_pb2 import Code
 import pytest
 
 from ansys.additive.core import (
@@ -55,6 +56,7 @@ from ansys.additive.core import (
 )
 from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
 from ansys.additive.core.progress_handler import IProgressHandler, Progress
+from ansys.additive.core.simulation import SimulationError
 
 from . import test_utils
 
@@ -245,3 +247,65 @@ def test_simulation_id_property_returns_id_from_input(mock_server, tmp_path: pat
 
     # act & assert
     assert task.simulation_id == sim_input.id
+
+
+def test_unpack_summary_with_error(tmp_path: pathlib.Path):
+    # arrange
+    sim_input = SingleBeadInput()
+    server_channel_str = "1.1.1.1"
+    mock_server = Mock()
+    mock_server.channel_str = server_channel_str
+    mock_server.simulation_stub = None
+
+    metadata = OperationMetadata(
+        simulation_id=sim_input.id,
+        percent_complete=50.0,
+        message="Error occurred",
+        state=ProgressMsgState.PROGRESS_STATE_ERROR,
+    )
+
+    operation = Operation(name=sim_input.id, done=True)
+    operation.metadata.Pack(metadata)
+    task = SimulationTask(mock_server, operation, sim_input, tmp_path)
+
+    # act
+    progress = task._unpack_summary(operation)
+
+    # assert
+    assert isinstance(task.summary, SimulationError)
+    assert progress.sim_id == sim_input.id
+    assert progress.state == ProgressMsgState.PROGRESS_STATE_ERROR
+    assert progress.percent_complete == 50.0
+    assert progress.message == "Error occurred"
+
+
+def test_unpack_summary_with_cancelled_error(tmp_path: pathlib.Path):
+    # arrange
+    sim_input = SingleBeadInput()
+    server_channel_str = "1.1.1.1"
+    mock_server = Mock()
+    mock_server.channel_str = server_channel_str
+    mock_server.simulation_stub = None
+
+    metadata = OperationMetadata(
+        simulation_id=sim_input.id,
+        percent_complete=50.0,
+        message="Cancelled",
+        state=ProgressMsgState.PROGRESS_STATE_CANCELLED,
+    )
+
+    operation = Operation(name=sim_input.id, done=True)
+    operation.error.code = Code.CANCELLED
+    operation.error.message = "Operation was cancelled"
+    operation.metadata.Pack(metadata)
+    task = SimulationTask(mock_server, operation, sim_input, tmp_path)
+
+    # act
+    progress = task._unpack_summary(operation)
+
+    # assert
+    assert task.summary is None
+    assert progress.sim_id == sim_input.id
+    assert progress.state == ProgressMsgState.PROGRESS_STATE_CANCELLED
+    assert progress.percent_complete == 50.0
+    assert progress.message == "Cancelled"
