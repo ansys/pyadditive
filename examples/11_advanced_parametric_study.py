@@ -83,7 +83,7 @@ print(study.file_name)
 # :meth:`~ParametricStudy.generate_single_bead_permutations` method is used to
 # generate single bead simulation permutations. The parameters
 # for the :meth:`~ParametricStudy.generate_single_bead_permutations` method allow you to
-# specify a range of machine parameters and filter them by energy density. Not all
+# specify a range of machine parameters and filter them by the P/V ratio. Not all
 # the parameters shown are required. Optional parameters that are not specified
 # use default values defined in the :class:`MachineConstants` class.
 
@@ -97,8 +97,8 @@ initial_layer_thicknesses = [40e-6, 50e-6]
 initial_beam_diameters = [80e-6]
 # Specify heater temperatures. Valid values are 20 - 500 C.
 initial_heater_temps = [80]
-# Restrict the permutations within a range of energy densities
-# For single bead, the pv ratio is laser power / laser scan speed.
+# Restrict the permutations within a range of P/V ratios. The P is for laser power
+# and the V is for velocity, which is the laser scan speed.
 min_pv_ratio = 80
 max_pv_ratio = 400
 # Specify a bead length in meters.
