@@ -465,11 +465,11 @@ class ParametricStudy:
             is used. Valid values are from :obj:`MIN_BEAM_DIAMETER <MachineConstants.MIN_BEAM_DIAMETER>`
             to :obj:`MAX_BEAM_DIAMETER <MachineConstants.MAX_BEAM_DIAMETER>`.
         min_pv_ratio : float, default: None
-            For p/v ratio, the p refers to the laser power (W) and v refers to the velocity of the laser beam
-            which is the scan speed (m/s). Parameter combinations with a ratio below this value are not included.
+            The P/V ratio is defined as the ratio of laser power (w) to the velocity of the laser beam, which
+            is the scan speed (m/s). Parameter combinations with ratios less than this value are not included.
         max_pv_ratio : float, default: None
-            For p/v ratio, the p refers to the laser power (W) and v refers to the velocity of the laser beam
-            which is the scan speed (m/s). Parameter combinations with a ratio above this value are not included.
+            The P/V ratio is defined as the ratio of laser power (w) to the velocity of the laser beam, which
+            is the scan speed (m/s). Parameter combinations with ratios greater than this value are not included.
         iteration : int, default: :obj:`DEFAULT_ITERATION <constants.DEFAULT_ITERATION>`
             Iteration number for this set of simulations.
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
