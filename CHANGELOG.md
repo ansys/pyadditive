@@ -8,6 +8,7 @@
 * ParametricStudy.set_status() and ParametricStudy.reset_status() have been renamed to ParametricStudy.set_simulation_status() and ParametricStudy.reset_simulation_status().
 * ParametricStudy() now requires a material name parameter. As a consequence, the material_name parameter has been removed from ParametricStudy.generate_single_bead_permutations(), ParametricStudy.generate_porosity_permutations(), and ParametricStudy.generate_microstructure_permutations(). The parametric study FORMAT_VERSION value has been incremented to 3.
 * The ParametricRunner class has been removed. To run a parametric study, use Additive.simulate_study() or Additive.simulate_study_async().
+* The ParametricStudy.generate_single_bead_permutations() will now accept min and max p/v ratios as constraints instead of min and max area energy densities.
 
 ### New Features
 * Default version of Additive Server is 25.1 when creating a client connection.
@@ -18,6 +19,7 @@
 * Added apply and list server settings functionality.
 * Parametric study data is updated as simulations are running.
 * Use LOG for logging in Additive object.
+* A new column for the P/V Ratio (Laser Power / Laser Scan Speed) is added to the study.
 
 ### Bug Fixes
 * Fixed import of microstructure simulations in csv file when random seed is undefined.

@@ -293,18 +293,12 @@ class ParametricStudy:
         self, summary: SingleBeadSummary, iteration: int = DEFAULT_ITERATION
     ):
         mp = summary.melt_pool
-        br = build_rate(summary.input.machine.scan_speed, summary.input.machine.layer_thickness)
-        ed = energy_density(
-            summary.input.machine.laser_power,
-            summary.input.machine.scan_speed,
-            summary.input.machine.layer_thickness,
-        )
         row = pd.Series(
             {
                 **self._common_param_to_dict(summary, iteration),
                 ColumnNames.TYPE: SimulationType.SINGLE_BEAD,
-                ColumnNames.BUILD_RATE: br,
-                ColumnNames.ENERGY_DENSITY: ed,
+                ColumnNames.BUILD_RATE: None,
+                ColumnNames.ENERGY_DENSITY: None,
                 ColumnNames.SINGLE_BEAD_LENGTH: summary.input.bead_length,
                 ColumnNames.MELT_POOL_WIDTH: mp.median_width(),
                 ColumnNames.MELT_POOL_DEPTH: mp.median_depth(),
@@ -435,8 +429,8 @@ class ParametricStudy:
         layer_thicknesses: list[float] | None = None,
         heater_temperatures: list[float] | None = None,
         beam_diameters: list[float] | None = None,
-        min_area_energy_density: float | None = None,
-        max_area_energy_density: float | None = None,
+        min_pv_ratio: float | None = None,
+        max_pv_ratio: float | None = None,
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
     ) -> int:
@@ -470,14 +464,12 @@ class ParametricStudy:
             If this value is ``None``, :obj:`DEFAULT_BEAM_DIAMETER <MachineConstants.DEFAULT_BEAM_DIAMETER>`
             is used. Valid values are from :obj:`MIN_BEAM_DIAMETER <MachineConstants.MIN_BEAM_DIAMETER>`
             to :obj:`MAX_BEAM_DIAMETER <MachineConstants.MAX_BEAM_DIAMETER>`.
-        min_area_energy_density : float, default: None
-            Minimum area energy density (J/m^2) to use for single bead simulations.
-            Parameter combinations with an area energy density below this value are
-            not included. Area energy density is defined as laser power / (layer thickness * scan speed).
-        max_area_energy_density : float, default: None
-            Maximum area energy density (J/m^2) to use for single bead simulations.
-            Parameter combinations with an area energy density above this value are
-            not included. Area energy density is defined as laser power / (layer thickness * scan speed).
+        min_pv_ratio : float, default: None
+            The P/V ratio is defined as the ratio of laser power (w) to the velocity of the laser beam, which
+            is the scan speed (m/s). Parameter combinations with ratios less than this value are not included.
+        max_pv_ratio : float, default: None
+            The P/V ratio is defined as the ratio of laser power (w) to the velocity of the laser beam, which
+            is the scan speed (m/s). Parameter combinations with ratios greater than this value are not included.
         iteration : int, default: :obj:`DEFAULT_ITERATION <constants.DEFAULT_ITERATION>`
             Iteration number for this set of simulations.
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
@@ -503,14 +495,14 @@ class ParametricStudy:
             if heater_temperatures is not None
             else [MachineConstants.DEFAULT_HEATER_TEMP]
         )
-        min_aed = min_area_energy_density or 0.0
-        max_aed = max_area_energy_density or float("inf")
+        min_pv = min_pv_ratio or 0.0
+        max_pv = max_pv_ratio or float("inf")
         num_permutations_added = int()
         for p in laser_powers:
             for v in scan_speeds:
                 for l in lt:
-                    aed = energy_density(p, v, l)
-                    if aed < min_aed or aed > max_aed:
+                    pv_ratio = p / v
+                    if pv_ratio < min_pv or pv_ratio > max_pv:
                         continue
 
                     for t in ht:
@@ -550,8 +542,8 @@ class ParametricStudy:
                                     ColumnNames.LASER_POWER: p,
                                     ColumnNames.SCAN_SPEED: v,
                                     ColumnNames.PV_RATIO: p / v,
-                                    ColumnNames.ENERGY_DENSITY: aed,
-                                    ColumnNames.BUILD_RATE: build_rate(v, l),
+                                    ColumnNames.ENERGY_DENSITY: None,
+                                    ColumnNames.BUILD_RATE: None,
                                     ColumnNames.SINGLE_BEAD_LENGTH: bead_length,
                                 }
                             )
@@ -647,13 +639,13 @@ class ParametricStudy:
             is used. Valid values are from :obj:`MIN_SLICING_STRIPE_WIDTH <MachineConstants.MIN_SLICING_STRIPE_WIDTH>`
             to :obj:`MAX_SLICING_STRIPE_WIDTH <MachineConstants.MAX_SLICING_STRIPE_WIDTH>`.
         min_energy_density : float, default: None
-            Minimum energy density (J/m^3) to use for porosity simulations. Parameter combinations
-            with an area energy density below this value are not included. Area energy density is
+            Minimum energy density (J/m^3) to use for porosity simulations. Energy density is
             defined as laser power / (layer thickness * scan speed * hatch spacing).
+            Parameter combinations with an energy density below this value are not included.
         max_energy_density : float, default: None
-            Maximum energy density (J/m^3) to use for porosity simulations. Parameter combinations
-            with an area energy density above this value are not included. Energy density is defined
-            as laser power / (layer thickness * scan speed * hatch spacing).
+            Maximum energy density (J/m^3) to use for porosity simulations. Energy density is
+            defined as laser power / (layer thickness * scan speed * hatch spacing).
+            Parameter combinations with an energy density above this value are not included.
         min_build_rate : float, default: None
             Minimum build rate (m^3/s) to use for porosity simulations. Parameter combinations
             with a build rate below this value are not included. Build rate is defined as
@@ -900,13 +892,13 @@ class ParametricStudy:
             is used. Valid values are from :obj:`MIN_SLICING_STRIPE_WIDTH <MachineConstants.MIN_SLICING_STRIPE_WIDTH>`
             to :obj:`MAX_SLICING_STRIPE_WIDTH <MachineConstants.MAX_SLICING_STRIPE_WIDTH>`.
         min_energy_density : float, default: None
-            Minimum energy density (J/m^3) to use for microstructure simulations.
-            Parameter combinations with an area energy density below this value are not included.
-            Area energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
+            Minimum energy density (J/m^3) to use for microstructure simulations. Energy density is
+            defined as laser power / (layer thickness * scan speed * hatch spacing).
+            Parameter combinations with an energy density below this value are not included.
         max_energy_density : float, default: None
-            The maximum energy density (J/m^3) to use for microstructure simulations.
-            Parameter combinations with an area energy density above this value will not be included.
-            Energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
+            Maximum energy density (J/m^3) to use for microstructure simulations. Energy density is
+            defined as laser power / (layer thickness * scan speed * hatch spacing).
+            Parameter combinations with an energy density above this value are not included.
         min_build_rate : float, default: None
             The minimum build rate (m^3/s) to use for microstructure simulations.
             Parameter combinations with a build rate below this value will not be included.
