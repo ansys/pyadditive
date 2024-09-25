@@ -501,7 +501,7 @@ class ParametricStudy:
         for p in laser_powers:
             for v in scan_speeds:
                 for l in lt:
-                    pv_ratio = p / v
+                    pv_ratio = round(p / v, 5)
                     if pv_ratio < min_pv or pv_ratio > max_pv:
                         continue
 
