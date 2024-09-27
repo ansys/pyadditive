@@ -157,7 +157,6 @@ def test_save_and_load_returns_original_object(tmp_path: pytest.TempPathFactory)
     # act
     study.save(test_path)
     study2 = ParametricStudy.load(test_path)
-    study2 = ParametricStudy.load(study_name)
 
     # assert
     assert study.data_frame().equals(study2.data_frame())
