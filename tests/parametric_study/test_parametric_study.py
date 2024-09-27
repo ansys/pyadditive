@@ -157,12 +157,27 @@ def test_save_and_load_returns_original_object(tmp_path: pytest.TempPathFactory)
     # act
     study.save(test_path)
     study2 = ParametricStudy.load(test_path)
+    study2 = ParametricStudy.load(study_name)
 
     # assert
     assert study.data_frame().equals(study2.data_frame())
     assert study2.file_name == test_path
     assert study.file_name == study_name
-    assert study2.material_name == study.material_name
+    assert study2.material_name == "material"
+
+
+def test_init_and_load_returns_original_object(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study_name = tmp_path / "test_study.ps"
+    study = ParametricStudy(study_name, "material")
+
+    # act
+    study2 = ParametricStudy.load(study_name)
+
+    # assert
+    assert study.data_frame().equals(study2.data_frame())
+    assert study2.file_name == study_name
+    assert study2.material_name == "material"
 
 
 def test_add_summaries_with_porosity_summary_adds_row(tmp_path: pytest.TempPathFactory):
