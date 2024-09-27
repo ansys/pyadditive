@@ -84,28 +84,31 @@ class ParametricStudy:
         if study_path.exists():
             self.__dict__ = ParametricStudy.load(study_path).__dict__
         else:
-            self._init_new_study(study_path)
-        self._material_name = material_name
-        LOG.info(f"Saving parametric study to {self.file_name}")
+            self._init_new_study(study_path, material_name)
+            LOG.info(f"Saving parametric study to {self.file_name}")
 
-    def _init_new_study(self, study_path: pathlib.Path):
+    def _init_new_study(self, study_path: pathlib.Path, material: str):
         self._file_name = study_path
         columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
         self._data_frame = pd.DataFrame(columns=columns)
         self._format_version = FORMAT_VERSION
+        self._material_name = material
         self.save(self.file_name)
 
     @classmethod
-    def _new(cls, study_path: pathlib.Path):
+    def _new(cls, study_path: pathlib.Path, material: str = ""):
         """Create a new parametric study with an empty dataframe.
 
         Parameters
         ----------
         study_path: pathlib.Path
             Path to the study file.
+
+        material: str, default ""
+            Material to use for study.
         """
         study = cls.__new__(cls)
-        study._init_new_study(study_path)
+        study._init_new_study(study_path, material)
         return study
 
     def import_csv_study(self, file_name: str | os.PathLike) -> list[str]:
@@ -221,7 +224,6 @@ class ParametricStudy:
         study.file_name = file_name
         study = ParametricStudy.update_format(study)
         study.reset_simulation_status()
-        # study._material_name = study._data_frame[ColumnNames.MATERIAL].values[0]
         return study
 
     @save_on_return
