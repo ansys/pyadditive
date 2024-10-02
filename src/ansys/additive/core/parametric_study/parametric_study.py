@@ -1661,14 +1661,27 @@ class ParametricStudy:
         except Exception as e:
             raise ValueError(f"Unable to read CSV file: {e}")
 
-        columns = [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
-        required_columns = [col for col in columns if col != ColumnNames.PV_RATIO]
+        columns = set(
+            [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
+        )
+        # older CSV files may not have the PV_RATIO column
+        columns.remove(ColumnNames.PV_RATIO)
 
-        if all([set(df.columns) == set(required_columns)]):
+        if not set(df.columns).issuperset(columns):
+            raise ValueError(
+                f"CSV is missing expected columns: {', '.join(str(v) for v in (columns - set(df.columns)))}"
+            )
+
+        # add PV_RATIO column to the dataframe if not present
+        if ColumnNames.PV_RATIO not in df:
             df = ParametricStudy._add_pv_ratio(df)
 
-        if not all([set(df.columns) == set(columns)]):
-            raise ValueError("CSV file does not have the expected columns.")
+        # check material name
+        csv_material = str(df[ColumnNames.MATERIAL].iloc[0])
+        if self.material_name and not csv_material.lower() == self.material_name.lower():
+            raise ValueError(
+                f"Material in CSV '{csv_material}' does not match study material '{self.material_name}'"
+            )
 
         # check valid inputs
         drop_indices, error_list = list(), list()

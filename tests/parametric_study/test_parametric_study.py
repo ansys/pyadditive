@@ -24,6 +24,7 @@ import logging
 import os
 import pathlib
 import platform
+import re
 import shutil
 import tempfile
 from unittest.mock import Mock, PropertyMock, create_autospec, patch
@@ -2136,12 +2137,13 @@ def test_import_csv_study_raises_exception_when_file_does_not_have_correct_heade
     incorrect_headers_file = test_utils.get_test_file_path(
         pathlib.Path("csv") / "incorrect-headers.csv"
     )
-
-    # act
     study = ParametricStudy(tmp_path / study_name, "material")
 
-    # assert
-    with pytest.raises(ValueError, match="does not have the expected columns"):
+    # act, assert
+    with pytest.raises(
+        ValueError,
+        match=re.escape("CSV is missing expected columns: Scan Speed (m/s)"),
+    ):
         study.import_csv_study(incorrect_headers_file)
 
 
@@ -2161,6 +2163,25 @@ def test_import_csv_study_adds_simulations_to_new_study(
     assert len(errors) == 0
     assert len(study.data_frame()) == 5
     assert len(study.data_frame()[ColumnNames.LASER_POWER].unique()) == 5
+
+
+def test_import_csv_raises_exception_when_material_does_not_match(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    material = "not-a-material"
+    study_name = "test_study"
+    single_bead_demo_csv_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "single-bead-test-study.csv"
+    )
+    study = ParametricStudy(tmp_path / study_name, material)
+
+    # act, assert
+    with pytest.raises(
+        ValueError,
+        match="Material in CSV 'material' does not match study material 'not-a-material'",
+    ):
+        study.import_csv_study(single_bead_demo_csv_file)
 
 
 def test_import_csv_study_adds_pv_column_for_csv_file_without_the_column(
@@ -2189,7 +2210,7 @@ def test_import_csv_study_reads_pv_column_for_csv_file_containing_the_column(
         pathlib.Path("csv") / "pv-column-study.csv"
     )
     # act
-    study = ParametricStudy(tmp_path / study_name, "material")
+    study = ParametricStudy(tmp_path / study_name, "IN718")
     errors = study.import_csv_study(single_bead_demo_csv_file)
 
     # assert
@@ -2260,7 +2281,7 @@ def test_import_csv_study_calls_remove_duplicates_entries_correctly(
     monkeypatch, file_name, argument, tmp_path: pytest.TempPathFactory
 ):
     # arrange
-    study = ParametricStudy(tmp_path / "test_study", "material")
+    study = ParametricStudy(tmp_path / "test_study", "IN718")
     csv_file = test_utils.get_test_file_path(pathlib.Path("csv") / file_name)
     patched_simulate = create_autospec(ParametricStudy._remove_duplicate_entries, return_value=0)
     monkeypatch.setattr(ParametricStudy, "_remove_duplicate_entries", patched_simulate)
@@ -2278,7 +2299,7 @@ def test_import_csv_study_drops_duplicates_with_correct_simulation_status_heirar
     # arrange
     study_name = "test_study"
     duplicate_rows_file = test_utils.get_test_file_path(pathlib.Path("csv") / "duplicate-rows.csv")
-    study = ParametricStudy(tmp_path / study_name, "material")
+    study = ParametricStudy(tmp_path / study_name, "IN718")
 
     # act
     errors = study.import_csv_study(duplicate_rows_file)
@@ -2310,7 +2331,7 @@ def test_import_csv_study_does_not_add_simulations_with_invalid_inputs_and_retur
     )
 
     # act
-    study = ParametricStudy(tmp_path / study_name, "material")
+    study = ParametricStudy(tmp_path / study_name, "IN718")
     error_list = study.import_csv_study(invalid_input_parameters_file)
 
     # assert
@@ -2337,7 +2358,7 @@ def test_import_csv_study_does_not_add_simulations_with_nan_inputs_and_returns_e
     nan_input_parameters_file = test_utils.get_test_file_path(pathlib.Path("csv") / file_name)
 
     # act
-    study = ParametricStudy(tmp_path / study_name, "material")
+    study = ParametricStudy(tmp_path / study_name, "IN718")
     error_list = study.import_csv_study(nan_input_parameters_file)
 
     # assert
@@ -2357,7 +2378,7 @@ def test_import_csv_adds_microstructure_simulations_with_nan_thermal_parameter_v
     )
 
     # act
-    study = ParametricStudy(tmp_path / study_name, "material")
+    study = ParametricStudy(tmp_path / study_name, "IN718")
     error_list = study.import_csv_study(nan_thermal_parameters_file)
 
     # assert
@@ -2375,7 +2396,7 @@ def test_import_csv_study_does_not_add_simulations_with_invalid_status_or_type_a
     )
 
     # act
-    study = ParametricStudy(tmp_path / study_name, "material")
+    study = ParametricStudy(tmp_path / study_name, "IN718")
     error_list = study.import_csv_study(invalid_type_status_file)
 
     # assert
