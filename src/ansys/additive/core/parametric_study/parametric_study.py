@@ -1672,7 +1672,7 @@ class ParametricStudy:
                 f"CSV is missing expected columns: {', '.join(str(v) for v in (columns - set(df.columns)))}"
             )
 
-        # add p/v column to the dataframe if not present
+        # add PV_RATIO column to the dataframe if not present
         if ColumnNames.PV_RATIO not in df:
             df = ParametricStudy._add_pv_ratio(df)
 
