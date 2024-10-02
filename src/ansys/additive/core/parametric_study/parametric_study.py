@@ -1664,7 +1664,7 @@ class ParametricStudy:
         columns = set(
             [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
         )
-        # Older versions of the CSV file may not have the PV_RATIO column
+        # older CSV files may not have the PV_RATIO column
         columns.remove(ColumnNames.PV_RATIO)
 
         if not set(df.columns).issuperset(columns):
@@ -1672,6 +1672,7 @@ class ParametricStudy:
                 f"CSV is missing expected columns: {', '.join(str(v) for v in (columns - set(df.columns)))}"
             )
 
+        # add p/v column to the dataframe if not present
         if ColumnNames.PV_RATIO not in df:
             df = ParametricStudy._add_pv_ratio(df)
 
