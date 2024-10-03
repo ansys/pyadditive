@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-additive-core"
-version = "0.19.dev29"
+version = "0.19.dev30"
 description = "A Python client for the Ansys Additive service"
 readme = "README.rst"
 requires-python = ">=3.10,<4"
@@ -45,7 +45,7 @@ dependencies = [
 [project.optional-dependencies]
 tests = [
     "ansys-platform-instancemanagement==1.1.2",
-    "dill==0.3.8",
+    "dill==0.3.9",
     "google-api-python-client==2.147.0",
     "googleapis-common-protos==1.65.0",
     "grpcio==1.60.0",
@@ -62,7 +62,7 @@ tests = [
 ]
 
 doc = [
-    "ansys-sphinx-theme[autoapi]==1.0.11",
+    "ansys-sphinx-theme[autoapi]==1.1.2",
     "enum-tools==0.12.0",
     "jupyter_sphinx==0.5.3",
     "matplotlib==3.9.2",
