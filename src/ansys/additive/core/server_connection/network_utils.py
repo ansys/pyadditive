@@ -60,6 +60,7 @@ def create_channel(target: str, max_rcv_msg_len: int = MAX_RCV_MSG_LEN):
     -------
     channel: grpc.Channel
         Insecure gRPC channel.
+
     """
 
     (host, port_str) = target.split(":")

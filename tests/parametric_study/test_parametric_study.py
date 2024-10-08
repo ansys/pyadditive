@@ -27,14 +27,9 @@ import platform
 import re
 import shutil
 import tempfile
-from unittest.mock import Mock, PropertyMock, create_autospec, patch
 import uuid
+from unittest.mock import Mock, PropertyMock, create_autospec, patch
 
-from ansys.api.additive.v0.additive_domain_pb2 import (
-    GrainStatistics,
-    MicrostructureResult,
-    PorosityResult,
-)
 import dill
 import numpy as np
 import pandas as pd
@@ -57,8 +52,16 @@ from ansys.additive.core import (
     SingleBeadSummary,
 )
 from ansys.additive.core.parametric_study.constants import ColumnNames
-from ansys.additive.core.parametric_study.parametric_study import FORMAT_VERSION, ParametricStudy
+from ansys.additive.core.parametric_study.parametric_study import (
+    FORMAT_VERSION,
+    ParametricStudy,
+)
 from ansys.additive.core.parametric_study.parametric_utils import build_rate
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    GrainStatistics,
+    MicrostructureResult,
+    PorosityResult,
+)
 from tests import test_utils
 
 
@@ -1973,7 +1976,9 @@ def test_update_format_updates_version_1_to_latest(tmp_path: pytest.TempPathFact
 
 
 @pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
-def test_update_format_raises_error_when_no_simulations_present(tmp_path: pytest.TempPathFactory):
+def test_update_format_raises_error_when_no_simulations_present(
+    tmp_path: pytest.TempPathFactory,
+):
     # arrange
     # load a version 1 study with no simulations
     v1_file = tmp_path / "version1.ps"

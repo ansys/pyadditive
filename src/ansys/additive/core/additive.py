@@ -25,26 +25,27 @@ import logging
 import os
 import time
 
-from ansys.api.additive import __version__ as api_version
-from ansys.api.additive.v0.additive_materials_pb2 import (
-    AddMaterialRequest,
-    GetMaterialRequest,
-    RemoveMaterialRequest,
-)
-from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
-from ansys.api.additive.v0.additive_settings_pb2 import SettingsRequest
+import grpc
 from google.longrunning.operations_pb2 import Operation
 from google.protobuf.empty_pb2 import Empty
-import grpc
 
+import ansys.additive.core.misc as misc
 from ansys.additive.core import USER_DATA_PATH, __version__
 from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
 from ansys.additive.core.logger import LOG
 from ansys.additive.core.material import RESERVED_MATERIAL_NAMES, AdditiveMaterial
-from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
-from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
-from ansys.additive.core.microstructure_3d import Microstructure3DInput, Microstructure3DSummary
-import ansys.additive.core.misc as misc
+from ansys.additive.core.material_tuning import (
+    MaterialTuningInput,
+    MaterialTuningSummary,
+)
+from ansys.additive.core.microstructure import (
+    MicrostructureInput,
+    MicrostructureSummary,
+)
+from ansys.additive.core.microstructure_3d import (
+    Microstructure3DInput,
+    Microstructure3DSummary,
+)
 from ansys.additive.core.parametric_study import ParametricStudy
 from ansys.additive.core.parametric_study.parametric_study_progress_handler import (
     ParametricStudyProgressHandler,
@@ -54,13 +55,31 @@ from ansys.additive.core.progress_handler import (
     DefaultSingleSimulationProgressHandler,
     IProgressHandler,
 )
-from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
-from ansys.additive.core.simulation import SimulationError, SimulationStatus, SimulationType
-from ansys.additive.core.simulation_requests import _create_request
+from ansys.additive.core.server_connection import (
+    DEFAULT_PRODUCT_VERSION,
+    ServerConnection,
+)
+from ansys.additive.core.simulation import (
+    SimulationError,
+    SimulationStatus,
+    SimulationType,
+)
+from ansys.additive.core.simulation_requests import create_request
 from ansys.additive.core.simulation_task import SimulationTask
 from ansys.additive.core.simulation_task_manager import SimulationTaskManager
 from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
-from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHistorySummary
+from ansys.additive.core.thermal_history import (
+    ThermalHistoryInput,
+    ThermalHistorySummary,
+)
+from ansys.api.additive import __version__ as api_version
+from ansys.api.additive.v0.additive_materials_pb2 import (
+    AddMaterialRequest,
+    GetMaterialRequest,
+    RemoveMaterialRequest,
+)
+from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
+from ansys.api.additive.v0.additive_settings_pb2 import SettingsRequest
 
 
 class Additive:
@@ -137,6 +156,7 @@ class Additive:
     >>> additive = Additive(product_version="241")
 
     .. _PyPIM: https://pypim.docs.pyansys.com/version/stable/index.html
+
     """
 
     DEFAULT_ADDITIVE_SERVICE_PORT = 50052
@@ -237,13 +257,13 @@ class Additive:
 
     def about(self) -> None:
         """Print information about the client and server."""
-        print(f"Client {__version__}, API version: {api_version}")
+        print(f"Client {__version__}, API version: {api_version}")  # noqa: T201
         if self._servers is None:
-            print("Client is not connected to a server.")
+            print("Client is not connected to a server.")  # noqa: T201
             return
         else:
             for server in self._servers:
-                print(server.status())
+                print(server.status())  # noqa: T201
 
     def apply_server_settings(self, settings: dict[str, str]) -> dict[str, list[str]]:
         """Apply settings to each server.
@@ -305,8 +325,7 @@ class Additive:
 
         Parameters
         ----------
-        inputs: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput,
-        Microstructure3DInput, list
+        inputs: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput, Microstructure3DInput, list
             Parameters to use for simulations. A list of inputs may be provided to run multiple
             simulations.
         progress_handler: IProgressHandler, None, default: None
@@ -319,7 +338,8 @@ class Additive:
         Microstructure3DSummary, SimulationError, list
             One or more summaries of simulation results. If a list of inputs is provided, a
             list is returned.
-        """
+
+        """  # noqa: E501
         summaries = []
         task_mgr = self.simulate_async(inputs, progress_handler)
         task_mgr.wait_all(progress_handler=progress_handler)
@@ -350,8 +370,7 @@ class Additive:
 
         Parameters
         ----------
-        inputs: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput,
-        Microstructure3DInput, list
+        inputs: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput, Microstructure3DInput, list
             Parameters to use for simulations. A list of inputs may be provided to run multiple
             simulations.
         progress_handler: IProgressHandler, None, default: None
@@ -362,7 +381,8 @@ class Additive:
         -------
         SimulationTaskManager
             A SimulationTaskManager to handle all tasks sent to the server by this function call.
-        """
+
+        """  # noqa: E501
         self._check_for_duplicate_id(inputs)
 
         task_manager = SimulationTaskManager()
@@ -402,8 +422,7 @@ class Additive:
 
         Parameters
         ----------
-        simulation_input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput,
-        Microstructure3DInput
+        simulation_input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput, Microstructure3DInput
             Parameters to use for simulation.
         server: ServerConnection
             Server to use for the simulation.
@@ -414,7 +433,8 @@ class Additive:
         -------
         SimulationTask
             A task that can be used to monitor the simulation progress.
-        """
+
+        """  # noqa: E501
 
         if simulation_input.material == AdditiveMaterial():
             raise ValueError("A material is not assigned to the simulation input")
@@ -425,11 +445,11 @@ class Additive:
         ):
             raise BetaFeatureNotEnabledError(
                 "3D microstructure simulations require beta features to be enabled.\n"
-                + "Set enable_beta_features=True when creating the Additive client."
+                "Set enable_beta_features=True when creating the Additive client."
             )
 
         try:
-            request = _create_request(simulation_input, server, progress_handler)
+            request = create_request(simulation_input, server, progress_handler)
             long_running_op = server.simulation_stub.Simulate(request)
             simulation_task = SimulationTask(
                 server, long_running_op, simulation_input, self._user_data_path
@@ -457,16 +477,16 @@ class Additive:
         -------
         list[str]
             Names of available additive materials.
+
         """
         response = self._servers[0].materials_stub.GetMaterialsList(Empty())
-        return [n for n in response.names]
+        return response.names
 
     def material(self, name: str) -> AdditiveMaterial:
         """Get a material for use in an additive simulation.
 
         Parameters
         ----------
-
         name: str
             Name of material.
 
@@ -474,6 +494,7 @@ class Additive:
         -------
         AdditiveMaterial
             Requested material definition.
+
         """
         request = GetMaterialRequest(name=name)
         result = self._servers[0].materials_stub.GetMaterial(request)
@@ -511,6 +532,7 @@ class Additive:
         -------
         AdditiveMaterial
             A material definition for use in additive simulations.
+
         """
         material = AdditiveMaterial()
         material._load_parameters(parameters_file)
@@ -549,6 +571,7 @@ class Additive:
         -------
         AdditiveMaterial
             A definition of the material that was added to the library.
+
         """  # noqa: E501
         material = self.load_material(
             parameters_file, thermal_lookup_file, characteristic_width_lookup_file
@@ -559,7 +582,7 @@ class Additive:
             raise ValueError(f"Material {material.name} already exists. Unable to add material.")
 
         request = AddMaterialRequest(id=misc.short_uuid(), material=material._to_material_message())
-        print(f"Adding material {request.material.description}")
+        LOG.info(f"Adding material {request.material.description}")
         response = self._servers[0].materials_stub.AddMaterial(request)
 
         if response.HasField("error"):
@@ -574,6 +597,7 @@ class Additive:
         ----------
         name: str
             Name of the material to remove.
+
         """
         if name.lower() in (material.lower() for material in RESERVED_MATERIAL_NAMES):
             raise ValueError(f"Unable to remove Ansys-supplied material '{name}'.")
@@ -610,6 +634,7 @@ class Additive:
         -------
         MaterialTuningSummary, None
             Summary of material tuning or ``None`` if the tuning failed.
+
         """  # noqa: E501
 
         task = self.tune_material_async(input, out_dir)
@@ -643,6 +668,7 @@ class Additive:
         -------
         SimulationTask
             An asynchronous simulation task.
+
         """
         if input.id == "":
             input.id = misc.short_uuid()
@@ -688,6 +714,7 @@ class Additive:
             all iterations are run.
         progress_handler : IProgressHandler, None, default: None
             Handler for progress updates. If ``None``, a :class:`ParametricStudyProcessHandler` will be used.
+
         """
         SLEEP_INTERVAL = 2
         progress_handler = ParametricStudyProgressHandler(study)
@@ -710,7 +737,7 @@ class Additive:
         except Exception as e:
             LOG.error(f"Error running study: {e}")
             study.reset_simulation_status()
-            raise RuntimeError() from e
+            raise RuntimeError from e
 
     def simulate_study_async(
         self,
@@ -741,6 +768,7 @@ class Additive:
             all iterations are run.
         progress_handler : IProgressHandler, None, default: None
             Handler for progress updates.
+
         """
         inputs = study.simulation_inputs(self.material, simulation_ids, types, priority, iteration)
         if not inputs:
@@ -765,6 +793,7 @@ class Additive:
         ------
         ValueError
             If a duplicate ID is found in the list of inputs.
+
         """  # noqa: E501
         if not isinstance(inputs, list):
             # An individual input, not a list
@@ -776,6 +805,6 @@ class Additive:
             if not i.id:
                 # give input an id if none provided
                 i.id = misc.short_uuid()
-            if any([x for x in ids if x == i.id]):
+            if any(id == i.id for id in ids):
                 raise ValueError(f'Duplicate simulation ID "{i.id}" in input list')
             ids.append(i.id)

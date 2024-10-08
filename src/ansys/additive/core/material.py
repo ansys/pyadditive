@@ -20,20 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides a container for material parameters."""
+
 import collections
 import csv
 import json
 import re
 
 from ansys.api.additive.v0.additive_domain_pb2 import (
+    AdditiveMaterial as MaterialMessage,
+)
+from ansys.api.additive.v0.additive_domain_pb2 import (
     CharacteristicWidthDataPoint as CharacteristicWidthDataPointMessage,
 )
 from ansys.api.additive.v0.additive_domain_pb2 import (
     ThermalPropertiesDataPoint as ThermalPropertiesDataPointMessage,
 )
-from ansys.api.additive.v0.additive_domain_pb2 import AdditiveMaterial as MaterialMessage
 
-RESERVED_MATERIAL_NAMES = ["17-4PH", "316L", "Al357", "AlSi10Mg", "CoCr", "IN625", "IN718", "Ti64"]
+RESERVED_MATERIAL_NAMES = [
+    "17-4PH",
+    "316L",
+    "Al357",
+    "AlSi10Mg",
+    "CoCr",
+    "IN625",
+    "IN718",
+    "Ti64",
+]
 
 
 class CharacteristicWidthDataPoint:
@@ -46,7 +58,11 @@ class CharacteristicWidthDataPoint:
     """
 
     def __init__(
-        self, *, laser_power: float = 0, scan_speed: float = 0, characteristic_width: float = 0
+        self,
+        *,
+        laser_power: float = 0,
+        scan_speed: float = 0,
+        characteristic_width: float = 0,
     ):
         """Initialize a characteristic width data point."""
         self._laser_power = laser_power
@@ -62,15 +78,13 @@ class CharacteristicWidthDataPoint:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, CharacteristicWidthDataPoint):
             return False
-        for k in self.__dict__:
-            if getattr(self, k) != getattr(other, k):
-                return False
-        return True
+        return all(getattr(self, k) == getattr(other, k) for k in self.__dict__)
 
     @property
     def characteristic_width(self) -> float:
         """Characteristic melt pool width for a given laser power and scan
-        speed (m)."""
+        speed (m).
+        """
         return self._characteristic_width
 
     @characteristic_width.setter
@@ -105,9 +119,12 @@ class CharacteristicWidthDataPoint:
         self._scan_speed = value
 
     @staticmethod
-    def _from_characteristic_width_data_point_message(msg: CharacteristicWidthDataPointMessage):
+    def _from_characteristic_width_data_point_message(
+        msg: CharacteristicWidthDataPointMessage,
+    ):
         """Create a characteristic width data point`` from a characteristic
-        data point message received from the Additive service."""
+        data point message received from the Additive service.
+        """
         if not isinstance(msg, CharacteristicWidthDataPointMessage):
             raise ValueError(
                 "Invalid message object passed to from_characteristic_width_data_point_message()"
@@ -121,7 +138,8 @@ class CharacteristicWidthDataPoint:
         self,
     ) -> CharacteristicWidthDataPointMessage:
         """Create a characteristic width data point message from this
-        characteristic width data point to send to the Additive service."""
+        characteristic width data point to send to the Additive service.
+        """
         msg = CharacteristicWidthDataPointMessage()
         for p in self.__dict__:
             setattr(msg, p.replace("_", "", 1), getattr(self, p))
@@ -167,10 +185,7 @@ class ThermalPropertiesDataPoint:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ThermalPropertiesDataPoint):
             return False
-        for k in self.__dict__:
-            if getattr(self, k) != getattr(other, k):
-                return False
-        return True
+        return all(getattr(self, k) == getattr(other, k) for k in self.__dict__)
 
     @property
     def density(self) -> float:
@@ -249,7 +264,9 @@ class ThermalPropertiesDataPoint:
         self._thermal_conductivity_ratio = value
 
     @staticmethod
-    def _from_thermal_properties_data_point_message(msg: ThermalPropertiesDataPointMessage):
+    def _from_thermal_properties_data_point_message(
+        msg: ThermalPropertiesDataPointMessage,
+    ):
         """Create a thermal properties data point from a thermal characteristic
         data point message received from the Additive service.
 
@@ -384,10 +401,7 @@ class AdditiveMaterial:
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, AdditiveMaterial):
             return False
-        for k in self.__dict__:
-            if getattr(self, k) != getattr(__o, k):
-                return False
-        return True
+        return all(getattr(self, k) == getattr(__o, k) for k in self.__dict__)
 
     @property
     def absorptivity_maximum(self) -> float:
@@ -766,7 +780,8 @@ class AdditiveMaterial:
     @staticmethod
     def _from_material_message(msg: MaterialMessage):
         """Create an additive material from a material message received from
-        the Additive service."""
+        the Additive service.
+        """
         if not isinstance(msg, MaterialMessage):
             raise ValueError("Invalid message object passed to from_material_message()")
         material = AdditiveMaterial()
@@ -785,7 +800,8 @@ class AdditiveMaterial:
 
     def _to_material_message(self) -> MaterialMessage:
         """Create a material message from the additive material to send to the
-        Additive service."""
+        Additive service.
+        """
         msg = MaterialMessage()
         for p in self.__dict__:
             if p != "_characteristic_width_data" and p != "_thermal_properties_data":

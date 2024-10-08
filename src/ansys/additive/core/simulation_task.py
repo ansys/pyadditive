@@ -24,9 +24,6 @@
 import os
 import zipfile
 
-from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialResponse
-from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse
 from google.longrunning.operations_pb2 import (
     CancelOperationRequest,
     GetOperationRequest,
@@ -39,15 +36,34 @@ from google.rpc.code_pb2 import Code
 
 from ansys.additive.core.download import download_file
 from ansys.additive.core.logger import LOG
-from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
-from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
-from ansys.additive.core.microstructure_3d import Microstructure3DInput, Microstructure3DSummary
+from ansys.additive.core.material_tuning import (
+    MaterialTuningInput,
+    MaterialTuningSummary,
+)
+from ansys.additive.core.microstructure import (
+    MicrostructureInput,
+    MicrostructureSummary,
+)
+from ansys.additive.core.microstructure_3d import (
+    Microstructure3DInput,
+    Microstructure3DSummary,
+)
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
-from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
+from ansys.additive.core.progress_handler import (
+    IProgressHandler,
+    Progress,
+    ProgressState,
+)
 from ansys.additive.core.server_connection import ServerConnection
 from ansys.additive.core.simulation import SimulationError
 from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
-from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHistorySummary
+from ansys.additive.core.thermal_history import (
+    ThermalHistoryInput,
+    ThermalHistorySummary,
+)
+from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialResponse
+from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse
 
 
 class SimulationTask:
@@ -63,6 +79,7 @@ class SimulationTask:
         The simulation input.
     user_data_path: str
         The path to the user data directory.
+
     """  # noqa: E501
 
     def __init__(
@@ -122,6 +139,7 @@ class SimulationTask:
         ------
         Progress
             The progress of the operation.
+
         """
         get_request = GetOperationRequest(name=self._long_running_op.name)
         self._long_running_op = self._server.operations_stub.GetOperation(get_request)
@@ -143,6 +161,7 @@ class SimulationTask:
             updated message for a progress update.
         progress_handler: IProgressHandler, None, default: None
             Handler for progress updates. If ``None``, no progress updates are provided.
+
         """
         LOG.debug(f"Waiting for {self._long_running_op.name} to complete")
         try:
@@ -191,6 +210,7 @@ class SimulationTask:
         Returns
         -------
         An instance of a Progress class
+
         """
         metadata = OperationMetadata()
         metadata_message.Unpack(metadata)
@@ -215,6 +235,7 @@ class SimulationTask:
         ------
         Progress
             The progress of the operation.
+
         """
         progress = self._convert_metadata_to_progress(operation.metadata)
 
@@ -230,7 +251,10 @@ class SimulationTask:
             )
             operation.response.Unpack(response)
             self._summary = self._create_summary_from_response(response)
-        elif operation.HasField("error") and operation.error.code not in [Code.CANCELLED, Code.OK]:
+        elif operation.HasField("error") and operation.error.code not in [
+            Code.CANCELLED,
+            Code.OK,
+        ]:
             self._summary = SimulationError(self._simulation_input, operation.error.message)
 
         return progress
@@ -253,6 +277,7 @@ class SimulationTask:
         -------
         Progress
             Progress created from long-running operation metadata.
+
         """
         if operation.done:
             # If operation is completed, get the summary and update progress. The server

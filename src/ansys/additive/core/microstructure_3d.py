@@ -20,19 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides input and result summary containers for microstructure 3D simulations."""
+
 import math
 import os
-
-from ansys.api.additive.v0.additive_domain_pb2 import (
-    Microstructure3DInput as Microstructure3DInputMessage,
-)
-from ansys.api.additive.v0.additive_domain_pb2 import Microstructure3DResult
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 from ansys.additive.core import misc
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.microstructure import Microstructure2DResult
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    Microstructure3DInput as Microstructure3DInputMessage,
+)
+from ansys.api.additive.v0.additive_domain_pb2 import Microstructure3DResult
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 
 class Microstructure3DInput:
@@ -99,8 +99,8 @@ class Microstructure3DInput:
         use_transient_bulk_nucleation: bool = DEFAULT_USE_TRANSIENT_BULK_NUCLEATION,
         max_bulk_nucleation_density: int = DEFAULT_MAX_NUCLEATION_DENSITY_BULK,
         num_initial_random_nuclei: int = DEFAULT_NUMBER_OF_RANDOM_NUCLEI,
-        machine: AdditiveMachine = AdditiveMachine(),
-        material: AdditiveMaterial = AdditiveMaterial(),
+        machine: AdditiveMachine = None,
+        material: AdditiveMaterial = None,
     ):
         """Initialize a ``Microstructure3DInput`` object."""
 
@@ -115,8 +115,8 @@ class Microstructure3DInput:
         self.use_transient_bulk_nucleation = use_transient_bulk_nucleation
         self.max_bulk_nucleation_density = max_bulk_nucleation_density
         self.num_initial_random_nuclei = num_initial_random_nuclei
-        self.machine = machine
-        self.material = material
+        self.machine = machine if machine else AdditiveMachine()
+        self.material = material if material else AdditiveMaterial()
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
@@ -199,7 +199,10 @@ class Microstructure3DInput:
     @sample_min_x.setter
     def sample_min_x(self, value: float):
         self.__validate_range(
-            value, self.MIN_POSITION_COORDINATE, self.MAX_POSITION_COORDINATE, "sample_min_x"
+            value,
+            self.MIN_POSITION_COORDINATE,
+            self.MAX_POSITION_COORDINATE,
+            "sample_min_x",
         )
         self._sample_min_x = value
 
@@ -215,7 +218,10 @@ class Microstructure3DInput:
     @sample_min_y.setter
     def sample_min_y(self, value: float):
         self.__validate_range(
-            value, self.MIN_POSITION_COORDINATE, self.MAX_POSITION_COORDINATE, "sample_min_y"
+            value,
+            self.MIN_POSITION_COORDINATE,
+            self.MAX_POSITION_COORDINATE,
+            "sample_min_y",
         )
         self._sample_min_y = value
 
@@ -231,7 +237,10 @@ class Microstructure3DInput:
     @sample_min_z.setter
     def sample_min_z(self, value: float):
         self.__validate_range(
-            value, self.MIN_POSITION_COORDINATE, self.MAX_POSITION_COORDINATE, "sample_min_z"
+            value,
+            self.MIN_POSITION_COORDINATE,
+            self.MAX_POSITION_COORDINATE,
+            "sample_min_z",
         )
         self._sample_min_z = value
 
@@ -359,7 +368,10 @@ class Microstructure3DSummary:
     _3D_GRAIN_VTK_NAME = "3d_grain_structure.vtk"
 
     def __init__(
-        self, input: Microstructure3DInput, result: Microstructure3DResult, user_data_path: str
+        self,
+        input: Microstructure3DInput,
+        result: Microstructure3DResult,
+        user_data_path: str,
     ) -> None:
         """Initialize a ``Microstructure3DSummary`` object."""
         if not isinstance(input, Microstructure3DInput):

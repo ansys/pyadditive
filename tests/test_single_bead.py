@@ -23,8 +23,6 @@
 import os
 import shutil
 
-from ansys.api.additive.v0.additive_domain_pb2 import MeltPoolTimeStep
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import pytest
 
 from ansys.additive.core.machine import AdditiveMachine
@@ -35,6 +33,8 @@ from ansys.additive.core.single_bead import (
     SingleBeadInput,
     SingleBeadSummary,
 )
+from ansys.api.additive.v0.additive_domain_pb2 import MeltPoolTimeStep
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 from . import test_utils
 

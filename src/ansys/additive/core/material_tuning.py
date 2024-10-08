@@ -23,6 +23,7 @@
 
 import os
 
+from ansys.additive.core.simulation_input_base import SimulationInputBase
 from ansys.api.additive.v0.additive_domain_pb2 import (
     MaterialTuningInput as MaterialTuningInputMessage,
 )
@@ -30,8 +31,6 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
     MaterialTuningResult as MaterialTuningResultMessage,
 )
 from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialRequest
-
-from ansys.additive.core.simulation_input_base import SimulationInputBase
 
 
 class MaterialTuningInput(SimulationInputBase):
@@ -60,6 +59,7 @@ class MaterialTuningInput(SimulationInputBase):
         Temperature of the base plate in Kelvin. This is only required if the
         value for the ``characteristic_width_lookup_file`` parameter is ``None``.
         This value is ignored otherwise. The default is ``353.15`` K, which is 80 C.
+
     """
 
     def __init__(
@@ -124,10 +124,7 @@ class MaterialTuningInput(SimulationInputBase):
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, MaterialTuningInput):
             return False
-        for k in self.__dict__:
-            if getattr(self, k) != getattr(other, k):
-                return False
-        return True
+        return all(getattr(self, k) == getattr(other, k) for k in self.__dict__)
 
 
 class MaterialTuningSummary:

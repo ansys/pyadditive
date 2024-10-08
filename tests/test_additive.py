@@ -23,39 +23,25 @@
 import logging
 import pathlib
 from unittest import mock
-from unittest.mock import ANY, MagicMock, Mock, PropertyMock, call, create_autospec, patch
+from unittest.mock import (
+    ANY,
+    MagicMock,
+    Mock,
+    PropertyMock,
+    call,
+    create_autospec,
+    patch,
+)
 
-from ansys.api.additive import __version__ as api_version
-import ansys.api.additive.v0.about_pb2_grpc
-from ansys.api.additive.v0.additive_domain_pb2 import (
-    Microstructure3DResult,
-    MicrostructureResult,
-    PorosityResult,
-)
-from ansys.api.additive.v0.additive_domain_pb2 import MaterialTuningResult
-from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMsg
-from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
-from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
-from ansys.api.additive.v0.additive_domain_pb2 import ThermalHistoryResult
-from ansys.api.additive.v0.additive_materials_pb2 import (
-    AddMaterialResponse,
-    GetMaterialRequest,
-    GetMaterialsListResponse,
-    RemoveMaterialRequest,
-    TuneMaterialResponse,
-)
-from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
-from ansys.api.additive.v0.additive_settings_pb2 import (
-    ListSettingsResponse,
-    SettingsRequest,
-    SettingsResponse,
-)
-import ansys.api.additive.v0.additive_settings_pb2_grpc
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse, UploadFileResponse
-from google.longrunning.operations_pb2 import Operation
 import grpc
 import pytest
+from google.longrunning.operations_pb2 import Operation
 
+import ansys.additive.core.additive
+import ansys.additive.core.server_connection.server_connection
+import ansys.additive.core.simulation_task
+import ansys.api.additive.v0.about_pb2_grpc
+import ansys.api.additive.v0.additive_settings_pb2_grpc
 from ansys.additive.core import (
     USER_DATA_PATH,
     Additive,
@@ -69,7 +55,6 @@ from ansys.additive.core import (
     ThermalHistoryInput,
     __version__,
 )
-import ansys.additive.core.additive
 from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput
@@ -78,13 +63,46 @@ from ansys.additive.core.parametric_study.parametric_study import ParametricStud
 from ansys.additive.core.parametric_study.parametric_study_progress_handler import (
     ParametricStudyProgressHandler,
 )
-from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
-from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
-import ansys.additive.core.server_connection.server_connection
+from ansys.additive.core.progress_handler import (
+    IProgressHandler,
+    Progress,
+    ProgressState,
+)
+from ansys.additive.core.server_connection import (
+    DEFAULT_PRODUCT_VERSION,
+    ServerConnection,
+)
 from ansys.additive.core.simulation import SimulationStatus, SimulationType
-import ansys.additive.core.simulation_task
 from ansys.additive.core.simulation_task_manager import SimulationTaskManager
 from ansys.additive.core.single_bead import SingleBeadSummary
+from ansys.api.additive import __version__ as api_version
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    MaterialTuningResult,
+    Microstructure3DResult,
+    MicrostructureResult,
+    PorosityResult,
+    ThermalHistoryResult,
+)
+from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMsg
+from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
+from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
+from ansys.api.additive.v0.additive_materials_pb2 import (
+    AddMaterialResponse,
+    GetMaterialRequest,
+    GetMaterialsListResponse,
+    RemoveMaterialRequest,
+    TuneMaterialResponse,
+)
+from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
+from ansys.api.additive.v0.additive_settings_pb2 import (
+    ListSettingsResponse,
+    SettingsRequest,
+    SettingsResponse,
+)
+from ansys.api.additive.v0.additive_simulation_pb2 import (
+    SimulationResponse,
+    UploadFileResponse,
+)
 
 from . import test_utils
 

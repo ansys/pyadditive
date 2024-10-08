@@ -20,8 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides a container for part geometry files."""
-from enum import IntEnum
+
 import os
+from enum import IntEnum
 
 from ansys.api.additive.v0.additive_domain_pb2 import BuildFileMachineType
 
@@ -61,6 +62,7 @@ class BuildFile:
         Type of additive machine the build file is for.
     path: os.PathLike
         Path to the build file.
+
     """
 
     def __init__(self, type: MachineType, path: os.PathLike):
@@ -84,10 +86,7 @@ class BuildFile:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, BuildFile):
             return False
-        for k in self.__dict__:
-            if getattr(self, k) != getattr(other, k):
-                return False
-        return True
+        return all(getattr(self, k) == getattr(other, k) for k in self.__dict__)
 
     @property
     def type(self) -> MachineType:
@@ -124,6 +123,7 @@ class StlFile:
         ----------
         path: str
             Path to file.
+
         """
         if not os.path.exists(path):
             raise FileNotFoundError(f"File does not exist, {path}")
@@ -138,10 +138,7 @@ class StlFile:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, StlFile):
             return False
-        for k in self.__dict__:
-            if getattr(self, k) != getattr(other, k):
-                return False
-        return True
+        return all(getattr(self, k) == getattr(other, k) for k in self.__dict__)
 
     @property
     def path(self) -> str:

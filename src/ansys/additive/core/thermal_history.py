@@ -21,21 +21,20 @@
 # SOFTWARE.
 """Provides input and result summary containers for thermal history simulations."""
 
-from ansys.api.additive.v0.additive_domain_pb2 import (
-    CoaxialAverageSensorInputs as CoaxialAverageSensorInputsMessage,
-)
-from ansys.api.additive.v0.additive_domain_pb2 import (
-    ThermalHistoryInput as ThermalHistoryInputMessage,
-)
-from ansys.api.additive.v0.additive_domain_pb2 import BuildFile as BuildFileMessage
-from ansys.api.additive.v0.additive_domain_pb2 import Range as RangeMessage
-from ansys.api.additive.v0.additive_domain_pb2 import StlFile as StlFileMessage
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
-
 from ansys.additive.core.geometry_file import BuildFile, StlFile
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.simulation_input_base import SimulationInputBase
+from ansys.api.additive.v0.additive_domain_pb2 import BuildFile as BuildFileMessage
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    CoaxialAverageSensorInputs as CoaxialAverageSensorInputsMessage,
+)
+from ansys.api.additive.v0.additive_domain_pb2 import Range as RangeMessage
+from ansys.api.additive.v0.additive_domain_pb2 import StlFile as StlFileMessage
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    ThermalHistoryInput as ThermalHistoryInputMessage,
+)
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 
 class Range:
@@ -126,9 +125,12 @@ class CoaxialAverageSensorInputs:
         """
         return self._z_heights
 
-    def _to_coaxial_average_sensor_inputs_message(self) -> CoaxialAverageSensorInputsMessage:
+    def _to_coaxial_average_sensor_inputs_message(
+        self,
+    ) -> CoaxialAverageSensorInputsMessage:
         """Create a coaxial average sensor input message to send to the server
-        based upon this object."""
+        based upon this object.
+        """
         msg = CoaxialAverageSensorInputsMessage(sensor_radius=self.radius)
         for z in self.z_heights:
             msg.z_heights.append(z._to_range_message())
@@ -141,17 +143,19 @@ class ThermalHistoryInput(SimulationInputBase):
     def __init__(
         self,
         *,
-        machine: AdditiveMachine = AdditiveMachine(),
-        material: AdditiveMaterial = AdditiveMaterial(),
+        machine: AdditiveMachine = None,
+        material: AdditiveMaterial = None,
         geometry: StlFile | BuildFile = None,
-        coax_ave_sensor_inputs: CoaxialAverageSensorInputs = CoaxialAverageSensorInputs(),
+        coax_ave_sensor_inputs: CoaxialAverageSensorInputs = None,
     ):
         """Initialize a ``ThermalHistoryInput`` object."""
         super().__init__()
-        self._machine = machine
-        self._material = material
+        self._machine = machine if machine else AdditiveMachine()
+        self._material = material if material else AdditiveMaterial()
         self._geometry = geometry
-        self._coax_ave_sensor_inputs = coax_ave_sensor_inputs
+        self._coax_ave_sensor_inputs = (
+            coax_ave_sensor_inputs if coax_ave_sensor_inputs else CoaxialAverageSensorInputs()
+        )
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
@@ -165,10 +169,7 @@ class ThermalHistoryInput(SimulationInputBase):
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ThermalHistoryInput):
             return False
-        for k in self.__dict__:
-            if getattr(self, k) != getattr(other, k):
-                return False
-        return True
+        return all(getattr(self, k) == getattr(other, k) for k in self.__dict__)
 
     @property
     def machine(self) -> AdditiveMachine:

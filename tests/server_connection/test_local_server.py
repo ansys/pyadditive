@@ -74,7 +74,9 @@ def test_launch_with_linux_os_and_no_install_dir_raises_exception(mock_isdir):
 
 @pytest.mark.skipif(os.name == "nt", reason="Test only valid on linux")
 @patch("os.path.isdir")
-def test_launch_with_linux_installation_but_invalid_ansys_version_raises_exception(mock_isdir):
+def test_launch_with_linux_installation_but_invalid_ansys_version_raises_exception(
+    mock_isdir,
+):
     # arrange
     mock_isdir.return_value = True
 
@@ -87,7 +89,9 @@ def test_launch_with_linux_installation_but_invalid_ansys_version_raises_excepti
 # test launch on linux with invalid linux_install_path
 @pytest.mark.skipif(os.name == "nt", reason="Test only valid on linux")
 @patch("os.path.isdir")
-def test_launch_with_linux_installation_but_invalid_linux_install_path_raises_exception(mock_isdir):
+def test_launch_with_linux_installation_but_invalid_linux_install_path_raises_exception(
+    mock_isdir,
+):
     # arrange
     mock_isdir.return_value = False
 
@@ -109,7 +113,9 @@ def test_launch_when_exe_not_found_raises_exception_win():
 
 
 @pytest.mark.skipif(os.name != "nt", reason="Test only valid on Windows")
-def test_launch_when_product_version_invalid_raises_exception_win(tmp_path: pathlib.Path):
+def test_launch_when_product_version_invalid_raises_exception_win(
+    tmp_path: pathlib.Path,
+):
     # arrange
     exe_name = tmp_path / "server.exe"
     exe_name.touch()
@@ -205,7 +211,10 @@ def test_launch_calls_popen_as_expected_linux_with_valid_linux_install_path(
 
     # act
     LocalServer.launch(
-        TEST_VALID_PORT, tmp_path, product_version, linux_install_path=linux_install_path
+        TEST_VALID_PORT,
+        tmp_path,
+        product_version,
+        linux_install_path=linux_install_path,
     )
 
     # assert

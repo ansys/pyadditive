@@ -25,11 +25,12 @@ from abc import ABC, abstractmethod
 from enum import IntEnum
 from os import getenv
 
+from pydantic import BaseModel
+from tqdm import tqdm
+
 from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
 from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
-from pydantic import BaseModel
-from tqdm import tqdm
 
 
 class ProgressState(IntEnum):
@@ -97,6 +98,7 @@ class IProgressHandler(ABC):
         ----------
         progress : Progress
             Progress information.
+
         """
         raise NotImplementedError
 
@@ -108,6 +110,7 @@ class DefaultSingleSimulationProgressHandler(IProgressHandler):
     ----------
     sim_id : str
         Simulation ID.
+
     """
 
     def __init__(self):
@@ -122,6 +125,7 @@ class DefaultSingleSimulationProgressHandler(IProgressHandler):
         ----------
         progress: Progress
             Latest progress.
+
         """
         # Don't send  progress when generating docs
         if getenv("GENERATING_DOCS"):

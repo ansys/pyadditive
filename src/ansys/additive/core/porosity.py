@@ -20,15 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides input and result summary containers for porosity simulations."""
-import math
 
-from ansys.api.additive.v0.additive_domain_pb2 import PorosityInput as PorosityInputMessage
-from ansys.api.additive.v0.additive_domain_pb2 import PorosityResult
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
+import math
 
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.simulation_input_base import SimulationInputBase
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    PorosityInput as PorosityInputMessage,
+)
+from ansys.api.additive.v0.additive_domain_pb2 import PorosityResult
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 
 class PorosityInput(SimulationInputBase):
@@ -47,16 +49,16 @@ class PorosityInput(SimulationInputBase):
         size_x: float = DEFAULT_SAMPLE_SIZE,
         size_y: float = DEFAULT_SAMPLE_SIZE,
         size_z: float = DEFAULT_SAMPLE_SIZE,
-        machine: AdditiveMachine = AdditiveMachine(),
-        material: AdditiveMaterial = AdditiveMaterial(),
+        machine: AdditiveMachine = None,
+        material: AdditiveMaterial = None,
     ):
         """Initialize a ``PorosityInput`` object."""
         super().__init__()
         self.size_x = size_x
         self.size_y = size_y
         self.size_z = size_z
-        self.machine = machine
-        self.material = material
+        self.machine = machine if machine else AdditiveMachine()
+        self.material = material if material else AdditiveMaterial()
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"

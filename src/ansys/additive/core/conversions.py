@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Unit conversion constants and functions."""
+
 MM_TO_METER = 0.001
 METER_TO_MM = 1000
 
@@ -36,6 +37,7 @@ def celsius_to_kelvin(celsius: float) -> float:
     -------
     float
         Equivalent degrees in kelvin.
+
     """
     return celsius + 273.15
 
@@ -52,5 +54,6 @@ def kelvin_to_celsius(kelvin):
     -------
     float
         Equivalent degrees in celsius.
+
     """
     return kelvin - 273.15

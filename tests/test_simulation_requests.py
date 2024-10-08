@@ -24,9 +24,6 @@ import hashlib
 import os
 from unittest.mock import Mock, patch
 
-from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
-from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
-from ansys.api.additive.v0.additive_simulation_pb2 import UploadFileRequest, UploadFileResponse
 import pytest
 
 from ansys.additive.core import (
@@ -39,8 +36,14 @@ from ansys.additive.core import (
 )
 from ansys.additive.core.simulation_requests import (
     __file_upload_reader,
-    _create_request,
+    create_request,
     _setup_thermal_history,
+)
+from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
+from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
+from ansys.api.additive.v0.additive_simulation_pb2 import (
+    UploadFileRequest,
+    UploadFileResponse,
 )
 
 from . import test_utils
@@ -56,7 +59,7 @@ from . import test_utils
         Microstructure3DInput(),
     ],
 )
-def test_create_request_returns_correct_request(sim_input):
+def testcreate_request_returns_correct_request(sim_input):
     # arrange
     sim_input._id = "id"
 
@@ -69,7 +72,7 @@ def test_create_request_returns_correct_request(sim_input):
     mock_connection_with_stub.simulation_stub.UploadFile.return_value = [upload_response]
 
     # act
-    request = _create_request(sim_input, mock_connection_with_stub)
+    request = create_request(sim_input, mock_connection_with_stub)
 
     # assert
     assert request.id == sim_input.id

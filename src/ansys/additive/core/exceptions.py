@@ -24,5 +24,3 @@
 
 class BetaFeatureNotEnabledError(Exception):
     """Raised when a beta feature is not enabled."""
-
-    pass
