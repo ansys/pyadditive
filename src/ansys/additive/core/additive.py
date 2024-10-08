@@ -612,6 +612,45 @@ class Additive:
         MaterialTuningSummary
             Summary of material tuning.
         """  # noqa: E501
+
+        task = self.tune_material_async(input, out_dir)
+        task.wait(progress_handler=progress_handler)
+        operation = task._long_running_op
+        response = TuneMaterialResponse()
+        operation.response.Unpack(response)
+        if not response.HasField("result"):
+            raise Exception("Material tuning result not found")
+
+        return MaterialTuningSummary(input, response.result, out_dir)
+
+    def tune_material_async(
+        self,
+        input: MaterialTuningInput,
+        out_dir: str = USER_DATA_PATH,
+    ) -> SimulationTask:
+        """Tune a custom material for use with additive simulations asynchronously.
+
+        This method performs the same function as the Material Tuning Tool
+        described in
+        `Find Simulation Parameters to Match Simulation to Experiments
+        <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_match_sim_to_exp.html>`_.
+        It is used for one step in the material tuning process. The other steps
+        are described in
+        `Chapter 2: Material Tuning Tool (Beta) to Create User Defined Materials
+        <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_science_BETA_material_tuning_tool.html>`_.
+
+        Parameters
+        ----------
+        input: MaterialTuningInput
+            Input parameters for material tuning.
+        out_dir: str, default: USER_DATA_PATH
+            Folder path for output files.
+
+        Returns
+        -------
+        SimulationTask
+            An asynchronous simulation task.
+        """
         if input.id == "":
             input.id = misc.short_uuid()
         if out_dir == USER_DATA_PATH:
@@ -626,15 +665,7 @@ class Additive:
 
         operation = self._servers[0].materials_stub.TuneMaterial(request)
 
-        task = SimulationTask(self._servers[0], operation, input, out_dir)
-        task.wait(progress_handler=progress_handler)
-        operation = task._long_running_op
-        response = TuneMaterialResponse()
-        operation.response.Unpack(response)
-        if not response.HasField("result"):
-            raise Exception("Material tuning result not found")
-
-        return MaterialTuningSummary(input, response.result, out_dir)
+        return SimulationTask(self._servers[0], operation, input, out_dir)
 
     def simulate_study(
         self,

@@ -1118,7 +1118,7 @@ def test_remove_material_raises_ValueError_when_removing_reserved_material(
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_tune_material_raises_exception_if_output_path_exists(_, tmp_path: pathlib.Path):
+def test_tune_material_async_raises_exception_if_output_path_exists(_, tmp_path: pathlib.Path):
     # arrange
     input = MaterialTuningInput(
         experiment_data_file=test_utils.get_test_file_path(
@@ -1135,7 +1135,39 @@ def test_tune_material_raises_exception_if_output_path_exists(_, tmp_path: pathl
 
     # act, assert
     with pytest.raises(ValueError, match="already exists"):
-        additive.tune_material(input, out_dir=tmp_path)
+        additive.tune_material_async(input, out_dir=tmp_path)
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_tune_material_async_calls_material_service_tune_material(
+    mock_connection, tmp_path: pathlib.Path
+):
+    # assemble
+    input = MaterialTuningInput(
+        experiment_data_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "experimental_data.csv"
+        ),
+        material_configuration_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "material-data.json"
+        ),
+        thermal_properties_lookup_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "Test_Lookup.csv"
+        ),
+    )
+
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.materials_stub.TuneMaterial.return_value = Operation(name="id")
+    mock_connection.return_value = mock_connection_with_stub
+
+    # act
+    additive = Additive()
+    task = additive.tune_material_async(input, out_dir=tmp_path / "tune_material")
+
+    # assert
+    assert isinstance(task, SimulationTask)
+    assert task._long_running_op.name == "id"
+    assert task._long_running_op.done == False
+    mock_connection_with_stub.materials_stub.TuneMaterial.assert_called_once()
 
 
 # TODO (deleon): Add exceptions to material tuning
@@ -1221,6 +1253,45 @@ def test_tune_material_raises_exception_if_output_path_exists(_, tmp_path: pathl
 
 #     # assert
 #     assert (text in caplog.text) == expected
+
+
+@patch("ansys.additive.core.simulation_task.SimulationTask._update_operation_status")
+@patch("ansys.additive.core.additive.Additive.tune_material_async")
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_tune_material_calls_tune_material_async(
+    mock_connection, mock_tune_material_async, _, tmp_path: pathlib.Path
+):
+    # assemble
+    input = MaterialTuningInput(
+        experiment_data_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "experimental_data.csv"
+        ),
+        material_configuration_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "material-data.json"
+        ),
+        thermal_properties_lookup_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "Test_Lookup.csv"
+        ),
+    )
+    out_dir = tmp_path / "tune_material"
+    operation = Operation(done=True)
+    metadata = OperationMetadata(
+        simulation_id="id",
+        percent_complete=50.0,
+        message="executing",
+        state=ProgressMsgState.PROGRESS_STATE_EXECUTING,
+    )
+    operation.metadata.Pack(metadata)
+    task = SimulationTask(mock_connection, operation, input, out_dir)
+    mock_tune_material_async.return_value = task
+    additive = Additive()
+
+    # act
+    with pytest.raises(Exception, match="result not found"):
+        additive.tune_material(input, out_dir=out_dir)
+
+    # assert
+    mock_tune_material_async.assert_called_once_with(input, out_dir)
 
 
 @patch("ansys.additive.core.simulation_task.SimulationTask._update_operation_status")
