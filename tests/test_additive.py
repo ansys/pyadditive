@@ -52,7 +52,7 @@ from ansys.api.additive.v0.additive_settings_pb2 import (
 )
 import ansys.api.additive.v0.additive_settings_pb2_grpc
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse, UploadFileResponse
-from google.longrunning.operations_pb2 import ListOperationsResponse, Operation
+from google.longrunning.operations_pb2 import Operation
 import grpc
 import pytest
 
@@ -1287,18 +1287,17 @@ def test_tune_material_calls_tune_material_async(
     additive = Additive()
 
     # act
-    with pytest.raises(Exception, match="result not found"):
-        additive.tune_material(input, out_dir=out_dir)
+    additive.tune_material(input, out_dir=out_dir)
 
     # assert
     mock_tune_material_async.assert_called_once_with(input, out_dir)
 
 
-@patch("ansys.additive.core.simulation_task.SimulationTask._update_operation_status")
+@patch("ansys.additive.core.additive.Additive.tune_material_async")
 @patch("ansys.additive.core.additive.ServerConnection")
 def test_tune_material_returns_expected_result(
     mock_connection,
-    _,
+    mock_tune_material_async,
     tmp_path: pathlib.Path,
 ):
     # arrange
@@ -1313,12 +1312,19 @@ def test_tune_material_returns_expected_result(
             pathlib.Path("Material") / "Test_Lookup.csv"
         ),
     )
+    out_dir = tmp_path / "tune_material"
     log_bytes = b"log_bytes"
     optimized_parameters_bytes = b"optimized_parameters"
     cw_lookup_bytes = b"characteristic width lookup"
 
-    operation_started = Operation(name="id")
     operation_completed = Operation(name="id", done=True)
+    metadata = OperationMetadata(
+        simulation_id=input.id,
+        percent_complete=100.0,
+        message="done",
+        state=ProgressMsgState.PROGRESS_STATE_COMPLETED,
+    )
+    operation_completed.metadata.Pack(metadata)
     response = TuneMaterialResponse(
         id=input.id,
         result=MaterialTuningResult(
@@ -1328,18 +1334,14 @@ def test_tune_material_returns_expected_result(
         ),
     )
     operation_completed.response.Pack(response)
-
-    mock_connection_with_stub = Mock()
-    mock_connection_with_stub.channel_str = "1.1.1.1"
-    mock_connection_with_stub.materials_stub.TuneMaterial.return_value = operation_started
-    list_response = ListOperationsResponse(operations=[operation_completed])
-    mock_connection_with_stub.operations_stub.ListOperations.return_value = list_response
-    mock_connection_with_stub.operations_stub.GetOperation.return_value = operation_completed
-    mock_connection.return_value = mock_connection_with_stub
+    task = SimulationTask(mock_connection, operation_completed, input, out_dir)
+    mock_tune_material_async.return_value = task
+    mock_connection.operations_stub.WaitOperation.return_value = operation_completed
+    mock_connection.operations_stub.GetOperation.return_value = operation_completed
     additive = Additive()
 
     # act
-    summary = additive.tune_material(input, out_dir=tmp_path / "nominal_path")
+    summary = additive.tune_material(input, out_dir=out_dir)
 
     # assert
     assert summary.input == input

@@ -30,7 +30,6 @@ from ansys.api.additive.v0.additive_materials_pb2 import (
     AddMaterialRequest,
     GetMaterialRequest,
     RemoveMaterialRequest,
-    TuneMaterialResponse,
 )
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
 from ansys.api.additive.v0.additive_settings_pb2 import SettingsRequest
@@ -586,7 +585,7 @@ class Additive:
         input: MaterialTuningInput,
         out_dir: str = USER_DATA_PATH,
         progress_handler: IProgressHandler = None,
-    ) -> MaterialTuningSummary:
+    ) -> MaterialTuningSummary | None:
         """Tune a custom material for use with additive simulations.
 
         This method performs the same function as the Material Tuning Tool
@@ -609,19 +608,13 @@ class Additive:
 
         Returns
         -------
-        MaterialTuningSummary
-            Summary of material tuning.
+        MaterialTuningSummary, None
+            Summary of material tuning or ``None`` if the tuning failed.
         """  # noqa: E501
 
         task = self.tune_material_async(input, out_dir)
         task.wait(progress_handler=progress_handler)
-        operation = task._long_running_op
-        response = TuneMaterialResponse()
-        operation.response.Unpack(response)
-        if not response.HasField("result"):
-            raise Exception("Material tuning result not found")
-
-        return MaterialTuningSummary(input, response.result, out_dir)
+        return task.summary
 
     def tune_material_async(
         self,
