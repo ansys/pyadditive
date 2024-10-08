@@ -113,7 +113,7 @@ class SimulationTask:
     def status(self) -> Progress:
         """Fetch status from the server to update progress and results.
 
-         Parameters
+        Parameters
         ----------
         progress_handler: IProgressHandler, None, default: None
             Handler for progress updates. If ``None``, no progress updates are provided.
