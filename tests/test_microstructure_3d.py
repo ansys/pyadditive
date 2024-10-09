@@ -24,17 +24,20 @@ import os
 import shutil
 import tempfile
 
+import pytest
+
+from ansys.additive.core.machine import AdditiveMachine
+from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.microstructure_3d import (
+    Microstructure3DInput,
+    Microstructure3DSummary,
+)
 from ansys.api.additive.v0.additive_domain_pb2 import (
     GrainStatistics,
     Microstructure3DResult,
     MicrostructureResult,
 )
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
-import pytest
-
-from ansys.additive.core.machine import AdditiveMachine
-from ansys.additive.core.material import AdditiveMaterial
-from ansys.additive.core.microstructure_3d import Microstructure3DInput, Microstructure3DSummary
 
 
 def test_Microstructure3DSummary_init_returns_expected_value():
@@ -296,7 +299,7 @@ def test_Microstructure3DInput_init_with_parameters_creates_expected_object():
     )
 
     # assert
-    assert "myId" == input.id
+    assert input.id == "myId"
     assert input.machine.laser_power == 99
     assert input.material.name == "vibranium"
     assert input.sample_min_x == 1

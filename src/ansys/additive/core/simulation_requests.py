@@ -21,19 +21,25 @@
 # SOFTWARE.
 """Set up methods for grpc simulation requests."""
 
-from collections.abc import Iterator
 import hashlib
 import os
-
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest, UploadFileRequest
+from collections.abc import Iterator
 
 from ansys.additive.core.microstructure import MicrostructureInput
 from ansys.additive.core.microstructure_3d import Microstructure3DInput
 from ansys.additive.core.porosity import PorosityInput
-from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
+from ansys.additive.core.progress_handler import (
+    IProgressHandler,
+    Progress,
+    ProgressState,
+)
 from ansys.additive.core.server_connection import ServerConnection
 from ansys.additive.core.single_bead import SingleBeadInput
 from ansys.additive.core.thermal_history import ThermalHistoryInput
+from ansys.api.additive.v0.additive_simulation_pb2 import (
+    SimulationRequest,
+    UploadFileRequest,
+)
 
 
 def __file_upload_reader(file_name: str, chunk_size=2 * 1024**2) -> Iterator[UploadFileRequest]:
@@ -49,7 +55,7 @@ def __file_upload_reader(file_name: str, chunk_size=2 * 1024**2) -> Iterator[Upl
                 name=short_name,
                 total_size=file_size,
                 content=chunk,
-                content_md5=hashlib.md5(chunk).hexdigest(),
+                content_md5=hashlib.md5(chunk).hexdigest(),  # noqa: S324
             )
 
 
@@ -58,7 +64,7 @@ def _setup_thermal_history(
     server: ServerConnection,
     progress_handler: IProgressHandler | None = None,
 ) -> SimulationRequest:
-    """Setup a thermal history simulation.
+    """Initialize a thermal history simulation.
 
     Parameters
     ----------
@@ -72,6 +78,7 @@ def _setup_thermal_history(
     Returns
     -------
     :class:`SimulationRequest`
+
     """
     if not input.geometry or not input.geometry.path:
         raise ValueError("The geometry path is not defined in the simulation input")
@@ -88,7 +95,7 @@ def _setup_thermal_history(
     return input._to_simulation_request(remote_geometry_path=remote_geometry_path)
 
 
-def _create_request(
+def create_request(
     simulation_input: (
         SingleBeadInput
         | PorosityInput
@@ -104,8 +111,7 @@ def _create_request(
 
     Parameters
     ----------
-    simulation_input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput,
-    Microstructure3DInput
+    simulation_input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput, Microstructure3DInput
         Parameters to use for simulation.
     server: ServerConnection
         Server to use for the simulation.
@@ -115,7 +121,8 @@ def _create_request(
     Returns
     -------
     A SimulationRequest
-    """
+
+    """  # noqa: E501
     if isinstance(simulation_input, ThermalHistoryInput):
         request = _setup_thermal_history(simulation_input, server, progress_handler)
     else:

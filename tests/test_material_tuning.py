@@ -23,7 +23,6 @@
 import os
 import tempfile
 
-from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialRequest, TuneMaterialResponse
 import pytest
 
 from ansys.additive.core.material_tuning import (
@@ -31,6 +30,10 @@ from ansys.additive.core.material_tuning import (
     MaterialTuningInputMessage,
     MaterialTuningResultMessage,
     MaterialTuningSummary,
+)
+from ansys.api.additive.v0.additive_materials_pb2 import (
+    TuneMaterialRequest,
+    TuneMaterialResponse,
 )
 
 from . import test_utils

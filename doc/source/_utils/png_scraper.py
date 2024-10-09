@@ -1,7 +1,7 @@
 # Copied from https://sphinx-gallery.github.io/dev/advanced.html#example-2-detecting-image-files-on-disk
-from glob import glob
 import os
 import shutil
+from glob import glob
 
 from sphinx_gallery.scrapers import figure_rst
 

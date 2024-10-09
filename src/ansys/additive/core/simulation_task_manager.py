@@ -57,6 +57,7 @@ class SimulationTaskManager:
         ----------
         task: SimulationTask
             The simulation task holding the long-running operation and corresponding server.
+
         """
         self._tasks.append(task)
 
@@ -73,6 +74,7 @@ class SimulationTaskManager:
         Returns
         -------
         List of tuples with each tuple containing the operation name and an instance of Progress
+
         """
         status_all = []
 
@@ -92,6 +94,7 @@ class SimulationTaskManager:
         ----------
         progress_handler: IProgressHandler, None, default: None
             Handler for progress updates. If ``None``, no progress updates are provided.
+
         """
         LOG.debug(f"Waiting for {len(self._tasks)} tasks to complete")
         for t in self._tasks:

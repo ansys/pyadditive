@@ -21,20 +21,16 @@
 # SOFTWARE.
 """Provides definitions and untilities for connecting to the Additive server."""
 
-from dataclasses import dataclass
 import logging
 import os
 import time
+from dataclasses import dataclass
 
-from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
-from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
-from ansys.api.additive.v0.additive_settings_pb2_grpc import SettingsServiceStub
-from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
-import ansys.platform.instancemanagement as pypim
+import grpc
 from google.longrunning.operations_pb2_grpc import OperationsStub
 from google.protobuf.empty_pb2 import Empty
-import grpc
 
+import ansys.platform.instancemanagement as pypim
 from ansys.additive.core.server_connection.constants import (
     DEFAULT_PRODUCT_VERSION,
     LOCALHOST,
@@ -42,6 +38,10 @@ from ansys.additive.core.server_connection.constants import (
 )
 from ansys.additive.core.server_connection.local_server import LocalServer
 from ansys.additive.core.server_connection.network_utils import create_channel
+from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
+from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
+from ansys.api.additive.v0.additive_settings_pb2_grpc import SettingsServiceStub
+from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 
 
 @dataclass(frozen=True)
@@ -56,6 +56,7 @@ class ServerConnectionStatus:
         Hostname and port of server connection in the form ``host:port``.
     metadata: dict, None
         Server metadata.
+
     """
 
     connected: bool
@@ -95,6 +96,7 @@ class ServerConnection:
         required when Ansys has not been installed in the default location. Example:
         ``/usr/shared/ansys_inc``. Note that the path should not include the product
         version.
+
     """
 
     def __init__(
@@ -128,7 +130,9 @@ class ServerConnection:
             else:
                 port = LocalServer.find_open_port()
                 self._server_process = LocalServer.launch(
-                    port, product_version=product_version, linux_install_path=linux_install_path
+                    port,
+                    product_version=product_version,
+                    linux_install_path=linux_install_path,
                 )
                 target = f"{LOCALHOST}:{port}"
             self._channel = create_channel(target)
@@ -209,6 +213,7 @@ class ServerConnection:
         bool:
             True means server is ready. False means the number of retries was exceeded
             without receiving a response from the server.
+
         """
         ready = False
         for i in range(retries + 1):

@@ -24,21 +24,9 @@ import pathlib
 import shutil
 from unittest.mock import Mock, patch
 
-from ansys.api.additive.v0.additive_domain_pb2 import (
-    Microstructure3DResult,
-    MicrostructureResult,
-    PorosityResult,
-)
-from ansys.api.additive.v0.additive_domain_pb2 import MaterialTuningResult
-from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMsg
-from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
-from ansys.api.additive.v0.additive_domain_pb2 import ThermalHistoryResult
-from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialResponse
-from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse
+import pytest
 from google.longrunning.operations_pb2 import ListOperationsResponse, Operation
 from google.rpc.code_pb2 import Code
-import pytest
 
 from ansys.additive.core import (
     Microstructure3DInput,
@@ -54,9 +42,24 @@ from ansys.additive.core import (
     ThermalHistoryInput,
     ThermalHistorySummary,
 )
-from ansys.additive.core.material_tuning import MaterialTuningInput, MaterialTuningSummary
+from ansys.additive.core.material_tuning import (
+    MaterialTuningInput,
+    MaterialTuningSummary,
+)
 from ansys.additive.core.progress_handler import IProgressHandler, Progress
 from ansys.additive.core.simulation import SimulationError
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    MaterialTuningResult,
+    Microstructure3DResult,
+    MicrostructureResult,
+    PorosityResult,
+    ThermalHistoryResult,
+)
+from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMsg
+from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
+from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialResponse
+from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse
 
 from . import test_utils
 
@@ -153,7 +156,8 @@ def test_unpack_summary_returns_correct_summary(
         # arrange
         results_file = tmp_path / "results.zip"
         shutil.copyfile(
-            test_utils.get_test_file_path("thermal_history_results.zip"), str(results_file)
+            test_utils.get_test_file_path("thermal_history_results.zip"),
+            str(results_file),
         )
         mock_download_file.return_value = str(results_file)
         sim_response = SimulationResponse(

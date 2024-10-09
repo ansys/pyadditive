@@ -22,15 +22,14 @@
 
 from unittest.mock import patch
 
-from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
-from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
-
 from ansys.additive.core.progress_handler import (
     DefaultSingleSimulationProgressHandler,
     IProgressHandler,
     Progress,
     ProgressState,
 )
+from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
+from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
 
 
 def test_progress_prints_correctly():
@@ -47,7 +46,7 @@ def test_progress_prints_correctly():
     progress_str = str(progress)
 
     # assert
-    assert "sim_id: RUNNING - 50% - context - message" == progress_str
+    assert progress_str == "sim_id: RUNNING - 50% - context - message"
 
 
 def test_from_proto_msg_returns_correct_object():
@@ -63,11 +62,11 @@ def test_from_proto_msg_returns_correct_object():
     progress = Progress.from_proto_msg("sim_id", msg)
 
     # assert
-    assert "sim_id" == progress.sim_id
-    assert ProgressState.RUNNING == progress.state
-    assert 50 == progress.percent_complete
-    assert "message" == progress.message
-    assert "context" == progress.context
+    assert progress.sim_id == "sim_id"
+    assert progress.state == ProgressState.RUNNING
+    assert progress.percent_complete == 50
+    assert progress.message == "message"
+    assert progress.context == "context"
 
 
 def test_default_single_simulation_progress_handler_is_instance_of_IProgressHandler():

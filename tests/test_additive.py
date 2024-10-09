@@ -23,39 +23,25 @@
 import logging
 import pathlib
 from unittest import mock
-from unittest.mock import ANY, MagicMock, Mock, PropertyMock, call, create_autospec, patch
+from unittest.mock import (
+    ANY,
+    MagicMock,
+    Mock,
+    PropertyMock,
+    call,
+    create_autospec,
+    patch,
+)
 
-from ansys.api.additive import __version__ as api_version
-import ansys.api.additive.v0.about_pb2_grpc
-from ansys.api.additive.v0.additive_domain_pb2 import (
-    Microstructure3DResult,
-    MicrostructureResult,
-    PorosityResult,
-)
-from ansys.api.additive.v0.additive_domain_pb2 import MaterialTuningResult
-from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMsg
-from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
-from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
-from ansys.api.additive.v0.additive_domain_pb2 import ThermalHistoryResult
-from ansys.api.additive.v0.additive_materials_pb2 import (
-    AddMaterialResponse,
-    GetMaterialRequest,
-    GetMaterialsListResponse,
-    RemoveMaterialRequest,
-    TuneMaterialResponse,
-)
-from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
-from ansys.api.additive.v0.additive_settings_pb2 import (
-    ListSettingsResponse,
-    SettingsRequest,
-    SettingsResponse,
-)
-import ansys.api.additive.v0.additive_settings_pb2_grpc
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse, UploadFileResponse
-from google.longrunning.operations_pb2 import ListOperationsResponse, Operation
 import grpc
 import pytest
+from google.longrunning.operations_pb2 import Operation
 
+import ansys.additive.core.additive
+import ansys.additive.core.server_connection.server_connection
+import ansys.additive.core.simulation_task
+import ansys.api.additive.v0.about_pb2_grpc
+import ansys.api.additive.v0.additive_settings_pb2_grpc
 from ansys.additive.core import (
     USER_DATA_PATH,
     Additive,
@@ -69,7 +55,6 @@ from ansys.additive.core import (
     ThermalHistoryInput,
     __version__,
 )
-import ansys.additive.core.additive
 from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput
@@ -78,13 +63,46 @@ from ansys.additive.core.parametric_study.parametric_study import ParametricStud
 from ansys.additive.core.parametric_study.parametric_study_progress_handler import (
     ParametricStudyProgressHandler,
 )
-from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
-from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
-import ansys.additive.core.server_connection.server_connection
+from ansys.additive.core.progress_handler import (
+    IProgressHandler,
+    Progress,
+    ProgressState,
+)
+from ansys.additive.core.server_connection import (
+    DEFAULT_PRODUCT_VERSION,
+    ServerConnection,
+)
 from ansys.additive.core.simulation import SimulationStatus, SimulationType
-import ansys.additive.core.simulation_task
 from ansys.additive.core.simulation_task_manager import SimulationTaskManager
 from ansys.additive.core.single_bead import SingleBeadSummary
+from ansys.api.additive import __version__ as api_version
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    MaterialTuningResult,
+    Microstructure3DResult,
+    MicrostructureResult,
+    PorosityResult,
+    ThermalHistoryResult,
+)
+from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMsg
+from ansys.api.additive.v0.additive_domain_pb2 import Progress as ProgressMsg
+from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
+from ansys.api.additive.v0.additive_materials_pb2 import (
+    AddMaterialResponse,
+    GetMaterialRequest,
+    GetMaterialsListResponse,
+    RemoveMaterialRequest,
+    TuneMaterialResponse,
+)
+from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
+from ansys.api.additive.v0.additive_settings_pb2 import (
+    ListSettingsResponse,
+    SettingsRequest,
+    SettingsResponse,
+)
+from ansys.api.additive.v0.additive_simulation_pb2 import (
+    SimulationResponse,
+    UploadFileResponse,
+)
 
 from . import test_utils
 
@@ -1118,7 +1136,7 @@ def test_remove_material_raises_ValueError_when_removing_reserved_material(
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_tune_material_raises_exception_if_output_path_exists(_, tmp_path: pathlib.Path):
+def test_tune_material_async_raises_exception_if_output_path_exists(_, tmp_path: pathlib.Path):
     # arrange
     input = MaterialTuningInput(
         experiment_data_file=test_utils.get_test_file_path(
@@ -1135,7 +1153,39 @@ def test_tune_material_raises_exception_if_output_path_exists(_, tmp_path: pathl
 
     # act, assert
     with pytest.raises(ValueError, match="already exists"):
-        additive.tune_material(input, out_dir=tmp_path)
+        additive.tune_material_async(input, out_dir=tmp_path)
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_tune_material_async_calls_material_service_tune_material(
+    mock_connection, tmp_path: pathlib.Path
+):
+    # assemble
+    input = MaterialTuningInput(
+        experiment_data_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "experimental_data.csv"
+        ),
+        material_configuration_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "material-data.json"
+        ),
+        thermal_properties_lookup_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "Test_Lookup.csv"
+        ),
+    )
+
+    mock_connection_with_stub = Mock()
+    mock_connection_with_stub.materials_stub.TuneMaterial.return_value = Operation(name="id")
+    mock_connection.return_value = mock_connection_with_stub
+
+    # act
+    additive = Additive()
+    task = additive.tune_material_async(input, out_dir=tmp_path / "tune_material")
+
+    # assert
+    assert isinstance(task, SimulationTask)
+    assert task._long_running_op.name == "id"
+    assert task._long_running_op.done == False
+    mock_connection_with_stub.materials_stub.TuneMaterial.assert_called_once()
 
 
 # TODO (deleon): Add exceptions to material tuning
@@ -1224,10 +1274,48 @@ def test_tune_material_raises_exception_if_output_path_exists(_, tmp_path: pathl
 
 
 @patch("ansys.additive.core.simulation_task.SimulationTask._update_operation_status")
+@patch("ansys.additive.core.additive.Additive.tune_material_async")
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_tune_material_calls_tune_material_async(
+    mock_connection, mock_tune_material_async, _, tmp_path: pathlib.Path
+):
+    # assemble
+    input = MaterialTuningInput(
+        experiment_data_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "experimental_data.csv"
+        ),
+        material_configuration_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "material-data.json"
+        ),
+        thermal_properties_lookup_file=test_utils.get_test_file_path(
+            pathlib.Path("Material") / "Test_Lookup.csv"
+        ),
+    )
+    out_dir = tmp_path / "tune_material"
+    operation = Operation(done=True)
+    metadata = OperationMetadata(
+        simulation_id="id",
+        percent_complete=50.0,
+        message="executing",
+        state=ProgressMsgState.PROGRESS_STATE_EXECUTING,
+    )
+    operation.metadata.Pack(metadata)
+    task = SimulationTask(mock_connection, operation, input, out_dir)
+    mock_tune_material_async.return_value = task
+    additive = Additive()
+
+    # act
+    additive.tune_material(input, out_dir=out_dir)
+
+    # assert
+    mock_tune_material_async.assert_called_once_with(input, out_dir)
+
+
+@patch("ansys.additive.core.additive.Additive.tune_material_async")
 @patch("ansys.additive.core.additive.ServerConnection")
 def test_tune_material_returns_expected_result(
     mock_connection,
-    _,
+    mock_tune_material_async,
     tmp_path: pathlib.Path,
 ):
     # arrange
@@ -1242,12 +1330,19 @@ def test_tune_material_returns_expected_result(
             pathlib.Path("Material") / "Test_Lookup.csv"
         ),
     )
+    out_dir = tmp_path / "tune_material"
     log_bytes = b"log_bytes"
     optimized_parameters_bytes = b"optimized_parameters"
     cw_lookup_bytes = b"characteristic width lookup"
 
-    operation_started = Operation(name="id")
     operation_completed = Operation(name="id", done=True)
+    metadata = OperationMetadata(
+        simulation_id=input.id,
+        percent_complete=100.0,
+        message="done",
+        state=ProgressMsgState.PROGRESS_STATE_COMPLETED,
+    )
+    operation_completed.metadata.Pack(metadata)
     response = TuneMaterialResponse(
         id=input.id,
         result=MaterialTuningResult(
@@ -1257,18 +1352,14 @@ def test_tune_material_returns_expected_result(
         ),
     )
     operation_completed.response.Pack(response)
-
-    mock_connection_with_stub = Mock()
-    mock_connection_with_stub.channel_str = "1.1.1.1"
-    mock_connection_with_stub.materials_stub.TuneMaterial.return_value = operation_started
-    list_response = ListOperationsResponse(operations=[operation_completed])
-    mock_connection_with_stub.operations_stub.ListOperations.return_value = list_response
-    mock_connection_with_stub.operations_stub.GetOperation.return_value = operation_completed
-    mock_connection.return_value = mock_connection_with_stub
+    task = SimulationTask(mock_connection, operation_completed, input, out_dir)
+    mock_tune_material_async.return_value = task
+    mock_connection.operations_stub.WaitOperation.return_value = operation_completed
+    mock_connection.operations_stub.GetOperation.return_value = operation_completed
     additive = Additive()
 
     # act
-    summary = additive.tune_material(input, out_dir=tmp_path / "nominal_path")
+    summary = additive.tune_material(input, out_dir=out_dir)
 
     # assert
     assert summary.input == input

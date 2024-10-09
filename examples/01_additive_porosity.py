@@ -33,7 +33,12 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # -----------------------------------
 # Perform the required import and connect to the Additive service.
 
-from ansys.additive.core import Additive, AdditiveMachine, PorosityInput, SimulationError
+from ansys.additive.core import (
+    Additive,
+    AdditiveMachine,
+    PorosityInput,
+    SimulationError,
+)
 
 additive = Additive()
 

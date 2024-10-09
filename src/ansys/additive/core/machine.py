@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides a container for machine parameters."""
+
 import math
 
-from ansys.api.additive.v0.additive_domain_pb2 import MachineSettings as MachineMessage
-
 import ansys.additive.core.conversions as conversions
+from ansys.api.additive.v0.additive_domain_pb2 import MachineSettings as MachineMessage
 
 
 class MachineConstants:
@@ -133,10 +133,7 @@ class AdditiveMachine:
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, AdditiveMachine):
             return False
-        for k in self.__dict__:
-            if getattr(self, k) != getattr(__o, k):
-                return False
-        return True
+        return all(getattr(self, k) == getattr(__o, k) for k in self.__dict__)
 
     def __validate_range(self, value, min, max, name):
         if math.isnan(value):
@@ -155,7 +152,10 @@ class AdditiveMachine:
     @laser_power.setter
     def laser_power(self, value: float):
         self.__validate_range(
-            value, MachineConstants.MIN_LASER_POWER, MachineConstants.MAX_LASER_POWER, "laser_power"
+            value,
+            MachineConstants.MIN_LASER_POWER,
+            MachineConstants.MAX_LASER_POWER,
+            "laser_power",
         )
         self._laser_power = value
 
@@ -170,7 +170,10 @@ class AdditiveMachine:
     @scan_speed.setter
     def scan_speed(self, value: float):
         self.__validate_range(
-            value, MachineConstants.MIN_SCAN_SPEED, MachineConstants.MAX_SCAN_SPEED, "scan_speed"
+            value,
+            MachineConstants.MIN_SCAN_SPEED,
+            MachineConstants.MAX_SCAN_SPEED,
+            "scan_speed",
         )
         self._scan_speed = value
 
@@ -316,7 +319,8 @@ class AdditiveMachine:
     @staticmethod
     def _from_machine_message(msg: MachineMessage):
         """Create an additive machine from a machine message received from the
-        Additive service."""
+        Additive service.
+        """
         if isinstance(msg, MachineMessage):
             return AdditiveMachine(
                 laser_power=msg.laser_power,
@@ -334,7 +338,8 @@ class AdditiveMachine:
 
     def _to_machine_message(self) -> MachineMessage:
         """Create a machine message from the additive machine to send to the
-        Additive service."""
+        Additive service.
+        """
         return MachineMessage(
             laser_power=self.laser_power,
             scan_speed=self.scan_speed,

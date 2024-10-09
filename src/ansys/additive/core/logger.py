@@ -88,6 +88,7 @@ def is_notebook() -> bool:
 
     Returns:
         bool: True if running in a Jupyter notebook, False otherwise.
+
     """
     try:
         shell = get_ipython().__class__.__name__
@@ -112,10 +113,7 @@ class PyAdditivePercentStyle(logging.PercentStyle):
     def _format(self, record):
         """Append specifiers to the log message format."""
         defaults = self._defaults
-        if defaults:
-            values = defaults | record.__dict__
-        else:
-            values = record.__dict__
+        values = defaults | record.__dict__ if defaults else record.__dict__
 
         # We can make any changes that we want in the record here. For example,
         # adding a key.
@@ -163,6 +161,7 @@ class Logger:
         Whether to write log messages to the standard output.
     filename : str, default: obj:`FILE_NAME`
         Name of the file to write log log messages to.
+
     """
 
     file_handler = None
@@ -212,6 +211,7 @@ class Logger:
             Name of the file to write log messages to.
         level : default : DEBUG
             Logging level to filter the message severity allowed in the logger.
+
         """
 
         self = addfile_handler(self, filename=filename, level=level)
@@ -223,6 +223,7 @@ class Logger:
         ----------
         level : default : DEBUG
             Logging level to filter the message severity allowed in the logger.
+
         """
 
         self = add_stdout_handler(self, level=level)
@@ -234,6 +235,7 @@ class Logger:
         ----------
         logger : str
             Name of the logger.
+
         """
 
         def handle_exception(exc_type, exc_value, exc_traceback):
@@ -254,6 +256,7 @@ class Logger:
             If int, it must be one of the levels defined in the :obj:`~logging` module.
             Valid string values are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``, ``"ERROR"``,
             and ``"CRITICAL"``.
+
         """
         self.logger.setLevel(level)
         for handler in self.logger.handlers:
@@ -276,6 +279,7 @@ def addfile_handler(logger, filename=FILE_NAME, level=LOG_LEVEL):
     -------
     Logger
         :class:`Logger` or :class:`logging.Logger` object.
+
     """
     file_handler = logging.FileHandler(filename)
     file_handler.setLevel(level)
@@ -306,6 +310,7 @@ def add_stdout_handler(logger, level=LOG_LEVEL):
     -------
     Logger
         :class:`Logger` or :class:`logging.Logger` object.
+
     """
     stdout_handler = logging.StreamHandler()
     stdout_handler.setLevel(level)

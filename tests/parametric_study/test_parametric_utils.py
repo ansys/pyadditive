@@ -22,7 +22,10 @@
 
 import math
 
-from ansys.additive.core.parametric_study.parametric_utils import build_rate, energy_density
+from ansys.additive.core.parametric_study.parametric_utils import (
+    build_rate,
+    energy_density,
+)
 
 
 def test_build_rate_calculates_correctly():

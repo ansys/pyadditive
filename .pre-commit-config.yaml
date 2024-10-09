@@ -1,31 +1,13 @@
 repos:
-  - repo: https://github.com/psf/black
-    rev: 23.7.0 # IF VERSION CHANGES --> MODIFY "blacken-docs" MANUALLY AS WELL!!
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.6.9
     hooks:
-      - id: black
-
-  - repo: https://github.com/adamchainz/blacken-docs
-    rev: 1.16.0
-    hooks:
-      - id: blacken-docs
-        additional_dependencies: [black==23.7.0]
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.1.0
-    hooks:
-      - id: flake8
-
-  - repo: https://github.com/PyCQA/docformatter
-    rev: v1.7.5
-    hooks:
-      - id: docformatter
-        additional_dependencies: [tomli]
-        args: ["--wrap-summaries", "0", "-i", "--black"]
+      # Run the linter.
+      - id: ruff
+        args: [--fix]
+      # Run the formatter.
+      - id: ruff-format
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.5
@@ -50,7 +32,6 @@ repos:
       - id: check-merge-conflict
       - id: debug-statements
       - id: check-yaml
-      - id: trailing-whitespace
 
   # this validates our github workflow files
   - repo: https://github.com/python-jsonschema/check-jsonschema

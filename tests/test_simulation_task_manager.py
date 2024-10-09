@@ -23,7 +23,10 @@
 from unittest.mock import Mock, PropertyMock
 
 from ansys.additive.core.progress_handler import Progress, ProgressState
-from ansys.additive.core.simulation_task_manager import SimulationTask, SimulationTaskManager
+from ansys.additive.core.simulation_task_manager import (
+    SimulationTask,
+    SimulationTaskManager,
+)
 
 
 def test_add_task_stores_task():
