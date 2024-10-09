@@ -1,0 +1,601 @@
+
+
+
+
+
+
+The ``progress_handler.py`` module
+==================================
+
+.. py:module:: ansys.additive.core.progress_handler
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: progress_handler
+.. tab-set::
+
+
+
+    .. tab-item:: Interfaces
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~IProgressHandler`
+            - Interface for simulation progress updates.
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~Progress`
+            - Progress information.
+
+
+          * - :py:obj:`~DefaultSingleSimulationProgressHandler`
+            - Creates a progress bar for a single simulation.
+
+
+
+    .. tab-item:: Enums
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ProgressState`
+            - Simulation progress status.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides progress updates.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+.. py:class:: Progress(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   
+   Progress information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: Progress
+
+Overview
+--------
+
+.. tab-set::
+
+
+   .. tab-item:: Constructors
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~from_proto_msg`
+            - Create a ``Progress`` object from a progress protobuf message.
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~sim_id`
+            - 
+          * - :py:attr:`~state`
+            - 
+          * - :py:attr:`~percent_complete`
+            - 
+          * - :py:attr:`~message`
+            - 
+          * - :py:attr:`~context`
+            - 
+      
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.progress_handler import Progress
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: sim_id
+   :type:  str
+
+.. py:attribute:: state
+   :type:  ProgressState
+
+.. py:attribute:: percent_complete
+   :type:  int
+
+.. py:attribute:: message
+   :type:  str
+
+.. py:attribute:: context
+   :type:  str
+
+    
+
+Method detail
+-------------
+.. py:method:: from_proto_msg(sim_id: str, progress: ansys.api.additive.v0.additive_domain_pb2.Progress)
+   :classmethod:
+
+
+   
+   Create a ``Progress`` object from a progress protobuf message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+.. py:class:: DefaultSingleSimulationProgressHandler
+
+   Bases: :py:obj:`IProgressHandler`
+
+
+   
+   Creates a progress bar for a single simulation.
+
+
+   :Parameters:
+
+       **sim_id** : :class:`python:str`
+           Simulation ID.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: DefaultSingleSimulationProgressHandler
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~update`
+            - Update the progress bar.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.progress_handler import DefaultSingleSimulationProgressHandler
+
+
+
+    
+
+Method detail
+-------------
+.. py:method:: update(progress: Progress)
+
+   
+   Update the progress bar.
+
+
+   :Parameters:
+
+       **progress: Progress**
+           Latest progress.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+.. py:class:: IProgressHandler
+
+   Bases: :py:obj:`abc.ABC`
+
+
+   
+   Interface for simulation progress updates.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: IProgressHandler
+
+Overview
+--------
+
+.. tab-set::
+
+   .. tab-item:: Abstract methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~update`
+            - Update progress.
+
+
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.progress_handler import IProgressHandler
+
+
+
+    
+
+Method detail
+-------------
+.. py:method:: update(progress: Progress)
+   :abstractmethod:
+
+
+   
+   Update progress.
+
+
+   :Parameters:
+
+       **progress** : :obj:`Progress`
+           Progress information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+.. py:class:: ProgressState
+
+   Bases: :py:obj:`enum.IntEnum`
+
+
+   
+   Simulation progress status.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: ProgressState
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~WAITING`
+            - Waiting for the simulation to start.
+          * - :py:attr:`~RUNNING`
+            - Simulation is running.
+          * - :py:attr:`~COMPLETED`
+            - Simulation has completed.
+          * - :py:attr:`~ERROR`
+            - Simulation has errored.
+      
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.progress_handler import ProgressState
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: WAITING
+
+   
+   Waiting for the simulation to start.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: RUNNING
+
+   
+   Simulation is running.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: COMPLETED
+
+   
+   Simulation has completed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: ERROR
+
+   
+   Simulation has errored.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+    
+
+
+
+
+
