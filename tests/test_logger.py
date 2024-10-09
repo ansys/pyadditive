@@ -79,7 +79,7 @@ def test_global_logger_level_mode():
     [
         deflogging.DEBUG,
         deflogging.INFO,
-        deflogging.WARN,
+        deflogging.WARNING,
         deflogging.ERROR,
         deflogging.CRITICAL,
     ],

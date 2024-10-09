@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides miscellaneous utility functions."""
+
 import random
 import string
 
@@ -34,7 +35,8 @@ def short_uuid(nchars: int = 12) -> str:
         than 6. Using the default, the probability
         of a collision is 1.23e-17 for 1 billion rounds. See
         https://shortunique.id/classes/ShortUniqueId.html#collisionProbability.
+
     """
     alphabet = string.ascii_letters + string.digits
     nchars = max(6, nchars)
-    return "".join(random.choices(alphabet, k=nchars))
+    return "".join(random.choices(alphabet, k=nchars))  # noqa: S311

@@ -20,13 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.api.additive.v0.additive_domain_pb2 import PorosityResult
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import pytest
 
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
+from ansys.api.additive.v0.additive_domain_pb2 import PorosityResult
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 from . import test_utils
 
@@ -39,9 +39,9 @@ def test_PorosityInput_init_creates_default_object():
 
     # assert
     assert input.id
-    assert 3e-3 == input.size_x
-    assert 3e-3 == input.size_y
-    assert 3e-3 == input.size_z
+    assert input.size_x == 3e-3
+    assert input.size_y == 3e-3
+    assert input.size_z == 3e-3
     assert machine == input.machine
     assert material == input.material
 
@@ -60,9 +60,9 @@ def test_PorosityInput_init_creates_expected_object():
 
     # assert
     assert input.id
-    assert 1e-3 == input.size_x
-    assert 2e-3 == input.size_y
-    assert 3e-3 == input.size_z
+    assert input.size_x == 1e-3
+    assert input.size_y == 2e-3
+    assert input.size_z == 3e-3
     assert machine == input.machine
     assert material == input.material
 
@@ -88,7 +88,7 @@ def test_PorositySummary_init_creates_expected_object():
 
     # assert
     assert input == summary.input
-    assert 12 == summary.relative_density
+    assert summary.relative_density == 12
 
 
 @pytest.mark.parametrize(

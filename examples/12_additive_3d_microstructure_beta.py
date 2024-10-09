@@ -58,7 +58,12 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 
 import pyvista as pv
 
-from ansys.additive.core import Additive, AdditiveMachine, Microstructure3DInput, SimulationError
+from ansys.additive.core import (
+    Additive,
+    AdditiveMachine,
+    Microstructure3DInput,
+    SimulationError,
+)
 
 # Beta features must be enabled to use the 3D microstructure simulation.
 additive = Additive(enable_beta_features=True)

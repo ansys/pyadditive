@@ -1,14 +1,14 @@
 """Sphinx documentation configuration file."""
 
-from datetime import datetime
 import os
-from pathlib import Path
 import sys
 import warnings
+from datetime import datetime
+from pathlib import Path
 
-from ansys_sphinx_theme import ansys_favicon, get_version_match
 import numpy as np
 import pyvista
+from ansys_sphinx_theme import ansys_favicon, get_version_match
 from sphinx_gallery.sorting import FileNameSortKey
 
 from ansys.additive.core import __version__
@@ -125,7 +125,10 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     # kept here as an example
     # "scipy": ("https://docs.scipy.org/doc/scipy/reference", None),
-    "ansys.additive.core": (f"https://additive.docs.pyansys.com/version/{switcher_version}", None),
+    "ansys.additive.core": (
+        f"https://additive.docs.pyansys.com/version/{switcher_version}",
+        None,
+    ),
     "grpc": ("https://grpc.github.io/grpc/python/", None),
     "matplotlib": ("https://matplotlib.org/stable", None),
     "numpy": ("https://numpy.org/doc/stable", None),
@@ -214,7 +217,11 @@ copybutton_prompt_is_regexp = True
 # -- Declare the Jinja context -----------------------------------------------
 BUILD_API = True if os.environ.get("BUILD_API", "true") == "true" else False
 if BUILD_API is True:
-    suppress_warnings = ["autoapi.python_import_resolution", "design.grid", "config.cache"]
+    suppress_warnings = [
+        "autoapi.python_import_resolution",
+        "design.grid",
+        "config.cache",
+    ]
 BUILD_EXAMPLES = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
 BUILD_EXAMPLES_LONG = True if os.environ.get("BUILD_EXAMPLES_LONG", "true") == "true" else False
 PLOT_GALLERY = True if os.environ.get("PLOT_GALLERY", "true") == "true" else False
@@ -285,6 +292,7 @@ def prepare_jinja_env(jinja_env) -> None:
     Notes
     -----
     See https://jinja.palletsprojects.com/en/3.0.x/api/#jinja2.Environment
+
     """
     jinja_env.globals["project_name"] = project
 

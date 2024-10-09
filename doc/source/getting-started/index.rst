@@ -67,8 +67,7 @@ Package dependencies
 --------------------
 
 PyAdditive is supported on Python version 3.10 and later. Previous versions of Python are
-no longer supported as outlined in this `Moving to require Python 3 <https://python3statement.org/>`_
-statement.
+no longer supported.
 
 PyAdditive dependencies are automatically checked when packages are installed. Included
 in these dependencies are these projects:

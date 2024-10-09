@@ -20,11 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides functions for downloading sample datasets from the PyAdditive repository."""
-from http.client import HTTPMessage
+
 import os
 import shutil
 import urllib.request
 import zipfile
+from http.client import HTTPMessage
 
 from ansys.additive.core import EXAMPLES_PATH
 
@@ -62,6 +63,7 @@ def decompress(filename, subdir=None) -> str:
     -------
     str
        Path to the decompressed contents of the ZIP file.
+
     """
     outdir = EXAMPLES_PATH
     zip_ref = zipfile.ZipFile(filename, "r")
@@ -88,10 +90,12 @@ def _retrieve_file(url, filename) -> tuple[str, HTTPMessage]:
        URL for the example data file.
     filename : str
        Name for the example data file.
+
     Returns
     -------
     str: Local path file was downloaded to.
     HttpMessage: HTTP status message, if any.
+
     """
     # First check if file has already been downloaded
     local_path = os.path.join(EXAMPLES_PATH, os.path.basename(filename))
@@ -135,6 +139,7 @@ class MaterialTuningExampleInputFiles:
         Path to the thermal properties lookup file (CSV).
     characteristic_width_lookup_file : str
         Path to the characteristic width lookup file (CSV).
+
     """
 
     def __init__(
@@ -206,6 +211,7 @@ class CustomMaterialExampleFiles:
         Path to the thermal properties lookup file.
     characteristic_width_lookup_file : str
         Path to the characteristic width lookup file.
+
     """
 
     def __init__(

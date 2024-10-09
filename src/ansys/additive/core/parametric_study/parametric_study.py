@@ -23,24 +23,34 @@
 
 from __future__ import annotations
 
-from functools import wraps
 import math
-import os
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import os
 import pathlib
 import platform
-from typing import Callable
 import warnings
+from functools import wraps
+from typing import Callable
 
 import dill
 import numpy as np
 
+import ansys.additive.core.misc as misc
 from ansys.additive.core.logger import LOG
 from ansys.additive.core.machine import AdditiveMachine, MachineConstants
 from ansys.additive.core.material import AdditiveMaterial
-from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
-import ansys.additive.core.misc as misc
+from ansys.additive.core.microstructure import (
+    MicrostructureInput,
+    MicrostructureSummary,
+)
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
-from ansys.additive.core.simulation import SimulationError, SimulationStatus, SimulationType
+from ansys.additive.core.simulation import (
+    SimulationError,
+    SimulationStatus,
+    SimulationType,
+)
 from ansys.additive.core.single_bead import MeltPool, SingleBeadInput, SingleBeadSummary
 
 from .constants import DEFAULT_ITERATION, DEFAULT_PRIORITY, FORMAT_VERSION, ColumnNames
@@ -55,7 +65,7 @@ import pandas as pd  # noqa: E402
 
 
 def save_on_return(func):
-    """Decorator to save study file upon method return."""
+    """Save study file upon method return."""
 
     @wraps(func)
     def wrap(self, *args, **kwargs):
@@ -77,6 +87,9 @@ class ParametricStudy:
         file_name: str, os.PathLike
             Name of the file the parametric study is written to. If the file exists, it is
             loaded and updated to the latest version of the file format.
+        material_name: str
+            Name of the material used in the parametric study.
+
         """
         study_path = pathlib.Path(file_name).absolute()
         if study_path.suffix != ".ps":
@@ -106,6 +119,7 @@ class ParametricStudy:
 
         material: str, default ""
             Material to use for study.
+
         """
         study = cls.__new__(cls)
         study._init_new_study(study_path, material)
@@ -127,6 +141,7 @@ class ParametricStudy:
         list[str]
             List of error messages of any simulations that have invalid
             input parameters.
+
         """
 
         file_path = pathlib.Path(file_name).absolute()
@@ -171,6 +186,7 @@ class ParametricStudy:
         ----------
         file_name : str, os.PathLike
             Name of the file to save the parametric study to.
+
         """
 
         pathlib.Path(file_name).parent.mkdir(parents=True, exist_ok=True)
@@ -193,6 +209,7 @@ class ParametricStudy:
         -------
         ParametricStudy
             Loaded parametric study.
+
         """
         if not pathlib.Path(file_name).is_file():
             raise ValueError(f"{file_name} is not a valid file.")
@@ -208,7 +225,7 @@ class ParametricStudy:
 
         try:
             with open(file_name, "rb") as f:
-                study = dill.load(f)
+                study = dill.load(f)  # noqa: S301
         except Exception:
             raise
         finally:
@@ -245,6 +262,7 @@ class ParametricStudy:
         simulation_ids : list[str], default: None
             List of simulation IDs to clear the error messages for. If this value
             is ``None``, all error messages are cleared.
+
         """
         LOG.debug(f"Clearing errors {', '.join(simulation_ids) if simulation_ids else ''}")
         if simulation_ids is None:
@@ -279,6 +297,7 @@ class ParametricStudy:
         -------
         int
             Number of new simulations added to the parametric study.
+
         """
         for summary in summaries:
             if isinstance(summary, SingleBeadSummary):
@@ -405,6 +424,7 @@ class ParametricStudy:
         -------
         Dict[str, Any]
             Dictionary of common simulation parameters.
+
         """
         return {
             ColumnNames.ITERATION: iteration,
@@ -481,6 +501,7 @@ class ParametricStudy:
         -------
         int
             Number of single bead permutations added to the parametric study.
+
         """  # noqa: E501
         lt = (
             layer_thicknesses
@@ -502,7 +523,7 @@ class ParametricStudy:
         num_permutations_added = int()
         for p in laser_powers:
             for v in scan_speeds:
-                for l in lt:
+                for thickness in lt:
                     pv_ratio = round(p / v, 5)
                     if pv_ratio < min_pv or pv_ratio > max_pv:
                         continue
@@ -515,7 +536,7 @@ class ParametricStudy:
                                     laser_power=p,
                                     scan_speed=v,
                                     heater_temperature=t,
-                                    layer_thickness=l,
+                                    layer_thickness=thickness,
                                     beam_diameter=d,
                                 )
                                 SingleBeadInput(
@@ -524,7 +545,7 @@ class ParametricStudy:
                                     material=AdditiveMaterial(),
                                 )
                             except ValueError as e:
-                                print(f"Invalid parameter combination: {e}")
+                                LOG.error(f"Invalid parameter combination: {e}")
                                 continue
 
                             # add row to parametric study data frame
@@ -539,7 +560,7 @@ class ParametricStudy:
                                     ColumnNames.STATUS: SimulationStatus.NEW,
                                     ColumnNames.MATERIAL: self.material_name,
                                     ColumnNames.HEATER_TEMPERATURE: t,
-                                    ColumnNames.LAYER_THICKNESS: l,
+                                    ColumnNames.LAYER_THICKNESS: thickness,
                                     ColumnNames.BEAM_DIAMETER: d,
                                     ColumnNames.LASER_POWER: p,
                                     ColumnNames.SCAN_SPEED: v,
@@ -665,6 +686,7 @@ class ParametricStudy:
         -------
         int
             Number of porosity permutations added to the parametric study.
+
         """  # noqa: E501
         lt = (
             layer_thicknesses
@@ -708,10 +730,10 @@ class ParametricStudy:
         num_permutations_added = int()
         for p in laser_powers:
             for v in scan_speeds:
-                for l in lt:
+                for thickness in lt:
                     for h in hs:
-                        br = build_rate(v, l, h)
-                        ed = energy_density(p, v, l, h)
+                        br = build_rate(v, thickness, h)
+                        ed = energy_density(p, v, thickness, h)
                         if br < min_br or br > max_br or ed < min_ed or ed > max_ed:
                             continue
 
@@ -726,7 +748,7 @@ class ParametricStudy:
                                                     laser_power=p,
                                                     scan_speed=v,
                                                     heater_temperature=t,
-                                                    layer_thickness=l,
+                                                    layer_thickness=thickness,
                                                     beam_diameter=d,
                                                     starting_layer_angle=a,
                                                     layer_rotation_angle=r,
@@ -756,7 +778,7 @@ class ParametricStudy:
                                                     ColumnNames.STATUS: SimulationStatus.NEW,
                                                     ColumnNames.MATERIAL: self.material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
-                                                    ColumnNames.LAYER_THICKNESS: l,
+                                                    ColumnNames.LAYER_THICKNESS: thickness,
                                                     ColumnNames.BEAM_DIAMETER: d,
                                                     ColumnNames.LASER_POWER: p,
                                                     ColumnNames.SCAN_SPEED: v,
@@ -1008,10 +1030,10 @@ class ParametricStudy:
         num_permutations_added = int()
         for p in laser_powers:
             for v in scan_speeds:
-                for l in lt:
+                for thickness in lt:
                     for h in hs:
-                        br = build_rate(v, l, h)
-                        ed = energy_density(p, v, l, h)
+                        br = build_rate(v, thickness, h)
+                        ed = energy_density(p, v, thickness, h)
                         if br < min_br or br > max_br or ed < min_ed or ed > max_ed:
                             continue
 
@@ -1026,7 +1048,7 @@ class ParametricStudy:
                                                     laser_power=p,
                                                     scan_speed=v,
                                                     heater_temperature=t,
-                                                    layer_thickness=l,
+                                                    layer_thickness=thickness,
                                                     beam_diameter=d,
                                                     starting_layer_angle=a,
                                                     layer_rotation_angle=r,
@@ -1091,7 +1113,7 @@ class ParametricStudy:
                                                     ColumnNames.STATUS: SimulationStatus.NEW,
                                                     ColumnNames.MATERIAL: self.material_name,
                                                     ColumnNames.HEATER_TEMPERATURE: t,
-                                                    ColumnNames.LAYER_THICKNESS: l,
+                                                    ColumnNames.LAYER_THICKNESS: thickness,
                                                     ColumnNames.BEAM_DIAMETER: d,
                                                     ColumnNames.LASER_POWER: p,
                                                     ColumnNames.SCAN_SPEED: v,
@@ -1159,6 +1181,7 @@ class ParametricStudy:
         ----------
         summaries : list[SingleBeadSummary, PorositySummary, MicrostructureSummary, SimulationError]
              List of simulation summaries to use for updating the parametric study.
+
         """
         for summary in summaries:
             if isinstance(summary, SingleBeadSummary):
@@ -1181,7 +1204,8 @@ class ParametricStudy:
 
     def _update_single_bead(self, id: str, melt_pool: MeltPool):
         """Update the results of a single bead simulation in the parametric
-        study data frame."""
+        study data frame.
+        """
         idx = self._data_frame[
             (self._data_frame[ColumnNames.ID] == id)
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD)
@@ -1190,22 +1214,23 @@ class ParametricStudy:
         self._data_frame.loc[idx, ColumnNames.MELT_POOL_WIDTH] = melt_pool.median_width()
         self._data_frame.loc[idx, ColumnNames.MELT_POOL_DEPTH] = melt_pool.median_depth()
         self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH] = melt_pool.median_length()
-        self._data_frame.loc[
-            idx, ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH
-        ] = melt_pool.length_over_width()
-        self._data_frame.loc[
-            idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH
-        ] = melt_pool.median_reference_depth()
-        self._data_frame.loc[
-            idx, ColumnNames.MELT_POOL_REFERENCE_WIDTH
-        ] = melt_pool.median_reference_width()
-        self._data_frame.loc[
-            idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH
-        ] = melt_pool.depth_over_width()
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] = (
+            melt_pool.length_over_width()
+        )
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH] = (
+            melt_pool.median_reference_depth()
+        )
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_WIDTH] = (
+            melt_pool.median_reference_width()
+        )
+        self._data_frame.loc[idx, ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] = (
+            melt_pool.depth_over_width()
+        )
 
     def _update_porosity(self, id: str, relative_density: float):
         """Update the results of a porosity simulation in the parametric study
-        data frame."""
+        data frame.
+        """
         idx = self._data_frame[
             (self._data_frame[ColumnNames.ID] == id)
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.POROSITY)
@@ -1222,7 +1247,8 @@ class ParametricStudy:
         yz_avg_grain_size: float,
     ):
         """Update the results of a microstructure simulation in the parametric
-        study data frame."""
+        study data frame.
+        """
         idx = self._data_frame[
             (self._data_frame[ColumnNames.ID] == id)
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE)
@@ -1263,6 +1289,7 @@ class ParametricStudy:
         -------
         int
             The number of simulations added to the parametric study.
+
         """
         if status not in [SimulationStatus.SKIP, SimulationStatus.NEW]:
             raise ValueError(
@@ -1331,6 +1358,7 @@ class ParametricStudy:
         -------
         int
             The number of duplicate simulations removed.
+
         """
 
         # For duplicate removal, the following rules are applied:
@@ -1416,6 +1444,7 @@ class ParametricStudy:
             for df, params in zip(
                 [single_bead_df, porosity_df, microstructure_df],
                 [sb_params, porosity_params, microstructure_params],
+                strict=False,
             ):
                 df.drop_duplicates(
                     subset=params + [ColumnNames.STATUS],
@@ -1432,6 +1461,7 @@ class ParametricStudy:
         for df, params in zip(
             [single_bead_df, porosity_df, microstructure_df],
             [sb_params, porosity_params, microstructure_params],
+            strict=False,
         ):
             if len(df) > 0:
                 duplicates_removed_df = pd.concat(
@@ -1455,6 +1485,7 @@ class ParametricStudy:
         ----------
         ids : str, list[str]
             One or more ID values for the simulations to remove.
+
         """
         if isinstance(ids, str):
             ids = [ids]
@@ -1471,9 +1502,11 @@ class ParametricStudy:
         ----------
         ids : str, list[str]
             One or more IDs of the simulations to update.
-
         status : SimulationStatus
             Status for the simulations.
+        err_msg : str, default: ""
+            Error message for the simulations. Only used if status is SimulationStatus.ERROR.
+
         """
         if isinstance(ids, str):
             ids = [ids]
@@ -1494,6 +1527,7 @@ class ParametricStudy:
 
         priority : int
             Priority for the simulations.
+
         """
         if isinstance(ids, str):
             ids = [ids]
@@ -1514,6 +1548,7 @@ class ParametricStudy:
 
         iteration : int
             Iteration for the simulations.
+
         """
         if isinstance(ids, str):
             ids = [ids]
@@ -1535,6 +1570,7 @@ class ParametricStudy:
         -------
         str
             Unique ID.
+
         """
 
         if id is not None and not self._data_frame[ColumnNames.ID].str.match(f"{id}").any():
@@ -1563,19 +1599,17 @@ class ParametricStudy:
         -------
         ParametricStudy
             Updated parametric study.
+
         """
 
         # The format_version property was implemented incorrectly in version 1.
         # Check the column names to determine if the study is version 1.
-        if "Heater Temp (°C)" in study.data_frame().columns:
-            version = 1
-        else:
-            version = study.format_version
+        version = 1 if "Heater Temp (°C)" in study.data_frame().columns else study.format_version
 
         if version > FORMAT_VERSION:
             raise ValueError(
-                f"Unsupported version, study version = {version},"
-                + "latest supported version is {FORMAT_VERSION}."
+                f"Unsupported version, study version = {version}, "
+                "latest supported version is {FORMAT_VERSION}."
             )
 
         if version == FORMAT_VERSION:
@@ -1627,13 +1661,14 @@ class ParametricStudy:
 
         Parameters
         ----------
-        study : ParametricStudy
-            Parametric study to update.
+        df : pd.DataFrame
+            Data frame containing the parametric study.
 
         Returns
         -------
-        ParametricStudy
-            Updated parametric study.
+        pd.DataFrame
+            Updated data frame.
+
         """
         if ColumnNames.PV_RATIO not in df.columns:
             scan_speed_index = df.columns.get_loc(ColumnNames.SCAN_SPEED)
@@ -1655,15 +1690,14 @@ class ParametricStudy:
         -------
         list[str]
             List of error messages for invalid simulations.
+
         """
         try:
             df = pd.read_csv(file_path, index_col=0)
         except Exception as e:
-            raise ValueError(f"Unable to read CSV file: {e}")
+            raise ValueError(f"Unable to read CSV file: {e}") from e
 
-        columns = set(
-            [getattr(ColumnNames, k) for k in ColumnNames.__dict__ if not k.startswith("_")]
-        )
+        columns = {getattr(ColumnNames, c) for c in ColumnNames.__dict__ if not c.startswith("_")}
         # older CSV files may not have the PV_RATIO column
         columns.remove(ColumnNames.PV_RATIO)
 
@@ -1684,7 +1718,7 @@ class ParametricStudy:
             )
 
         # check valid inputs
-        drop_indices, error_list = list(), list()
+        drop_indices, error_list = [], []
         duplicates = 0
         allowed_status = [s.value for s in SimulationStatus]
         for index, row in df.iterrows():
@@ -1742,6 +1776,7 @@ class ParametricStudy:
         tuple[bool, str]
             bool, True if the input is valid, False otherwise.
             string, Error message if the input is invalid.
+
         """
 
         try:
@@ -1759,9 +1794,9 @@ class ParametricStudy:
                 if np.isnan(input[ColumnNames.START_ANGLE]):
                     input[ColumnNames.START_ANGLE] = MachineConstants.DEFAULT_STARTING_LAYER_ANGLE
                 if np.isnan(input[ColumnNames.ROTATION_ANGLE]):
-                    input[
-                        ColumnNames.ROTATION_ANGLE
-                    ] = MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE
+                    input[ColumnNames.ROTATION_ANGLE] = (
+                        MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE
+                    )
                 if np.isnan(input[ColumnNames.HATCH_SPACING]):
                     input[ColumnNames.HATCH_SPACING] = MachineConstants.DEFAULT_HATCH_SPACING
                 if np.isnan(input[ColumnNames.STRIPE_WIDTH]):
@@ -1815,6 +1850,7 @@ class ParametricStudy:
         tuple[bool, str]
             bool, True if the single bead input is valid, False otherwise.
             string, Error message if the single bead input is invalid.
+
         """
         try:
             bead_length = input[ColumnNames.SINGLE_BEAD_LENGTH]
@@ -1845,6 +1881,7 @@ class ParametricStudy:
         tuple[bool, str]
             bool, True if the porosity input is valid, False otherwise.
             string, Error message if the porosity input is invalid.
+
         """
 
         try:
@@ -1880,6 +1917,7 @@ class ParametricStudy:
         tuple[bool, str]
             bool, True if the microstructure input is valid, False otherwise.
             string, Error message if the microstructure input is invalid.
+
         """
         try:
             test_cooling_rate = input[ColumnNames.COOLING_RATE]
@@ -1971,6 +2009,7 @@ class ParametricStudy:
         -------
         list[SingleBeadInput, PorosityInput, MicrostructureInput]
             List of simulation inputs.
+
         """
         inputs = []
 
@@ -2150,6 +2189,7 @@ class ParametricStudy:
         -------
         pd.DataFrame
             Filtered view of the parametric study data frame
+
         """
 
         # Initialize the filtered view with a copy of the data frame
@@ -2157,7 +2197,7 @@ class ParametricStudy:
 
         # Filter the data frame based on the provided simulation IDs
         if isinstance(simulation_ids, list) and len(simulation_ids) > 0:
-            simulation_ids_list = list()
+            simulation_ids_list = []
             for sim_id in simulation_ids:
                 if sim_id not in view[ColumnNames.ID].values:
                     LOG.warning(f"Simulation ID '{sim_id}' not found in the parametric study")

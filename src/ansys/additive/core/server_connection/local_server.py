@@ -21,12 +21,12 @@
 # SOFTWARE.
 """Provides startup utilities for a local Additive server."""
 
-from datetime import datetime
 import os
-from pathlib import Path
 import socket
 import subprocess
 import time
+from datetime import datetime
+from pathlib import Path
 
 from ansys.additive.core import USER_DATA_PATH
 from ansys.additive.core.server_connection.constants import (
@@ -68,6 +68,7 @@ class LocalServer:
         -------
         process: subprocess.Popen
             Server process. To stop the server, call the ``kill()`` method on the returned object.
+
         """
         server_exe = ""
         if os.name == "nt":
@@ -110,7 +111,7 @@ class LocalServer:
         start_time = datetime.now().strftime("%Y%m%d_%H%M%S")
 
         with open(os.path.join(cwd, f"additiveserver_{start_time}.log"), "w") as log_file:
-            server_process = subprocess.Popen(
+            server_process = subprocess.Popen(  # noqa: S603
                 f'"{server_exe}" --port {port}',
                 shell=os.name != "nt",  # use shell on Linux
                 cwd=cwd,
@@ -134,6 +135,7 @@ class LocalServer:
 
         .. note::
             This port may be taken by the time you try to use it.
+
         """
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind(("", 0))

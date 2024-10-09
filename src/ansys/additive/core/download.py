@@ -20,13 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides a function for downloading files from the server to the client."""
+
 import hashlib
 import os
 
+from ansys.additive.core.progress_handler import (
+    IProgressHandler,
+    Progress,
+    ProgressState,
+)
 from ansys.api.additive.v0.additive_simulation_pb2 import DownloadFileRequest
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
-
-from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
 
 
 def download_file(
@@ -39,6 +43,8 @@ def download_file(
 
     Parameters
     ----------
+    stub: SimulationServiceStub
+        gRPC stub for the simulation service.
     remote_file_name: str
         Path to file on the server.
     local_folder: str
@@ -50,6 +56,7 @@ def download_file(
     -------
     str
         Local path of downloaded file.
+
     """
 
     if not os.path.isdir(local_folder):
@@ -65,7 +72,7 @@ def download_file(
                     Progress.from_proto_msg(response.progress)
                 )  # pragma: no cover
             if len(response.content) > 0:
-                md5 = hashlib.md5(response.content).hexdigest()
+                md5 = hashlib.md5(response.content).hexdigest()  # noqa: S324
                 if md5 != response.content_md5:
                     msg = "Download error, MD5 sums did not match"
                     if progress_handler:  # pragma: no cover

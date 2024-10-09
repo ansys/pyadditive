@@ -21,19 +21,22 @@
 # SOFTWARE.
 """Provides input and result summary containers for single bead simulations."""
 
+import contextlib
 import math
 import os
 import zipfile
 
-from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
-from ansys.api.additive.v0.additive_domain_pb2 import SingleBeadInput as SingleBeadInputMessage
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import numpy as np
 from pandas import DataFrame
 
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.simulation_input_base import SimulationInputBase
+from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    SingleBeadInput as SingleBeadInputMessage,
+)
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 
 class SingleBeadInput(SimulationInputBase):
@@ -58,16 +61,16 @@ class SingleBeadInput(SimulationInputBase):
         self,
         *,
         bead_length: float = DEFAULT_BEAD_LENGTH,
-        machine: AdditiveMachine = AdditiveMachine(),
-        material: AdditiveMaterial = AdditiveMaterial(),
+        machine: AdditiveMachine = None,
+        material: AdditiveMaterial = None,
         output_thermal_history: bool = DEFAULT_OUTPUT_THERMAL_HISTORY,
         thermal_history_interval: int = DEFAULT_THERMAL_HISTORY_INTERVAL,
     ):
         """Initialize a ``SingleBeadInput`` object."""
         super().__init__()
         self.bead_length = bead_length
-        self.machine = machine
-        self.material = material
+        self.machine = machine if machine else AdditiveMachine()
+        self.material = material if material else AdditiveMaterial()
         self.output_thermal_history = output_thermal_history
         self.thermal_history_interval = thermal_history_interval
 
@@ -191,11 +194,13 @@ class MeltPool:
     def __init__(self, msg: MeltPoolMessage, thermal_history_output: str | None = None):
         """Initialize a ``MeltPool`` object.
 
-        Parameters:
-            msg: MeltPoolMessage
-                The message containing the melt pool data.
-            thermal_history_output: str | None
-                Path to the thermal history output file.
+        Parameters
+        ----------
+        msg: MeltPoolMessage
+            The message containing the melt pool data.
+        thermal_history_output: str | None
+            Path to the thermal history output file.
+
         """
         bead_length = [ts.laser_x for ts in msg.time_steps]
         length = [ts.length for ts in msg.time_steps]
@@ -328,7 +333,5 @@ class SingleBeadSummary:
             raise FileNotFoundError("Thermal history files not found: " + zip_file)
         with zipfile.ZipFile(zip_file, "r") as zip_ref:
             zip_ref.extractall(thermal_history_output)
-        try:
+        with contextlib.suppress(OSError):
             os.remove(zip_file)
-        except OSError:
-            pass

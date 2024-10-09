@@ -35,7 +35,12 @@ Units are SI (m, kg, s, K) unless otherwise noted.
 # -----------------------------------
 # Perform the required import and connect to the Additive service.
 
-from ansys.additive.core import Additive, AdditiveMachine, MicrostructureInput, SimulationError
+from ansys.additive.core import (
+    Additive,
+    AdditiveMachine,
+    MicrostructureInput,
+    SimulationError,
+)
 
 additive = Additive()
 
@@ -128,12 +133,12 @@ if isinstance(summary, SimulationError):
 # includes circle equivalence data and average grain size for each plane.
 # See :class:`MicrostructureSummary` for details.
 
-from matplotlib import colors
-from matplotlib.colors import LinearSegmentedColormap as colorMap
 import matplotlib.pyplot as plt
-from matplotlib.ticker import PercentFormatter
 import pandas as pd
 import pyvista as pv
+from matplotlib import colors
+from matplotlib.colors import LinearSegmentedColormap as colorMap
+from matplotlib.ticker import PercentFormatter
 
 from ansys.additive.core import CircleEquivalenceColumnNames
 
@@ -146,7 +151,11 @@ from ansys.additive.core import CircleEquivalenceColumnNames
 
 # Function to plot the planar data
 def plot_microstructure(
-    xy_data: any, xz_data: any, yz_data: any, scalars: str, cmap: colors.LinearSegmentedColormap
+    xy_data: any,
+    xz_data: any,
+    yz_data: any,
+    scalars: str,
+    cmap: colors.LinearSegmentedColormap,
 ):
     """Convenience function to plot microstructure VTK data."""
     font_size = 8
@@ -212,7 +221,7 @@ def add_grain_statistics_to_figure(
         plane_data[CircleEquivalenceColumnNames.ORIENTATION_ANGLE], bins=9, rwidth=0.75
     )
     orientation_axes.yaxis.set_major_formatter(PercentFormatter(xmax=xmax))
-    orientation_axes.set_xlabel(f"Orientation Angle (°)")
+    orientation_axes.set_xlabel("Orientation Angle (°)")
     orientation_axes.set_ylabel("Number Fraction")
     orientation_axes.set_title(plane_str.upper() + " Orientation Angle")
 
@@ -221,12 +230,24 @@ def add_grain_statistics_to_figure(
 fig, axs = plt.subplots(3, 2, figsize=(10, 15), tight_layout=True)
 fig.suptitle("Circle Equivalence Grain Data", fontsize=16)
 add_grain_statistics_to_figure(
-    summary.xy_circle_equivalence, "xy", summary.xy_average_grain_size, axs[0][0], axs[0][1]
+    summary.xy_circle_equivalence,
+    "xy",
+    summary.xy_average_grain_size,
+    axs[0][0],
+    axs[0][1],
 )
 add_grain_statistics_to_figure(
-    summary.xz_circle_equivalence, "xz", summary.xz_average_grain_size, axs[1][0], axs[1][1]
+    summary.xz_circle_equivalence,
+    "xz",
+    summary.xz_average_grain_size,
+    axs[1][0],
+    axs[1][1],
 )
 add_grain_statistics_to_figure(
-    summary.yz_circle_equivalence, "yz", summary.yz_average_grain_size, axs[2][0], axs[2][1]
+    summary.yz_circle_equivalence,
+    "yz",
+    summary.yz_average_grain_size,
+    axs[2][0],
+    axs[2][1],
 )
 plt.show()

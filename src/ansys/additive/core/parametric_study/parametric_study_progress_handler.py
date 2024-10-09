@@ -25,7 +25,11 @@ import threading
 
 from ansys.additive.core.logger import LOG
 from ansys.additive.core.parametric_study import ParametricStudy
-from ansys.additive.core.progress_handler import IProgressHandler, Progress, ProgressState
+from ansys.additive.core.progress_handler import (
+    IProgressHandler,
+    Progress,
+    ProgressState,
+)
 from ansys.additive.core.simulation import SimulationStatus
 
 
@@ -36,6 +40,7 @@ class ParametricStudyProgressHandler(IProgressHandler):
     ----------
     study : ParametricStudy
         Parametric study to update.
+
     """
 
     def __init__(
@@ -58,6 +63,7 @@ class ParametricStudyProgressHandler(IProgressHandler):
         ----------
         progress : Progress
             Progress information for the simulation.
+
         """
         if (
             progress.sim_id in self._last_progress_states
@@ -97,6 +103,7 @@ class ParametricStudyProgressHandler(IProgressHandler):
             Simulation status.
         message : str, optional
             Status message.
+
         """
 
         with self._study_lock:

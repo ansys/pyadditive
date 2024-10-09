@@ -22,23 +22,26 @@
 
 from unittest.mock import ANY, Mock, create_autospec
 
-from ansys.api.additive.v0.about_pb2 import AboutResponse
-import ansys.api.additive.v0.about_pb2_grpc
-from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
-from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
-from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
-import ansys.platform.instancemanagement as pypim
-from google.protobuf.empty_pb2 import Empty
 import grpc
 import pytest
+from google.protobuf.empty_pb2 import Empty
 
-from ansys.additive.core.server_connection.constants import LOCALHOST, PYPIM_PRODUCT_NAME
 import ansys.additive.core.server_connection.local_server
 import ansys.additive.core.server_connection.server_connection
+import ansys.api.additive.v0.about_pb2_grpc
+import ansys.platform.instancemanagement as pypim
+from ansys.additive.core.server_connection.constants import (
+    LOCALHOST,
+    PYPIM_PRODUCT_NAME,
+)
 from ansys.additive.core.server_connection.server_connection import (
     ServerConnection,
     ServerConnectionStatus,
 )
+from ansys.api.additive.v0.about_pb2 import AboutResponse
+from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
+from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
+from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 
 
 def test_init_raises_exception_if_channel_and_addr_provided():
@@ -159,10 +162,13 @@ def test_init_starts_local_server(monkeypatch):
         mock_ready,
     )
     mock_launch = create_autospec(
-        ansys.additive.core.server_connection.local_server.LocalServer.launch, return_value=None
+        ansys.additive.core.server_connection.local_server.LocalServer.launch,
+        return_value=None,
     )
     monkeypatch.setattr(
-        ansys.additive.core.server_connection.local_server.LocalServer, "launch", mock_launch
+        ansys.additive.core.server_connection.local_server.LocalServer,
+        "launch",
+        mock_launch,
     )
 
     # act

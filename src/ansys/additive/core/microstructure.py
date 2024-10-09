@@ -20,9 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Provides input and result summary containers for microstructure simulations."""
+
 import math
 import os
 
+import numpy as np
+import pandas as pd
+from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
+
+from ansys.additive.core import misc
+from ansys.additive.core.machine import AdditiveMachine
+from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.simulation_input_base import SimulationInputBase
 from ansys.api.additive.v0.additive_domain_pb2 import (
     MicrostructureInput as MicrostructureInputMessage,
 )
@@ -30,14 +39,6 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
     MicrostructureResult as MicrostructureResultMessage,
 )
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
-from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
-import numpy as np
-import pandas as pd
-
-from ansys.additive.core import misc
-from ansys.additive.core.machine import AdditiveMachine
-from ansys.additive.core.material import AdditiveMaterial
-from ansys.additive.core.simulation_input_base import SimulationInputBase
 
 
 class MicrostructureInput(SimulationInputBase):
@@ -117,8 +118,8 @@ class MicrostructureInput(SimulationInputBase):
         melt_pool_width: float = DEFAULT_MELT_POOL_WIDTH,
         melt_pool_depth: float = DEFAULT_MELT_POOL_DEPTH,
         random_seed: int = DEFAULT_RANDOM_SEED,
-        machine: AdditiveMachine = AdditiveMachine(),
-        material: AdditiveMaterial = AdditiveMaterial(),
+        machine: AdditiveMachine = None,
+        material: AdditiveMaterial = None,
     ):
         """Initialize a ``MicrostructureInput`` object."""
         super().__init__()
@@ -154,8 +155,8 @@ class MicrostructureInput(SimulationInputBase):
         self.thermal_gradient = thermal_gradient
         self.melt_pool_width = melt_pool_width
         self.melt_pool_depth = melt_pool_depth
-        self.machine = machine
-        self.material = material
+        self.machine = machine if machine else AdditiveMachine()
+        self.material = material if material else AdditiveMaterial()
         if random_seed != self.DEFAULT_RANDOM_SEED:
             self.random_seed = random_seed
         else:
@@ -238,7 +239,10 @@ class MicrostructureInput(SimulationInputBase):
     @sample_min_x.setter
     def sample_min_x(self, value: float):
         self.__validate_range(
-            value, self.MIN_POSITION_COORDINATE, self.MAX_POSITION_COORDINATE, "sample_min_x"
+            value,
+            self.MIN_POSITION_COORDINATE,
+            self.MAX_POSITION_COORDINATE,
+            "sample_min_x",
         )
         self._sample_min_x = value
 
@@ -254,7 +258,10 @@ class MicrostructureInput(SimulationInputBase):
     @sample_min_y.setter
     def sample_min_y(self, value: float):
         self.__validate_range(
-            value, self.MIN_POSITION_COORDINATE, self.MAX_POSITION_COORDINATE, "sample_min_y"
+            value,
+            self.MIN_POSITION_COORDINATE,
+            self.MAX_POSITION_COORDINATE,
+            "sample_min_y",
         )
         self._sample_min_y = value
 
@@ -270,7 +277,10 @@ class MicrostructureInput(SimulationInputBase):
     @sample_min_z.setter
     def sample_min_z(self, value: float):
         self.__validate_range(
-            value, self.MIN_POSITION_COORDINATE, self.MAX_POSITION_COORDINATE, "sample_min_z"
+            value,
+            self.MIN_POSITION_COORDINATE,
+            self.MAX_POSITION_COORDINATE,
+            "sample_min_z",
         )
         self._sample_min_z = value
 
@@ -341,7 +351,10 @@ class MicrostructureInput(SimulationInputBase):
     @sensor_dimension.setter
     def sensor_dimension(self, value: float):
         self.__validate_range(
-            value, self.MIN_SENSOR_DIMENSION, self.MAX_SENSOR_DIMENSION, "sensor_dimension"
+            value,
+            self.MIN_SENSOR_DIMENSION,
+            self.MAX_SENSOR_DIMENSION,
+            "sensor_dimension",
         )
         size_errors = ""
         try:
@@ -406,7 +419,10 @@ class MicrostructureInput(SimulationInputBase):
     @thermal_gradient.setter
     def thermal_gradient(self, value: float):
         self.__validate_range(
-            value, self.MIN_THERMAL_GRADIENT, self.MAX_THERMAL_GRADIENT, "thermal_gradient"
+            value,
+            self.MIN_THERMAL_GRADIENT,
+            self.MAX_THERMAL_GRADIENT,
+            "thermal_gradient",
         )
         self._thermal_gradient = value
 
@@ -500,7 +516,10 @@ class MicrostructureSummary:
     """Provides the summary of a microstructure simulation."""
 
     def __init__(
-        self, input: MicrostructureInput, result: MicrostructureResultMessage, user_data_path: str
+        self,
+        input: MicrostructureInput,
+        result: MicrostructureResultMessage,
+        user_data_path: str,
     ) -> None:
         """Initialize a ``MicrostructureSummary`` object."""
         if not isinstance(input, MicrostructureInput):
@@ -619,6 +638,7 @@ class MicrostructureSummary:
         -------
         float
             Average grain size (µm).
+
         """
 
         return (

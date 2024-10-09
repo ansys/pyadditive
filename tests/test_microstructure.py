@@ -25,13 +25,19 @@ import os
 import shutil
 import tempfile
 
-from ansys.api.additive.v0.additive_domain_pb2 import GrainStatistics, MicrostructureResult
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import pytest
 
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
-from ansys.additive.core.microstructure import MicrostructureInput, MicrostructureSummary
+from ansys.additive.core.microstructure import (
+    MicrostructureInput,
+    MicrostructureSummary,
+)
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    GrainStatistics,
+    MicrostructureResult,
+)
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 
 def test_MicrostructureSummary_init_returns_expected_value():
@@ -358,7 +364,10 @@ def test_MicrostructureInput_setters_raise_ValueError_for_nan_values(field):
 def test_MicrostructureInput_size_validation_raises_ValueError_for_values_out_of_range():
     # arrange
     input = MicrostructureInput(
-        sensor_dimension=6e-4, sample_size_x=0.01, sample_size_y=0.01, sample_size_z=0.01
+        sensor_dimension=6e-4,
+        sample_size_x=0.01,
+        sample_size_y=0.01,
+        sample_size_z=0.01,
     )
 
     # act & assert
@@ -380,7 +389,7 @@ def test_MicrostructureInput_size_validation_raises_ValueError_for_values_out_of
     with pytest.raises(ValueError):
         input.sensor_dimension = 7e-4
     input.sensor_dimension = 5e-4
-    assert 5e-4 == input.sensor_dimension
+    assert input.sensor_dimension == 5e-4
 
 
 def test_MicrostructureInput_repr_returns_expected_string():

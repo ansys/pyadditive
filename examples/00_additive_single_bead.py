@@ -172,7 +172,7 @@ plotter_xy.open_gif("thermal_history_xy.gif")
 path = summary.melt_pool.thermal_history_output
 files = [f for f in os.listdir(path) if f.endswith(".vtk")]
 
-for i in range(0, len(files)):
+for i in range(len(files)):
     i = f"{i:07}"
     mesh = pv.read(os.path.join(path, f"GridFullThermal_L0000000_T{i}.vtk"))
     plotter_xy.add_mesh(mesh, scalars="Temperature_(C)", cmap="coolwarm")

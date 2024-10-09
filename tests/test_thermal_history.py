@@ -23,10 +23,6 @@
 import math
 import os
 
-from ansys.api.additive.v0.additive_domain_pb2 import BuildFileMachineType
-from ansys.api.additive.v0.additive_domain_pb2 import StlFile as StlFileMessage
-from ansys.api.additive.v0.additive_domain_pb2 import ThermalHistoryResult
-from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 import pytest
 
 from ansys.additive.core.geometry_file import BuildFile, MachineType, StlFile
@@ -41,6 +37,9 @@ from ansys.additive.core.thermal_history import (
     ThermalHistoryInputMessage,
     ThermalHistorySummary,
 )
+from ansys.api.additive.v0.additive_domain_pb2 import BuildFileMachineType, ThermalHistoryResult
+from ansys.api.additive.v0.additive_domain_pb2 import StlFile as StlFileMessage
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 
 def test_Range_init_with_parameters_returns_expected_value():
@@ -135,7 +134,8 @@ def test_CoaxialAverageSensorInputs_eq():
         radius=1e-3, z_heights=[Range(min=1, max=2), Range(min=3, max=4)]
     )
     assert inputs != CoaxialAverageSensorInputsMessage(
-        sensor_radius=1e-3, z_heights=[RangeMessage(min=1, max=2), RangeMessage(min=3, max=4)]
+        sensor_radius=1e-3,
+        z_heights=[RangeMessage(min=1, max=2), RangeMessage(min=3, max=4)],
     )
     assert inputs != not_inputs
 
@@ -420,7 +420,7 @@ def test_ThermalHistoryInput__to_simulation_request_assigns_values():
     th_input = request.thermal_history_input
     assert th_input.build_file
     assert remote_path == th_input.build_file.name
-    assert BuildFileMachineType.BUILD_FILE_MACHINE_TYPE_EOS == th_input.build_file.type
+    assert th_input.build_file.type == BuildFileMachineType.BUILD_FILE_MACHINE_TYPE_EOS
     assert (
         coax_inputs._to_coaxial_average_sensor_inputs_message() == th_input.coax_ave_sensor_inputs
     )
@@ -432,7 +432,8 @@ def test_ThermalHistoryInput__to_simulation_request_raises_exception_when_geomet
     input = ThermalHistoryInput()
     # act, assert
     with pytest.raises(
-        ValueError, match="Attempted to create simulation request without defining geometry"
+        ValueError,
+        match="Attempted to create simulation request without defining geometry",
     ):
         input._to_simulation_request("remote_path")
 
@@ -441,7 +442,8 @@ def test_ThermalHistoryInput__to_simulation_request_raises_exception_when_remote
     input = ThermalHistoryInput(geometry=StlFile(path=os.path.abspath(__file__)))
     # act, assert
     with pytest.raises(
-        ValueError, match="Attempted to create simulation request with empty remote_geometry_path"
+        ValueError,
+        match="Attempted to create simulation request with empty remote_geometry_path",
     ):
         input._to_simulation_request("")
 

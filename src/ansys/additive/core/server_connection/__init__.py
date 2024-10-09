@@ -21,5 +21,5 @@
 # SOFTWARE.
 """Server connection definition and utilities."""
 
-from ansys.additive.core.server_connection.constants import DEFAULT_PRODUCT_VERSION
-from ansys.additive.core.server_connection.server_connection import ServerConnection
+from ansys.additive.core.server_connection.constants import DEFAULT_PRODUCT_VERSION  # noqa: F401
+from ansys.additive.core.server_connection.server_connection import ServerConnection  # noqa: F401

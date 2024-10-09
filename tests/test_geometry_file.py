@@ -23,12 +23,12 @@
 import os
 import pathlib
 
-from ansys.api.additive.v0.additive_domain_pb2 import BuildFile as BuildFileMessage
-from ansys.api.additive.v0.additive_domain_pb2 import BuildFileMachineType
-from ansys.api.additive.v0.additive_domain_pb2 import StlFile as StlFileMessage
 import pytest
 
 from ansys.additive.core.geometry_file import BuildFile, MachineType, StlFile
+from ansys.api.additive.v0.additive_domain_pb2 import BuildFile as BuildFileMessage
+from ansys.api.additive.v0.additive_domain_pb2 import BuildFileMachineType
+from ansys.api.additive.v0.additive_domain_pb2 import StlFile as StlFileMessage
 
 from . import test_utils
 
@@ -108,7 +108,9 @@ def test_BuildFile_type_setter_correctly_sets_value():
     assert bf._type == bf.type == MachineType.ADDITIVE_INDUSTRIES
 
 
-def test_BuildFile_path_setter_raises_exception_for_invalid_type(tmp_path: pathlib.Path):
+def test_BuildFile_path_setter_raises_exception_for_invalid_type(
+    tmp_path: pathlib.Path,
+):
     # arrange
     bf = BuildFile(type=MachineType.HB3D, path=os.path.abspath(__file__))
 
