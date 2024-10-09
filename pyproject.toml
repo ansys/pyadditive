@@ -68,7 +68,7 @@ doc = [
     "matplotlib==3.9.2",
     "numpydoc==1.8.0",
     "phantomjs==1.4.1",
-    "pypandoc==1.13",
+    "pypandoc==1.14",
     "pyvista==0.44.1",
     "ipywidgets==8.1.5",
     "trame==3.6.5",
