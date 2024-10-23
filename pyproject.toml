@@ -53,7 +53,7 @@ tests = [
     "numpy==2.1.2",
     "pandas==2.2.3",
     "platformdirs==4.3.6",
-    "protobuf==5.28.2",
+    "protobuf==5.28.3",
     "six==1.16.0",
     "tqdm==4.66.5",
     "pydantic==2.9.2",
