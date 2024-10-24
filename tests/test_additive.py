@@ -340,7 +340,7 @@ def test_about_prints_not_connected_message():
     assert "Client is not connected to a server." in about
 
 
-def test_about_prints_server_status_messages(capsys: pytest.CaptureFixture[str]):
+def test_about_prints_server_status_messages():
     # arrange
     mock_additive = MagicMock()
     mock_additive.about = Additive.about
