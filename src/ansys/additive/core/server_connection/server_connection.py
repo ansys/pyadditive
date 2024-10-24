@@ -66,6 +66,15 @@ class ServerConnectionStatus:
     metadata: dict = None
     """Server metadata."""
 
+    def __str__(self) -> str:
+        if not self.connected:
+            return f"Server {self.channel_str} is not connected."
+        str = f"Server {self.channel_str} is connected."
+        if self.metadata:
+            for key, value in self.metadata.items():
+                str += f"\n  {key}: {value}"
+        return str
+
 
 class ServerConnection:
     """Provides connection to Additive server.

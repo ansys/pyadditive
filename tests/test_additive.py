@@ -323,22 +323,24 @@ def test_connect_to_servers_with_nservers_creates_server_connections(mock_connec
     )
 
 
-def test_about_prints_not_connected_message(capsys: pytest.CaptureFixture[str]):
+def test_about_prints_not_connected_message():
     # arrange
     mock_additive = MagicMock()
     mock_additive.about = Additive.about
     mock_additive._servers = None
 
     # act
-    mock_additive.about(mock_additive)
+    about = mock_additive.about(mock_additive)
 
     # assert
-    out_str = capsys.readouterr().out
-    assert f"Client {__version__}, API version: {api_version}" in out_str
-    assert "Client is not connected to a server." in out_str
+    assert (
+        f"ansys.additive.core version {__version__}\nClient side API version: {api_version}"
+        in about
+    )
+    assert "Client is not connected to a server." in about
 
 
-def test_about_prints_server_status_messages(capsys: pytest.CaptureFixture[str]):
+def test_about_prints_server_status_messages():
     # arrange
     mock_additive = MagicMock()
     mock_additive.about = Additive.about
@@ -349,13 +351,15 @@ def test_about_prints_server_status_messages(capsys: pytest.CaptureFixture[str])
     mock_additive._servers = servers
 
     # act
-    mock_additive.about(mock_additive)
+    about = mock_additive.about(mock_additive)
 
     # assert
-    out_str = capsys.readouterr().out
-    assert f"Client {__version__}, API version: {api_version}" in out_str
+    assert (
+        f"ansys.additive.core version {__version__}\nClient side API version: {api_version}"
+        in about
+    )
     for i in range(len(servers)):
-        assert f"server {i} running" in out_str
+        assert f"server {i} running" in about
 
 
 @pytest.mark.parametrize(
