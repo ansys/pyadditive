@@ -1,0 +1,107 @@
+
+
+
+
+
+
+The ``simulation.py`` module
+============================
+
+.. py:module:: ansys.additive.core.simulation
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: simulation
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.simulation.SimulationError`
+            - Provides simulation errors.
+
+
+
+    .. tab-item:: Enums
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.simulation.SimulationType`
+            - Provides simulation types.
+
+
+          * - :py:obj:`~ansys.additive.core.simulation.SimulationStatus`
+            - Provides simulation status values.
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> SimulationError</api/ansys/additive/core/simulation/SimulationError>
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_enum"></span> SimulationType</api/ansys/additive/core/simulation/SimulationType>
+    <span class="nf nf-cod-symbol_enum"></span> SimulationStatus</api/ansys/additive/core/simulation/SimulationStatus>
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides common definitions and classes for simulations.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

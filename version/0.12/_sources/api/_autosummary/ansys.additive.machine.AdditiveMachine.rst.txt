@@ -1,0 +1,37 @@
+﻿ansys.additive.machine.AdditiveMachine
+======================================
+
+.. currentmodule:: ansys.additive.machine
+
+.. autoclass:: AdditiveMachine
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      AdditiveMachine.beam_diameter
+      AdditiveMachine.hatch_spacing
+      AdditiveMachine.heater_temperature
+      AdditiveMachine.laser_power
+      AdditiveMachine.layer_rotation_angle
+      AdditiveMachine.layer_thickness
+      AdditiveMachine.scan_speed
+      AdditiveMachine.slicing_stripe_width
+      AdditiveMachine.starting_layer_angle
+   
+   

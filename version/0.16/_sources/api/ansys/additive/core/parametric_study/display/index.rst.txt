@@ -1,0 +1,80 @@
+
+
+
+
+
+The ``display`` package 
+===========================
+
+.. py:module:: ansys.additive.core.parametric_study.display
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: display
+.. tab-set::
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.display.ave_grain_size_plot`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.display.porosity_contour_plot`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.display.show_table`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.display.single_bead_eval_plot`
+            - 
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🗎 ave_grain_size_plot<ave_grain_size_plot/index.rst>
+    🗎 porosity_contour_plot<porosity_contour_plot/index.rst>
+    🗎 show_table<show_table/index.rst>
+    🗎 single_bead_eval_plot<single_bead_eval_plot/index.rst>
+
+
+
+
+
+
+
+
+
+
+
+
+
