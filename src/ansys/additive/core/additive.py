@@ -256,7 +256,14 @@ class Additive:
         self._enable_beta_features = value
 
     def about(self) -> str:
-        """Print information about the client and server."""
+        """Return information about the client and server.
+
+        Returns
+        -------
+        str
+            Information about the client and server.
+
+        """
         about = (
             f"ansys.additive.core version {__version__}\nClient side API version: {api_version}\n"
         )
