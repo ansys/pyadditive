@@ -54,7 +54,7 @@ additive = Additive()
 # ---------------------------------
 # Get server connection information using the :meth:`about() <Additive.about>` method.
 
-additive.about()
+print(additive.about())
 
 ###############################################################################
 # Select material

@@ -310,3 +310,40 @@ def test_status_when_not_connected_returns_expected_status():
     assert status.connected == False
     assert status.channel_str == "channel_str"
     assert status.metadata == None
+
+
+def test_server_connection_status_str_not_connected():
+    # arrange
+    status = ServerConnectionStatus(connected=False, channel_str="localhost:50051")
+
+    # act
+    status_str = str(status)
+
+    # assert
+    assert status_str == "Server localhost:50051 is not connected."
+
+
+def test_server_connection_status_str_connected_without_metadata():
+    # arrange
+    status = ServerConnectionStatus(connected=True, channel_str="localhost:50051")
+
+    # act
+    status_str = str(status)
+
+    # assert
+    assert status_str == "Server localhost:50051 is connected."
+
+
+def test_server_connection_status_str_connected_with_metadata():
+    # arrange
+    metadata = {"version": "1.0", "status": "running"}
+    status = ServerConnectionStatus(
+        connected=True, channel_str="localhost:50051", metadata=metadata
+    )
+
+    # act
+    status_str = str(status)
+
+    # assert
+    expected_str = "Server localhost:50051 is connected.\n  version: 1.0\n  status: running"
+    assert status_str == expected_str

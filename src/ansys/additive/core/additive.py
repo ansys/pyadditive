@@ -255,15 +255,24 @@ class Additive:
         """Set the flag indicating if beta features are enabled."""
         self._enable_beta_features = value
 
-    def about(self) -> None:
-        """Print information about the client and server."""
-        print(f"Client {__version__}, API version: {api_version}")  # noqa: T201
+    def about(self) -> str:
+        """Return information about the client and server.
+
+        Returns
+        -------
+        str
+            Information about the client and server.
+
+        """
+        about = (
+            f"ansys.additive.core version {__version__}\nClient side API version: {api_version}\n"
+        )
         if self._servers is None:
-            print("Client is not connected to a server.")  # noqa: T201
-            return
+            about += "Client is not connected to a server.\n"
         else:
             for server in self._servers:
-                print(server.status())  # noqa: T201
+                about += str(server.status()) + "\n"
+        return about
 
     def apply_server_settings(self, settings: dict[str, str]) -> dict[str, list[str]]:
         """Apply settings to each server.
@@ -582,7 +591,7 @@ class Additive:
             raise ValueError(f"Material {material.name} already exists. Unable to add material.")
 
         request = AddMaterialRequest(id=misc.short_uuid(), material=material._to_material_message())
-        LOG.info(f"Adding material {request.material.description}")
+        LOG.info(f"Adding material {request.material.name}")
         response = self._servers[0].materials_stub.AddMaterial(request)
 
         if response.HasField("error"):
