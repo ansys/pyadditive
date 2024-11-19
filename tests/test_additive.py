@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import logging
+import os
 import pathlib
 from unittest import mock
 from unittest.mock import (
@@ -1409,3 +1410,45 @@ def test_3d_microstructure_without_beta_enabled_raises_exception(_):
     # act, assert
     with pytest.raises(BetaFeatureNotEnabledError):
         additive.simulate(input)
+
+
+@patch("ansys.additive.core.additive.download_logs")
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_download_server_logs_calls_download_logs(mock_connection, mock_download_logs, tmp_path: pathlib.Path):
+    # arrange
+    mock_server = Mock(ServerConnection)
+    mock_server.channel_str = "1.1.1.1:50052"
+    mock_connection.return_value = mock_server
+    additive = Additive(server_connections=[mock_server])
+    out_dir = tmp_path / "logs"
+
+    # act
+    additive.download_server_logs(out_dir)
+
+    # assert
+    expected_local_out_dir = os.path.join(out_dir, "AdditiveServerLogs", "1.1.1.1_50052")
+    mock_download_logs.assert_called_once_with(mock_server.simulation_stub, expected_local_out_dir)
+
+
+@patch("ansys.additive.core.additive.download_logs")
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_download_server_logs_handles_multiple_servers(mock_connection, mock_download_logs, tmp_path: pathlib.Path):
+    # arrange
+    mock_server1 = Mock(ServerConnection)
+    mock_server1.channel_str = "1.1.1.1:50052"
+    mock_server2 = Mock(ServerConnection)
+    mock_server2.channel_str = "2.2.2.2:50052"
+    mock_connection.side_effect = [mock_server1, mock_server2]
+    additive = Additive(server_connections=[mock_server1, mock_server2])
+    out_dir = tmp_path / "logs"
+
+    # act
+    additive.download_server_logs(out_dir)
+
+    # assert
+    expected_local_out_dir1 = os.path.join(out_dir, "AdditiveServerLogs", "1.1.1.1_50052")
+    expected_local_out_dir2 = os.path.join(out_dir, "AdditiveServerLogs", "2.2.2.2_50052")
+    mock_download_logs.assert_any_call(mock_server1.simulation_stub, expected_local_out_dir1)
+    mock_download_logs.assert_any_call(mock_server2.simulation_stub, expected_local_out_dir2)
+    assert mock_download_logs.call_count == 2
+

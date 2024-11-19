@@ -29,7 +29,7 @@ from ansys.additive.core.progress_handler import (
     Progress,
     ProgressState,
 )
-from ansys.api.additive.v0.additive_simulation_pb2 import DownloadFileRequest
+from ansys.api.additive.v0.additive_simulation_pb2 import DownloadFileRequest, DownloadLogsRequest
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 
 
@@ -65,8 +65,64 @@ def download_file(
     dest = os.path.join(local_folder, os.path.basename(remote_file_name))
     request = DownloadFileRequest(remote_file_name=remote_file_name)
 
-    with open(dest, "wb") as f:
-        for response in stub.DownloadFile(request):
+    handle_download_file_response(dest, stub.DownloadFile(request), progress_handler)
+    return dest
+
+
+def download_logs(
+    stub: SimulationServiceStub,
+    local_folder: str,
+    progress_handler: IProgressHandler = None,
+) -> str:
+    """Download logs from the server to the localhost.
+
+    Parameters
+    ----------
+    stub: SimulationServiceStub
+        gRPC stub for the simulation service.
+    local_folder: str
+        Folder on your localhost to write the server logs to.
+    progress_handler: ProgressLogger, None, default: None
+        Progress update handler. If ``None``, no progress will be provided.
+
+    Returns
+    -------
+    str
+        Local path of downloaded file.
+
+    """
+
+    if not os.path.isdir(local_folder):
+        os.makedirs(local_folder)
+
+    request = DownloadLogsRequest()
+    dest = os.path.join(local_folder, "AdditiveServerLogs.zip")
+
+    handle_download_file_response(dest, stub.DownloadLogs(request), progress_handler)
+    return dest
+
+
+def handle_download_file_response(
+    destination: str,
+    download_file_response: any,
+    progress_handler: IProgressHandler = None,
+) -> None:
+    """
+    Handle server response.
+
+    Parameters
+    ----------
+    destination: str
+        Destination of the file.
+    download_file_response: any
+        Download file response.
+    progress_handler: IProgressHandler, default: None
+        Progress handler.
+
+    """
+
+    with open(destination, "wb") as f:
+        for response in download_file_response:
             if progress_handler:
                 progress_handler.update(
                     Progress.from_proto_msg(response.progress)
@@ -84,4 +140,3 @@ def download_file(
                         )
                     raise ValueError(msg)
                 f.write(response.content)
-    return dest

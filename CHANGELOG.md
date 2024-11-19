@@ -1,5 +1,20 @@
 # Changelog
 
+## PyAdditive 0.20.0
+
+### Breaking Changes
+
+### New Features
+* Added the capability to fetch Additive Server logs. 
+
+### Bug Fixes
+
+### Doc Improvements
+
+### Contributors
+* pkrull-ansys
+* safeerehman
+
 ## PyAdditive 0.19.0
 
 ### Breaking Changes
