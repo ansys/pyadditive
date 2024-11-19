@@ -65,25 +65,7 @@ def download_file(
     dest = os.path.join(local_folder, os.path.basename(remote_file_name))
     request = DownloadFileRequest(remote_file_name=remote_file_name)
 
-    with open(dest, "wb") as f:
-        for response in stub.DownloadFile(request):
-            if progress_handler:
-                progress_handler.update(
-                    Progress.from_proto_msg(response.progress)
-                )  # pragma: no cover
-            if len(response.content) > 0:
-                md5 = hashlib.md5(response.content).hexdigest()  # noqa: S324
-                if md5 != response.content_md5:
-                    msg = "Download error, MD5 sums did not match"
-                    if progress_handler:  # pragma: no cover
-                        progress_handler.update(
-                            Progress(
-                                state=ProgressState.ERROR,
-                                message=msg,
-                            )
-                        )
-                    raise ValueError(msg)
-                f.write(response.content)
+    handle_download_file_response(dest, stub.DownloadFile(request), progress_handler)
     return dest
 
 
@@ -116,8 +98,31 @@ def download_logs(
     request = DownloadLogsRequest()
     dest = os.path.join(local_folder, "AdditiveServerLogs.zip")
 
-    with open(dest, "wb") as f:
-        for response in stub.DownloadLogs(request):
+    handle_download_file_response(dest, stub.DownloadLogs(request), progress_handler)
+    return dest
+
+
+def handle_download_file_response(
+    destination: str,
+    download_file_response: any,
+    progress_handler: IProgressHandler = None,
+) -> None:
+    """
+    Handle server response.
+
+    Parameters
+    ----------
+    destination: str
+        Destination of the file.
+    download_file_response: any
+        Download file response.
+    progress_handler: IProgressHandler, default: None
+        Progress handler.
+
+    """
+
+    with open(destination, "wb") as f:
+        for response in download_file_response:
             if progress_handler:
                 progress_handler.update(
                     Progress.from_proto_msg(response.progress)
@@ -135,4 +140,3 @@ def download_logs(
                         )
                     raise ValueError(msg)
                 f.write(response.content)
-    return dest

@@ -5,6 +5,7 @@
 ### Breaking Changes
 
 ### New Features
+* Added the capability to fetch Additive Server logs. 
 
 ### Bug Fixes
 
