@@ -31,6 +31,7 @@ from google.protobuf.empty_pb2 import Empty
 
 import ansys.additive.core.misc as misc
 from ansys.additive.core import USER_DATA_PATH, __version__
+from ansys.additive.core.download import download_logs
 from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
 from ansys.additive.core.logger import LOG
 from ansys.additive.core.material import RESERVED_MATERIAL_NAMES, AdditiveMaterial
@@ -817,3 +818,18 @@ class Additive:
             if any(id == i.id for id in ids):
                 raise ValueError(f'Duplicate simulation ID "{i.id}" in input list')
             ids.append(i.id)
+
+    def download_server_logs(self, out_dir: str | os.PathLike):
+        """Download server logs to a specified directory.
+
+        Parameters
+        ----------
+        out_dir : str
+            Directory to save the logs to.
+
+        """
+        for server in self._servers:
+            local_out_dir = os.path.join(
+                out_dir, "AdditiveServerLogs", server.channel_str.replace(":", "_")
+            )
+            download_logs(server.simulation_stub, local_out_dir)

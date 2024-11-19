@@ -29,7 +29,7 @@ from ansys.additive.core.progress_handler import (
     Progress,
     ProgressState,
 )
-from ansys.api.additive.v0.additive_simulation_pb2 import DownloadFileRequest
+from ansys.api.additive.v0.additive_simulation_pb2 import DownloadFileRequest, DownloadLogsRequest
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 
 
@@ -67,6 +67,57 @@ def download_file(
 
     with open(dest, "wb") as f:
         for response in stub.DownloadFile(request):
+            if progress_handler:
+                progress_handler.update(
+                    Progress.from_proto_msg(response.progress)
+                )  # pragma: no cover
+            if len(response.content) > 0:
+                md5 = hashlib.md5(response.content).hexdigest()  # noqa: S324
+                if md5 != response.content_md5:
+                    msg = "Download error, MD5 sums did not match"
+                    if progress_handler:  # pragma: no cover
+                        progress_handler.update(
+                            Progress(
+                                state=ProgressState.ERROR,
+                                message=msg,
+                            )
+                        )
+                    raise ValueError(msg)
+                f.write(response.content)
+    return dest
+
+
+def download_logs(
+    stub: SimulationServiceStub,
+    local_folder: str,
+    progress_handler: IProgressHandler = None,
+) -> str:
+    """Download logs from the server to the localhost.
+
+    Parameters
+    ----------
+    stub: SimulationServiceStub
+        gRPC stub for the simulation service.
+    local_folder: str
+        Folder on your localhost to write the server logs to.
+    progress_handler: ProgressLogger, None, default: None
+        Progress update handler. If ``None``, no progress will be provided.
+
+    Returns
+    -------
+    str
+        Local path of downloaded file.
+
+    """
+
+    if not os.path.isdir(local_folder):
+        os.makedirs(local_folder)
+
+    request = DownloadLogsRequest()
+    dest = os.path.join(local_folder, "AdditiveServerLogs.zip")
+
+    with open(dest, "wb") as f:
+        for response in stub.DownloadLogs(request):
             if progress_handler:
                 progress_handler.update(
                     Progress.from_proto_msg(response.progress)
