@@ -247,7 +247,7 @@ def test_connect_to_server_with_channel_creates_server_connection(
 
     # assert
     assert server is not None
-    mock_connection.called_once_with(channel=channel, log=log)
+    mock_connection.assert_called_once_with(channel=channel, log=log)
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
