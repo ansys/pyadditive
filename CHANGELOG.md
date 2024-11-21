@@ -3,6 +3,7 @@
 ## PyAdditive 0.19.0
 
 ### Breaking Changes
+* Removed support for multiple server connections. Specifically, the `nservers` parameter was removed from `Additive()` and the `server_connections` parameter was renamed to `channel`.
 * Simulation inputs no longer allow setting the id field.
 * Removed nsims_per_server property from Additive class.
 * ParametricStudy.set_status() and ParametricStudy.reset_status() have been renamed to ParametricStudy.set_simulation_status() and ParametricStudy.reset_simulation_status().
