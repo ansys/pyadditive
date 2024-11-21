@@ -3,9 +3,10 @@
 ## PyAdditive 0.20.0
 
 ### Breaking Changes
+* Removed support for multiple server connections. Specifically, the `nservers` parameter was removed from `Additive()` and the `server_connections` parameter was renamed to `channel`.
 
 ### New Features
-* Added the capability to fetch Additive Server logs. 
+* Added the capability to fetch Additive Server logs.
 
 ### Bug Fixes
 
