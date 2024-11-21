@@ -21,6 +21,7 @@
 # SOFTWARE.
 """Provides a function for downloading files from the server to the client."""
 
+import datetime
 import hashlib
 import os
 
@@ -96,9 +97,11 @@ def download_logs(
         os.makedirs(local_folder)
 
     request = DownloadLogsRequest()
-    dest = os.path.join(local_folder, "AdditiveServerLogs.zip")
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    dest = os.path.join(local_folder, f"additive-server-logs-{timestamp}.zip")
+    response = stub.DownloadLogs(request)
 
-    handle_download_file_response(dest, stub.DownloadLogs(request), progress_handler)
+    handle_download_file_response(dest, response, progress_handler)
     return dest
 
 
