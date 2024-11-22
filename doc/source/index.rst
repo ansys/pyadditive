@@ -1,14 +1,16 @@
 PyAdditive documentation  |version|
 ###################################
 
-PyAdditive provides a Python API to interact with `Ansys Additive`_.
+PyAdditive provides a Python API to interact with the Ansys Additive Server application.
+The Additive Server application is included in the Additive option of the Structures package
+of the Ansys release.
 
 
 .. grid:: 2
 
     .. grid-item-card:: Getting started :fa:`person-running`
-        :link: getting-started
-        :link-type: doc
+        :link: ref_getting_started
+        :link-type: ref
 
         Step-by-step guidelines on how to set up your environment to work with
         PyAdditive.
@@ -53,7 +55,7 @@ PyAdditive provides a Python API to interact with `Ansys Additive`_.
        :hidden:
        :maxdepth: 2
 
-       getting-started
+       getting-started/index
        {% if build_api %}
        api/index
        {% endif %}
