@@ -46,7 +46,7 @@ dependencies = [
 tests = [
     "ansys-platform-instancemanagement==1.1.2",
     "dill==0.3.9",
-    "google-api-python-client==2.153.0",
+    "google-api-python-client==2.154.0",
     "googleapis-common-protos==1.66.0",
     "grpcio==1.60.0",
     "grpcio-health-checking==1.48.2",
@@ -56,13 +56,13 @@ tests = [
     "protobuf==5.28.3",
     "six==1.16.0",
     "tqdm==4.67.0",
-    "pydantic==2.9.2",
+    "pydantic==2.10.1",
     "pytest==8.3.3",
     "pytest-cov==6.0.0",
 ]
 
 doc = [
-    "ansys-sphinx-theme[autoapi]==1.2.1",
+    "ansys-sphinx-theme[autoapi]==1.2.2",
     "enum-tools==0.12.0",
     "jupyter_sphinx==0.5.3",
     "matplotlib==3.9.2",
