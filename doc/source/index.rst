@@ -1,8 +1,8 @@
 PyAdditive documentation  |version|
 ###################################
 
-PyAdditive provides a Python API to interact with the Ansys Additive Server application.
-The Additive Server application is included in the Additive option of the Structures package
+PyAdditive provides a Python API to interact with the Ansys Additive server.
+The Additive server is included in the Additive option of the Structures package
 of the Ansys release.
 
 

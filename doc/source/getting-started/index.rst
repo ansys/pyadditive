@@ -6,7 +6,7 @@
 Getting started
 ###############
 
-PyAdditive is a Python client library for the Ansys Additive server application. The Ansys
+PyAdditive is a Python client library for the Ansys Additive server. The Ansys
 Additive server is distributed with the Additive option of the Structures package
 in the Ansys unified installation.
 
@@ -17,7 +17,7 @@ in the Ansys unified installation.
 Compatibility
 =============
 
-To use all the features of PyAdditive, you must have have a compatible version of Ansys installed.
+To use all the features of PyAdditive, you must have a compatible version of Ansys installed.
 The following table lists the compatibility between PyAdditive and Ansys releases.
 
 .. list-table::
@@ -281,7 +281,7 @@ Debugging with Visual Studio Code
 ---------------------------------
 
 In order to debug the code with Visual Studio Code, you need to Install
-the **Python** and **Python Debugger** extensions. You will also need to
+the **Python** and **Python Debugger** extensions. You also need to
 comment out the ``addopts`` line in ``pyproject.toml``. The coverage flags
 for ``pytest`` prevent the debugger from stopping at breakpoints. Restore
 the ``addopts`` line when you are finished debugging.
