@@ -23,7 +23,6 @@
 from subprocess import Popen
 from unittest.mock import ANY, Mock, create_autospec
 
-import gc
 import grpc
 import pytest
 from google.protobuf.empty_pb2 import Empty
