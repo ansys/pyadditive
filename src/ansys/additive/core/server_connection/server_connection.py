@@ -24,6 +24,7 @@
 import logging
 import os
 import time
+import weakref
 from dataclasses import dataclass
 
 import grpc
@@ -118,6 +119,8 @@ class ServerConnection:
     ) -> None:
         """Initialize a server connection."""
 
+        weakref.finalize(self, self.disconnect)
+
         if channel and addr:
             raise ValueError("Both 'channel' and 'addr' cannot both be specified.")
 
@@ -158,12 +161,18 @@ class ServerConnection:
 
         self._log.info("Connected to %s", self.channel_str)
 
-    def __del__(self):
-        """Destructor for cleaning up server connection."""
+    def __del__(self) -> None:
+        """Disconnect from server."""
+        self.disconnect()
+
+    def disconnect(self):
+        """Clean up server connection."""
         if hasattr(self, "_server_instance") and self._server_instance:
             self._server_instance.delete()
+            self._server_instance = None
         if hasattr(self, "_server_process") and self._server_process:
             self._server_process.kill()
+            self._server_process = None
 
     @property
     def channel_str(self) -> str:
