@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from subprocess import Popen
 from unittest.mock import ANY, Mock, create_autospec
 
 import grpc
@@ -347,3 +348,68 @@ def test_server_connection_status_str_connected_with_metadata():
     # assert
     expected_str = "Server localhost:50051 is connected.\n  version: 1.0\n  status: running"
     assert status_str == expected_str
+
+
+def test_disconnect_with_server_instance(monkeypatch):
+    # arrange
+    mock_ready = create_autospec(
+        ansys.additive.core.server_connection.server_connection.ServerConnection.ready,
+        return_value=True,
+    )
+    monkeypatch.setattr(
+        ansys.additive.core.server_connection.server_connection.ServerConnection,
+        "ready",
+        mock_ready,
+    )
+    mock_server_instance = Mock(pypim.Instance)
+    server = ServerConnection(channel=grpc.insecure_channel("target"))
+    server._server_instance = mock_server_instance
+
+    # act
+    server.disconnect()
+
+    # assert
+    mock_server_instance.delete.assert_called_once()
+
+
+def test_disconnect_with_server_process(monkeypatch):
+    # arrange
+    mock_ready = create_autospec(
+        ansys.additive.core.server_connection.server_connection.ServerConnection.ready,
+        return_value=True,
+    )
+    monkeypatch.setattr(
+        ansys.additive.core.server_connection.server_connection.ServerConnection,
+        "ready",
+        mock_ready,
+    )
+    mock_server_process = Mock(Popen)
+    server = ServerConnection(channel=grpc.insecure_channel("target"))
+    server._server_process = mock_server_process
+
+    # act
+    server.disconnect()
+
+    # assert
+    mock_server_process.kill.assert_called_once()
+
+
+def test_disconnect_with_no_server_instance_or_process(monkeypatch):
+    # arrange
+    mock_ready = create_autospec(
+        ansys.additive.core.server_connection.server_connection.ServerConnection.ready,
+        return_value=True,
+    )
+    monkeypatch.setattr(
+        ansys.additive.core.server_connection.server_connection.ServerConnection,
+        "ready",
+        mock_ready,
+    )
+    server = ServerConnection(channel=grpc.insecure_channel("target"))
+
+    # act
+    server.disconnect()
+
+    # assert
+    # No exception should be raised and no methods should be called
+    assert True
