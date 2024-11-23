@@ -280,8 +280,8 @@ Then, run this command from the root folder of the project:
 Debugging with Visual Studio Code
 ---------------------------------
 
-In order to debug the code with Visual Studio Code, you need to Install
-the **Python** and **Python Debugger** extensions. You also need to
+Support for Python debugging is built into Visual Studio Code. However,
+in order to stop on break points in unit tests, you must
 comment out the ``addopts`` line in ``pyproject.toml``. The coverage flags
 for ``pytest`` prevent the debugger from stopping at breakpoints. Restore
 the ``addopts`` line when you are finished debugging.
