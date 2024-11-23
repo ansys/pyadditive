@@ -281,7 +281,7 @@ Debugging with Visual Studio Code
 ---------------------------------
 
 Support for Python debugging is built into Visual Studio Code. However,
-in order to stop on break points in unit tests, you must
+to stop on break points in unit tests, you must
 comment out the ``addopts`` line in ``pyproject.toml``. The coverage flags
 for ``pytest`` prevent the debugger from stopping at breakpoints. Restore
 the ``addopts`` line when you are finished debugging.
