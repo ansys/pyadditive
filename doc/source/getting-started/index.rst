@@ -10,12 +10,29 @@ PyAdditive is a Python client library for the Ansys Additive server. The Ansys
 Additive server is distributed with the Additive option of the Structures package
 in the Ansys unified installation.
 
-.. note::
-   PyAdditive requires Ansys 2024 R1 or later.
-
 .. warning::
    The simulations described in this documentation require an Additive Suite license. To obtain a license,
    contact your Ansys sales representative or see https://www.ansys.com/contact-us.
+
+Compatibility
+=============
+
+To use all the features of PyAdditive, you must have a compatible version of Ansys installed.
+The following table lists the compatibility between PyAdditive and Ansys releases.
+
+.. list-table::
+    :header-rows: 1
+    :width: 50%
+    :align: left
+
+    * - PyAdditive Version
+      - Ansys Release Version
+    * - 0.19.x
+      - 2025 R1
+    * - 0.18.x
+      - 2024 R2
+    * - 0.17.x
+      - 2024 R1
 
 
 Starting a session
@@ -60,140 +77,163 @@ For examples of the types of simulations possible with PyAdditive, see
 
 
 
-Installation
-============
+User installation
+=================
 
-Package dependencies
---------------------
-
-PyAdditive is supported on Python version 3.10 and later. Previous versions of Python are
-no longer supported.
-
-PyAdditive dependencies are automatically checked when packages are installed. Included
-in these dependencies are these projects:
-
-* `ansys-api-additive <https://github.com/ansys/ansys-api-additive>`_: Python package containing the auto-generated
-   gRPC Python interface files for the Additive service
-* `NumPy <https://pypi.org/project/numpy/>`_: Fundamental package for scientific computing with Python, providing
-   data array access for PyAdditive
-* `PyVista <https://pypi.org/project/pyvista/>`_: 3D visualization library for interactive 3D plotting of
-  PyAdditive results.
-* `Panel <https://panel.holoviz.org/>`_: Web app framework used for interactive visualization
-  of PyAdditive results.
+There are multiple sources for installing the latest stable version of
+PyAdditive. These include ``pip`` and ``GitHub``.
 
 
-Install the package
--------------------
+.. jinja:: install_guide
 
-PyAdditive has three installation modes: user, developer, and offline.
+    .. tab-set::
 
-Install in user mode
-^^^^^^^^^^^^^^^^^^^^
+        .. tab-item:: Public PyPI
 
-Install `Python <https://www.python.org/downloads>`_ if it is not already installed.
+            .. code-block::
 
-Before installing PyAdditive in user mode, run this command to make sure that you have the latest version
-of `pip <https://pypi.org/project/pip/>`_:
+                python -m pip install ansys-additive-core
 
-.. code:: bash
+        .. tab-item:: Ansys PyPI
 
-   python -m pip install -U pip
+            .. code-block::
 
-Then, run this command to install PyAdditive:
+                export PIP_EXTRA_INDEX_URL="https://${PYANSYS_PYPI_PRIVATE_PAT}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/"
+                python -m pip install ansys-additive-core
 
-.. code:: bash
+        .. tab-item:: GitHub
 
-   python -m pip install ansys-additive-core
+            .. code-block::
+
+                python -m pip install git+https://github.com/ansys/pyadditive.git@{{ version }}
+
 
 .. _ref_install_in_developer_mode:
 
-Install in developer mode
-^^^^^^^^^^^^^^^^^^^^^^^^^
+Developer installation
+======================
 
-Installing PyAdditive in developer mode allows you to modify the source code and enhance it.
+Developer installation is specifically intended for project maintainers.
+This specialized installation is tailored to equip developers with the essential
+tools and resources required for effective contribution to the project's
+development and maintenance. The developer installation assumes a certain level
+of technical expertise and familiarity with the project's codebase, rendering it
+most suitable for individuals actively engaged in its continuous development and
+maintenance.
 
-.. note::
-   Before contributing to PyAdditive, see the `Contributing <https://dev.docs.pyansys.com/how-to/contributing.html>`_ topic
-   in the *PyAnsys Developer's Guide*. You should be thoroughly familiar with this guide.
+Start by cloning the repository:
 
-To install PyAdditive in developer mode, perform these steps:
+.. code-block::
 
-#. Clone the repository and access the directory where it has been cloned:
+    git clone git@github.com:ansys/pyadditive
 
-   .. code:: bash
 
-      git clone https://github.com/ansys/pyadditive
-      cd pyadditive
+Move inside the project and create a new Python environment:
 
-#. Create a clean Python virtual environment and activate it:
+.. tab-set::
 
-   .. code:: bash
+    .. tab-item:: Windows
 
-      # Create a virtual environment
-      python -m venv .venv
+        .. tab-set::
 
-      # Activate it in a POSIX system
-      source .venv/bin/activate
+            .. tab-item:: CMD
 
-      # Activate it in Windows CMD shell
-      .venv\Scripts\activate.bat
+                .. code-block:: text
 
-      # Activate it in Windows Powershell
-      .venv\Scripts\Activate.ps1
+                    py -m venv <venv>
 
-   If you require additional information on virtual environments, see `Creation of virtual environments
-   <https://docs.python.org/3/library/venv.html>`_ in the Python documentation.
+            .. tab-item:: PowerShell
 
-#. Install the required build system tools:
+                .. code-block:: text
 
-   .. code:: bash
+                    py -m venv <venv>
 
-      python -m pip install -U pip tox
+    .. tab-item:: Linux/UNIX
 
-#. Verify your development installation:
+        .. code-block:: text
 
-   .. code:: bash
+            python -m venv <venv>
 
-      tox -e py
+Activate previous environment:
 
-#. Optionally, install the project in editable mode:
+.. tab-set::
 
-   .. code:: bash
+    .. tab-item:: Windows
 
-      python -m pip install -e .
+        .. tab-set::
 
-#. When finished, you can exit the virtual environment:
+            .. tab-item:: CMD
 
-   .. code:: bash
+                .. code-block:: text
 
-      deactivate
+                    <venv>\Scripts\activate.bat
+
+            .. tab-item:: PowerShell
+
+                .. code-block:: text
+
+                    <venv>\Scripts\Activate.ps1
+
+    .. tab-item:: Linux/UNIX
+
+        .. code-block:: text
+
+            source <venv>/bin/activate
+
+Install the required build system tools:
+
+.. code-block::
+
+    python -m pip install -U pip tox
+
+Verify your development installation:
+
+.. code-block::
+
+    tox -e py
+
+Install the project in editable mode. This means that any changes you make to
+the package's source code immediately reflect in your project without requiring you
+to reinstall it.
+
+.. code-block::
+
+    python -m pip install --editable .
+
+
+When finished, you can exit the virtual environment:
+
+.. code-block::
+
+    deactivate
 
 Install in offline mode
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
-If you lack an internet connection on your installation machine (or you do not have access to the
-private Ansys PyPI packages repository), you should install PyAdditive by downloading the wheelhouse
-archive from the `Releases <https://github.com/ansys/pyadditive/releases>`_ page for your
+If you lack an internet connection on your installation machine, you should install
+PyAdditive by downloading the wheelhouse archive from the
+`Releases <https://github.com/ansys/pyadditive/releases>`_ page for your
 corresponding machine architecture.
 
 Each wheelhouse archive contains all the Python wheels necessary to install PyAdditive from scratch on Windows,
-Linux, and MacOS from Python 3.10 to 3.12. You can unzip and install the wheelhouse archive on an isolated
+Linux, and MacOS. You can unzip and install the wheelhouse archive on an isolated
 system with a fresh Python installation or in a virtual environment.
 
-For example, on Linux with Python 3.10, unzip then install the wheelhouse archive with these commands:
+For example, on Linux with Python 3.12, unzip then install the wheelhouse archive with these commands:
 
-.. code:: bash
+.. code-block::
 
-    unzip ansys-additive-core-v0.1.dev0-wheelhouse-Linux-3.10.zip wheelhouse
+    unzip ansys-additive-core-v0.1.0-wheelhouse-Linux-3.12.zip wheelhouse
     pip install ansys-additive-core -f wheelhouse --no-index --upgrade --ignore-installed
 
-If you're on Windows with Python 3.10, unzip the wheelhouse archive to a wheelhouse directory and
+If you're on Windows, unzip the wheelhouse archive to a wheelhouse directory and
 then install using the preceding ``pip`` command.
 
 Consider using a virtual environment for the installation.
 
 
 Testing
+=======
 
 This project takes advantage of `tox`_. This tool automates common
 development tasks (similar to Makefile), but it is oriented towards Python
@@ -225,20 +265,26 @@ and `flake8`_ and call unit testing commands like `pytest`_. However,
 this does not guarantee that your project is being tested in an isolated
 environment, which is the reason why tools like ``tox`` exist.
 
-To run unit tests without using ``tox``, first install the ``pytest-cov`` package in
-editable mode:
+To run unit tests without using ``tox``, first install the ``tests`` dependencies.
 
-.. code:: bash
+.. code-block::
 
-   python -m pip install pytest-cov
-
-   python -m pip install -e .
+   python -m pip install -e .[tests]
 
 Then, run this command from the root folder of the project:
 
-.. code:: bash
+.. code-block::
 
    python -m pytest
+
+Debugging with Visual Studio Code
+---------------------------------
+
+Support for Python debugging is built into Visual Studio Code. However,
+to stop on break points in unit tests, you must
+comment out the ``addopts`` line in ``pyproject.toml``. The coverage flags
+for ``pytest`` prevent the debugger from stopping at breakpoints. Restore
+the ``addopts`` line when you are finished debugging.
 
 System testing on localhost
 ---------------------------
@@ -253,7 +299,7 @@ converted to Jupyter notebooks using
 To test with a notebook, you need to install and run
 `JupyterLab <https://pypi.org/project/jupyterlab/>`_:
 
-.. code:: bash
+.. code-block::
 
    python -m venv jupyter_venv​
 
@@ -269,15 +315,22 @@ To test with a notebook, you need to install and run
 The URL for opening JupyterLab in your browser is ``http://localhost:8888/lab``. Note that the port number may
 be different, but the port number is listed in the JupyterLab startup messages.
 
-A note on ``pre-commit``
-^^^^^^^^^^^^^^^^^^^^^^^^
+Adhere to code style
+--------------------
 
-The style checks take advantage of `pre-commit`_. Developers are not forced but
-encouraged to install this tool by running this command:
+PyAdditive follows the PEP8 standard as outlined in
+`PEP 8 <https://dev.docs.pyansys.com/coding-style/pep8.html>`_ in
+the *PyAnsys Developer's Guide* and implements style checking using
+`pre-commit <https://pre-commit.com/>`_.
 
-.. code:: bash
+To ensure your code meets minimum code styling standards, run these commands::
 
-    python -m pip install pre-commit && pre-commit install
+  pip install pre-commit
+  pre-commit run --all-files
+
+You can also install this as a pre-commit hook by running this command::
+
+  pre-commit install
 
 
 Documentation
@@ -286,13 +339,13 @@ Documentation
 For building documentation, you can run the usual rules provided in the
 `Sphinx`_ Makefile, such as:
 
-.. code:: bash
+.. code-block::
 
     make -C doc/ html && your_browser_name doc/html/index.html
 
 However, the recommended way of checking documentation integrity is to use ``tox``:
 
-.. code:: bash
+.. code-block::
 
     tox -e doc && your_browser_name .tox/doc_out/index.html
 
@@ -303,7 +356,7 @@ Distributing
 If you would like to create either source or wheel files, start by installing
 the building requirements and then executing the build module:
 
-.. code:: bash
+.. code-block::
 
     python -m pip install -U pip build twine
     python -m build

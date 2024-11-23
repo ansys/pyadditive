@@ -78,7 +78,7 @@ print(study.file_name)
 ###############################################################################
 # Create a single bead evaluation
 # -------------------------------
-# Parametric studies often start with single bead simulations in order to
+# Parametric studies often start with single bead simulations to
 # determine melt pool statistics. Here, the
 # :meth:`~ParametricStudy.generate_single_bead_permutations` method is used to
 # generate single bead simulation permutations. The parameters
