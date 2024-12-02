@@ -1,6 +1,6 @@
 # Contributors
 
-## Project Lead or Owner
+## Project Lead
 
 * [Peter Krull](https://github.com/pkrull-ansys)
 
