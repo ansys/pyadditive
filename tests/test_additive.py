@@ -1319,3 +1319,35 @@ def test_3d_microstructure_without_beta_enabled_raises_exception(_):
     # act, assert
     with pytest.raises(BetaFeatureNotEnabledError):
         additive.simulate(input)
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_connected_returns_true_when_server_is_connected(mock_connection):
+    # arrange
+    mock_server = Mock(ServerConnection)
+    mock_server.status.return_value.connected = True
+    mock_connection.return_value = mock_server
+    additive = Additive()
+
+    # act
+    result = additive.connected
+
+    # assert
+    assert result is True
+    mock_server.status.assert_called_once()
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_connected_returns_false_when_server_is_not_connected(mock_connection):
+    # arrange
+    mock_server = Mock(ServerConnection)
+    mock_server.status.return_value.connected = False
+    mock_connection.return_value = mock_server
+    additive = Additive()
+
+    # act
+    result = additive.connected
+
+    # assert
+    assert result is False
+    mock_server.status.assert_called_once()

@@ -21,6 +21,7 @@
 * Parametric study data is updated as simulations are running.
 * Use LOG for logging in Additive object.
 * A new column for the P/V Ratio (Laser Power / Laser Scan Speed) is added to the study.
+* Added `connected` property to `Additive` to indicate if the client is connected to a server.
 
 ### Bug Fixes
 * Fixed import of microstructure simulations in csv file when random seed is undefined.
