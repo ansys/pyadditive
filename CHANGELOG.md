@@ -7,6 +7,7 @@
 
 ### New Features
 * Added the capability to fetch Additive Server logs.
+* Added `connected` property to `Additive` to indicate if a the client is connected to a server.
 
 ### Bug Fixes
 

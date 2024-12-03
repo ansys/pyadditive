@@ -262,6 +262,11 @@ class Additive:
         """Set the flag indicating if beta features are enabled."""
         self._enable_beta_features = value
 
+    @property
+    def connected(self) -> bool:
+        """Return True if the client is connected to a server."""
+        return self._server.status().connected
+
     def about(self) -> str:
         """Return information about the client and server.
 
