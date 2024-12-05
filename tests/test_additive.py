@@ -1310,15 +1310,21 @@ def test_enable_beta_features_setter_assigns_value(_):
     assert additive.enable_beta_features is True
 
 
+@pytest.mark.parametrize(
+    "sim_input",
+    [
+        Microstructure3DInput(material=AdditiveMaterial(name="my_material")),
+        ThermalHistoryInput(material=AdditiveMaterial(name="my_material")),
+    ],
+)
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_3d_microstructure_without_beta_enabled_raises_exception(_):
+def test_3d_microstructure_without_beta_enabled_raises_exception(_, sim_input):
     # arrange
     additive = Additive()
-    input = Microstructure3DInput(material=AdditiveMaterial(name="my_material"))
 
     # act, assert
     with pytest.raises(BetaFeatureNotEnabledError):
-        additive.simulate(input)
+        additive.simulate(sim_input)
 
 
 @patch("ansys.additive.core.additive.download_logs")

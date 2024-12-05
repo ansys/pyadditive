@@ -4,6 +4,8 @@
 
 ### Breaking Changes
 * Removed support for multiple server connections. Specifically, the `nservers` parameter was removed from `Additive()` and the `server_connections` parameter was renamed to `channel`.
+* Thermal history simulations require the `enable_beta_features` flag to be set to `True` when calling `Additive()`. [#599](https://github.com/ansys/pyadditive/issues/599)
+
 
 ### New Features
 * Added the capability to fetch Additive Server logs.
