@@ -10,6 +10,7 @@
 * ParametricStudy() now requires a material name parameter. As a consequence, the material_name parameter has been removed from ParametricStudy.generate_single_bead_permutations(), ParametricStudy.generate_porosity_permutations(), and ParametricStudy.generate_microstructure_permutations(). The parametric study FORMAT_VERSION value has been incremented to 3.
 * The ParametricRunner class has been removed. To run a parametric study, use Additive.simulate_study() or Additive.simulate_study_async().
 * The ParametricStudy.generate_single_bead_permutations() will now accept min and max p/v ratios as constraints instead of min and max area energy densities.
+* Thermal history simulations require the `enable_beta_features` flag to be set to `True` when calling `Additive()`. [#599](https://github.com/ansys/pyadditive/issues/599)
 
 ### New Features
 * Default version of Additive Server is 25.1 when creating a client connection.
