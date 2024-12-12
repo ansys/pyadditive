@@ -371,7 +371,7 @@ where `X` is the major release, `Y` is the minor release, and `Z` is the beta re
 releases prevents users of pypi.org from inadvertently getting updates that won't work with the released version of
 the server. When a new version of Ansys is released, PyAdditive is released with a version number of `X.Y.0`.
 
-To create a a release of PyAdditive, follow the [Releasing and publishing](https://dev.docs.pyansys.com/how-to/releasing.html#new-releases)
+To create a release of PyAdditive, follow the [Releasing and publishing](https://dev.docs.pyansys.com/how-to/releasing.html#new-releases)
 instructions in the PyAnsys Developer's guide.
 
 
