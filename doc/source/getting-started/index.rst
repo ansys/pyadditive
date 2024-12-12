@@ -362,6 +362,19 @@ the building requirements and then executing the build module:
     python -m build
     python -m twine check dist/*
 
+Releasing
+=========
+
+The Additive server is only released with the Ansys unified installation. During development cycles, updates
+to PyAdditive are released as beta versions with version numbers `X.Y.0bZ`,
+where `X` is the major release, `Y` is the minor release, and `Z` is the beta release number. Using beta
+releases prevents users of pypi.org from inadvertently getting updates that won't work with the released version of
+the server. When a new version of Ansys is released, PyAdditive is released with a version number of `X.Y.0`.
+
+To create a a release of PyAdditive, follow the [Releasing and publishing](https://dev.docs.pyansys.com/how-to/releasing.html#new-releases)
+instructions in the PyAnsys Developer's guide.
+
+
 .. LINKS AND REFERENCES
 .. _black: https://github.com/psf/black
 .. _flake8: https://flake8.pycqa.org/en/latest/
