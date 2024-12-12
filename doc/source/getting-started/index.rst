@@ -365,7 +365,7 @@ the building requirements and then executing the build module:
 Releasing
 =========
 
-The Additive server is only released with the Ansys unified installation. During development cycles, updates
+The Additive server is only released with the Ansys unified installation. In between Ansys releases, updates
 to PyAdditive are released as beta versions with version numbers `X.Y.0bZ`,
 where `X` is the major release, `Y` is the minor release, and `Z` is the beta release number. Using beta
 releases prevents users of pypi.org from inadvertently getting updates that won't work with the released version of
