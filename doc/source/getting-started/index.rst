@@ -12,7 +12,7 @@ in the Ansys unified installation.
 
 .. warning::
    The simulations described in this documentation require an Additive Suite license. To obtain a license,
-   contact your Ansys sales representative or see https://www.ansys.com/contact-us.
+   contact your Ansys sales representative or `contact Ansys <https://www.ansys.com/contact-us>`_.
 
 Compatibility
 =============
@@ -260,8 +260,8 @@ The following commands are provided:
 Raw testing
 -----------
 
-If required, from the command line, you can call style commands like `black`_, `isort`_,
-and `flake8`_ and call unit testing commands like `pytest`_. However,
+If required, from the command line, you can call style commands like `ruff`_
+and call unit testing commands like `pytest`_. However,
 this does not guarantee that your project is being tested in an isolated
 environment, which is the reason why tools like ``tox`` exist.
 
@@ -270,6 +270,7 @@ To run unit tests without using ``tox``, first install the ``tests`` dependencie
 .. code-block::
 
    python -m pip install -e .[tests]
+   python -m pip install pytest-coverage
 
 Then, run this command from the root folder of the project:
 
@@ -371,14 +372,12 @@ where `X` is the major release, `Y` is the minor release, and `Z` is the beta re
 releases prevents users of pypi.org from inadvertently getting updates that won't work with the released version of
 the server. When a new version of Ansys is released, PyAdditive is released with a version number of `X.Y.0`.
 
-To create a release of PyAdditive, follow the [Releasing and publishing](https://dev.docs.pyansys.com/how-to/releasing.html#new-releases)
-instructions in the PyAnsys Developer's guide.
+To create a release of PyAdditive, follow the `Releasing and publishing <https://dev.docs.pyansys.com/how-to/releasing.html#new-releases>`_
+instructions in the `PyAnsys Developer's guide`_.
 
 
 .. LINKS AND REFERENCES
-.. _black: https://github.com/psf/black
-.. _flake8: https://flake8.pycqa.org/en/latest/
-.. _isort: https://github.com/PyCQA/isort
+.. _ruff: https://github.com/astral-sh/ruff
 .. _pip: https://pypi.org/project/pip/
 .. _pre-commit: https://pre-commit.com/
 .. _PyAnsys Developer's guide: https://dev.docs.pyansys.com/
