@@ -1,0 +1,6 @@
+relative\_density
+=================
+
+.. currentmodule:: ansys.additive.porosity
+
+.. autoproperty:: PorositySummary.relative_density
