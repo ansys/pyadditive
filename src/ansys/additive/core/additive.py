@@ -86,36 +86,21 @@ from ansys.api.additive.v0.additive_settings_pb2 import SettingsRequest
 class Additive:
     """Provides the client interface to one or more Additive services.
 
-    In a typical cloud environment, a single Additive service with load balancing and
-    auto-scaling is used. The ``Additive`` client connects to the service via a
-    single connection. However, for atypical environments or when running on localhost,
-    the ``Additive`` client can perform crude load balancing by connecting to multiple
-    servers and distributing simulations across them. You can use the ``server_connections``,
-    ``nservers``, and ``nsims_per_server`` parameters to control the
-    number of servers to connect to and the number of simulations to run on each
-    server.
-
     Parameters
     ----------
-    server_connections: list[str, grpc.Channel], None
-        List of connection definitions for servers. The list may be a combination of strings and
-        connected :class:`grpc.Channel <grpc.Channel>` objects. Strings use the format
-        ``host:port`` to specify the server IPv4 address.
+    channel: grpc.Channel, default: None
+        Server connection. If provided, it is assumed that the
+        :class:`grpc.Channel <grpc.Channel>` object is connected to the server.
+        Also, if provided, the ``host`` and ``port`` parameters are ignored.
     host: str, default: None
         Host name or IPv4 address of the server. This parameter is ignored if the
         ``server_channels`` or ``channel`` parameters is other than ``None``.
     port: int, default: 50052
         Port number to use when connecting to the server.
     nsims_per_server: int, default: 1
-        Number of simultaneous simulations to run on each server. Each simulation
+        Number of simultaneous simulations to run on the server. Each simulation
         requires a license checkout. If a license is not available, the simulation
         fails.
-    nservers: int, default: 1
-        Number of Additive servers to start and connect to. This parameter is only
-        applicable in `PyPIM`_-enabled cloud environments and on localhost. For
-        this to work on localhost, the Additive portion of the Ansys Structures
-        package must be installed. This parameter is ignored if the ``server_connections``
-        parameter or ``host`` parameter is other than ``None``.
     product_version: str
         Version of the Ansys product installation in the form ``"YYR"``, where ``YY``
         is the two-digit year and ``R`` is the release number. For example, the release
@@ -145,11 +130,11 @@ class Additive:
 
     >>> additive = Additive(host="additive.ansys.com", port=12345)
 
-    Start and connect to two servers on localhost or in a
-    `PyPIM`_-enabled cloud environment. Allow each server to run two
-    simultaneous simulations.
+    Start and connect to a server on localhost or in a
+    `PyPIM`_-enabled cloud environment. Allow two simultaneous
+    simulations on the server.
 
-    >>> additive = Additive(nsims_per_server=2, nservers=2)
+    >>> additive = Additive(nsims_per_server=2)
 
     Start a single server on localhost or in a `PyPIM`_-enabled cloud environment.
     Use version 2024 R1 of the Ansys product installation.
@@ -164,11 +149,10 @@ class Additive:
 
     def __init__(
         self,
-        server_connections: list[str | grpc.Channel] = None,
+        channel: grpc.Channel | None = None,
         host: str | None = None,
         port: int = DEFAULT_ADDITIVE_SERVICE_PORT,
         nsims_per_server: int = 1,
-        nservers: int = 1,
         product_version: str = DEFAULT_PRODUCT_VERSION,
         log_level: str = "",
         log_file: str = "",
@@ -184,11 +168,10 @@ class Additive:
         if log_file:
             LOG.log_to_file(filename=log_file, level=log_level)
 
-        self._servers = Additive._connect_to_servers(
-            server_connections,
+        self._server = Additive._connect_to_server(
+            channel,
             host,
             port,
-            nservers,
             product_version,
             LOG,
             linux_install_path,
@@ -210,41 +193,64 @@ class Additive:
         LOG.info("user data path: " + self._user_data_path)
 
     @staticmethod
-    def _connect_to_servers(
-        server_connections: list[str | grpc.Channel] = None,
+    def _connect_to_server(
+        channel: grpc.Channel | None = None,
         host: str | None = None,
         port: int = DEFAULT_ADDITIVE_SERVICE_PORT,
-        nservers: int = 1,
         product_version: str = DEFAULT_PRODUCT_VERSION,
         log: logging.Logger = None,
         linux_install_path: os.PathLike | None = None,
-    ) -> list[ServerConnection]:
-        """Connect to Additive servers.
+    ) -> ServerConnection:
+        """Connect to an Additive server, starting it if necessary.
 
-        Start them if necessary.
+        Parameters
+        ----------
+        channel: grpc.Channel, default: None
+            Server connection. If provided, it is assumed to be connected
+            and the ``host`` and ``port`` parameters are ignored.
+        host: str, default: None
+            Host name or IPv4 address of the server. This parameter is ignored if
+            the ``channel`` parameter is other than ``None``.
+        port: int, default: 50052
+            Port number to use when connecting to the server.
+        product_version: str
+            Version of the Ansys product installation in the form ``"YYR"``, where ``YY``
+            is the two-digit year and ``R`` is the release number. For example, "251".
+            This parameter is only applicable in `PyPIM`_-enabled cloud environments and
+            on localhost. Using an empty string or ``None`` uses the default product version.
+        log: logging.Logger, default: None
+            Logger to use for logging messages.
+        linux_install_path: os.PathLike, None, default: None
+            Path to the Ansys installation directory on Linux. This parameter is only
+            required when Ansys has not been installed in the default location. Example:
+            ``/usr/shared/ansys_inc``. Note that the path should not include the product
+            version.
+
+        Returns
+        -------
+        ServerConnection
+            Connection to the server.
+
+        NOTE: If ``channel`` and ``host`` are not provided and the environment variable
+        ``ANSYS_ADDITIVE_ADDRESS`` is set, the client will connect to the server at the
+        address specified by the environment variable. The value of the environment variable
+        should be in the form ``host:port``.
+
         """
-        connections = []
-        if server_connections:
-            for target in server_connections:
-                if isinstance(target, grpc.Channel):
-                    connections.append(ServerConnection(channel=target, log=log))
-                else:
-                    connections.append(ServerConnection(addr=target, log=log))
+        if channel:
+            if not isinstance(channel, grpc.Channel):
+                raise ValueError("channel must be a grpc.Channel object")
+            return ServerConnection(channel=channel, log=log)
         elif host:
-            connections.append(ServerConnection(addr=f"{host}:{port}", log=log))
+            return ServerConnection(addr=f"{host}:{port}", log=log)
         elif os.getenv("ANSYS_ADDITIVE_ADDRESS"):
-            connections.append(ServerConnection(addr=os.getenv("ANSYS_ADDITIVE_ADDRESS"), log=log))
+            return ServerConnection(addr=os.getenv("ANSYS_ADDITIVE_ADDRESS"), log=log)
         else:
-            for _ in range(nservers):
-                connections.append(
-                    ServerConnection(
-                        product_version=product_version,
-                        log=log,
-                        linux_install_path=linux_install_path,
-                    )
-                )
-
-        return connections
+            return ServerConnection(
+                product_version=product_version,
+                log=log,
+                linux_install_path=linux_install_path,
+            )
 
     @property
     def enable_beta_features(self) -> bool:
@@ -255,6 +261,11 @@ class Additive:
     def enable_beta_features(self, value: bool) -> None:
         """Set the flag indicating if beta features are enabled."""
         self._enable_beta_features = value
+
+    @property
+    def connected(self) -> bool:
+        """Return True if the client is connected to a server."""
+        return self._server.status().connected
 
     def about(self) -> str:
         """Return information about the client and server.
@@ -268,18 +279,28 @@ class Additive:
         about = (
             f"ansys.additive.core version {__version__}\nClient side API version: {api_version}\n"
         )
-        if self._servers is None:
+        if self._server is None:
             about += "Client is not connected to a server.\n"
         else:
-            for server in self._servers:
-                about += str(server.status()) + "\n"
+            about += str(self._server.status()) + "\n"
         return about
 
-    def apply_server_settings(self, settings: dict[str, str]) -> dict[str, list[str]]:
+    def apply_server_settings(self, settings: dict[str, str]) -> list[str]:
         """Apply settings to each server.
 
         Current settings include:
         - ``NumConcurrentSims``: number of concurrent simulations per server.
+
+        Parameters
+        ----------
+        settings: dict[str, str]
+            Dictionary of settings to apply to the server.
+
+        Returns
+        -------
+        list[str]
+            List of messages from the server.
+
         """
         request = SettingsRequest()
         for setting_key, setting_value in settings.items():
@@ -287,29 +308,17 @@ class Additive:
             setting.key = setting_key
             setting.value = setting_value
 
-        responses = {}
-        for server in self._servers:
-            responses[server.channel_str] = server.settings_stub.ApplySettings(request)
+        response = self._server.settings_stub.ApplySettings(request)
 
-        unpacked_responses = {}
-        for key, value in responses.items():
-            unpacked_responses[key] = value.messages
+        return response.messages
 
-        return unpacked_responses
-
-    def list_server_settings(self) -> dict[str, dict[str, str]]:
-        """Get a dictionary of settings for each server by channel."""
-        responses = {}
-        for server in self._servers:
-            responses[server.channel_str] = server.settings_stub.ListSettings(Empty())
-
-        unpacked_responses = {}
-        for key, list_response in responses.items():
-            unpacked_responses[key] = {}
-            for setting in list_response.settings:
-                unpacked_responses[key][setting.key] = setting.value
-
-        return unpacked_responses
+    def list_server_settings(self) -> dict[str, str]:
+        """Get a dictionary of settings for the server."""
+        response = self._server.settings_stub.ListSettings(Empty())
+        settings = {}
+        for setting in response.settings:
+            settings[setting.key] = setting.value
+        return settings
 
     def simulate(
         self,
@@ -399,8 +408,7 @@ class Additive:
         if not isinstance(inputs, list):
             if not progress_handler:
                 progress_handler = DefaultSingleSimulationProgressHandler()
-            server = self._servers[0]
-            simulation_task = self._simulate(inputs, server, progress_handler)
+            simulation_task = self._simulate(inputs, self._server, progress_handler)
             task_manager.add_task(simulation_task)
             return task_manager
 
@@ -408,10 +416,8 @@ class Additive:
             raise ValueError("No simulation inputs provided")
 
         LOG.info(f"Starting {len(inputs)} simulations")
-        for i, sim_input in enumerate(inputs):
-            server_id = i % len(self._servers)
-            server = self._servers[server_id]
-            task = self._simulate(sim_input, server, progress_handler)
+        for sim_input in inputs:
+            task = self._simulate(sim_input, self._server, progress_handler)
             task_manager.add_task(task)
 
         return task_manager
@@ -450,11 +456,11 @@ class Additive:
             raise ValueError("A material is not assigned to the simulation input")
 
         if (
-            isinstance(simulation_input, Microstructure3DInput)
+            isinstance(simulation_input, (Microstructure3DInput, ThermalHistoryInput))
             and self.enable_beta_features is False
         ):
             raise BetaFeatureNotEnabledError(
-                "3D microstructure simulations require beta features to be enabled.\n"
+                "This simulation requires beta features to be enabled.\n"
                 "Set enable_beta_features=True when creating the Additive client."
             )
 
@@ -489,7 +495,7 @@ class Additive:
             Names of available additive materials.
 
         """
-        response = self._servers[0].materials_stub.GetMaterialsList(Empty())
+        response = self._server.materials_stub.GetMaterialsList(Empty())
         return response.names
 
     def material(self, name: str) -> AdditiveMaterial:
@@ -507,7 +513,7 @@ class Additive:
 
         """
         request = GetMaterialRequest(name=name)
-        result = self._servers[0].materials_stub.GetMaterial(request)
+        result = self._server.materials_stub.GetMaterial(request)
         return AdditiveMaterial._from_material_message(result)
 
     @staticmethod
@@ -593,7 +599,7 @@ class Additive:
 
         request = AddMaterialRequest(id=misc.short_uuid(), material=material._to_material_message())
         LOG.info(f"Adding material {request.material.name}")
-        response = self._servers[0].materials_stub.AddMaterial(request)
+        response = self._server.materials_stub.AddMaterial(request)
 
         if response.HasField("error"):
             raise RuntimeError(response.error)
@@ -612,7 +618,7 @@ class Additive:
         if name.lower() in (material.lower() for material in RESERVED_MATERIAL_NAMES):
             raise ValueError(f"Unable to remove Ansys-supplied material '{name}'.")
 
-        self._servers[0].materials_stub.RemoveMaterial(RemoveMaterialRequest(name=name))
+        self._server.materials_stub.RemoveMaterial(RemoveMaterialRequest(name=name))
 
     def tune_material(
         self,
@@ -692,9 +698,9 @@ class Additive:
 
         request = input._to_request()
 
-        operation = self._servers[0].materials_stub.TuneMaterial(request)
+        operation = self._server.materials_stub.TuneMaterial(request)
 
-        return SimulationTask(self._servers[0], operation, input, out_dir)
+        return SimulationTask(self._server, operation, input, out_dir)
 
     def simulate_study(
         self,
@@ -819,17 +825,20 @@ class Additive:
                 raise ValueError(f'Duplicate simulation ID "{i.id}" in input list')
             ids.append(i.id)
 
-    def download_server_logs(self, out_dir: str | os.PathLike):
+    def download_server_logs(self, log_dir: str | os.PathLike) -> str:
         """Download server logs to a specified directory.
 
         Parameters
         ----------
-        out_dir : str
+        log_dir : str
             Directory to save the logs to.
 
+        Returns
+        -------
+        str
+            Path to the downloaded logs.
+
         """
-        for server in self._servers:
-            local_out_dir = os.path.join(
-                out_dir, "AdditiveServerLogs", server.channel_str.replace(":", "_")
-            )
-            download_logs(server.simulation_stub, local_out_dir)
+        if log_dir and not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+        return download_logs(self._server.simulation_stub, log_dir)

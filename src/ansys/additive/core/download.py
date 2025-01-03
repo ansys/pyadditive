@@ -21,6 +21,7 @@
 # SOFTWARE.
 """Provides a function for downloading files from the server to the client."""
 
+import datetime
 import hashlib
 import os
 
@@ -29,7 +30,8 @@ from ansys.additive.core.progress_handler import (
     Progress,
     ProgressState,
 )
-from ansys.api.additive.v0.additive_simulation_pb2 import DownloadFileRequest, DownloadLogsRequest
+from ansys.api.additive.v0.additive_server_info_pb2_grpc import ServerInfoServiceStub
+from ansys.api.additive.v0.additive_simulation_pb2 import DownloadFileRequest
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 
 
@@ -70,7 +72,7 @@ def download_file(
 
 
 def download_logs(
-    stub: SimulationServiceStub,
+    stub: ServerInfoServiceStub,
     local_folder: str,
     progress_handler: IProgressHandler = None,
 ) -> str:
@@ -78,8 +80,8 @@ def download_logs(
 
     Parameters
     ----------
-    stub: SimulationServiceStub
-        gRPC stub for the simulation service.
+    stub: ServerInfoServiceStub
+        gRPC stub for the server information service.
     local_folder: str
         Folder on your localhost to write the server logs to.
     progress_handler: ProgressLogger, None, default: None
@@ -95,10 +97,11 @@ def download_logs(
     if not os.path.isdir(local_folder):
         os.makedirs(local_folder)
 
-    request = DownloadLogsRequest()
-    dest = os.path.join(local_folder, "AdditiveServerLogs.zip")
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    dest = os.path.join(local_folder, f"additive-server-logs-{timestamp}.zip")
+    response = stub.ServerLogs()
 
-    handle_download_file_response(dest, stub.DownloadLogs(request), progress_handler)
+    handle_download_file_response(dest, response, progress_handler)
     return dest
 
 

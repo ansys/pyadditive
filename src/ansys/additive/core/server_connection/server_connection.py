@@ -24,6 +24,7 @@
 import logging
 import os
 import time
+import weakref
 from dataclasses import dataclass
 
 import grpc
@@ -38,8 +39,8 @@ from ansys.additive.core.server_connection.constants import (
 )
 from ansys.additive.core.server_connection.local_server import LocalServer
 from ansys.additive.core.server_connection.network_utils import create_channel
-from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
 from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
+from ansys.api.additive.v0.additive_server_info_pb2_grpc import ServerInfoServiceStub
 from ansys.api.additive.v0.additive_settings_pb2_grpc import SettingsServiceStub
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 
@@ -118,6 +119,8 @@ class ServerConnection:
     ) -> None:
         """Initialize a server connection."""
 
+        weakref.finalize(self, self.disconnect)
+
         if channel and addr:
             raise ValueError("Both 'channel' and 'addr' cannot both be specified.")
 
@@ -149,7 +152,7 @@ class ServerConnection:
         # assign service stubs
         self._materials_stub = MaterialsServiceStub(self._channel)
         self._simulation_stub = SimulationServiceStub(self._channel)
-        self._about_stub = AboutServiceStub(self._channel)
+        self._server_info_stub = ServerInfoServiceStub(self._channel)
         self._operations_stub = OperationsStub(self._channel)
         self._settings_stub = SettingsServiceStub(self._channel)
 
@@ -158,12 +161,18 @@ class ServerConnection:
 
         self._log.info("Connected to %s", self.channel_str)
 
-    def __del__(self):
-        """Destructor for cleaning up server connection."""
+    def __del__(self) -> None:
+        """Disconnect from server."""
+        self.disconnect()
+
+    def disconnect(self):
+        """Clean up server connection."""
         if hasattr(self, "_server_instance") and self._server_instance:
             self._server_instance.delete()
+            self._server_instance = None
         if hasattr(self, "_server_process") and self._server_process:
             self._server_process.kill()
+            self._server_process = None
 
     @property
     def channel_str(self) -> str:
@@ -200,7 +209,7 @@ class ServerConnection:
         if not hasattr(self, "_channel") or self._channel is None:
             return ServerConnectionStatus(False)
         try:
-            response = self._about_stub.About(Empty())
+            response = self._server_info_stub.About(Empty())
         except grpc.RpcError:
             return ServerConnectionStatus(False, self.channel_str)
         metadata = {}
@@ -227,7 +236,7 @@ class ServerConnection:
         ready = False
         for i in range(retries + 1):
             try:
-                self._about_stub.About(Empty())
+                self._server_info_stub.About(Empty())
                 ready = True
                 break
             except grpc.RpcError:

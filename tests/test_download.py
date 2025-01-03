@@ -28,11 +28,12 @@ from unittest.mock import Mock
 import pytest
 
 from ansys.additive.core.download import download_file
-from ansys.api.additive.v0.additive_domain_pb2 import Progress, ProgressState
-from ansys.api.additive.v0.additive_simulation_pb2 import (
-    DownloadFileRequest,
+from ansys.api.additive.v0.additive_domain_pb2 import (
     DownloadFileResponse,
+    Progress,
+    ProgressState,
 )
+from ansys.api.additive.v0.additive_simulation_pb2 import DownloadFileRequest
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 
 

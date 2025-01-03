@@ -21,7 +21,6 @@
 # SOFTWARE.
 
 import logging
-import os
 import pathlib
 from unittest import mock
 from unittest.mock import (
@@ -41,7 +40,6 @@ from google.longrunning.operations_pb2 import Operation
 import ansys.additive.core.additive
 import ansys.additive.core.server_connection.server_connection
 import ansys.additive.core.simulation_task
-import ansys.api.additive.v0.about_pb2_grpc
 import ansys.api.additive.v0.additive_settings_pb2_grpc
 from ansys.additive.core import (
     USER_DATA_PATH,
@@ -116,50 +114,50 @@ from . import test_utils
         ("", DEFAULT_PRODUCT_VERSION),
     ],
 )
-def test_Additive_init_calls_connect_to_servers_correctly(
+def test_Additive_init_calls_connect_to_server_correctly(
     monkeypatch: pytest.MonkeyPatch, in_prod_version, expected_prod_version
 ):
     # arrange
     server_connections = ["connection1", "connection2"]
     host = "hostname"
     port = 12345
-    nservers = 3
 
-    mock_server_connections = [Mock(ServerConnection)]
+    mock_server_connection = Mock(ServerConnection)
     mock_connect = create_autospec(
-        ansys.additive.core.additive.Additive._connect_to_servers,
-        return_value=mock_server_connections,
+        ansys.additive.core.additive.Additive._connect_to_server,
+        return_value=mock_server_connection,
     )
-    monkeypatch.setattr(ansys.additive.core.additive.Additive, "_connect_to_servers", mock_connect)
+    monkeypatch.setattr(
+        ansys.additive.core.additive.Additive, "_connect_to_server", mock_connect
+    )
 
     # act
     additive = Additive(
         server_connections,
         host,
         port,
-        nservers=nservers,
         product_version=in_prod_version,
         linux_install_path=None,
     )
 
     # assert
     mock_connect.assert_called_with(
-        server_connections, host, port, nservers, expected_prod_version, ANY, None
+        server_connections, host, port, expected_prod_version, ANY, None
     )
-    assert additive._servers == mock_server_connections
+    assert additive._server == mock_server_connection
     assert additive._user_data_path == USER_DATA_PATH
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_Additive_init_assigns_nsims_per_servers(server):
+def test_Additive_init_assigns_nsims_per_server(server):
     # arrange
     nsims_per_server = 99
 
     # Mock makes SettingsServiceStub unable to use assert_called_once (somehow it's considered
     # a NonCallable mock). So we manually create the mock and test the calls manually.
     mock_connection_with_stub = Mock(ServerConnection)
-    mock_connection_with_stub.settings_stub.ApplySettings.return_value = SettingsResponse(
-        messages="applied"
+    mock_connection_with_stub.settings_stub.ApplySettings.return_value = (
+        SettingsResponse(messages="applied")
     )
     server.return_value = mock_connection_with_stub
     expected_request = SettingsRequest()
@@ -172,7 +170,10 @@ def test_Additive_init_assigns_nsims_per_servers(server):
 
     # assert
     assert mock_connection_with_stub.settings_stub.ApplySettings.call_count == 1
-    assert mock_connection_with_stub.settings_stub.ApplySettings.call_args[0][0] == expected_request
+    assert (
+        mock_connection_with_stub.settings_stub.ApplySettings.call_args[0][0]
+        == expected_request
+    )
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
@@ -201,8 +202,11 @@ def test_apply_server_settings_returns_appropriate_responses(server):
 
     # assert
     assert mock_connection_with_stub.settings_stub.ApplySettings.call_count == 2
-    assert mock_connection_with_stub.settings_stub.ApplySettings.call_args[0][0] == expected_request
-    assert result[channel_str] == ["applied"]
+    assert (
+        mock_connection_with_stub.settings_stub.ApplySettings.call_args[0][0]
+        == expected_request
+    )
+    assert result == ["applied"]
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
@@ -212,7 +216,6 @@ def test_list_server_settings_returns_appropriate_responses(server):
     # a NonCallable mock). So we manually create the mock and test the calls manually.
     channel_str = "1.1.1.1"
     mock_connection_with_stub = Mock(ServerConnection)
-    mock_connection_with_stub.channel_str = channel_str
     response = ListSettingsResponse()
     setting = response.settings.add()
     setting.key = "key"
@@ -228,44 +231,34 @@ def test_list_server_settings_returns_appropriate_responses(server):
 
     # assert
     assert mock_connection_with_stub.settings_stub.ListSettings.call_count == 1
-    assert result[channel_str] == {"key": "value"}
+    assert result == {"key": "value"}
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_connect_to_servers_with_server_connections_creates_server_connections(
+def test_connect_to_server_with_channel_creates_server_connection(
     mock_connection,
 ):
     # arrange
     mock_connection.return_value = Mock(ServerConnection)
     host1 = "localhost:1234"
-    host2 = "localhost:5678"
     channel = grpc.insecure_channel("target")
-    connections = [host1, channel, host2]
     log = logging.Logger("testlogger")
 
     # act
-    servers = Additive._connect_to_servers(
-        server_connections=connections,
+    server = Additive._connect_to_server(
+        channel=channel,
         host=host1,
         port=99999,
-        nservers=92,
         log=log,
     )
 
     # assert
-    assert len(servers) == len(connections)
-    assert len(mock_connection.mock_calls) == 3
-    mock_connection.assert_has_calls(
-        [
-            call(addr=host1, log=log),
-            call(channel=channel, log=log),
-            call(addr=host2, log=log),
-        ]
-    )
+    assert server is not None
+    mock_connection.assert_called_once_with(channel=channel, log=log)
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_connect_to_servers_with_host_creates_server_connection(mock_connection):
+def test_connect_to_server_with_host_creates_server_connection(mock_connection):
     # arrange
     mock_connection.return_value = Mock(ServerConnection)
     host = "127.0.0.1"
@@ -273,17 +266,15 @@ def test_connect_to_servers_with_host_creates_server_connection(mock_connection)
     log = logging.Logger("testlogger")
 
     # act
-    servers = Additive._connect_to_servers(
-        server_connections=None, host=host, port=port, nservers=99, log=log
-    )
+    server = Additive._connect_to_server(channel=None, host=host, port=port, log=log)
 
     # assert
-    assert len(servers) == 1
+    assert server is not None
     mock_connection.assert_called_once_with(addr=f"{host}:{port}", log=log)
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_connect_to_servers_with_env_var_creates_server_connection(
+def test_connect_to_server_with_env_var_creates_server_connection(
     mock_connection, monkeypatch: pytest.MonkeyPatch
 ):
     # arrange
@@ -293,42 +284,18 @@ def test_connect_to_servers_with_env_var_creates_server_connection(
     log = logging.Logger("testlogger")
 
     # act
-    servers = Additive._connect_to_servers(server_connections=None, host=None, nservers=99, log=log)
+    server = Additive._connect_to_server(log=log)
 
     # assert
-    assert len(servers) == 1
+    assert server is not None
     mock_connection.assert_called_once_with(addr=addr, log=log)
-
-
-@patch("ansys.additive.core.additive.ServerConnection")
-def test_connect_to_servers_with_nservers_creates_server_connections(mock_connection):
-    # arrange
-    nservers = 99
-    product_version = "123"
-    mock_connection.return_value = Mock(ServerConnection)
-    log = logging.Logger("testlogger")
-
-    # act
-    servers = Additive._connect_to_servers(
-        server_connections=None,
-        host=None,
-        nservers=nservers,
-        product_version=product_version,
-        log=log,
-    )
-
-    # assert
-    assert len(servers) == nservers
-    mock_connection.assert_called_with(
-        product_version=product_version, log=log, linux_install_path=None
-    )
 
 
 def test_about_prints_not_connected_message():
     # arrange
     mock_additive = MagicMock()
     mock_additive.about = Additive.about
-    mock_additive._servers = None
+    mock_additive._server = None
 
     # act
     about = mock_additive.about(mock_additive)
@@ -345,11 +312,9 @@ def test_about_prints_server_status_messages():
     # arrange
     mock_additive = MagicMock()
     mock_additive.about = Additive.about
-    servers = []
-    for i in range(5):
-        servers.append(Mock(ServerConnection))
-        servers[i].status.return_value = f"server {i} running"
-    mock_additive._servers = servers
+    mockServer = Mock(ServerConnection)
+    mockServer.status.return_value = f"server status"
+    mock_additive._server = mockServer
 
     # act
     about = mock_additive.about(mock_additive)
@@ -359,8 +324,7 @@ def test_about_prints_server_status_messages():
         f"ansys.additive.core version {__version__}\nClient side API version: {api_version}"
         in about
     )
-    for i in range(len(servers)):
-        assert f"server {i} running" in about
+    assert f"server status" in about
 
 
 @pytest.mark.parametrize(
@@ -379,7 +343,9 @@ def test_simulate_async_with_single_input_calls_internal_simulate_once(_, sim_in
     # arrange
     sim_input.material = test_utils.get_test_material()
 
-    metadata = OperationMetadata(simulation_id=sim_input.id, message="Simulation Started")
+    metadata = OperationMetadata(
+        simulation_id=sim_input.id, message="Simulation Started"
+    )
     expected_operation = Operation(name=sim_input.id)
     expected_operation.metadata.Pack(metadata)
     with patch("ansys.additive.core.additive.Additive._simulate") as _simulate_patch:
@@ -415,7 +381,9 @@ def test_simulate_logs_error_message_when_SimulationError_returned(_, caplog):
     simulation_error = SimulationError(sim_input, error_msg)
     mock_task_mgr = Mock(SimulationTaskManager)
     mock_task_mgr.summaries.return_value = [simulation_error]
-    with patch("ansys.additive.core.additive.Additive.simulate_async") as sim_async_patch:
+    with patch(
+        "ansys.additive.core.additive.Additive.simulate_async"
+    ) as sim_async_patch:
         sim_async_patch.return_value = mock_task_mgr
     additive = Additive()
     additive.simulate_async = sim_async_patch
@@ -437,7 +405,9 @@ def test_simulate_returns_single_summary_for_single_input(_):
     summary = SingleBeadSummary(sim_input, test_utils.get_test_melt_pool_message())
     mock_task_mgr = Mock(SimulationTaskManager)
     mock_task_mgr.summaries.return_value = [summary]
-    with patch("ansys.additive.core.additive.Additive.simulate_async") as sim_async_patch:
+    with patch(
+        "ansys.additive.core.additive.Additive.simulate_async"
+    ) as sim_async_patch:
         sim_async_patch.return_value = mock_task_mgr
     additive = Additive()
     additive.simulate_async = sim_async_patch
@@ -456,7 +426,9 @@ def test_simulate_returns_list_of_summaries_for_list_of_inputs(_):
     summary = SingleBeadSummary(sim_input, test_utils.get_test_melt_pool_message())
     mock_task_mgr = Mock(SimulationTaskManager)
     mock_task_mgr.summaries.return_value = [summary]
-    with patch("ansys.additive.core.additive.Additive.simulate_async") as sim_async_patch:
+    with patch(
+        "ansys.additive.core.additive.Additive.simulate_async"
+    ) as sim_async_patch:
         sim_async_patch.return_value = mock_task_mgr
     additive = Additive()
     additive.simulate_async = sim_async_patch
@@ -523,13 +495,18 @@ def test_simulate_study_async_performs_expected_steps(tmp_path: pathlib.Path):
 
     # assert
     assert isinstance(task_mgr, SimulationTaskManager)
-    assert all(s == SimulationStatus.PENDING for s in study.data_frame()[ColumnNames.STATUS].values)
+    assert all(
+        s == SimulationStatus.PENDING
+        for s in study.data_frame()[ColumnNames.STATUS].values
+    )
     assert all(e is None for e in study.data_frame()[ColumnNames.ERROR_MESSAGE].values)
     additive.simulate_async.assert_called_once_with(inputs, None)
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_simulate_study_async_passes_params_to_simulation_inputs(_, tmp_path: pathlib.Path):
+def test_simulate_study_async_passes_params_to_simulation_inputs(
+    _, tmp_path: pathlib.Path
+):
     # arrange
     additive = Additive()
     additive.simulate_async = MagicMock(return_value=SimulationTaskManager())
@@ -587,56 +564,13 @@ def test_simulate_study_performs_expected_steps(_, tmp_path: pathlib.Path):
     additive.simulate_study_async.assert_called_once_with(
         study, simIds, types, priority, iteration, mock.ANY
     )
-    assert isinstance(additive.simulate_study_async.call_args[0][5], ParametricStudyProgressHandler)
+    assert isinstance(
+        additive.simulate_study_async.call_args[0][5], ParametricStudyProgressHandler
+    )
     mock_task_mgr.status.assert_called_once()
-    assert isinstance(mock_task_mgr.status.call_args[0][0], ParametricStudyProgressHandler)
-
-
-@pytest.mark.parametrize(
-    "inputs, nservers, nsims_per_server, expected_n_threads",
-    [
-        (
-            [
-                SingleBeadInput(),
-                PorosityInput(),
-                MicrostructureInput(),
-                ThermalHistoryInput(),
-                SingleBeadInput(),
-            ],
-            2,
-            2,
-            4,
-        ),
-        (
-            [
-                SingleBeadInput(),
-                PorosityInput(),
-                MicrostructureInput(),
-                ThermalHistoryInput(),
-            ],
-            3,
-            2,
-            4,
-        ),
-    ],
-)
-@patch("ansys.additive.core.additive.ServerConnection")
-def test_simulate_with_n_servers_uses_uses_n_mock_connections(
-    mock_connection, inputs, nservers, nsims_per_server, expected_n_threads
-):
-    # arrange
-    mock_connection.return_value = Mock(ServerConnection)
-
-    additive = Additive(nservers=nservers, nsims_per_server=nsims_per_server)
-
-    # act
-    try:
-        additive.simulate(inputs)
-    except Exception:
-        pass
-
-    # assert
-    assert mock_connection.call_count == nservers
+    assert isinstance(
+        mock_task_mgr.status.call_args[0][0], ParametricStudyProgressHandler
+    )
 
 
 # patch needed for Additive() call
@@ -706,7 +640,9 @@ def test_internal_simulate_called_with_single_input_updates_SimulationTask(
             context="simulation",
         ),
     )
-    monkeypatch.setattr(ansys.additive.core.additive.SimulationTask, "status", mock_status)
+    monkeypatch.setattr(
+        ansys.additive.core.additive.SimulationTask, "status", mock_status
+    )
     sim_input.material = test_utils.get_test_material()
 
     if isinstance(result, MeltPoolMsg):
@@ -736,19 +672,26 @@ def test_internal_simulate_called_with_single_input_updates_SimulationTask(
     remote_file_name = "remote/file/name"
     upload_response = UploadFileResponse(
         remote_file_name=remote_file_name,
-        progress=ProgressMsg(state=ProgressMsgState.PROGRESS_STATE_COMPLETED, message="done"),
+        progress=ProgressMsg(
+            state=ProgressMsgState.PROGRESS_STATE_COMPLETED, message="done"
+        ),
     )
 
     server_channel_str = "1.1.1.1"
     mock_connection_with_stub = Mock()
-    mock_connection_with_stub.simulation_stub.Simulate.return_value = long_running_operation
-    mock_connection_with_stub.simulation_stub.UploadFile.return_value = [upload_response]
-    mock_connection_with_stub.operations_stub.GetOperation.return_value = long_running_operation
+    mock_connection_with_stub.simulation_stub.Simulate.return_value = (
+        long_running_operation
+    )
+    mock_connection_with_stub.simulation_stub.UploadFile.return_value = [
+        upload_response
+    ]
+    mock_connection_with_stub.operations_stub.GetOperation.return_value = (
+        long_running_operation
+    )
     mock_connection_with_stub.channel_str = server_channel_str
     mock_connection.return_value = mock_connection_with_stub
 
     additive = Additive(
-        server_connections=[mock_connection_with_stub],
         enable_beta_features=True,
         nsims_per_server=2,
     )
@@ -801,7 +744,9 @@ def test_internal_simulate_without_material_raises_exception(server, sim_input):
     additive = Additive(enable_beta_features=True)
 
     # act, assert
-    with pytest.raises(ValueError, match="A material is not assigned to the simulation input"):
+    with pytest.raises(
+        ValueError, match="A material is not assigned to the simulation input"
+    ):
         additive._simulate(simulation_input=sim_input, server=server)
 
 
@@ -825,7 +770,9 @@ def test_exception_during_internal_simulate_returns_operation_with_error(_, sim_
         raise Exception(error_msg)
 
     mock_connection_with_stub = Mock()
-    mock_connection_with_stub.simulation_stub.Simulate.side_effect = iterable_with_exception
+    mock_connection_with_stub.simulation_stub.Simulate.side_effect = (
+        iterable_with_exception
+    )
     mock_connection_with_stub.channel_str = "1.1.1.1"
     sim_input.material = test_utils.get_test_material()
     additive = Additive(enable_beta_features=True)
@@ -877,7 +824,7 @@ def test_internal_simulate_returns_errored_operation_from_server(mock_server):
     mock_connection_with_stub.simulation_stub.Simulate.return_value = errored_operation
     mock_connection_with_stub.channel_str = "1.1.1.1"
     mock_server.return_value = mock_connection_with_stub
-    additive = Additive(server_connections=["1.1.1.1"], nsims_per_server=1)
+    additive = Additive(nsims_per_server=1)
 
     # act
     task = additive._simulate(input, mock_connection_with_stub)
@@ -911,7 +858,9 @@ def test_materials_list_returns_list_of_material_names(mock_connection):
     names = ["material1", "material2"]
     materials_list_response = GetMaterialsListResponse(names=names)
     mock_connection_with_stub = Mock()
-    mock_connection_with_stub.materials_stub.GetMaterialsList.return_value = materials_list_response
+    mock_connection_with_stub.materials_stub.GetMaterialsList.return_value = (
+        materials_list_response
+    )
     mock_connection.return_value = mock_connection_with_stub
     additive = Additive()
 
@@ -946,7 +895,9 @@ def test_get_material_returns_material(mock_connection):
 
 def test_load_material_returns_material():
     # arrange
-    parameters_file = test_utils.get_test_file_path(pathlib.Path("Material") / "material-data.json")
+    parameters_file = test_utils.get_test_file_path(
+        pathlib.Path("Material") / "material-data.json"
+    )
     thermal_lookup_file = test_utils.get_test_file_path(
         pathlib.Path("Material") / "Test_Lookup.csv"
     )
@@ -1013,7 +964,9 @@ def test_load_material_returns_material():
 @patch("ansys.additive.core.additive.ServerConnection")
 def test_add_material_calls_material_service_add_material(mock_connection):
     # arrange
-    parameters_file = test_utils.get_test_file_path(pathlib.Path("Material") / "material-data.json")
+    parameters_file = test_utils.get_test_file_path(
+        pathlib.Path("Material") / "material-data.json"
+    )
     thermal_lookup_file = test_utils.get_test_file_path(
         pathlib.Path("Material") / "Test_Lookup.csv"
     )
@@ -1025,8 +978,8 @@ def test_add_material_calls_material_service_add_material(mock_connection):
     )
     added_material = AdditiveMaterial()
     mock_connection_with_stub = Mock()
-    mock_connection_with_stub.materials_stub.AddMaterial.return_value = AddMaterialResponse(
-        id="id", material=added_material._to_material_message()
+    mock_connection_with_stub.materials_stub.AddMaterial.return_value = (
+        AddMaterialResponse(id="id", material=added_material._to_material_message())
     )
     mock_connection_with_stub.materials_stub.GetMaterialsList.return_value = (
         GetMaterialsListResponse(names=[])
@@ -1042,7 +995,9 @@ def test_add_material_calls_material_service_add_material(mock_connection):
     # assert
     assert result == added_material
     mock_connection_with_stub.materials_stub.AddMaterial.assert_called_once()
-    assert len(mock_connection_with_stub.materials_stub.AddMaterial.call_args[0][0].id) > 0
+    assert (
+        len(mock_connection_with_stub.materials_stub.AddMaterial.call_args[0][0].id) > 0
+    )
     assert (
         mock_connection_with_stub.materials_stub.AddMaterial.call_args[0][0].material
         == loaded_material._to_material_message()
@@ -1052,7 +1007,9 @@ def test_add_material_calls_material_service_add_material(mock_connection):
 @patch("ansys.additive.core.additive.ServerConnection")
 def test_add_material_raises_ValueError_when_adding_existing_material(mock_connection):
     # arrange
-    parameters_file = test_utils.get_test_file_path(pathlib.Path("Material") / "material-data.json")
+    parameters_file = test_utils.get_test_file_path(
+        pathlib.Path("Material") / "material-data.json"
+    )
     thermal_lookup_file = test_utils.get_test_file_path(
         pathlib.Path("Material") / "Test_Lookup.csv"
     )
@@ -1064,8 +1021,8 @@ def test_add_material_raises_ValueError_when_adding_existing_material(mock_conne
     )
     added_material = AdditiveMaterial()
     mock_connection_with_stub = Mock()
-    mock_connection_with_stub.materials_stub.AddMaterial.return_value = AddMaterialResponse(
-        id="id", material=added_material._to_material_message()
+    mock_connection_with_stub.materials_stub.AddMaterial.return_value = (
+        AddMaterialResponse(id="id", material=added_material._to_material_message())
     )
     mock_connection_with_stub.materials_stub.GetMaterialsList.return_value = (
         GetMaterialsListResponse(names=[loaded_material.name])
@@ -1083,7 +1040,9 @@ def test_add_material_raises_ValueError_when_adding_existing_material(mock_conne
 @patch("ansys.additive.core.additive.ServerConnection")
 def test_add_material_raises_RuntimeError_when_server_errors(mock_connection):
     # arrange
-    parameters_file = test_utils.get_test_file_path(pathlib.Path("Material") / "material-data.json")
+    parameters_file = test_utils.get_test_file_path(
+        pathlib.Path("Material") / "material-data.json"
+    )
     thermal_lookup_file = test_utils.get_test_file_path(
         pathlib.Path("Material") / "Test_Lookup.csv"
     )
@@ -1091,8 +1050,8 @@ def test_add_material_raises_RuntimeError_when_server_errors(mock_connection):
         pathlib.Path("Material") / "Test_CW_Lookup.csv"
     )
     mock_connection_with_stub = Mock()
-    mock_connection_with_stub.materials_stub.AddMaterial.return_value = AddMaterialResponse(
-        id="id", error="error"
+    mock_connection_with_stub.materials_stub.AddMaterial.return_value = (
+        AddMaterialResponse(id="id", error="error")
     )
     mock_connection_with_stub.materials_stub.GetMaterialsList.return_value = (
         GetMaterialsListResponse(names=[])
@@ -1141,7 +1100,9 @@ def test_remove_material_raises_ValueError_when_removing_reserved_material(
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_tune_material_async_raises_exception_if_output_path_exists(_, tmp_path: pathlib.Path):
+def test_tune_material_async_raises_exception_if_output_path_exists(
+    _, tmp_path: pathlib.Path
+):
     # arrange
     input = MaterialTuningInput(
         experiment_data_file=test_utils.get_test_file_path(
@@ -1179,7 +1140,9 @@ def test_tune_material_async_calls_material_service_tune_material(
     )
 
     mock_connection_with_stub = Mock()
-    mock_connection_with_stub.materials_stub.TuneMaterial.return_value = Operation(name="id")
+    mock_connection_with_stub.materials_stub.TuneMaterial.return_value = Operation(
+        name="id"
+    )
     mock_connection.return_value = mock_connection_with_stub
 
     # act
@@ -1401,54 +1364,71 @@ def test_enable_beta_features_setter_assigns_value(_):
     assert additive.enable_beta_features is True
 
 
+@pytest.mark.parametrize(
+    "sim_input",
+    [
+        Microstructure3DInput(material=AdditiveMaterial(name="my_material")),
+        ThermalHistoryInput(material=AdditiveMaterial(name="my_material")),
+    ],
+)
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_3d_microstructure_without_beta_enabled_raises_exception(_):
+def test_3d_microstructure_without_beta_enabled_raises_exception(_, sim_input):
     # arrange
     additive = Additive()
-    input = Microstructure3DInput(material=AdditiveMaterial(name="my_material"))
 
     # act, assert
     with pytest.raises(BetaFeatureNotEnabledError):
-        additive.simulate(input)
+        additive.simulate(sim_input)
 
 
 @patch("ansys.additive.core.additive.download_logs")
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_download_server_logs_calls_download_logs(mock_connection, mock_download_logs, tmp_path: pathlib.Path):
+def test_download_server_logs_calls_download_logs(
+    mock_connection, mock_download_logs, tmp_path: pathlib.Path
+):
     # arrange
     mock_server = Mock(ServerConnection)
     mock_server.channel_str = "1.1.1.1:50052"
     mock_connection.return_value = mock_server
-    additive = Additive(server_connections=[mock_server])
+    mock_download_logs.return_value = "additive-server-logs.zip"
+    additive = Additive()
     out_dir = tmp_path / "logs"
 
     # act
-    additive.download_server_logs(out_dir)
+    log_file = additive.download_server_logs(out_dir)
 
     # assert
-    expected_local_out_dir = os.path.join(out_dir, "AdditiveServerLogs", "1.1.1.1_50052")
-    mock_download_logs.assert_called_once_with(mock_server.simulation_stub, expected_local_out_dir)
+    mock_download_logs.assert_called_once_with(mock_server.simulation_stub, out_dir)
+    assert log_file == "additive-server-logs.zip"
 
 
-@patch("ansys.additive.core.additive.download_logs")
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_download_server_logs_handles_multiple_servers(mock_connection, mock_download_logs, tmp_path: pathlib.Path):
+def test_connected_returns_true_when_server_is_connected(mock_connection):
     # arrange
-    mock_server1 = Mock(ServerConnection)
-    mock_server1.channel_str = "1.1.1.1:50052"
-    mock_server2 = Mock(ServerConnection)
-    mock_server2.channel_str = "2.2.2.2:50052"
-    mock_connection.side_effect = [mock_server1, mock_server2]
-    additive = Additive(server_connections=[mock_server1, mock_server2])
-    out_dir = tmp_path / "logs"
+    mock_server = Mock(ServerConnection)
+    mock_server.status.return_value.connected = True
+    mock_connection.return_value = mock_server
+    additive = Additive()
 
     # act
-    additive.download_server_logs(out_dir)
+    result = additive.connected
 
     # assert
-    expected_local_out_dir1 = os.path.join(out_dir, "AdditiveServerLogs", "1.1.1.1_50052")
-    expected_local_out_dir2 = os.path.join(out_dir, "AdditiveServerLogs", "2.2.2.2_50052")
-    mock_download_logs.assert_any_call(mock_server1.simulation_stub, expected_local_out_dir1)
-    mock_download_logs.assert_any_call(mock_server2.simulation_stub, expected_local_out_dir2)
-    assert mock_download_logs.call_count == 2
+    assert result is True
+    mock_server.status.assert_called_once()
 
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_connected_returns_false_when_server_is_not_connected(mock_connection):
+    # arrange
+    mock_server = Mock(ServerConnection)
+    mock_server.status.return_value.connected = False
+    mock_connection.return_value = mock_server
+    additive = Additive()
+
+    # act
+    result = additive.connected
+
+    # assert
+    assert result is False
+    mock_server.status.assert_called_once()

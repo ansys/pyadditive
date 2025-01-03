@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-additive-core"
-version = "0.20.0b1"
+version = "0.20.0b2"
 description = "A Python client for the Ansys Additive service"
 readme = "README.rst"
 requires-python = ">=3.10,<4"
@@ -24,7 +24,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "ansys-api-additive==2.2.2",
+    "ansys-api-additive==3.0.0",
     "ansys-platform-instancemanagement>=1.1.1",
     "dill>=0.3.7",
     "google-api-python-client>=1.7.11",
@@ -46,36 +46,36 @@ dependencies = [
 tests = [
     "ansys-platform-instancemanagement==1.1.2",
     "dill==0.3.9",
-    "google-api-python-client==2.153.0",
+    "google-api-python-client==2.155.0",
     "googleapis-common-protos==1.66.0",
     "grpcio==1.60.0",
     "grpcio-health-checking==1.48.2",
-    "numpy==2.1.3",
+    "numpy==2.2.0",
     "pandas==2.2.3",
     "platformdirs==4.3.6",
-    "protobuf==5.28.3",
-    "six==1.16.0",
-    "tqdm==4.67.0",
-    "pydantic==2.9.2",
-    "pytest==8.3.3",
+    "protobuf==5.29.1",
+    "six==1.17.0",
+    "tqdm==4.67.1",
+    "pydantic==2.10.3",
+    "pytest==8.3.4",
     "pytest-cov==6.0.0",
 ]
 
 doc = [
-    "ansys-sphinx-theme[autoapi]==1.2.1",
+    "ansys-sphinx-theme[autoapi]==1.2.3",
     "enum-tools==0.12.0",
     "jupyter_sphinx==0.5.3",
-    "matplotlib==3.9.2",
+    "matplotlib==3.10.0",
     "numpydoc==1.8.0",
     "phantomjs==1.4.1",
     "pypandoc==1.14",
-    "pyvista==0.44.1",
+    "pyvista==0.44.2",
     "ipywidgets==8.1.5",
-    "trame==3.7.0",
+    "trame==3.7.1",
     "trame-vtk==2.8.12",
     "trame-plotly==3.0.2",
     "trame-vuetify==2.7.2",
-    "imageio==2.36.0",
+    "imageio==2.36.1",
     "sphinx==8.1.3",
     "sphinx-autodoc-typehints==2.5.0",
     "sphinx-copybutton==0.5.2",
@@ -97,16 +97,6 @@ Releases = "https://github.com/ansys/pyadditive/releases"
 
 [tool.flit.module]
 name = "ansys.additive.core"
-
-[tool.black]
-line-length = 100
-
-[tool.isort]
-profile = "black"
-force_sort_within_sections = true
-line_length = 100
-default_section = "THIRDPARTY"
-src_paths = ["doc", "src", "tests"]
 
 [tool.coverage.run]
 source = ["ansys.additive.core"]

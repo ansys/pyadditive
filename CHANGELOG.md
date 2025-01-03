@@ -3,9 +3,13 @@
 ## PyAdditive 0.20.0
 
 ### Breaking Changes
+* Removed support for multiple server connections. Specifically, the `nservers` parameter was removed from `Additive()` and the `server_connections` parameter was renamed to `channel`.
+* Thermal history simulations require the `enable_beta_features` flag to be set to `True` when calling `Additive()`. [#599](https://github.com/ansys/pyadditive/issues/599)
+
 
 ### New Features
-* Added the capability to fetch Additive Server logs. 
+* Added the capability to fetch Additive Server logs.
+* Added `connected` property to `Additive` to indicate if a the client is connected to a server.
 
 ### Bug Fixes
 
