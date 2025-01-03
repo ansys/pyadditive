@@ -39,8 +39,8 @@ from ansys.additive.core.server_connection.constants import (
 )
 from ansys.additive.core.server_connection.local_server import LocalServer
 from ansys.additive.core.server_connection.network_utils import create_channel
-from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
 from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
+from ansys.api.additive.v0.additive_server_info_pb2_grpc import ServerInfoServiceStub
 from ansys.api.additive.v0.additive_settings_pb2_grpc import SettingsServiceStub
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 
@@ -152,7 +152,7 @@ class ServerConnection:
         # assign service stubs
         self._materials_stub = MaterialsServiceStub(self._channel)
         self._simulation_stub = SimulationServiceStub(self._channel)
-        self._about_stub = AboutServiceStub(self._channel)
+        self._server_info_stub = ServerInfoServiceStub(self._channel)
         self._operations_stub = OperationsStub(self._channel)
         self._settings_stub = SettingsServiceStub(self._channel)
 
@@ -209,7 +209,7 @@ class ServerConnection:
         if not hasattr(self, "_channel") or self._channel is None:
             return ServerConnectionStatus(False)
         try:
-            response = self._about_stub.About(Empty())
+            response = self._server_info_stub.About(Empty())
         except grpc.RpcError:
             return ServerConnectionStatus(False, self.channel_str)
         metadata = {}
@@ -236,7 +236,7 @@ class ServerConnection:
         ready = False
         for i in range(retries + 1):
             try:
-                self._about_stub.About(Empty())
+                self._server_info_stub.About(Empty())
                 ready = True
                 break
             except grpc.RpcError:
