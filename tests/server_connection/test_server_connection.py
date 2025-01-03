@@ -29,7 +29,7 @@ from google.protobuf.empty_pb2 import Empty
 
 import ansys.additive.core.server_connection.local_server
 import ansys.additive.core.server_connection.server_connection
-import ansys.api.additive.v0.about_pb2_grpc
+import ansys.api.additive.v0.additive_server_info_pb2_grpc
 import ansys.platform.instancemanagement as pypim
 from ansys.additive.core.server_connection.constants import (
     LOCALHOST,
@@ -39,8 +39,8 @@ from ansys.additive.core.server_connection.server_connection import (
     ServerConnection,
     ServerConnectionStatus,
 )
-from ansys.api.additive.v0.about_pb2 import AboutResponse
-from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
+from ansys.api.additive.v0.additive_server_info_pb2 import AboutResponse
+from ansys.api.additive.v0.additive_server_info_pb2_grpc import ServerInfoServiceStub
 from ansys.api.additive.v0.additive_materials_pb2_grpc import MaterialsServiceStub
 from ansys.api.additive.v0.additive_simulation_pb2_grpc import SimulationServiceStub
 
@@ -78,7 +78,7 @@ def test_init_connects_with_channel(monkeypatch):
     assert hasattr(server, "_server_instance") == False
     assert isinstance(server.materials_stub, MaterialsServiceStub)
     assert isinstance(server.simulation_stub, SimulationServiceStub)
-    assert isinstance(server._about_stub, AboutServiceStub)
+    assert isinstance(server._server_info_stub, ServerInfoServiceStub)
     assert server.channel_str == "target"
 
 
@@ -103,7 +103,7 @@ def test_init_connects_with_addr(monkeypatch):
     assert hasattr(server, "_server_instance") == False
     assert isinstance(server.materials_stub, MaterialsServiceStub)
     assert isinstance(server.simulation_stub, SimulationServiceStub)
-    assert isinstance(server._about_stub, AboutServiceStub)
+    assert isinstance(server._server_info_stub, ServerInfoServiceStub)
 
 
 def test_init_connects_with_pypim(monkeypatch):
@@ -145,7 +145,7 @@ def test_init_connects_with_pypim(monkeypatch):
     assert hasattr(server, "_server_instance") == True
     assert isinstance(server.materials_stub, MaterialsServiceStub)
     assert isinstance(server.simulation_stub, SimulationServiceStub)
-    assert isinstance(server._about_stub, AboutServiceStub)
+    assert isinstance(server._server_info_stub, ServerInfoServiceStub)
     mock_client.create_instance.assert_called_with(
         product_name=PYPIM_PRODUCT_NAME, product_version="123"
     )
@@ -180,7 +180,7 @@ def test_init_starts_local_server(monkeypatch):
     assert hasattr(server, "_server_instance") is False
     assert isinstance(server.materials_stub, MaterialsServiceStub)
     assert isinstance(server.simulation_stub, SimulationServiceStub)
-    assert isinstance(server._about_stub, AboutServiceStub)
+    assert isinstance(server._server_info_stub, ServerInfoServiceStub)
     mock_launch.assert_called_with(ANY, product_version="123", linux_install_path=None)
 
 
@@ -196,9 +196,9 @@ def test_ready_returns_true_when_about_succeeds():
         response.metadata["key3"] = "value3"
         return response
 
-    mock_stub = Mock(AboutServiceStub)
+    mock_stub = Mock(ServerInfoServiceStub)
     mock_stub.About = Mock(side_effect=mock_about_endpoint)
-    mock_server_connection._about_stub = mock_stub
+    mock_server_connection._server_info_stub = mock_stub
 
     # act
     ready = mock_server_connection.ready(mock_server_connection)
@@ -216,9 +216,9 @@ def test_ready_returns_false_when_about_fails():
     def mock_about_endpoint(request: Empty):
         raise grpc.RpcError
 
-    mock_stub = Mock(AboutServiceStub)
+    mock_stub = Mock(ServerInfoServiceStub)
     mock_stub.About = Mock(side_effect=mock_about_endpoint)
-    mock_server_connection._about_stub = mock_stub
+    mock_server_connection._server_info_stub = mock_stub
 
     # act
     ready = mock_server_connection.ready(mock_server_connection, 0)
@@ -273,9 +273,9 @@ def test_status_when_connected_returns_expected_status():
         response.metadata["key3"] = "value3"
         return response
 
-    mock_stub = Mock(AboutServiceStub)
+    mock_stub = Mock(ServerInfoServiceStub)
     mock_stub.About = Mock(side_effect=mock_about_endpoint)
-    mock_server_connection._about_stub = mock_stub
+    mock_server_connection._server_info_stub = mock_stub
 
     # act
     status = mock_server_connection.status(mock_server_connection)
@@ -299,9 +299,9 @@ def test_status_when_not_connected_returns_expected_status():
     def mock_about_endpoint(request: Empty):
         raise grpc.RpcError
 
-    mock_stub = Mock(AboutServiceStub)
+    mock_stub = Mock(ServerInfoServiceStub)
     mock_stub.About = Mock(side_effect=mock_about_endpoint)
-    mock_server_connection._about_stub = mock_stub
+    mock_server_connection._server_info_stub = mock_stub
 
     # act
     status = mock_server_connection.status(mock_server_connection)
@@ -346,7 +346,9 @@ def test_server_connection_status_str_connected_with_metadata():
     status_str = str(status)
 
     # assert
-    expected_str = "Server localhost:50051 is connected.\n  version: 1.0\n  status: running"
+    expected_str = (
+        "Server localhost:50051 is connected.\n  version: 1.0\n  status: running"
+    )
     assert status_str == expected_str
 
 
