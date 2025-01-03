@@ -1,0 +1,91 @@
+
+
+
+
+
+The ``examples`` package 
+============================
+
+.. py:module:: ansys.additive.core.examples
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: examples
+.. tab-set::
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ansys.additive.core.examples.downloads`
+            - Provides functions for downloading sample datasets from the PyAdditive repository.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🗎 downloads<downloads/index.rst>
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+
+Provides utilities for use with PyAdditive examples.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
