@@ -1,0 +1,6 @@
+material\_yield\_strength
+=========================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.material_yield_strength
