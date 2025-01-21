@@ -48,7 +48,9 @@ from . import test_utils
 )
 def test_MeltPool_init_converts_MeltPoolMessage(thermal_history_output):
     # arrange, act
-    melt_pool = MeltPool(test_utils.get_test_melt_pool_message(), thermal_history_output)
+    melt_pool = MeltPool(
+        test_utils.get_test_melt_pool_message(), thermal_history_output
+    )
 
     # assert
     df = melt_pool.data_frame()
@@ -74,6 +76,7 @@ def test_SingleBeadSummary_init_returns_valid_result():
     # arrange
     melt_pool_msg = test_utils.get_test_melt_pool_message()
     expected_melt_pool = MeltPool(melt_pool_msg, None)
+    logs = "logs"
     machine = AdditiveMachine()
     material = test_utils.get_test_material()
     input = SingleBeadInput(
@@ -83,11 +86,12 @@ def test_SingleBeadSummary_init_returns_valid_result():
     )
 
     # act
-    summary = SingleBeadSummary(input, melt_pool_msg, None)
+    summary = SingleBeadSummary(input, melt_pool_msg, logs, None)
 
     # assert
     assert input == summary.input
     assert expected_melt_pool == summary.melt_pool
+    assert summary.logs == logs
     assert summary.melt_pool.thermal_history_output is None
 
 
@@ -107,7 +111,7 @@ def test_SingleBeadSummary_init_with_thermal_history_returns_valid_result(
     shutil.copy(thermal_history_vtk_zip, tmp_path)
 
     # act
-    summary = SingleBeadSummary(input, melt_pool_msg, tmp_path)
+    summary = SingleBeadSummary(input, melt_pool_msg, "logs", tmp_path)
 
     # assert
     assert input == summary.input
@@ -128,7 +132,7 @@ def test_SingleBeadSummary_init_raises_exception_for_invalid_melt_pool_message(
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid message type") as exc_info:
-        SingleBeadSummary(SingleBeadInput(), invalid_obj, tmp_path)
+        SingleBeadSummary(SingleBeadInput(), invalid_obj, "logs", tmp_path)
 
 
 @pytest.mark.parametrize(
@@ -144,7 +148,7 @@ def test_SingleBeadSummary_init_raises_exception_for_invalid_single_bead_input(
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid input type") as exc_info:
-        SingleBeadSummary(invalid_obj, MeltPoolMessage(), tmp_path)
+        SingleBeadSummary(invalid_obj, MeltPoolMessage(), "logs", tmp_path)
 
 
 def test_SingleBeadSummary_init_raises_exception_if_thermal_history_file_not_found(
@@ -156,7 +160,7 @@ def test_SingleBeadSummary_init_raises_exception_if_thermal_history_file_not_fou
 
     # act, assert
     with pytest.raises(FileNotFoundError, match="not found") as exc_info:
-        SingleBeadSummary(input, melt_pool_msg, tmp_path)
+        SingleBeadSummary(input, melt_pool_msg, "logs", tmp_path)
 
 
 def test_SingleBeadInput_to_simulation_request_assigns_values():
@@ -381,7 +385,9 @@ def test_MeltPool_with_thermal_history_repr_returns_expected_string(
         )
     )
 
-    mp_msg.thermal_history_vtk_zip = test_utils.get_test_file_path("gridfullthermal.zip")
+    mp_msg.thermal_history_vtk_zip = test_utils.get_test_file_path(
+        "gridfullthermal.zip"
+    )
 
     mp = MeltPool(mp_msg, tmp_path)
     mp_out_dir = os.path.abspath(mp.thermal_history_output)
@@ -400,7 +406,7 @@ def test_SingleBeadSummary_repr_returns_expected_string():
     # arrange
     msg = MeltPoolMessage()
     input = SingleBeadInput()
-    summary = SingleBeadSummary(input, msg, None)
+    summary = SingleBeadSummary(input, msg, "log message", None)
 
     # act, assert
     assert (
@@ -463,7 +469,8 @@ def test_SingleBeadSummary_repr_returns_expected_string():
         + "\n"
         + "melt_pool: MeltPool\n"
         + "Empty DataFrame\nColumns: [length, width, depth, reference_width, reference_depth]\nIndex: []\n"
-        + "grid_full_thermal_sensor_file_output_path: None"
+        + "grid_full_thermal_sensor_file_output_path: None\n"
+        + "logs: log message"
         + "\n"
     )
 
@@ -481,7 +488,9 @@ def test_SingleBeadInput_setters_raise_expected_errors():
         input.bead_length = float("nan")
     with pytest.raises(ValueError, match="thermal_history_interval must be a number"):
         input.thermal_history_interval = float("nan")
-    with pytest.raises(ValueError, match="thermal_history_interval must be between 1 and 10000"):
+    with pytest.raises(
+        ValueError, match="thermal_history_interval must be between 1 and 10000"
+    ):
         input.thermal_history_interval = 0
 
 

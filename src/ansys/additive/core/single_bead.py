@@ -278,9 +278,7 @@ class MeltPool:
     def __repr__(self):
         repr = type(self).__name__ + "\n"
         repr += self._df.to_string()
-        repr += (
-            "\n" + "grid_full_thermal_sensor_file_output_path: " + str(self.thermal_history_output)
-        )
+        repr += "\ngrid_full_thermal_sensor_file_output_path: " + str(self.thermal_history_output)
         return repr
 
     @property
@@ -298,6 +296,7 @@ class SingleBeadSummary:
         self,
         input: SingleBeadInput,
         msg: MeltPoolMessage,
+        logs: str,
         thermal_history_output: str | None = None,
     ):
         """Initialize a ``SingleBeadSummary`` object."""
@@ -307,6 +306,7 @@ class SingleBeadSummary:
             raise ValueError("Invalid message type passed to init, " + self.__class__.__name__)
         self._input = input
         self._melt_pool = MeltPool(msg, thermal_history_output)
+        self._logs = logs
         if thermal_history_output is not None:
             self._extract_thermal_history(thermal_history_output)
 
@@ -319,6 +319,11 @@ class SingleBeadSummary:
     def melt_pool(self) -> MeltPool:
         """Resulting melt pool."""
         return self._melt_pool
+
+    @property
+    def logs(self) -> str:
+        """Simulation logs."""
+        return self._logs
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"

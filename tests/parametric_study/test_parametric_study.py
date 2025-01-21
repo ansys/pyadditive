@@ -287,10 +287,12 @@ def test_add_summaries_with_single_bead_summary_adds_row(
     assert row[ColumnNames.MELT_POOL_WIDTH] == median_mp[MeltPoolColumnNames.WIDTH]
     assert row[ColumnNames.MELT_POOL_LENGTH] == median_mp[MeltPoolColumnNames.LENGTH]
     assert (
-        row[ColumnNames.MELT_POOL_REFERENCE_DEPTH] == median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]
+        row[ColumnNames.MELT_POOL_REFERENCE_DEPTH]
+        == median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]
     )
     assert (
-        row[ColumnNames.MELT_POOL_REFERENCE_WIDTH] == median_mp[MeltPoolColumnNames.REFERENCE_WIDTH]
+        row[ColumnNames.MELT_POOL_REFERENCE_WIDTH]
+        == median_mp[MeltPoolColumnNames.REFERENCE_WIDTH]
     )
     assert row[ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] == expected_dw
     assert row[ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] == expected_lw
@@ -317,12 +319,18 @@ def test_add_summaries_with_microstructure_summary_adds_row(
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
-    xy_stats = GrainStatistics(grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4)
-    xz_stats = GrainStatistics(grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8)
+    xy_stats = GrainStatistics(
+        grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4
+    )
+    xz_stats = GrainStatistics(
+        grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8
+    )
     yz_stats = GrainStatistics(
         grain_number=9, area_fraction=10, diameter_um=11, orientation_angle=12
     )
-    result = MicrostructureResult(xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes)
+    result = MicrostructureResult(
+        xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes
+    )
     result.xy_circle_equivalence.append(xy_stats)
     result.xz_circle_equivalence.append(xz_stats)
     result.yz_circle_equivalence.append(yz_stats)
@@ -439,7 +447,9 @@ def test_add_summaries_removes_duplicate_entries(tmp_path: pytest.TempPathFactor
     assert len(study.data_frame()) == 1
 
 
-@pytest.mark.parametrize("input_status", [(SimulationStatus.NEW), (SimulationStatus.SKIP)])
+@pytest.mark.parametrize(
+    "input_status", [(SimulationStatus.NEW), (SimulationStatus.SKIP)]
+)
 def test_add_summaries_overwrites_duplicate_entries_with_simulation_status_completed(
     input_status,
     tmp_path: pytest.TempPathFactory,
@@ -497,10 +507,12 @@ def test_add_summaries_overwrites_duplicate_entries_with_simulation_status_compl
     assert row[ColumnNames.MELT_POOL_WIDTH] == median_mp[MeltPoolColumnNames.WIDTH]
     assert row[ColumnNames.MELT_POOL_LENGTH] == median_mp[MeltPoolColumnNames.LENGTH]
     assert (
-        row[ColumnNames.MELT_POOL_REFERENCE_DEPTH] == median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]
+        row[ColumnNames.MELT_POOL_REFERENCE_DEPTH]
+        == median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]
     )
     assert (
-        row[ColumnNames.MELT_POOL_REFERENCE_WIDTH] == median_mp[MeltPoolColumnNames.REFERENCE_WIDTH]
+        row[ColumnNames.MELT_POOL_REFERENCE_WIDTH]
+        == median_mp[MeltPoolColumnNames.REFERENCE_WIDTH]
     )
     assert row[ColumnNames.MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH] == expected_dw
     assert row[ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] == expected_lw
@@ -781,8 +793,14 @@ def test_generate_porosity_permutations_creates_permutations(
                                     for w in stripe_widths:
                                         assert any(
                                             (df[ColumnNames.ITERATION] == 0)
-                                            & (df[ColumnNames.TYPE] == SimulationType.POROSITY)
-                                            & (df[ColumnNames.STATUS] == SimulationStatus.NEW)
+                                            & (
+                                                df[ColumnNames.TYPE]
+                                                == SimulationType.POROSITY
+                                            )
+                                            & (
+                                                df[ColumnNames.STATUS]
+                                                == SimulationStatus.NEW
+                                            )
                                             & (df[ColumnNames.MATERIAL] == "material")
                                             & (df[ColumnNames.HEATER_TEMPERATURE] == t)
                                             & (df[ColumnNames.LAYER_THICKNESS] == l)
@@ -796,9 +814,18 @@ def test_generate_porosity_permutations_creates_permutations(
                                             & (df[ColumnNames.STRIPE_WIDTH] == w)
                                             & (df[ColumnNames.ENERGY_DENSITY].notnull())
                                             & (df[ColumnNames.BUILD_RATE].notnull())
-                                            & (df[ColumnNames.POROSITY_SIZE_X] == size_x)
-                                            & (df[ColumnNames.POROSITY_SIZE_Y] == size_y)
-                                            & (df[ColumnNames.POROSITY_SIZE_Z] == size_z)
+                                            & (
+                                                df[ColumnNames.POROSITY_SIZE_X]
+                                                == size_x
+                                            )
+                                            & (
+                                                df[ColumnNames.POROSITY_SIZE_Y]
+                                                == size_y
+                                            )
+                                            & (
+                                                df[ColumnNames.POROSITY_SIZE_Z]
+                                                == size_z
+                                            )
                                         )
 
 
@@ -1007,7 +1034,10 @@ def test_generate_microstructure_permutations_creates_permutations(
                                                 df[ColumnNames.TYPE]
                                                 == SimulationType.MICROSTRUCTURE
                                             )
-                                            & (df[ColumnNames.STATUS] == SimulationStatus.NEW)
+                                            & (
+                                                df[ColumnNames.STATUS]
+                                                == SimulationStatus.NEW
+                                            )
                                             & (df[ColumnNames.MATERIAL] == "material")
                                             & (df[ColumnNames.HEATER_TEMPERATURE] == t)
                                             & (df[ColumnNames.LAYER_THICKNESS] == l)
@@ -1027,8 +1057,14 @@ def test_generate_microstructure_permutations_creates_permutations(
                                             & (df[ColumnNames.MICRO_SIZE_X] == size_x)
                                             & (df[ColumnNames.MICRO_SIZE_Y] == size_y)
                                             & (df[ColumnNames.MICRO_SIZE_Z] == size_z)
-                                            & (df[ColumnNames.COOLING_RATE] == cooling_rate)
-                                            & (df[ColumnNames.THERMAL_GRADIENT] == thermal_gradient)
+                                            & (
+                                                df[ColumnNames.COOLING_RATE]
+                                                == cooling_rate
+                                            )
+                                            & (
+                                                df[ColumnNames.THERMAL_GRADIENT]
+                                                == thermal_gradient
+                                            )
                                             & (
                                                 df[ColumnNames.MICRO_MELT_POOL_WIDTH]
                                                 == melt_pool_width
@@ -1037,12 +1073,17 @@ def test_generate_microstructure_permutations_creates_permutations(
                                                 df[ColumnNames.MICRO_MELT_POOL_DEPTH]
                                                 == melt_pool_depth
                                             )
-                                            & (df[ColumnNames.RANDOM_SEED] == random_seed)
+                                            & (
+                                                df[ColumnNames.RANDOM_SEED]
+                                                == random_seed
+                                            )
                                         )
 
 
 @pytest.mark.parametrize("value", [None, np.nan])
-def test_generate_microstructure_with_Nones_NANs_succeeds(value, tmp_path: pytest.TempPathFactory):
+def test_generate_microstructure_with_Nones_NANs_succeeds(
+    value, tmp_path: pytest.TempPathFactory
+):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     powers = [50]
@@ -1076,7 +1117,9 @@ def test_generate_microstructure_with_Nones_NANs_succeeds(value, tmp_path: pytes
 
 
 @pytest.mark.parametrize("value", [None, np.nan])
-def test_validate_microstructure_with_Nones_NANs_succeeds(value, tmp_path: pytest.TempPathFactory):
+def test_validate_microstructure_with_Nones_NANs_succeeds(
+    value, tmp_path: pytest.TempPathFactory
+):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     d = {
@@ -1299,7 +1342,7 @@ def test_update_updates_error_status(tmp_path: pytest.TempPathFactory):
     input = SingleBeadInput()
     # overwrite the id to match the one in the study
     input._id = id
-    error = SimulationError(input, "error message")
+    error = SimulationError(input, "error message", "logs")
 
     # act
     study.update([error])
@@ -1333,9 +1376,16 @@ def test_update_updates_single_bead_permutation(tmp_path: pytest.TempPathFactory
     assert len(df2) == len(df1) == 1
     assert df1.loc[0, ColumnNames.STATUS] == SimulationStatus.NEW
     assert df2.loc[0, ColumnNames.STATUS] == SimulationStatus.COMPLETED
-    assert df2.loc[0, ColumnNames.MELT_POOL_WIDTH] == mp_median[MeltPoolColumnNames.WIDTH]
-    assert df2.loc[0, ColumnNames.MELT_POOL_DEPTH] == mp_median[MeltPoolColumnNames.DEPTH]
-    assert df2.loc[0, ColumnNames.MELT_POOL_LENGTH] == mp_median[MeltPoolColumnNames.LENGTH]
+    assert (
+        df2.loc[0, ColumnNames.MELT_POOL_WIDTH] == mp_median[MeltPoolColumnNames.WIDTH]
+    )
+    assert (
+        df2.loc[0, ColumnNames.MELT_POOL_DEPTH] == mp_median[MeltPoolColumnNames.DEPTH]
+    )
+    assert (
+        df2.loc[0, ColumnNames.MELT_POOL_LENGTH]
+        == mp_median[MeltPoolColumnNames.LENGTH]
+    )
     assert df2.loc[0, ColumnNames.MELT_POOL_LENGTH_OVER_WIDTH] == (
         mp_median[MeltPoolColumnNames.LENGTH] / mp_median[MeltPoolColumnNames.WIDTH]
     )
@@ -1393,12 +1443,18 @@ def test_update_updates_microstructure_permutation(tmp_path: pytest.TempPathFact
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
-    xy_stats = GrainStatistics(grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4)
-    xz_stats = GrainStatistics(grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8)
+    xy_stats = GrainStatistics(
+        grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4
+    )
+    xz_stats = GrainStatistics(
+        grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8
+    )
     yz_stats = GrainStatistics(
         grain_number=9, area_fraction=10, diameter_um=11, orientation_angle=12
     )
-    result = MicrostructureResult(xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes)
+    result = MicrostructureResult(
+        xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes
+    )
     result.xy_circle_equivalence.append(xy_stats)
     result.xz_circle_equivalence.append(xz_stats)
     result.yz_circle_equivalence.append(yz_stats)
@@ -1627,9 +1683,18 @@ def test_add_inputs_assigns_unspecified_microstructure_params_correctly(
     df = study.data_frame()
     assert len(df) == 1
     assert df.loc[0, ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE
-    assert df.loc[0, ColumnNames.MICRO_MIN_X] == MicrostructureInput.DEFAULT_POSITION_COORDINATE
-    assert df.loc[0, ColumnNames.MICRO_MIN_Y] == MicrostructureInput.DEFAULT_POSITION_COORDINATE
-    assert df.loc[0, ColumnNames.MICRO_MIN_Z] == MicrostructureInput.DEFAULT_POSITION_COORDINATE
+    assert (
+        df.loc[0, ColumnNames.MICRO_MIN_X]
+        == MicrostructureInput.DEFAULT_POSITION_COORDINATE
+    )
+    assert (
+        df.loc[0, ColumnNames.MICRO_MIN_Y]
+        == MicrostructureInput.DEFAULT_POSITION_COORDINATE
+    )
+    assert (
+        df.loc[0, ColumnNames.MICRO_MIN_Z]
+        == MicrostructureInput.DEFAULT_POSITION_COORDINATE
+    )
     assert df.loc[0, ColumnNames.MICRO_SIZE_X] == size_x
     assert df.loc[0, ColumnNames.MICRO_SIZE_Y] == size_y
     assert df.loc[0, ColumnNames.MICRO_SIZE_Z] == size_z
@@ -1711,7 +1776,9 @@ def test_add_inputs_returns_correct_number_of_simulations_added_to_the_study(
     assert added == 3
 
 
-@pytest.mark.parametrize("input_status", [(SimulationStatus.NEW), (SimulationStatus.SKIP)])
+@pytest.mark.parametrize(
+    "input_status", [(SimulationStatus.NEW), (SimulationStatus.SKIP)]
+)
 def test_add_inputs_overwrites_duplicate_entries_by_keeping_earlier_entry(
     input_status, tmp_path: pytest.TempPathFactory
 ):
@@ -1719,7 +1786,9 @@ def test_add_inputs_overwrites_duplicate_entries_by_keeping_earlier_entry(
     study = ParametricStudy(tmp_path / "test_study", "material")
     input_sb_1 = SingleBeadInput(bead_length=0.001)
     input_p_1 = PorosityInput(size_x=0.001, size_y=0.001, size_z=0.001)
-    input_m_1 = MicrostructureInput(sample_size_x=0.001, sample_size_y=0.001, sample_size_z=0.002)
+    input_m_1 = MicrostructureInput(
+        sample_size_x=0.001, sample_size_y=0.001, sample_size_z=0.002
+    )
     input_sb_1_duplicate = SingleBeadInput(bead_length=0.001)
     input_p_1_duplicate = PorosityInput(size_x=0.001, size_y=0.001, size_z=0.001)
     input_m_1_duplicate = MicrostructureInput(
@@ -1747,7 +1816,9 @@ def test_add_inputs_overwrites_duplicate_entries_by_keeping_earlier_entry(
     assert df.loc[2, ColumnNames.ID] == input_m_1.id
 
 
-@pytest.mark.parametrize("input_status", [(SimulationStatus.NEW), (SimulationStatus.SKIP)])
+@pytest.mark.parametrize(
+    "input_status", [(SimulationStatus.NEW), (SimulationStatus.SKIP)]
+)
 def test_add_inputs_overwrites_duplicate_entries_with_priority_to_simulation_status_new(
     input_status, tmp_path: pytest.TempPathFactory
 ):
@@ -1767,7 +1838,9 @@ def test_add_inputs_overwrites_duplicate_entries_with_priority_to_simulation_sta
     assert df.loc[0, ColumnNames.ID] == sb1.id
 
 
-@pytest.mark.parametrize("input_status", [(SimulationStatus.NEW), (SimulationStatus.SKIP)])
+@pytest.mark.parametrize(
+    "input_status", [(SimulationStatus.NEW), (SimulationStatus.SKIP)]
+)
 def test_add_inputs_does_not_overwrite_simulation_with_status_completed(
     input_status, tmp_path: pytest.TempPathFactory
 ):
@@ -1941,7 +2014,9 @@ def test_format_version_returns_proper_version(tmp_path: pytest.TempPathFactory)
     assert study.format_version == FORMAT_VERSION
 
 
-@pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
+@pytest.mark.skipif(
+    platform.system() != "Windows", reason="Test only valid on Windows."
+)
 def test_update_format_updates_version_1_to_latest(tmp_path: pytest.TempPathFactory):
     # arrange
     v1_file = tmp_path / "version1.ps"
@@ -1975,7 +2050,9 @@ def test_update_format_updates_version_1_to_latest(tmp_path: pytest.TempPathFact
     assert latest_study.material_name == "test-material"
 
 
-@pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
+@pytest.mark.skipif(
+    platform.system() != "Windows", reason="Test only valid on Windows."
+)
 def test_update_format_raises_error_when_no_simulations_present(
     tmp_path: pytest.TempPathFactory,
 ):
@@ -1994,7 +2071,9 @@ def test_update_format_raises_error_when_no_simulations_present(
         ParametricStudy.update_format(v1_study)
 
 
-@pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
+@pytest.mark.skipif(
+    platform.system() != "Windows", reason="Test only valid on Windows."
+)
 def test_update_format_updates_Ansys_242_to_latest(tmp_path: pytest.TempPathFactory):
     # arrange
     study_file = tmp_path / "v242.ps"
@@ -2288,7 +2367,9 @@ def test_import_csv_study_calls_remove_duplicates_entries_correctly(
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "IN718")
     csv_file = test_utils.get_test_file_path(pathlib.Path("csv") / file_name)
-    patched_simulate = create_autospec(ParametricStudy._remove_duplicate_entries, return_value=0)
+    patched_simulate = create_autospec(
+        ParametricStudy._remove_duplicate_entries, return_value=0
+    )
     monkeypatch.setattr(ParametricStudy, "_remove_duplicate_entries", patched_simulate)
 
     # act
@@ -2303,7 +2384,9 @@ def test_import_csv_study_drops_duplicates_with_correct_simulation_status_heirar
 ):
     # arrange
     study_name = "test_study"
-    duplicate_rows_file = test_utils.get_test_file_path(pathlib.Path("csv") / "duplicate-rows.csv")
+    duplicate_rows_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "duplicate-rows.csv"
+    )
     study = ParametricStudy(tmp_path / study_name, "IN718")
 
     # act
@@ -2360,7 +2443,9 @@ def test_import_csv_study_does_not_add_simulations_with_nan_inputs_and_returns_e
 ):
     # arrange
     study_name = "test_study"
-    nan_input_parameters_file = test_utils.get_test_file_path(pathlib.Path("csv") / file_name)
+    nan_input_parameters_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / file_name
+    )
 
     # act
     study = ParametricStudy(tmp_path / study_name, "IN718")
@@ -2540,7 +2625,9 @@ def test_filter_data_frame_filters_by_multiple_simulation_types(
     study.add_inputs([MicrostructureInput()])
 
     # act
-    df = study.filter_data_frame(types=[SimulationType.POROSITY, SimulationType.SINGLE_BEAD])
+    df = study.filter_data_frame(
+        types=[SimulationType.POROSITY, SimulationType.SINGLE_BEAD]
+    )
 
     # assert
     assert len(df) == 2
@@ -2606,8 +2693,14 @@ def test_filter_data_frame_logs_warnings_for_simulation_ids_not_found(
     # assert
     assert len(df) == 0
     assert len(caplog.records) == 2
-    assert "Simulation ID 'bogus' not found in the parametric study" in caplog.records[0].message
-    assert "Simulation ID 'bogus2' not found in the parametric study" in caplog.records[1].message
+    assert (
+        "Simulation ID 'bogus' not found in the parametric study"
+        in caplog.records[0].message
+    )
+    assert (
+        "Simulation ID 'bogus2' not found in the parametric study"
+        in caplog.records[1].message
+    )
 
 
 def test_filter_data_frame_logs_debug_for_duplicate_simulation_id(
@@ -2721,7 +2814,9 @@ def test_filter_data_frame_with_simulation_ids_ignores_status(
         sb = SingleBeadInput(bead_length=(0.001 + (i * 0.0001)), material=material)
         ids.append(sb.id)
         study.add_inputs([sb])
-        study._data_frame.iloc[i, study._data_frame.columns.get_loc(ColumnNames.STATUS)] = s
+        study._data_frame.iloc[
+            i, study._data_frame.columns.get_loc(ColumnNames.STATUS)
+        ] = s
 
     # act
     df = study.filter_data_frame(
@@ -2743,7 +2838,9 @@ def test_filter_data_frame_without_simulations_ids_only_adds_new_simulations(
         sb = SingleBeadInput(bead_length=(0.001 + (i * 0.0001)), material=material)
         ids.append(sb.id)
         study.add_inputs([sb])
-        study._data_frame.iloc[i, study._data_frame.columns.get_loc(ColumnNames.STATUS)] = s
+        study._data_frame.iloc[
+            i, study._data_frame.columns.get_loc(ColumnNames.STATUS)
+        ] = s
 
     # act
     df = study.filter_data_frame()
@@ -2844,7 +2941,9 @@ def test_create_single_bead_input():
     material = AdditiveMaterial(elastic_modulus=456)
 
     # act
-    input = ParametricStudy._create_single_bead_input(series, material=material, machine=machine)
+    input = ParametricStudy._create_single_bead_input(
+        series, material=material, machine=machine
+    )
 
     # assert
     assert isinstance(input, SingleBeadInput)
@@ -2872,7 +2971,9 @@ def test_create_porosity_input():
     material = AdditiveMaterial(elastic_modulus=456)
 
     # act
-    input = ParametricStudy._create_porosity_input(series, material=material, machine=machine)
+    input = ParametricStudy._create_porosity_input(
+        series, material=material, machine=machine
+    )
 
     # assert
     assert isinstance(input, PorosityInput)
@@ -2920,7 +3021,9 @@ def test_create_microstructure_input_assigns_all_values():
     material = AdditiveMaterial(elastic_modulus=456)
 
     # act
-    input = ParametricStudy._create_microstructure_input(series, material=material, machine=machine)
+    input = ParametricStudy._create_microstructure_input(
+        series, material=material, machine=machine
+    )
 
     # assert
     assert isinstance(input, MicrostructureInput)
@@ -2970,7 +3073,9 @@ def test_create_microstructure_input_assigns_defaults_for_nans():
     material = AdditiveMaterial(elastic_modulus=456)
 
     # act
-    input = ParametricStudy._create_microstructure_input(series, material=material, machine=machine)
+    input = ParametricStudy._create_microstructure_input(
+        series, material=material, machine=machine
+    )
 
     # assert
     assert isinstance(input, MicrostructureInput)

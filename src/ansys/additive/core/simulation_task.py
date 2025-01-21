@@ -21,6 +21,8 @@
 # SOFTWARE.
 """Container for a simulation task."""
 
+import base64
+import io
 import os
 import zipfile
 
@@ -33,6 +35,7 @@ from google.longrunning.operations_pb2 import (
 from google.protobuf.any_pb2 import Any
 from google.protobuf.duration_pb2 import Duration
 from google.rpc.code_pb2 import Code
+from google.rpc.error_details_pb2 import ErrorInfo
 
 from ansys.additive.core.download import download_file
 from ansys.additive.core.logger import LOG
@@ -238,10 +241,6 @@ class SimulationTask:
         """
         progress = self._convert_metadata_to_progress(operation.metadata)
 
-        if progress.state == ProgressState.ERROR:
-            self._summary = SimulationError(self._simulation_input, progress.message)
-            return progress
-
         if operation.HasField("response"):
             response = SimulationResponse()
             operation.response.Unpack(response)
@@ -250,7 +249,19 @@ class SimulationTask:
             Code.CANCELLED,
             Code.OK,
         ]:
-            self._summary = SimulationError(self._simulation_input, operation.error.message)
+            logs = ""
+            if operation.error.details:
+                info = ErrorInfo()
+                operation.error.details[0].Unpack(info)
+                if info.metadata["mimetype"] != "application/zip":
+                    logs = base64.b64decode(info.metadata["logs"]).decode("utf-8")
+                else:
+                    logs = self._extract_logs(info.metadata["logs"])
+
+            self._summary = SimulationError(self._simulation_input, operation.error.message, logs)
+
+            # ensure returned progress has an error state
+            progress.state = ProgressState.ERROR
 
         return progress
 
@@ -344,3 +355,43 @@ class SimulationTask:
     def _check_if_thermal_history_is_present(self, response) -> bool:
         """Check if thermal history output is present in the response."""
         return response.melt_pool.thermal_history_vtk_zip != str()
+
+    def _extract_logs(self, log_bytes: bytes) -> str:
+        """
+        Extract log files from an array of bytes.
+
+
+        Parameters
+        ----------
+        log_bytes : bytes
+            An array of bytes containing the one or more log files.
+            The bytes are assumed to be base 64 and zip encoded.
+
+        Returns
+        -------
+        str
+            A string containing the concatenated log file contents.
+            The name of each log file will precede its contents.
+
+        """
+        if not log_bytes:
+            return ""
+
+        # Create a BytesIO object from log_bytes
+        byte_stream_io = io.BytesIO(base64.b64decode(log_bytes))
+
+        # Open the ZIP file from the byte stream
+        with zipfile.ZipFile(byte_stream_io, "r") as zip_ref:
+            # Initialize an empty string to store the concatenated content
+            concatenated_content = ""
+
+            # Iterate through the files in the ZIP archive
+            for file_name in zip_ref.namelist():
+                # Read the content of the file
+                with zip_ref.open(file_name) as file:
+                    file_content = file.read().decode("utf-8")
+
+                # Concatenate the file name and its content
+                concatenated_content += f"File: {file_name}\n{file_content}\n"
+
+        return concatenated_content

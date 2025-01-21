@@ -22,8 +22,8 @@
 """Provides common definitions and classes for simulations."""
 
 from enum import Enum
-from typing import Union
 
+from ansys.additive.core.material_tuning import MaterialTuningInput
 from ansys.additive.core.microstructure import MicrostructureInput
 from ansys.additive.core.porosity import PorosityInput
 from ansys.additive.core.single_bead import SingleBeadInput
@@ -67,21 +67,46 @@ class SimulationStatus(str, Enum):
 
 
 class SimulationError:
-    """Provides simulation errors."""
+    """Provides simulation error information.
+
+    Parameters
+    ----------
+    input : SingleBeadInput | PorosityInput | MicrostructureInput | ThermalHistoryInput | MaterialTuningInput
+        Simulation input.
+    message : str
+        Simulation error message.
+    logs : str
+        Provides simulation logs.
+
+    """
 
     def __init__(
         self,
-        input: Union[SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput],
+        input: (
+            SingleBeadInput
+            | PorosityInput
+            | MicrostructureInput
+            | ThermalHistoryInput
+            | MaterialTuningInput
+        ),
         message: str,
+        logs: str,
     ):
         """Initialize a ``SimulationError`` object."""
         self._input = input
         self._message = message
+        self._logs = logs
 
     @property
     def input(
         self,
-    ) -> Union[SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput]:
+    ) -> (
+        SingleBeadInput
+        | PorosityInput
+        | MicrostructureInput
+        | ThermalHistoryInput
+        | MaterialTuningInput
+    ):
         """Simulation input."""
         return self._input
 
@@ -89,3 +114,8 @@ class SimulationError:
     def message(self) -> str:
         """Provides simulation error message."""
         return self._message
+
+    @property
+    def logs(self) -> str:
+        """Provides simulation logs."""
+        return self._logs
