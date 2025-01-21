@@ -49,6 +49,8 @@ def reset_pyvista(gallery_conf, fname):
     pyvista.BUILDING_GALLERY = True
     pyvista.global_theme.window_size = np.array([1024, 768])
     pyvista.FIGURE_PATH = os.path.join(os.path.abspath("./images/"), "auto-generated/")
+    if not os.path.exists(pyvista.FIGURE_PATH):
+        os.makedirs(pyvista.FIGURE_PATH)
 
 
 # Project information
