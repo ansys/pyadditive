@@ -31,9 +31,9 @@ from ansys.additive.core.material_tuning import (
     MaterialTuningResultMessage,
     MaterialTuningSummary,
 )
-from ansys.api.additive.v0.additive_materials_pb2 import (
-    TuneMaterialRequest,
-    TuneMaterialResponse,
+from ansys.api.additive.v0.additive_simulation_pb2 import (
+    SimulationRequest,
+    SimulationResponse,
 )
 
 from . import test_utils
@@ -134,7 +134,7 @@ def test_MaterialTuningInput_str_returns_expected_string():
     )
 
 
-def test_to_request_creates_expected_TuneMaterialRequest():
+def test_to_request_creates_expected_SimulationRequest():
     # arrange
     # we need the files to exist, but we don't care about the contents
     file_path = test_utils.get_test_file_path("slm_build_file.zip")
@@ -153,15 +153,19 @@ def test_to_request_creates_expected_TuneMaterialRequest():
     request = input._to_request()
 
     # assert
-    assert isinstance(request, TuneMaterialRequest)
+    assert isinstance(request, SimulationRequest)
     assert request.id == input.id
-    assert request.input.allowable_error == 1
-    assert request.input.max_iterations == 2
-    assert request.input.base_plate_temperature == 3
-    assert request.input.experiment_data == expected_file_bytes
-    assert request.input.material_parameters == expected_file_bytes
-    assert request.input.thermal_properties_lookup == expected_file_bytes
-    assert request.input.characteristic_width_lookup == expected_file_bytes
+    assert request.material_tuning_input.allowable_error == 1
+    assert request.material_tuning_input.max_iterations == 2
+    assert request.material_tuning_input.base_plate_temperature == 3
+    assert request.material_tuning_input.experiment_data == expected_file_bytes
+    assert request.material_tuning_input.material_parameters == expected_file_bytes
+    assert (
+        request.material_tuning_input.thermal_properties_lookup == expected_file_bytes
+    )
+    assert (
+        request.material_tuning_input.characteristic_width_lookup == expected_file_bytes
+    )
 
 
 def test_MaterialTuningInput_eq():
@@ -259,17 +263,19 @@ def test_MaterialTuningSummary_init_with_minimum_fields_creates_expected_object(
 
 @pytest.mark.parametrize(
     "invalid_obj",
-    [int(1), None, "string", MaterialTuningInputMessage(), TuneMaterialResponse()],
+    [int(1), None, "string", MaterialTuningInputMessage(), SimulationResponse()],
 )
 def test_MaterialTuningSummary_init_raises_type_error_for_invalid_input(invalid_obj):
     # arrange, act, assert
-    with pytest.raises(TypeError, match="Parameter 'input' is not a 'MaterialTuningInput' object"):
+    with pytest.raises(
+        TypeError, match="Parameter 'input' is not a 'MaterialTuningInput' object"
+    ):
         MaterialTuningSummary(invalid_obj, MaterialTuningResultMessage(), "output_dir")
 
 
 @pytest.mark.parametrize(
     "invalid_obj",
-    [int(1), None, "string", MaterialTuningInputMessage(), TuneMaterialResponse()],
+    [int(1), None, "string", MaterialTuningInputMessage(), SimulationResponse()],
 )
 def test_MaterialTuningSummary_init_raises_type_error_for_invalid_message(invalid_obj):
     # arrange
