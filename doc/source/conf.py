@@ -277,9 +277,9 @@ if BUILD_EXAMPLES is True:
         # Set plot_gallery to False for building docs without running examples.
         "plot_gallery": PLOT_GALLERY,
         # Allow parallel execution of examples
-        "parallel": 4,  # experimental and incompatible with PyVista
+        # "parallel": 4,  # experimental and incompatible with PyVista
         # Reset PyVista for each example, required with parallel execution
-        "reset_modules": (reset_pyvista,),
+        # "reset_modules": (reset_pyvista,),
     }
     print(f"sphinx_gallery_conf {sphinx_gallery_conf}")
 
