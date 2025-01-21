@@ -22,7 +22,6 @@ pyvista.set_error_output_file("errors.txt")
 
 # Ensure that offscreen rendering is used for docs generation
 pyvista.OFF_SCREEN = True
-pyvista.BUILDING_GALLERY = True
 
 try:
     pyvista.global_theme.window_size = np.array([1024, 768])
