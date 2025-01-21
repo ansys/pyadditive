@@ -223,7 +223,9 @@ if BUILD_API is True:
         "config.cache",
     ]
 BUILD_EXAMPLES = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
-BUILD_EXAMPLES_LONG = True if os.environ.get("BUILD_EXAMPLES_LONG", "true") == "true" else False
+BUILD_EXAMPLES_LONG = (
+    True if os.environ.get("BUILD_EXAMPLES_LONG", "true") == "true" else False
+)
 PLOT_GALLERY = True if os.environ.get("PLOT_GALLERY", "true") == "true" else False
 if BUILD_EXAMPLES is True:
     # Necessary to build examples using PyVista
@@ -264,6 +266,8 @@ if BUILD_EXAMPLES is True:
         "thumbnail_size": (350, 350),
         # Set plot_gallery to False for building docs without running examples.
         "plot_gallery": PLOT_GALLERY,
+        # Allow parallel execution of examples
+        "parallel": 4,
     }
     print(f"sphinx_gallery_conf {sphinx_gallery_conf}")
 
