@@ -30,7 +30,7 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 from ansys.api.additive.v0.additive_domain_pb2 import (
     MaterialTuningResult as MaterialTuningResultMessage,
 )
-from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialRequest
+from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 
 class MaterialTuningInput(SimulationInputBase):
@@ -94,7 +94,7 @@ class MaterialTuningInput(SimulationInputBase):
         self.characteristic_width_lookup_file = characteristic_width_lookup_file
         self.base_plate_temperature = base_plate_temperature
 
-    def _to_request(self) -> TuneMaterialRequest:
+    def _to_request(self) -> SimulationRequest:
         """Convert this object into a material tuning request message."""
         input = MaterialTuningInputMessage(
             allowable_error=self.allowable_error,
@@ -110,7 +110,7 @@ class MaterialTuningInput(SimulationInputBase):
         if self.characteristic_width_lookup_file:
             with open(self.characteristic_width_lookup_file, "rb") as f:
                 input.characteristic_width_lookup = f.read()
-        return TuneMaterialRequest(id=self.id, input=input)
+        return SimulationRequest(id=self.id, material_tuning_input=input)
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"

@@ -41,6 +41,18 @@ warnings.filterwarnings(
     message="Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.",
 )
 
+
+def reset_pyvista(gallery_conf, fname):
+    """Reset PyVista for each example."""
+    # pyvista.close_all()
+    pyvista.OFF_SCREEN = True
+    pyvista.BUILDING_GALLERY = True
+    pyvista.global_theme.window_size = np.array([1024, 768])
+    pyvista.FIGURE_PATH = os.path.join(os.path.abspath("./images/"), "auto-generated/")
+    if not os.path.exists(pyvista.FIGURE_PATH):
+        os.makedirs(pyvista.FIGURE_PATH)
+
+
 # Project information
 project = "PyAdditive"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
@@ -223,7 +235,9 @@ if BUILD_API is True:
         "config.cache",
     ]
 BUILD_EXAMPLES = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
-BUILD_EXAMPLES_LONG = True if os.environ.get("BUILD_EXAMPLES_LONG", "true") == "true" else False
+BUILD_EXAMPLES_LONG = (
+    True if os.environ.get("BUILD_EXAMPLES_LONG", "true") == "true" else False
+)
 PLOT_GALLERY = True if os.environ.get("PLOT_GALLERY", "true") == "true" else False
 if BUILD_EXAMPLES is True:
     # Necessary to build examples using PyVista
@@ -264,6 +278,10 @@ if BUILD_EXAMPLES is True:
         "thumbnail_size": (350, 350),
         # Set plot_gallery to False for building docs without running examples.
         "plot_gallery": PLOT_GALLERY,
+        # Allow parallel execution of examples
+        "parallel": 1,  # experimental, use 1 until we can fix additiveserver
+        # Reset PyVista for each example, required with parallel execution
+        "reset_modules": (reset_pyvista,),
     }
     print(f"sphinx_gallery_conf {sphinx_gallery_conf}")
 
