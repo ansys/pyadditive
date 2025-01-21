@@ -41,6 +41,16 @@ warnings.filterwarnings(
     message="Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.",
 )
 
+
+def reset_pyvista(gallery_conf, fname):
+    """Reset PyVista for each example."""
+    # pyvista.close_all()
+    pyvista.OFF_SCREEN = True
+    pyvista.BUILDING_GALLERY = True
+    pyvista.global_theme.window_size = np.array([1024, 768])
+    pyvista.FIGURE_PATH = os.path.join(os.path.abspath("./images/"), "auto-generated/")
+
+
 # Project information
 project = "PyAdditive"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
@@ -267,7 +277,9 @@ if BUILD_EXAMPLES is True:
         # Set plot_gallery to False for building docs without running examples.
         "plot_gallery": PLOT_GALLERY,
         # Allow parallel execution of examples
-        # "parallel": 4, experimental and incompatible with PyVista
+        "parallel": 4,  # experimental and incompatible with PyVista
+        # Reset PyVista for each example, required with parallel execution
+        "reset_modules": (reset_pyvista,),
     }
     print(f"sphinx_gallery_conf {sphinx_gallery_conf}")
 
