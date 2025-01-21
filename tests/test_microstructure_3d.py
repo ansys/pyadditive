@@ -80,6 +80,7 @@ def test_Microstructure3DSummary_init_returns_expected_value():
     assert summary.xy_average_grain_size == 6
     assert summary.xz_average_grain_size == 42
     assert summary.yz_average_grain_size == 110
+    assert summary.logs == "logs"
     # TODO: uncomment when the following properties are implemented
     # assert summary.xy_vtk == os.path.join(user_data_path, "id", "xy.vtk")
     # assert os.path.exists(summary.xy_vtk)

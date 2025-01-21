@@ -465,6 +465,7 @@ def test_ThermalHistorySummary_init_returns_expected_value():
     assert isinstance(summary, ThermalHistorySummary)
     assert input == summary.input
     assert summary.coax_ave_output_folder == out_dir
+    assert summary.logs == "logs"
 
 
 @pytest.mark.parametrize(
