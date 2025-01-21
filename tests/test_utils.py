@@ -27,6 +27,7 @@ from ansys.additive.core.material import (
     CharacteristicWidthDataPoint,
     ThermalPropertiesDataPoint,
 )
+from ansys.additive.core.material_tuning import MaterialTuningInput
 from ansys.additive.core.single_bead import (
     MeltPoolMessage,
     SingleBeadInput,
@@ -139,3 +140,12 @@ def get_test_file_path(name: str) -> str:
     """Retrieve the absolute path to a test file in the data folder."""
     dir_name = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(dir_name, "data", name)
+
+
+def get_test_material_tuning_input() -> MaterialTuningInput:
+    file_name = get_test_file_path("slm_build_file.zip")
+    return MaterialTuningInput(
+        experiment_data_file=file_name,
+        material_configuration_file=file_name,
+        thermal_properties_lookup_file=file_name,
+    )

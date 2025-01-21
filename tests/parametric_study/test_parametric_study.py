@@ -200,7 +200,7 @@ def test_add_summaries_with_porosity_summary_adds_row(tmp_path: pytest.TempPathF
         powder_ratio=11,
         solid_ratio=12,
     )
-    summary = PorositySummary(input, result)
+    summary = PorositySummary(input, result, "logs")
     expected_build_rate = build_rate(
         machine.scan_speed, machine.layer_thickness, machine.hatch_spacing
     )
@@ -334,7 +334,7 @@ def test_add_summaries_with_microstructure_summary_adds_row(
     result.xy_circle_equivalence.append(xy_stats)
     result.xz_circle_equivalence.append(xz_stats)
     result.yz_circle_equivalence.append(yz_stats)
-    summary = MicrostructureSummary(input, result, user_data_path)
+    summary = MicrostructureSummary(input, result, "logs", user_data_path)
     expected_build_rate = build_rate(
         machine.scan_speed, machine.layer_thickness, machine.hatch_spacing
     )
@@ -409,7 +409,7 @@ def test_add_summaries_returns_correct_number_of_added_summaries(
         powder_ratio=11,
         solid_ratio=12,
     )
-    summary = PorositySummary(input, result)
+    summary = PorositySummary(input, result, "logs")
 
     # act
     added = study.add_summaries([summary], iteration=99)
@@ -437,7 +437,7 @@ def test_add_summaries_removes_duplicate_entries(tmp_path: pytest.TempPathFactor
         powder_ratio=11,
         solid_ratio=12,
     )
-    summary = PorositySummary(input, result)
+    summary = PorositySummary(input, result, "logs")
 
     # act
     study.add_summaries([summary], iteration=1)
@@ -465,7 +465,7 @@ def test_add_summaries_overwrites_duplicate_entries_with_simulation_status_compl
         material=material,
     )
     melt_pool_msg = test_utils.get_test_melt_pool_message()
-    summary = SingleBeadSummary(input_sb_1, melt_pool_msg, None)
+    summary = SingleBeadSummary(input_sb_1, melt_pool_msg, "logs", None)
     median_mp = summary.melt_pool.data_frame().median()
     expected_dw = (
         median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]
@@ -552,8 +552,8 @@ def test_add_summaries_overwrites_duplicate_completed_simulations_with_newer_ent
     expected_build_rate = build_rate(
         machine.scan_speed, machine.layer_thickness, machine.hatch_spacing
     )
-    summary1 = PorositySummary(input1, result1)
-    summary2 = PorositySummary(input2, result2)
+    summary1 = PorositySummary(input1, result1, "log1")
+    summary2 = PorositySummary(input2, result2, "log2")
 
     # act
     study.add_summaries([summary1], iteration=1)
@@ -1366,7 +1366,7 @@ def test_update_updates_single_bead_permutation(tmp_path: pytest.TempPathFactory
     input._id = id
     mp_msg = test_utils.get_test_melt_pool_message()
     mp_median = MeltPool(mp_msg, tmp_path).data_frame().median()
-    summary = SingleBeadSummary(input, mp_msg, None)
+    summary = SingleBeadSummary(input, mp_msg, "logs", None)
 
     # act
     study.update([summary])
@@ -1417,7 +1417,7 @@ def test_update_updates_porosity_permutation(tmp_path: pytest.TempPathFactory):
         powder_ratio=11,
         solid_ratio=12,
     )
-    summary = PorositySummary(input, result)
+    summary = PorositySummary(input, result, "logs")
 
     # act
     study.update([summary])
@@ -1458,7 +1458,7 @@ def test_update_updates_microstructure_permutation(tmp_path: pytest.TempPathFact
     result.xy_circle_equivalence.append(xy_stats)
     result.xz_circle_equivalence.append(xz_stats)
     result.yz_circle_equivalence.append(yz_stats)
-    summary = MicrostructureSummary(input, result, user_data_path)
+    summary = MicrostructureSummary(input, result, "logs", user_data_path)
 
     # act
     study.update([summary])
@@ -1849,7 +1849,7 @@ def test_add_inputs_does_not_overwrite_simulation_with_status_completed(
     study = ParametricStudy(tmp_path / "test_study", material_name)
     sb = SingleBeadInput(material=AdditiveMaterial(name=material_name))
     melt_pool_msg = test_utils.get_test_melt_pool_message()
-    summary = SingleBeadSummary(sb, melt_pool_msg, None)
+    summary = SingleBeadSummary(sb, melt_pool_msg, "logs", None)
 
     # act
     study.add_summaries([summary], iteration=1)

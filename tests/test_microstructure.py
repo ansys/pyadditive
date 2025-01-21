@@ -42,6 +42,7 @@ from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 def test_MicrostructureSummary_init_returns_expected_value():
     # arrange
+    logs = "log messages"
     user_data_path = os.path.join(tempfile.gettempdir(), "microstructure_summary_init")
     if not os.path.exists(user_data_path):
         os.makedirs(user_data_path)
@@ -49,18 +50,24 @@ def test_MicrostructureSummary_init_returns_expected_value():
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
-    xy_stats = GrainStatistics(grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4)
-    xz_stats = GrainStatistics(grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8)
+    xy_stats = GrainStatistics(
+        grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4
+    )
+    xz_stats = GrainStatistics(
+        grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8
+    )
     yz_stats = GrainStatistics(
         grain_number=9, area_fraction=10, diameter_um=11, orientation_angle=12
     )
-    result = MicrostructureResult(xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes)
+    result = MicrostructureResult(
+        xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes
+    )
     result.xy_circle_equivalence.append(xy_stats)
     result.xz_circle_equivalence.append(xz_stats)
     result.yz_circle_equivalence.append(yz_stats)
 
     # act
-    summary = MicrostructureSummary(input, result, user_data_path)
+    summary = MicrostructureSummary(input, result, logs, user_data_path)
 
     # assert
     assert isinstance(summary, MicrostructureSummary)
@@ -86,6 +93,7 @@ def test_MicrostructureSummary_init_returns_expected_value():
     assert summary.xy_average_grain_size == 6
     assert summary.xz_average_grain_size == 42
     assert summary.yz_average_grain_size == 110
+    assert summary.logs == logs
 
     # clean up
     shutil.rmtree(user_data_path)
@@ -104,7 +112,7 @@ def test_MicrostructureSummary_init_raises_exception_for_invalid_input_type(
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid input type"):
-        MicrostructureSummary(invalid_obj, MicrostructureResult(), ".")
+        MicrostructureSummary(invalid_obj, MicrostructureResult(), "logs", ".")
 
 
 @pytest.mark.parametrize(
@@ -120,7 +128,7 @@ def test_MicrostructureSummary_init_raises_exception_for_invalid_result_type(
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid result type"):
-        MicrostructureSummary(MicrostructureInput(), invalid_obj, ".")
+        MicrostructureSummary(MicrostructureInput(), invalid_obj, "logs", ".")
 
 
 @pytest.mark.parametrize(
@@ -135,7 +143,9 @@ def test_MicrostructureSummary_init_raises_exception_for_invalid_path(
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid user data path"):
-        MicrostructureSummary(MicrostructureInput(), MicrostructureResult(), invalid_path)
+        MicrostructureSummary(
+            MicrostructureInput(), MicrostructureResult(), "logs", invalid_path
+        )
 
 
 def test_MicrostructureInput_init_creates_default_object():
@@ -474,16 +484,24 @@ def test_MicrostructureSummary_repr_returns_expected_string():
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
-    xy_stats = GrainStatistics(grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4)
-    xz_stats = GrainStatistics(grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8)
+    xy_stats = GrainStatistics(
+        grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4
+    )
+    xz_stats = GrainStatistics(
+        grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8
+    )
     yz_stats = GrainStatistics(
         grain_number=9, area_fraction=10, diameter_um=11, orientation_angle=12
     )
-    result = MicrostructureResult(xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes)
+    result = MicrostructureResult(
+        xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes
+    )
     result.xy_circle_equivalence.append(xy_stats)
     result.xz_circle_equivalence.append(xz_stats)
     result.yz_circle_equivalence.append(yz_stats)
-    summary = MicrostructureSummary(input=input, result=result, user_data_path=user_data_path)
+    summary = MicrostructureSummary(
+        input=input, result=result, logs="logs", user_data_path=user_data_path
+    )
     expected_output_dir = os.path.join(user_data_path, input.id)
 
     # act, assert
@@ -554,6 +572,7 @@ def test_MicrostructureSummary_repr_returns_expected_string():
         + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
         + "random_seed: 0\n"
         + "\n"
+        + "logs: logs\n"
         + "xy_vtk: "
         + os.path.join(expected_output_dir, "xy.vtk")
         + "\n"

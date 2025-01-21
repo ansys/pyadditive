@@ -69,6 +69,7 @@ def test_PorosityInput_init_creates_expected_object():
 
 def test_PorositySummary_init_creates_expected_object():
     # arrange
+    logs = "simulation succeeded"
     input = PorosityInput(
         size_x=1e-3,
         size_y=2e-3,
@@ -84,11 +85,12 @@ def test_PorositySummary_init_creates_expected_object():
     )
 
     # act
-    summary = PorositySummary(input, result)
+    summary = PorositySummary(input, result, logs)
 
     # assert
     assert input == summary.input
     assert summary.relative_density == 12
+    assert summary.logs == logs
 
 
 @pytest.mark.parametrize(
@@ -102,7 +104,7 @@ def test_PorositySummary_init_creates_expected_object():
 def test_PorositySummary_init_raises_exception_for_invalid_input_type(invalid_obj):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid input type"):
-        PorositySummary(invalid_obj, PorosityResult())
+        PorositySummary(invalid_obj, PorosityResult(), "logs")
 
 
 @pytest.mark.parametrize(
@@ -116,7 +118,7 @@ def test_PorositySummary_init_raises_exception_for_invalid_input_type(invalid_ob
 def test_PorositySummary_init_raises_exception_for_invalid_result_type(invalid_obj):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid result type") as exc_info:
-        PorositySummary(PorosityInput(), invalid_obj)
+        PorositySummary(PorosityInput(), invalid_obj, "logs")
 
 
 def test_PorosityInput__to_simulation_request_assigns_values():
@@ -124,7 +126,9 @@ def test_PorosityInput__to_simulation_request_assigns_values():
     machine = AdditiveMachine()
     machine.laser_power = 99
     material = AdditiveMaterial(name="vibranium")
-    input = PorosityInput(machine=machine, material=material, size_x=1e-3, size_y=2e-3, size_z=3e-3)
+    input = PorosityInput(
+        machine=machine, material=material, size_x=1e-3, size_y=2e-3, size_z=3e-3
+    )
 
     # act
     request = input._to_simulation_request()
@@ -236,7 +240,7 @@ def test_PorositySummary_repr_retuns_expected_string():
     # arrange
     input = PorosityInput()
     result = PorosityResult()
-    summary = PorositySummary(input, result)
+    summary = PorositySummary(input, result, "logs")
 
     # act, assert
     assert repr(summary) == (
@@ -297,4 +301,5 @@ def test_PorositySummary_repr_retuns_expected_string():
         + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
         + "\n"
         + "relative_density: 0.0\n"
+        + "logs: logs\n"
     )

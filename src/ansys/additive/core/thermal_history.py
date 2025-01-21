@@ -243,12 +243,13 @@ class ThermalHistoryInput(SimulationInputBase):
 class ThermalHistorySummary:
     """Summary of a thermal history simulation."""
 
-    def __init__(self, input: ThermalHistoryInput, coax_ave_output_folder: str):
+    def __init__(self, input: ThermalHistoryInput, coax_ave_output_folder: str, logs: str):
         """Initialize a ``ThermalHistorySummary`` object."""
         if not isinstance(input, ThermalHistoryInput):
             raise ValueError("Invalid input type passed to init, " + self.__class__.__name__)
         self._input = input
         self._coax_ave_output_folder = coax_ave_output_folder
+        self._logs = logs
 
     @property
     def input(self) -> ThermalHistoryInput:
@@ -266,3 +267,8 @@ class ThermalHistorySummary:
         history of the scan pattern.
         """
         return self._coax_ave_output_folder
+
+    @property
+    def logs(self) -> str:
+        """Provides simulation logs."""
+        return self._logs

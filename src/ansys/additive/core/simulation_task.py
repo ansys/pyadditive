@@ -324,20 +324,25 @@ class SimulationTask:
                     thermal_history_output,
                 )
             return SingleBeadSummary(
-                self._simulation_input, response.melt_pool, thermal_history_output
+                self._simulation_input,
+                response.melt_pool,
+                response.logs,
+                thermal_history_output,
             )
         if response.HasField("porosity_result"):
-            return PorositySummary(self._simulation_input, response.porosity_result)
+            return PorositySummary(self._simulation_input, response.porosity_result, response.logs)
         if response.HasField("microstructure_result"):
             return MicrostructureSummary(
                 self._simulation_input,
                 response.microstructure_result,
+                response.logs,
                 self._user_data_path,
             )
         if response.HasField("microstructure_3d_result"):
             return Microstructure3DSummary(
                 self._simulation_input,
                 response.microstructure_3d_result,
+                response.logs,
                 self._user_data_path,
             )
         if response.HasField("thermal_history_result"):
@@ -350,7 +355,7 @@ class SimulationTask:
             with zipfile.ZipFile(local_zip, "r") as zip:
                 zip.extractall(path)
             os.remove(local_zip)
-            return ThermalHistorySummary(self._simulation_input, path)
+            return ThermalHistorySummary(self._simulation_input, path, response.logs)
 
     def _check_if_thermal_history_is_present(self, response) -> bool:
         """Check if thermal history output is present in the response."""

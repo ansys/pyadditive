@@ -519,6 +519,7 @@ class MicrostructureSummary:
         self,
         input: MicrostructureInput,
         result: MicrostructureResultMessage,
+        logs: str,
         user_data_path: str,
     ) -> None:
         """Initialize a ``MicrostructureSummary`` object."""
@@ -532,6 +533,7 @@ class MicrostructureSummary:
         id = input.id if input.id else misc.short_uuid()
         outpath = os.path.join(user_data_path, id)
         self._result = Microstructure2DResult(result, outpath)
+        self._logs = logs
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
@@ -613,6 +615,11 @@ class MicrostructureSummary:
     def yz_average_grain_size(self) -> float:
         """Average grain size (µm) for the YZ plane."""
         return self._result._yz_average_grain_size
+
+    @property
+    def logs(self) -> str:
+        """Provides simulation logs."""
+        return self._logs
 
     @staticmethod
     def _circle_equivalence_frame(src: RepeatedCompositeFieldContainer) -> pd.DataFrame:

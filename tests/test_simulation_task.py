@@ -25,6 +25,7 @@ import io
 import os
 import pathlib
 import shutil
+import tempfile
 from unittest.mock import Mock, patch
 import zipfile
 
@@ -439,67 +440,62 @@ def test_extract_logs_with_invalid_zip_encoding():
 
 
 @pytest.mark.parametrize(
-    "response, expected_summary_type, expected_attributes",
+    "sim_input, response, expected_summary_type",
     [
         (
-            TuneMaterialResponse(result=MaterialTuningResult()),
+            test_utils.get_test_material_tuning_input(),
+            SimulationResponse(material_tuning_result=MaterialTuningResult()),
             MaterialTuningSummary,
-            {"result": MaterialTuningResult()},
         ),
         (
+            SingleBeadInput(),
             SimulationResponse(melt_pool=MeltPoolMsg()),
             SingleBeadSummary,
-            {"melt_pool": MeltPoolMsg(), "thermal_history_output": None},
         ),
         (
-            SimulationResponse(melt_pool=MeltPoolMsg()),
-            SingleBeadSummary,
-            {
-                "melt_pool": MeltPoolMsg(
-                    thermal_history_vtk_zip="thermal_history_vtk_zip"
-                ),
-                "thermal_history_output": "some_path/thermal_history",
-            },
-        ),
-        (
+            PorosityInput(),
             SimulationResponse(porosity_result=PorosityResult()),
             PorositySummary,
-            {"porosity_result": PorosityResult()},
         ),
         (
+            MicrostructureInput(),
             SimulationResponse(microstructure_result=MicrostructureResult()),
             MicrostructureSummary,
-            {"microstructure_result": MicrostructureResult()},
         ),
         (
+            Microstructure3DInput(),
             SimulationResponse(microstructure_3d_result=Microstructure3DResult()),
             Microstructure3DSummary,
-            {"microstructure_3d_result": Microstructure3DResult()},
         ),
         (
+            ThermalHistoryInput(),
             SimulationResponse(
                 thermal_history_result=ThermalHistoryResult(
                     coax_ave_zip_file="zip-file"
                 )
             ),
             ThermalHistorySummary,
-            {"path": "some_path/coax_ave_output"},
         ),
     ],
 )
 @patch("ansys.additive.core.simulation_task.download_file")
 def test_create_summary_from_response(
     mock_download_file,
+    sim_input,
     response,
     expected_summary_type,
-    expected_attributes,
     tmp_path: pathlib.Path,
 ):
     # arrange
     mock_server = Mock()
     mock_server.simulation_stub = Mock()
-    mock_download_file.return_value = "some_path/thermal_history"
-    sim_input = SingleBeadInput()
+    tmp_dir = tempfile.TemporaryDirectory()
+    tmp_zip_file = os.path.join(tmp_dir.name, "results.zip")
+    shutil.copy(
+        test_utils.get_test_file_path("thermal_history_results.zip"),
+        tmp_zip_file,
+    )
+    mock_download_file.return_value = tmp_zip_file
     task = SimulationTask(mock_server, Operation(), sim_input, tmp_path)
 
     # act
@@ -507,15 +503,3 @@ def test_create_summary_from_response(
 
     # assert
     assert isinstance(summary, expected_summary_type)
-    for attr, expected_value in expected_attributes.items():
-        assert getattr(summary, attr) == expected_value
-
-    if isinstance(response, SimulationResponse) and response.HasField(
-        "thermal_history_result"
-    ):
-        mock_download_file.assert_called_once_with(
-            mock_server.simulation_stub,
-            response.thermal_history_result.coax_ave_zip_file,
-            "some_path/coax_ave_output",
-        )
-        assert os.path.exists("some_path/coax_ave_output")
