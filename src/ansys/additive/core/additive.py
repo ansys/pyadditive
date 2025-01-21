@@ -697,9 +697,8 @@ class Additive:
             )
 
         request = input._to_request()
-
-        operation = self._server.materials_stub.TuneMaterial(request)
-
+        operation = self._server.simulation_stub.Simulate(request)
+        LOG.debug(f"Material tuning operation created for {input.id}")
         return SimulationTask(self._server, operation, input, out_dir)
 
     def simulate_study(

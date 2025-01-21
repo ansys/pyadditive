@@ -90,7 +90,6 @@ from ansys.api.additive.v0.additive_materials_pb2 import (
     GetMaterialRequest,
     GetMaterialsListResponse,
     RemoveMaterialRequest,
-    TuneMaterialResponse,
 )
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
 from ansys.api.additive.v0.additive_settings_pb2 import (
@@ -1123,7 +1122,7 @@ def test_tune_material_async_raises_exception_if_output_path_exists(
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_tune_material_async_calls_material_service_tune_material(
+def test_tune_material_async_calls_simulation_service_simulate(
     mock_connection, tmp_path: pathlib.Path
 ):
     # assemble
@@ -1140,7 +1139,7 @@ def test_tune_material_async_calls_material_service_tune_material(
     )
 
     mock_connection_with_stub = Mock()
-    mock_connection_with_stub.materials_stub.TuneMaterial.return_value = Operation(
+    mock_connection_with_stub.simulation_stub.Simulate.return_value = Operation(
         name="id"
     )
     mock_connection.return_value = mock_connection_with_stub
@@ -1153,7 +1152,7 @@ def test_tune_material_async_calls_material_service_tune_material(
     assert isinstance(task, SimulationTask)
     assert task._long_running_op.name == "id"
     assert task._long_running_op.done == False
-    mock_connection_with_stub.materials_stub.TuneMaterial.assert_called_once()
+    mock_connection_with_stub.simulation_stub.Simulate.assert_called_once()
 
 
 # TODO (deleon): Add exceptions to material tuning
@@ -1311,9 +1310,10 @@ def test_tune_material_returns_expected_result(
         state=ProgressMsgState.PROGRESS_STATE_COMPLETED,
     )
     operation_completed.metadata.Pack(metadata)
-    response = TuneMaterialResponse(
+    response = SimulationResponse(
         id=input.id,
-        result=MaterialTuningResult(
+        logs=log_bytes,
+        material_tuning_result=MaterialTuningResult(
             log=log_bytes,
             optimized_parameters=optimized_parameters_bytes,
             characteristic_width_lookup=cw_lookup_bytes,

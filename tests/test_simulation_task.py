@@ -57,7 +57,6 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 )
 from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMsg
 from ansys.api.additive.v0.additive_domain_pb2 import ProgressState as ProgressMsgState
-from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialResponse
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse
 
@@ -151,7 +150,9 @@ def test_unpack_summary_returns_correct_summary(
     elif isinstance(result, MicrostructureResult):
         sim_response = SimulationResponse(id=sim_input.id, microstructure_result=result)
     elif isinstance(result, Microstructure3DResult):
-        sim_response = SimulationResponse(id=sim_input.id, microstructure_3d_result=result)
+        sim_response = SimulationResponse(
+            id=sim_input.id, microstructure_3d_result=result
+        )
     elif isinstance(result, ThermalHistoryResult):
         # arrange
         results_file = tmp_path / "results.zip"
@@ -165,7 +166,9 @@ def test_unpack_summary_returns_correct_summary(
             thermal_history_result=ThermalHistoryResult(coax_ave_zip_file="zip-file"),
         )
     elif isinstance(result, MaterialTuningResult):
-        sim_response = TuneMaterialResponse(id=sim_input.id, result=result)
+        sim_response = SimulationResponse(
+            id=sim_input.id, material_tuning_result=result
+        )
     else:
         assert False, "Invalid result type"
 
@@ -207,7 +210,9 @@ def test_status_calls_update_progress(update_mock, tmp_path: pathlib.Path):
     mock_server.channel_str = "1.1.1.1"
     mock_server.operations_stub.ListOperations.return_value = response
 
-    task = SimulationTask(mock_server, Operation(name="op1"), SingleBeadInput(), tmp_path)
+    task = SimulationTask(
+        mock_server, Operation(name="op1"), SingleBeadInput(), tmp_path
+    )
 
     # act
     task.status()
@@ -232,7 +237,9 @@ def test_wait_calls_update_progress_and_break_with_completed_operations(
     mock_server.channel_str = "1.1.1.1"
     mock_server.operations_stub.ListOperations.return_value = response
 
-    task = SimulationTask(mock_server, Operation(name="op1"), SingleBeadInput(), tmp_path)
+    task = SimulationTask(
+        mock_server, Operation(name="op1"), SingleBeadInput(), tmp_path
+    )
 
     # act
     task.wait()
@@ -243,11 +250,15 @@ def test_wait_calls_update_progress_and_break_with_completed_operations(
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_simulation_id_property_returns_id_from_input(mock_server, tmp_path: pathlib.Path):
+def test_simulation_id_property_returns_id_from_input(
+    mock_server, tmp_path: pathlib.Path
+):
     # arrange
     sim_input = SingleBeadInput()
 
-    task = SimulationTask(mock_server, Operation(name="some_other_name"), sim_input, tmp_path)
+    task = SimulationTask(
+        mock_server, Operation(name="some_other_name"), sim_input, tmp_path
+    )
 
     # act & assert
     assert task.simulation_id == sim_input.id

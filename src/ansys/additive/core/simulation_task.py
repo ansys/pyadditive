@@ -61,7 +61,6 @@ from ansys.additive.core.thermal_history import (
     ThermalHistoryInput,
     ThermalHistorySummary,
 )
-from ansys.api.additive.v0.additive_materials_pb2 import TuneMaterialResponse
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationResponse
 
@@ -244,11 +243,7 @@ class SimulationTask:
             return progress
 
         if operation.HasField("response"):
-            response = (
-                SimulationResponse()
-                if not isinstance(self._simulation_input, MaterialTuningInput)
-                else TuneMaterialResponse()
-            )
+            response = SimulationResponse()
             operation.response.Unpack(response)
             self._summary = self._create_summary_from_response(response)
         elif operation.HasField("error") and operation.error.code not in [
@@ -291,7 +286,7 @@ class SimulationTask:
         return progress
 
     def _create_summary_from_response(
-        self, response: SimulationResponse | TuneMaterialResponse
+        self, response: SimulationResponse
     ) -> (
         SingleBeadSummary
         | PorositySummary
@@ -300,9 +295,11 @@ class SimulationTask:
         | Microstructure3DSummary
         | MaterialTuningSummary
     ):
-        if isinstance(response, TuneMaterialResponse):
+        if response.HasField("material_tuning_result"):
             return MaterialTuningSummary(
-                self._simulation_input, response.result, self._user_data_path
+                self._simulation_input,
+                response.material_tuning_result,
+                self._user_data_path,
             )
         if response.HasField("melt_pool"):
             thermal_history_output = None
