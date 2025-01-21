@@ -67,18 +67,7 @@ class SimulationStatus(str, Enum):
 
 
 class SimulationError:
-    """Provides simulation error information.
-
-    Parameters
-    ----------
-    input : SingleBeadInput | PorosityInput | MicrostructureInput | ThermalHistoryInput | MaterialTuningInput
-        Simulation input.
-    message : str
-        Simulation error message.
-    logs : str
-        Provides simulation logs.
-
-    """
+    """Provides simulation error information."""
 
     def __init__(
         self,
