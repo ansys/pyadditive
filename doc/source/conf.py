@@ -22,7 +22,6 @@ pyvista.set_error_output_file("errors.txt")
 
 # Ensure that offscreen rendering is used for docs generation
 pyvista.OFF_SCREEN = True
-pyvista.BUILDING_GALLERY = True
 
 try:
     pyvista.global_theme.window_size = np.array([1024, 768])
@@ -268,7 +267,7 @@ if BUILD_EXAMPLES is True:
         # Set plot_gallery to False for building docs without running examples.
         "plot_gallery": PLOT_GALLERY,
         # Allow parallel execution of examples
-        "parallel": 4,
+        # "parallel": 4, experimental and incompatible with PyVista
     }
     print(f"sphinx_gallery_conf {sphinx_gallery_conf}")
 
