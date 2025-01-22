@@ -481,7 +481,7 @@ class Additive:
             )
 
         if progress_handler:
-            time.sleep(1)  # Allow time for the server to start the simulation
+            time.sleep(0.1)  # Allow time for the server to start the simulation
             progress_handler.update(simulation_task.status())
 
         return simulation_task
