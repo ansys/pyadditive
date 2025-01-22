@@ -166,6 +166,7 @@ class PorositySummary:
         self,
         input: PorosityInput,
         result: PorosityResult,
+        logs: str,
     ):
         """Initialize a ``PorositySummary`` object."""
         if not isinstance(input, PorosityInput):
@@ -174,6 +175,7 @@ class PorositySummary:
             raise ValueError("Invalid result type passed to init, " + self.__class__.__name__)
         self._input = input
         self._relative_density = result.solid_ratio
+        self._logs = logs
 
     @property
     def input(self) -> PorosityInput:
@@ -184,6 +186,11 @@ class PorositySummary:
     def relative_density(self) -> float:
         """Ratio of the density of the simulated sample to a completely solid sample."""
         return self._relative_density
+
+    @property
+    def logs(self) -> str:
+        """Provides simulation logs."""
+        return self._logs
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"

@@ -42,34 +42,45 @@ from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 def test_Microstructure3DSummary_init_returns_expected_value():
     # arrange
-    user_data_path = os.path.join(tempfile.gettempdir(), "microstructure_3d_summary_init")
+    user_data_path = os.path.join(
+        tempfile.gettempdir(), "microstructure_3d_summary_init"
+    )
     os.makedirs(user_data_path, exist_ok=True)
     input = Microstructure3DInput(id="id")
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
     grain_3d_bytes = bytes(range(10, 12))
-    xy_stats = GrainStatistics(grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4)
-    xz_stats = GrainStatistics(grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8)
+    xy_stats = GrainStatistics(
+        grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4
+    )
+    xz_stats = GrainStatistics(
+        grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8
+    )
     yz_stats = GrainStatistics(
         grain_number=9, area_fraction=10, diameter_um=11, orientation_angle=12
     )
-    result = MicrostructureResult(xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes)
+    result = MicrostructureResult(
+        xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes
+    )
     result.xy_circle_equivalence.append(xy_stats)
     result.xz_circle_equivalence.append(xz_stats)
     result.yz_circle_equivalence.append(yz_stats)
     result_3d = Microstructure3DResult(three_d_vtk=grain_3d_bytes, two_d_result=result)
 
     # act
-    summary = Microstructure3DSummary(input, result_3d, user_data_path)
+    summary = Microstructure3DSummary(input, result_3d, "logs", user_data_path)
 
     # assert
     assert isinstance(summary, Microstructure3DSummary)
     assert input == summary.input
-    assert summary.grain_3d_vtk == os.path.join(user_data_path, "id", summary._3D_GRAIN_VTK_NAME)
+    assert summary.grain_3d_vtk == os.path.join(
+        user_data_path, "id", summary._3D_GRAIN_VTK_NAME
+    )
     assert summary.xy_average_grain_size == 6
     assert summary.xz_average_grain_size == 42
     assert summary.yz_average_grain_size == 110
+    assert summary.logs == "logs"
     # TODO: uncomment when the following properties are implemented
     # assert summary.xy_vtk == os.path.join(user_data_path, "id", "xy.vtk")
     # assert os.path.exists(summary.xy_vtk)
@@ -107,7 +118,7 @@ def test_Microstructure3DSummary_init_raises_exception_for_invalid_input_type(
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid input type"):
-        Microstructure3DSummary(invalid_obj, Microstructure3DResult(), ".")
+        Microstructure3DSummary(invalid_obj, Microstructure3DResult(), "logs", ".")
 
 
 @pytest.mark.parametrize(
@@ -123,7 +134,7 @@ def test_Microstructure3DSummary_init_raises_exception_for_invalid_result_type(
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid result type"):
-        Microstructure3DSummary(Microstructure3DInput(), invalid_obj, ".")
+        Microstructure3DSummary(Microstructure3DInput(), invalid_obj, "logs", ".")
 
 
 @pytest.mark.parametrize(
@@ -138,29 +149,41 @@ def test_Microstructure3DSummary_init_raises_exception_for_invalid_path(
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid user data path"):
-        Microstructure3DSummary(Microstructure3DInput(), Microstructure3DResult(), invalid_path)
+        Microstructure3DSummary(
+            Microstructure3DInput(), Microstructure3DResult(), "logs", invalid_path
+        )
 
 
 def test_Microstructure3DSummary_repr_returns_expected_string():
     # arrange
-    user_data_path = os.path.join(tempfile.gettempdir(), "microstructure_3d_summary_init")
+    user_data_path = os.path.join(
+        tempfile.gettempdir(), "microstructure_3d_summary_init"
+    )
     os.makedirs(user_data_path, exist_ok=True)
     input = Microstructure3DInput(id="myId")
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
     grain_3d_bytes = bytes(range(10, 12))
-    xy_stats = GrainStatistics(grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4)
-    xz_stats = GrainStatistics(grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8)
+    xy_stats = GrainStatistics(
+        grain_number=1, area_fraction=2, diameter_um=3, orientation_angle=4
+    )
+    xz_stats = GrainStatistics(
+        grain_number=5, area_fraction=6, diameter_um=7, orientation_angle=8
+    )
     yz_stats = GrainStatistics(
         grain_number=9, area_fraction=10, diameter_um=11, orientation_angle=12
     )
-    result = MicrostructureResult(xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes)
+    result = MicrostructureResult(
+        xy_vtk=xy_vtk_bytes, xz_vtk=xz_vtk_bytes, yz_vtk=yz_vtk_bytes
+    )
     result.xy_circle_equivalence.append(xy_stats)
     result.xz_circle_equivalence.append(xz_stats)
     result.yz_circle_equivalence.append(yz_stats)
     result_3d = Microstructure3DResult(three_d_vtk=grain_3d_bytes, two_d_result=result)
-    summary = Microstructure3DSummary(input=input, result=result_3d, user_data_path=user_data_path)
+    summary = Microstructure3DSummary(
+        input=input, result=result_3d, logs="logs", user_data_path=user_data_path
+    )
     expected_output_dir = os.path.join(user_data_path, "myId")
 
     # act, assert
@@ -231,6 +254,7 @@ def test_Microstructure3DSummary_repr_returns_expected_string():
         + "grain_3d_vtk: "
         + os.path.join(expected_output_dir, "3d_grain_structure.vtk")
         + "\n"
+        + "logs: logs\n"
         + "xy_average_grain_size: 6.0\n"
         + "xz_average_grain_size: 42.0\n"
         + "yz_average_grain_size: 110.0\n"

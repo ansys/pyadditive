@@ -28,8 +28,9 @@ def test_SimulationError_init_assigns_values():
     input = SingleBeadInput()
 
     # act
-    error = SimulationError(input=input, message="message")
+    error = SimulationError(input=input, message="message", logs="log messages")
 
     # assert
     assert error.input == input
     assert error.message == "message"
+    assert error.logs == "log messages"

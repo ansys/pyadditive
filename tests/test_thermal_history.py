@@ -37,7 +37,10 @@ from ansys.additive.core.thermal_history import (
     ThermalHistoryInputMessage,
     ThermalHistorySummary,
 )
-from ansys.api.additive.v0.additive_domain_pb2 import BuildFileMachineType, ThermalHistoryResult
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    BuildFileMachineType,
+    ThermalHistoryResult,
+)
 from ansys.api.additive.v0.additive_domain_pb2 import StlFile as StlFileMessage
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
@@ -388,7 +391,8 @@ def test_ThermalHistoryInput__to_simulation_request_with_stl_file_returns_expect
     assert th_input.stl_file
     assert remote_path == th_input.stl_file.name
     assert (
-        coax_inputs._to_coaxial_average_sensor_inputs_message() == th_input.coax_ave_sensor_inputs
+        coax_inputs._to_coaxial_average_sensor_inputs_message()
+        == th_input.coax_ave_sensor_inputs
     )
     assert machine.laser_power == th_input.machine.laser_power
     assert material.name == th_input.material.name
@@ -422,7 +426,8 @@ def test_ThermalHistoryInput__to_simulation_request_assigns_values():
     assert remote_path == th_input.build_file.name
     assert th_input.build_file.type == BuildFileMachineType.BUILD_FILE_MACHINE_TYPE_EOS
     assert (
-        coax_inputs._to_coaxial_average_sensor_inputs_message() == th_input.coax_ave_sensor_inputs
+        coax_inputs._to_coaxial_average_sensor_inputs_message()
+        == th_input.coax_ave_sensor_inputs
     )
     assert machine.laser_power == th_input.machine.laser_power
     assert material.name == th_input.material.name
@@ -454,12 +459,13 @@ def test_ThermalHistorySummary_init_returns_expected_value():
     out_dir = "output/path"
 
     # act
-    summary = ThermalHistorySummary(input, out_dir)
+    summary = ThermalHistorySummary(input, out_dir, "logs")
 
     # assert
     assert isinstance(summary, ThermalHistorySummary)
     assert input == summary.input
     assert summary.coax_ave_output_folder == out_dir
+    assert summary.logs == "logs"
 
 
 @pytest.mark.parametrize(
@@ -475,4 +481,4 @@ def test_ThermalHistorySummary_init_raises_exception_for_invalid_input_type(
 ):
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid input type") as exc_info:
-        ThermalHistorySummary(invalid_obj, "output/path")
+        ThermalHistorySummary(invalid_obj, "output/path", "logs")

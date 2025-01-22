@@ -377,7 +377,7 @@ def test_simulate_logs_error_message_when_SimulationError_returned(_, caplog):
     # arrange
     sim_input = SingleBeadInput(material=test_utils.get_test_material())
     error_msg = "error message"
-    simulation_error = SimulationError(sim_input, error_msg)
+    simulation_error = SimulationError(sim_input, error_msg, "logs")
     mock_task_mgr = Mock(SimulationTaskManager)
     mock_task_mgr.summaries.return_value = [simulation_error]
     with patch(
@@ -401,7 +401,9 @@ def test_simulate_logs_error_message_when_SimulationError_returned(_, caplog):
 def test_simulate_returns_single_summary_for_single_input(_):
     # arrange
     sim_input = SingleBeadInput(material=test_utils.get_test_material())
-    summary = SingleBeadSummary(sim_input, test_utils.get_test_melt_pool_message())
+    summary = SingleBeadSummary(
+        sim_input, test_utils.get_test_melt_pool_message(), "logs"
+    )
     mock_task_mgr = Mock(SimulationTaskManager)
     mock_task_mgr.summaries.return_value = [summary]
     with patch(
@@ -422,7 +424,9 @@ def test_simulate_returns_single_summary_for_single_input(_):
 def test_simulate_returns_list_of_summaries_for_list_of_inputs(_):
     # arrange
     sim_input = SingleBeadInput(material=test_utils.get_test_material())
-    summary = SingleBeadSummary(sim_input, test_utils.get_test_melt_pool_message())
+    summary = SingleBeadSummary(
+        sim_input, test_utils.get_test_melt_pool_message(), "simulation logs"
+    )
     mock_task_mgr = Mock(SimulationTaskManager)
     mock_task_mgr.summaries.return_value = [summary]
     with patch(

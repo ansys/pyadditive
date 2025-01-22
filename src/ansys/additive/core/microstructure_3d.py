@@ -371,6 +371,7 @@ class Microstructure3DSummary:
         self,
         input: Microstructure3DInput,
         result: Microstructure3DResult,
+        logs: str,
         user_data_path: str,
     ) -> None:
         """Initialize a ``Microstructure3DSummary`` object."""
@@ -388,6 +389,7 @@ class Microstructure3DSummary:
         with open(self._grain_3d_vtk, "wb") as f:
             f.write(result.three_d_vtk)
         self._2d_result = Microstructure2DResult(result.two_d_result, outpath)
+        self._logs = logs
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
@@ -429,3 +431,8 @@ class Microstructure3DSummary:
     def yz_average_grain_size(self) -> float:
         """Average grain size (µm) for the YZ plane."""
         return self._2d_result._yz_average_grain_size
+
+    @property
+    def logs(self) -> str:
+        """Provides simulation logs."""
+        return self._logs
