@@ -21,7 +21,7 @@ maintainers = [{name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"}]
 name = "ansys-additive-core"
 readme = "README.rst"
 requires-python = ">=3.10,<4"
-version = "0.20.dev9"
+version = "0.20.0b3"
 
 dependencies = [
   "ansys-api-additive==5.0.2",
