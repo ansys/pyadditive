@@ -133,7 +133,7 @@ def get_test_SingleBeadSummary(input: SingleBeadInput = None) -> SingleBeadSumma
             material=get_test_material(),
         )
 
-    return SingleBeadSummary(input, melt_pool_msg, None)
+    return SingleBeadSummary(input, melt_pool_msg, "logs", None)
 
 
 def get_test_file_path(name: str) -> str:

@@ -246,7 +246,7 @@ def test_add_summaries_with_single_bead_summary_adds_row(
         machine=machine,
         material=material,
     )
-    summary = SingleBeadSummary(input, melt_pool_msg, None)
+    summary = SingleBeadSummary(input, melt_pool_msg, "logs", None)
     median_mp = summary.melt_pool.data_frame().median()
     expected_dw = (
         median_mp[MeltPoolColumnNames.REFERENCE_DEPTH]

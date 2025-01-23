@@ -304,6 +304,8 @@ class SingleBeadSummary:
             raise ValueError("Invalid input type passed to init, " + self.__class__.__name__)
         if not isinstance(msg, MeltPoolMessage):
             raise ValueError("Invalid message type passed to init, " + self.__class__.__name__)
+        if not isinstance(logs, str):
+            raise ValueError("Invalid logs type passed to init, " + self.__class__.__name__)
         self._input = input
         self._melt_pool = MeltPool(msg, thermal_history_output)
         self._logs = logs

@@ -482,3 +482,9 @@ def test_ThermalHistorySummary_init_raises_exception_for_invalid_input_type(
     # arrange, act, assert
     with pytest.raises(ValueError, match="Invalid input type") as exc_info:
         ThermalHistorySummary(invalid_obj, "output/path", "logs")
+
+
+def test_ThermalHistorySummary_init_raises_exception_for_invalid_logs_type():
+    # arrange, act, assert
+    with pytest.raises(ValueError, match="Invalid logs type"):
+        ThermalHistorySummary(ThermalHistoryInput(), "output/path", b"logs")

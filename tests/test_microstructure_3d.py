@@ -154,6 +154,14 @@ def test_Microstructure3DSummary_init_raises_exception_for_invalid_path(
         )
 
 
+def test_Microstructure3DSummary_init_raises_exception_for_invalid_logs_type():
+    # arrange, act, assert
+    with pytest.raises(ValueError, match="Invalid logs type"):
+        Microstructure3DSummary(
+            Microstructure3DInput(), Microstructure3DResult(), b"logs", "."
+        )
+
+
 def test_Microstructure3DSummary_repr_returns_expected_string():
     # arrange
     user_data_path = os.path.join(
