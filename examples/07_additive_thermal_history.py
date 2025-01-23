@@ -173,3 +173,10 @@ for file in vtk_files:
     title = os.path.splitext(os.path.basename(file))[0]
     plotter.add_title(title, font_size=8)
     plotter.show()
+
+###############################################################################
+# Print the simulation logs
+# -------------------------
+# To print the simulation logs, use the :meth:`~ThermalHistorySummary.logs` property.
+
+print(summary.logs)

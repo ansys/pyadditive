@@ -152,3 +152,10 @@ plotter.show()
 print("Average grain size in XY plane: {} µm".format(summary.xy_average_grain_size))
 print("Average grain size in XZ plane: {} µm".format(summary.xz_average_grain_size))
 print("Average grain size in YZ plane: {} µm".format(summary.yz_average_grain_size))
+
+###############################################################################
+# Print the simulation logs
+# -------------------------
+# To print the simulation logs, use the :meth:`~Microstructure3DSummary.logs` property.
+
+print(summary.logs)
