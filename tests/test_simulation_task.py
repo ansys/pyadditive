@@ -503,3 +503,23 @@ def test_create_summary_from_response(
 
     # assert
     assert isinstance(summary, expected_summary_type)
+
+
+def test_create_summary_from_response_with_logs_calls_extract_logs(
+    tmp_path: pathlib.Path,
+):
+    # arrange
+    sim_input = SingleBeadInput()
+    mock_server = Mock()
+    mock_server.simulation_stub = Mock()
+    response = SimulationResponse(melt_pool=MeltPoolMsg(), logs=b"logs")
+    task = SimulationTask(mock_server, Operation(), sim_input, tmp_path)
+    task._extract_logs = Mock()
+    task._extract_logs.return_value = "logs"
+
+    # act
+    summary = task._create_summary_from_response(response)
+
+    # assert
+    task._extract_logs.assert_called_once_with(response.logs)
+    assert summary.logs == "logs"

@@ -2,53 +2,60 @@
 
 ## PyAdditive 0.20.0
 
-### Breaking Changes
-* Removed support for multiple server connections. Specifically, the `nservers` parameter was removed from `Additive()` and the `server_connections` parameter was renamed to `channel`.
-* Thermal history simulations require the `enable_beta_features` flag to be set to `True` when calling `Additive()`. [#599](https://github.com/ansys/pyadditive/issues/599)
-
-
 ### New Features
-* Added the capability to fetch Additive Server logs.
-* Added `connected` property to `Additive` to indicate if a the client is connected to a server.
+
+* Simulation logs are included in the simulation summary.
 
 ### Bug Fixes
 
 ### Doc Improvements
 
 ### Contributors
+
 * pkrull-ansys
 * safeerehman
+* deleon117
 
-## PyAdditive 0.19.0
+# PyAdditive 0.19.0
 
-### Breaking Changes
-* Simulation inputs no longer allow setting the id field.
-* Removed nsims_per_server property from Additive class.
-* ParametricStudy.set_status() and ParametricStudy.reset_status() have been renamed to ParametricStudy.set_simulation_status() and ParametricStudy.reset_simulation_status().
-* ParametricStudy() now requires a material name parameter. As a consequence, the material_name parameter has been removed from ParametricStudy.generate_single_bead_permutations(), ParametricStudy.generate_porosity_permutations(), and ParametricStudy.generate_microstructure_permutations(). The parametric study FORMAT_VERSION value has been incremented to 3.
-* The ParametricRunner class has been removed. To run a parametric study, use Additive.simulate_study() or Additive.simulate_study_async().
-* The ParametricStudy.generate_single_bead_permutations() will now accept min and max p/v ratios as constraints instead of min and max area energy densities.
+## Breaking Changes
 
-### New Features
+* Removed support for multiple server connections. Specifically, the `nservers` parameter was removed from `Additive()` and the `server_connections` parameter was renamed to `channel`.
+* Simulation inputs no longer allow setting the `id` field. It is generated automatically.
+* Removed `nsims_per_server` property from the `Additive `class.
+* `ParametricStudy.set_status()` and `ParametricStudy.reset_status()` have been renamed to `ParametricStudy.set_simulation_status()` and `ParametricStudy.reset_simulation_status()`.
+* `ParametricStudy()` now requires a material name parameter. As a consequence, the `material_name` parameter has been removed from `ParametricStudy.generate_single_bead_permutations()`, `ParametricStudy.generate_porosity_permutations()`, and `ParametricStudy.generate_microstructure_permutations()`. The parametric study `FORMAT_VERSION` value has been incremented to 3.
+* The `ParametricRunner` class has been removed. To run a parametric study, use `Additive.simulate_study()` or `Additive.simulate_study_async()`.
+* The `ParametricStudy.generate_single_bead_permutations()` will now accept minimum and maximum p/v ratios as constraints instead of minimum and maximum area energy densities.
+* Thermal history simulations require the `enable_beta_features` flag to be set to `True` when instantiating an `Additive` object.
+
+## New Features
+
 * Default version of Additive Server is 25.1 when creating a client connection.
 * Single bead simulations with thermal history are now supported.
-* Added description field to AdditiveMaterial.
-* Updated the parametric runner to run a list of simulation ids.
-* Asynchronous simulate functionality added.
-* Added apply and list server settings functionality.
-* Parametric study data is updated as simulations are running.
-* Use LOG for logging in Additive object.
-* A new column for the P/V Ratio (Laser Power / Laser Scan Speed) is added to the study.
+* Added description field to `AdditiveMaterial`.
+* Added support for running simulations asynchronously.
+* Added support to list and apply server settings.
+* Parametric study data is updated while simulations are running.
+* Added global `LOG` for logging in Additive object.
+* Added P/V Ratio (Laser Power / Laser Scan Speed) column to the parametric study.
+* Added `connected` property to `Additive` to indicate if the client is connected to a server.
 
-### Bug Fixes
+## Bug Fixes
+* Fixed import of microstructure simulations in csv file when random seed is undefined.
 
-### Doc Improvements
+## Doc Improvements
 * Updated the single bead example to show usage with the thermal history option.
 
-### Contributors
+## Contributors
 * pkrull-ansys
 * safeerehman
 * julieatansys
+* jorgepiloto
+
+### New Contributors
+* @AdvaitChandorkar07 made their first contribution in https://github.com/ansys/pyadditive/pull/416
+
 
 ## PyAdditive 0.18.0
 
