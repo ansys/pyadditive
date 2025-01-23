@@ -279,7 +279,7 @@ if BUILD_EXAMPLES is True:
         # Set plot_gallery to False for building docs without running examples.
         "plot_gallery": PLOT_GALLERY,
         # Allow parallel execution of examples
-        "parallel": 2,
+        "parallel": 1,
         # Reset PyVista for each example, required with parallel execution
         "reset_modules": (reset_pyvista,),
     }
