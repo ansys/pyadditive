@@ -256,7 +256,7 @@ class SimulationTask:
                 if info.metadata["mimetype"] != "application/zip":
                     logs = base64.b64decode(info.metadata["logs"]).decode("utf-8")
                 else:
-                    logs = self._extract_logs(info.metadata["logs"])
+                    logs = self._extract_logs(base64.b64decode(info.metadata["logs"]))
 
             self._summary = SimulationError(self._simulation_input, operation.error.message, logs)
 
@@ -373,7 +373,7 @@ class SimulationTask:
         ----------
         log_bytes : bytes
             An array of bytes containing the one or more log files.
-            The bytes are assumed to be base 64 and zip encoded.
+            The bytes are assumed to be zip encoded.
 
         Returns
         -------
@@ -386,7 +386,7 @@ class SimulationTask:
             return ""
 
         # Create a BytesIO object from log_bytes
-        byte_stream_io = io.BytesIO(base64.b64decode(log_bytes))
+        byte_stream_io = io.BytesIO(log_bytes)
 
         # Open the ZIP file from the byte stream
         with zipfile.ZipFile(byte_stream_io, "r") as zip_ref:
