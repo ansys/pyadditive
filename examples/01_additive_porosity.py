@@ -107,3 +107,10 @@ if isinstance(summary, SimulationError):
 
 print(f"For {summary.input.material.name} with \n", summary.input.machine)
 print(f"\n    relative density = {round(summary.relative_density, 5)}")
+
+###############################################################################
+# Print the simulation logs
+# -------------------------
+# To print the simulation logs, use the :meth:`~PorositySummary.logs` property.
+
+print(summary.logs)

@@ -121,6 +121,12 @@ def test_PorositySummary_init_raises_exception_for_invalid_result_type(invalid_o
         PorositySummary(PorosityInput(), invalid_obj, "logs")
 
 
+def test_PorositySummary_init_raises_exception_for_invalid_logs_type():
+    # arrange, act, assert
+    with pytest.raises(ValueError, match="Invalid logs type") as exc_info:
+        PorositySummary(PorosityInput(), PorosityResult(), b"logs")
+
+
 def test_PorosityInput__to_simulation_request_assigns_values():
     # arrange
     machine = AdditiveMachine()

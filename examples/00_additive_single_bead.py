@@ -180,3 +180,10 @@ for i in range(len(files)):
     plotter_xy.write_frame()
 
 plotter_xy.close()
+
+###############################################################################
+# Print the simulation logs
+# -------------------------
+# To print the simulation logs, use the :meth:`~SingleBeadSummary.logs` property.
+
+print(summary.logs)

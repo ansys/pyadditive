@@ -189,8 +189,12 @@ yz = pv.read(summary.yz_vtk)
 # Create a color map to use with the boundary plot
 white_black_cmap = colorMap.from_list("whiteblack", ["white", "black"])
 
-plot_microstructure(xy, xz, yz, "GrainBoundaries", white_black_cmap).show(title="Grain Boundaries")
-plot_microstructure(xy, xz, yz, "Orientation_(deg)", "spectral").show(title="Orientation °")
+plot_microstructure(xy, xz, yz, "GrainBoundaries", white_black_cmap).show(
+    title="Grain Boundaries"
+)
+plot_microstructure(xy, xz, yz, "Orientation_(deg)", "spectral").show(
+    title="Orientation °"
+)
 plot_microstructure(xy, xz, yz, "GrainNumber", None).show(title="Grain Number")
 
 ###############################################################################
@@ -210,11 +214,14 @@ def add_grain_statistics_to_figure(
 ):
     """Convenience function to add grain statistic plots to a figure."""
     xmax = len(plane_data[CircleEquivalenceColumnNames.DIAMETER])
-    diameter_axes.hist(plane_data[CircleEquivalenceColumnNames.DIAMETER], bins=20, rwidth=0.75)
+    diameter_axes.hist(
+        plane_data[CircleEquivalenceColumnNames.DIAMETER], bins=20, rwidth=0.75
+    )
     diameter_axes.set_xlabel("Grain Diameter (µm)")
     diameter_axes.set_ylabel("Area Fraction")
     diameter_axes.set_title(
-        plane_str.upper() + f" Grain Size Distribution, ave: {plane_ave_grain_size:.2f} µm"
+        plane_str.upper()
+        + f" Grain Size Distribution, ave: {plane_ave_grain_size:.2f} µm"
     )
     diameter_axes.yaxis.set_major_formatter(PercentFormatter(xmax=xmax))
     orientation_axes.hist(
@@ -251,3 +258,10 @@ add_grain_statistics_to_figure(
     axs[2][1],
 )
 plt.show()
+
+###############################################################################
+# Print the simulation logs
+# -------------------------
+# To print the simulation logs, use the :meth:`~MicrostructureSummary.logs` property.
+
+print(summary.logs)

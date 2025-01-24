@@ -256,7 +256,7 @@ class SimulationTask:
                 if info.metadata["mimetype"] != "application/zip":
                     logs = base64.b64decode(info.metadata["logs"]).decode("utf-8")
                 else:
-                    logs = self._extract_logs(info.metadata["logs"])
+                    logs = self._extract_logs(base64.b64decode(info.metadata["logs"]))
 
             self._summary = SimulationError(self._simulation_input, operation.error.message, logs)
 
@@ -312,6 +312,9 @@ class SimulationTask:
                 response.material_tuning_result,
                 self._user_data_path,
             )
+        logs = ""
+        if response.logs:
+            logs = self._extract_logs(response.logs)
         if response.HasField("melt_pool"):
             thermal_history_output = None
             if self._check_if_thermal_history_is_present(response):
@@ -326,23 +329,23 @@ class SimulationTask:
             return SingleBeadSummary(
                 self._simulation_input,
                 response.melt_pool,
-                response.logs,
+                logs,
                 thermal_history_output,
             )
         if response.HasField("porosity_result"):
-            return PorositySummary(self._simulation_input, response.porosity_result, response.logs)
+            return PorositySummary(self._simulation_input, response.porosity_result, logs)
         if response.HasField("microstructure_result"):
             return MicrostructureSummary(
                 self._simulation_input,
                 response.microstructure_result,
-                response.logs,
+                logs,
                 self._user_data_path,
             )
         if response.HasField("microstructure_3d_result"):
             return Microstructure3DSummary(
                 self._simulation_input,
                 response.microstructure_3d_result,
-                response.logs,
+                logs,
                 self._user_data_path,
             )
         if response.HasField("thermal_history_result"):
@@ -355,7 +358,7 @@ class SimulationTask:
             with zipfile.ZipFile(local_zip, "r") as zip:
                 zip.extractall(path)
             os.remove(local_zip)
-            return ThermalHistorySummary(self._simulation_input, path, response.logs)
+            return ThermalHistorySummary(self._simulation_input, path, logs)
 
     def _check_if_thermal_history_is_present(self, response) -> bool:
         """Check if thermal history output is present in the response."""
@@ -370,7 +373,7 @@ class SimulationTask:
         ----------
         log_bytes : bytes
             An array of bytes containing the one or more log files.
-            The bytes are assumed to be base 64 and zip encoded.
+            The bytes are assumed to be zip encoded.
 
         Returns
         -------
@@ -383,7 +386,7 @@ class SimulationTask:
             return ""
 
         # Create a BytesIO object from log_bytes
-        byte_stream_io = io.BytesIO(base64.b64decode(log_bytes))
+        byte_stream_io = io.BytesIO(log_bytes)
 
         # Open the ZIP file from the byte stream
         with zipfile.ZipFile(byte_stream_io, "r") as zip_ref:

@@ -173,6 +173,8 @@ class PorositySummary:
             raise ValueError("Invalid input type passed to init, " + self.__class__.__name__)
         if not isinstance(result, PorosityResult):
             raise ValueError("Invalid result type passed to init, " + self.__class__.__name__)
+        if not isinstance(logs, str):
+            raise ValueError("Invalid logs type passed to init, " + self.__class__.__name__)
         self._input = input
         self._relative_density = result.solid_ratio
         self._logs = logs

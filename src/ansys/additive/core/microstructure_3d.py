@@ -381,6 +381,8 @@ class Microstructure3DSummary:
             raise ValueError("Invalid result type, " + self.__class__.__name__)
         if not user_data_path or (user_data_path == ""):
             raise ValueError("Invalid user data path, " + self.__class__.__name__)
+        if not isinstance(logs, str):
+            raise ValueError("Invalid logs type passed to init, " + self.__class__.__name__)
         self._input = input
         id = input.id if input.id else misc.short_uuid()
         outpath = os.path.join(user_data_path, id)

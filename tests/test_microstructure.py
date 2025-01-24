@@ -148,6 +148,14 @@ def test_MicrostructureSummary_init_raises_exception_for_invalid_path(
         )
 
 
+def test_MicrostructureSummary_init_raises_exception_for_invalid_logs_type():
+    # arrange, act, assert
+    with pytest.raises(ValueError, match="Invalid logs type"):
+        MicrostructureSummary(
+            MicrostructureInput(), MicrostructureResult(), b"logs", "."
+        )
+
+
 def test_MicrostructureInput_init_creates_default_object():
     # arrange, act
     input = MicrostructureInput()

@@ -247,6 +247,8 @@ class ThermalHistorySummary:
         """Initialize a ``ThermalHistorySummary`` object."""
         if not isinstance(input, ThermalHistoryInput):
             raise ValueError("Invalid input type passed to init, " + self.__class__.__name__)
+        if not isinstance(logs, str):
+            raise ValueError("Invalid logs type passed to init, " + self.__class__.__name__)
         self._input = input
         self._coax_ave_output_folder = coax_ave_output_folder
         self._logs = logs

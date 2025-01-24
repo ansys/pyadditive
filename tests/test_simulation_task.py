@@ -226,7 +226,7 @@ def test_unpack_summary_with_error(tmp_path: pathlib.Path):
     error_info.reason = "InternalError"
     error_info.domain = "additiveserver"
     error_info.metadata["mimetype"] = "application/zip"
-    error_info.metadata["logs"] = base64.b64encode(zipped_logs)
+    error_info.metadata["logs"] = base64.b64encode(zipped_logs).decode("ASCII")
     error_msg = "Error occurred"
     metadata = OperationMetadata(
         simulation_id=input.id,
@@ -404,7 +404,7 @@ def test_extract_logs():
     task = SimulationTask(Mock(), Operation(), SingleBeadInput(), pathlib.Path())
 
     # act
-    logs = task._extract_logs(base64.b64encode(zipped_logs))
+    logs = task._extract_logs(zipped_logs)
 
     # assert
     assert logs == expected_logs
@@ -415,19 +415,10 @@ def test_extract_logs_with_empty_logs():
     task = SimulationTask(Mock(), Operation(), SingleBeadInput(), pathlib.Path())
 
     # act
-    logs = task._extract_logs(base64.b64encode(b""))
+    logs = task._extract_logs(b"")
 
     # assert
     assert logs == ""
-
-
-def test_extract_logs_with_invalid_base64():
-    # arrange
-    task = SimulationTask(Mock(), Operation(), SingleBeadInput(), pathlib.Path())
-
-    # act & assert
-    with pytest.raises(base64.binascii.Error):
-        task._extract_logs(b"invalid base64 encoding")
 
 
 def test_extract_logs_with_invalid_zip_encoding():
@@ -436,7 +427,7 @@ def test_extract_logs_with_invalid_zip_encoding():
 
     # act & assert
     with pytest.raises(zipfile.BadZipFile):
-        task._extract_logs(base64.b64encode(b"logs"))
+        task._extract_logs(b"logs")
 
 
 @pytest.mark.parametrize(
@@ -503,3 +494,23 @@ def test_create_summary_from_response(
 
     # assert
     assert isinstance(summary, expected_summary_type)
+
+
+def test_create_summary_from_response_with_logs_calls_extract_logs(
+    tmp_path: pathlib.Path,
+):
+    # arrange
+    sim_input = SingleBeadInput()
+    mock_server = Mock()
+    mock_server.simulation_stub = Mock()
+    response = SimulationResponse(melt_pool=MeltPoolMsg(), logs=b"logs")
+    task = SimulationTask(mock_server, Operation(), sim_input, tmp_path)
+    task._extract_logs = Mock()
+    task._extract_logs.return_value = "logs"
+
+    # act
+    summary = task._create_summary_from_response(response)
+
+    # assert
+    task._extract_logs.assert_called_once_with(response.logs)
+    assert summary.logs == "logs"

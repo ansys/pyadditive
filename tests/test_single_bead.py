@@ -163,6 +163,12 @@ def test_SingleBeadSummary_init_raises_exception_if_thermal_history_file_not_fou
         SingleBeadSummary(input, melt_pool_msg, "logs", tmp_path)
 
 
+def test_SingleBeadSummary_init_raises_exception_for_invalid_logs_type():
+    # arrange, act, assert
+    with pytest.raises(ValueError, match="Invalid logs type"):
+        SingleBeadSummary(SingleBeadInput(), MeltPoolMessage(), b"logs", None)
+
+
 def test_SingleBeadInput_to_simulation_request_assigns_values():
     # arrange
     machine = AdditiveMachine()
