@@ -15,13 +15,6 @@ of the Ansys release.
         Step-by-step guidelines on how to set up your environment to work with
         PyAdditive.
 
-    .. grid-item-card:: User guide :fa:`book-open-reader`
-        :link: user-guide
-        :link-type: doc
-
-        Learn about the capabilities, features, and key topics in PyAdditive.
-        This guide provides useful background information and explanations.
-
 .. jinja:: main_toctree
 
     {% if build_api or build_examples %}
