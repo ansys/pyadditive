@@ -28,6 +28,7 @@ import pytest
 from ansys.additive.core.geometry_file import BuildFile, MachineType, StlFile
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.simulation import SimulationStatus
 from ansys.additive.core.thermal_history import (
     CoaxialAverageSensorInputs,
     CoaxialAverageSensorInputsMessage,
@@ -457,15 +458,17 @@ def test_ThermalHistorySummary_init_returns_expected_value():
     # arrange
     input = ThermalHistoryInput()
     out_dir = "output/path"
+    status = SimulationStatus.WARNING
 
     # act
-    summary = ThermalHistorySummary(input, out_dir, "logs")
+    summary = ThermalHistorySummary(input, out_dir, "logs", status)
 
     # assert
     assert isinstance(summary, ThermalHistorySummary)
     assert input == summary.input
     assert summary.coax_ave_output_folder == out_dir
     assert summary.logs == "logs"
+    assert summary.status == status
 
 
 @pytest.mark.parametrize(

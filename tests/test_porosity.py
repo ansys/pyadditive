@@ -28,6 +28,8 @@ from ansys.additive.core.porosity import PorosityInput, PorositySummary
 from ansys.api.additive.v0.additive_domain_pb2 import PorosityResult
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
+from ansys.additive.core.simulation import SimulationStatus
+
 from . import test_utils
 
 
@@ -91,6 +93,7 @@ def test_PorositySummary_init_creates_expected_object():
     assert input == summary.input
     assert summary.relative_density == 12
     assert summary.logs == logs
+    assert summary.status == SimulationStatus.COMPLETED
 
 
 @pytest.mark.parametrize(
@@ -251,6 +254,8 @@ def test_PorositySummary_repr_retuns_expected_string():
     # act, assert
     assert repr(summary) == (
         "PorositySummary\n"
+        + "logs: logs\n"
+        + "status: SimulationStatus.COMPLETED\n"
         + "input: PorosityInput\n"
         + f"id: {input.id}\n"
         + "size_x: 0.003\n"
@@ -307,5 +312,4 @@ def test_PorositySummary_repr_retuns_expected_string():
         + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
         + "\n"
         + "relative_density: 0.0\n"
-        + "logs: logs\n"
     )

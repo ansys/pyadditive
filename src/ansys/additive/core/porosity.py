@@ -25,7 +25,11 @@ import math
 
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
-from ansys.additive.core.simulation_input_base import SimulationInputBase
+from ansys.additive.core.simulation import (
+    SimulationInputBase,
+    SimulationStatus,
+    SimulationSummaryBase,
+)
 from ansys.api.additive.v0.additive_domain_pb2 import (
     PorosityInput as PorosityInputMessage,
 )
@@ -159,7 +163,7 @@ class PorosityInput(SimulationInputBase):
         return SimulationRequest(id=self.id, porosity_input=input)
 
 
-class PorositySummary:
+class PorositySummary(SimulationSummaryBase):
     """Provides a summary of a porosity simulation."""
 
     def __init__(
@@ -167,6 +171,7 @@ class PorositySummary:
         input: PorosityInput,
         result: PorosityResult,
         logs: str,
+        status: SimulationStatus = SimulationStatus.COMPLETED,
     ):
         """Initialize a ``PorositySummary`` object."""
         if not isinstance(input, PorosityInput):
@@ -175,6 +180,7 @@ class PorositySummary:
             raise ValueError("Invalid result type passed to init, " + self.__class__.__name__)
         if not isinstance(logs, str):
             raise ValueError("Invalid logs type passed to init, " + self.__class__.__name__)
+        super().__init__(logs, status)
         self._input = input
         self._relative_density = result.solid_ratio
         self._logs = logs
@@ -188,11 +194,6 @@ class PorositySummary:
     def relative_density(self) -> float:
         """Ratio of the density of the simulated sample to a completely solid sample."""
         return self._relative_density
-
-    @property
-    def logs(self) -> str:
-        """Provides simulation logs."""
-        return self._logs
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"

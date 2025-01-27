@@ -39,6 +39,8 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 )
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
+from ansys.additive.core.simulation import SimulationStatus
+
 
 def test_Microstructure3DSummary_init_returns_expected_value():
     # arrange
@@ -46,7 +48,7 @@ def test_Microstructure3DSummary_init_returns_expected_value():
         tempfile.gettempdir(), "microstructure_3d_summary_init"
     )
     os.makedirs(user_data_path, exist_ok=True)
-    input = Microstructure3DInput(id="id")
+    input = Microstructure3DInput()
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
@@ -75,12 +77,13 @@ def test_Microstructure3DSummary_init_returns_expected_value():
     assert isinstance(summary, Microstructure3DSummary)
     assert input == summary.input
     assert summary.grain_3d_vtk == os.path.join(
-        user_data_path, "id", summary._3D_GRAIN_VTK_NAME
+        user_data_path, input.id, summary._3D_GRAIN_VTK_NAME
     )
     assert summary.xy_average_grain_size == 6
     assert summary.xz_average_grain_size == 42
     assert summary.yz_average_grain_size == 110
     assert summary.logs == "logs"
+    assert summary.status == SimulationStatus.COMPLETED
     # TODO: uncomment when the following properties are implemented
     # assert summary.xy_vtk == os.path.join(user_data_path, "id", "xy.vtk")
     # assert os.path.exists(summary.xy_vtk)
@@ -168,7 +171,7 @@ def test_Microstructure3DSummary_repr_returns_expected_string():
         tempfile.gettempdir(), "microstructure_3d_summary_init"
     )
     os.makedirs(user_data_path, exist_ok=True)
-    input = Microstructure3DInput(id="myId")
+    input = Microstructure3DInput()
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
@@ -192,13 +195,15 @@ def test_Microstructure3DSummary_repr_returns_expected_string():
     summary = Microstructure3DSummary(
         input=input, result=result_3d, logs="logs", user_data_path=user_data_path
     )
-    expected_output_dir = os.path.join(user_data_path, "myId")
+    expected_output_dir = os.path.join(user_data_path, input.id)
 
     # act, assert
     assert repr(summary) == (
         "Microstructure3DSummary\n"
+        + "logs: logs\n"
+        + "status: SimulationStatus.COMPLETED\n"
         + "input: Microstructure3DInput\n"
-        + "id: myId\n"
+        + f"id: {input.id}\n"
         + "sample_min_x: 0\n"
         + "sample_min_y: 0\n"
         + "sample_min_z: 0\n"
@@ -262,7 +267,6 @@ def test_Microstructure3DSummary_repr_returns_expected_string():
         + "grain_3d_vtk: "
         + os.path.join(expected_output_dir, "3d_grain_structure.vtk")
         + "\n"
-        + "logs: logs\n"
         + "xy_average_grain_size: 6.0\n"
         + "xz_average_grain_size: 42.0\n"
         + "yz_average_grain_size: 110.0\n"
@@ -293,7 +297,7 @@ def test_Microstructure3DInput_init_creates_default_object():
     input = Microstructure3DInput()
 
     # assert
-    assert input.id == ""
+    assert input.id != ""
     assert input.machine.laser_power == 195
     assert input.material.name == ""
     assert input.sample_min_x == 0
@@ -316,7 +320,6 @@ def test_Microstructure3DInput_init_with_parameters_creates_expected_object():
 
     # act
     input = Microstructure3DInput(
-        id="myId",
         machine=machine,
         material=material,
         sample_min_x=1,
@@ -331,7 +334,7 @@ def test_Microstructure3DInput_init_with_parameters_creates_expected_object():
     )
 
     # assert
-    assert input.id == "myId"
+    assert len(input.id) > 0
     assert input.machine.laser_power == 99
     assert input.material.name == "vibranium"
     assert input.sample_min_x == 1
@@ -347,14 +350,14 @@ def test_Microstructure3DInput_init_with_parameters_creates_expected_object():
 
 def test_Microstructure3DInput_to_simulation_request_returns_expected_object():
     # arrange
-    input = Microstructure3DInput(id="myId")
+    input = Microstructure3DInput()
 
     # act
     request = input._to_simulation_request()
 
     # assert
     assert isinstance(request, SimulationRequest)
-    assert request.id == "myId"
+    assert request.id == input.id
     ms_input = request.microstructure_3d_input
     assert ms_input.x_origin == 0
     assert ms_input.y_origin == 0
@@ -375,7 +378,6 @@ def test_Microstructure3DInput_to_simulation_request_assigns_values():
     machine.laser_power = 99
     material = AdditiveMaterial(name="vibranium")
     input = Microstructure3DInput(
-        id="myId",
         machine=machine,
         material=material,
         sample_min_x=1,
@@ -395,7 +397,7 @@ def test_Microstructure3DInput_to_simulation_request_assigns_values():
 
     # assert
     assert isinstance(request, SimulationRequest)
-    assert request.id == "myId"
+    assert request.id == input.id
     ms_input = request.microstructure_3d_input
     assert ms_input.machine.laser_power == 99
     assert ms_input.material.name == "vibranium"
@@ -471,12 +473,12 @@ def test_Microstructure3DInput_setters_raise_ValueError_for_nan_values(field):
 
 def test_Microstructure3DInput_repr_returns_expected_string():
     # arrange
-    input = Microstructure3DInput(id="myId")
+    input = Microstructure3DInput()
 
     # act, assert
     assert repr(input) == (
         "Microstructure3DInput\n"
-        + "id: myId\n"
+        + f"id: {input.id}\n"
         + "sample_min_x: 0\n"
         + "sample_min_y: 0\n"
         + "sample_min_z: 0\n"

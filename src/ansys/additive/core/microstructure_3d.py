@@ -28,6 +28,11 @@ from ansys.additive.core import misc
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.microstructure import Microstructure2DResult
+from ansys.additive.core.simulation import (
+    SimulationInputBase,
+    SimulationStatus,
+    SimulationSummaryBase,
+)
 from ansys.api.additive.v0.additive_domain_pb2 import (
     Microstructure3DInput as Microstructure3DInputMessage,
 )
@@ -35,7 +40,7 @@ from ansys.api.additive.v0.additive_domain_pb2 import Microstructure3DResult
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 
-class Microstructure3DInput:
+class Microstructure3DInput(SimulationInputBase):
     """Provides input parameters for 3D microstructure simulation.
 
     Units are SI (m, kg, s, K) unless otherwise noted.
@@ -87,7 +92,6 @@ class Microstructure3DInput:
 
     def __init__(
         self,
-        id: str = "",
         *,
         sample_min_x: float = DEFAULT_POSITION_COORDINATE,
         sample_min_y: float = DEFAULT_POSITION_COORDINATE,
@@ -104,7 +108,7 @@ class Microstructure3DInput:
     ):
         """Initialize a ``Microstructure3DInput`` object."""
 
-        self.id = id
+        super().__init__()
         self.sample_min_x = sample_min_x
         self.sample_min_y = sample_min_y
         self.sample_min_z = sample_min_z
@@ -159,15 +163,6 @@ class Microstructure3DInput:
             raise ValueError("{} must be a number.".format(name))
         if value <= 0:
             raise ValueError("{} must be greater than zero.".format(name))
-
-    @property
-    def id(self) -> str:
-        """User-provided ID for the simulation."""
-        return self._id
-
-    @id.setter
-    def id(self, value: str):
-        self._id = value
 
     @property
     def machine(self):
@@ -362,7 +357,7 @@ class Microstructure3DInput:
         return SimulationRequest(id=self.id, microstructure_3d_input=input)
 
 
-class Microstructure3DSummary:
+class Microstructure3DSummary(SimulationSummaryBase):
     """Provides the summary of a 3D microstructure simulation."""
 
     _3D_GRAIN_VTK_NAME = "3d_grain_structure.vtk"
@@ -373,6 +368,7 @@ class Microstructure3DSummary:
         result: Microstructure3DResult,
         logs: str,
         user_data_path: str,
+        status: SimulationStatus = SimulationStatus.COMPLETED,
     ) -> None:
         """Initialize a ``Microstructure3DSummary`` object."""
         if not isinstance(input, Microstructure3DInput):
@@ -383,6 +379,7 @@ class Microstructure3DSummary:
             raise ValueError("Invalid user data path, " + self.__class__.__name__)
         if not isinstance(logs, str):
             raise ValueError("Invalid logs type passed to init, " + self.__class__.__name__)
+        super().__init__(logs, status)
         self._input = input
         id = input.id if input.id else misc.short_uuid()
         outpath = os.path.join(user_data_path, id)
@@ -433,8 +430,3 @@ class Microstructure3DSummary:
     def yz_average_grain_size(self) -> float:
         """Average grain size (µm) for the YZ plane."""
         return self._2d_result._yz_average_grain_size
-
-    @property
-    def logs(self) -> str:
-        """Provides simulation logs."""
-        return self._logs

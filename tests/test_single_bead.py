@@ -27,6 +27,7 @@ import pytest
 
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.simulation import SimulationStatus
 from ansys.additive.core.single_bead import (
     MeltPool,
     MeltPoolMessage,
@@ -93,6 +94,7 @@ def test_SingleBeadSummary_init_returns_valid_result():
     assert expected_melt_pool == summary.melt_pool
     assert summary.logs == logs
     assert summary.melt_pool.thermal_history_output is None
+    assert summary.status == SimulationStatus.COMPLETED
 
 
 def test_SingleBeadSummary_init_with_thermal_history_returns_valid_result(
@@ -418,6 +420,8 @@ def test_SingleBeadSummary_repr_returns_expected_string():
     assert (
         summary.__repr__()
         == "SingleBeadSummary\n"
+        + "logs: log message\n"
+        + "status: SimulationStatus.COMPLETED\n"
         + "input: SingleBeadInput\n"
         + f"id: {input.id}\n"
         + "bead_length: 0.003\n"
@@ -476,8 +480,6 @@ def test_SingleBeadSummary_repr_returns_expected_string():
         + "melt_pool: MeltPool\n"
         + "Empty DataFrame\nColumns: [length, width, depth, reference_width, reference_depth]\nIndex: []\n"
         + "grid_full_thermal_sensor_file_output_path: None\n"
-        + "logs: log message"
-        + "\n"
     )
 
 
