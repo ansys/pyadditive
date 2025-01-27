@@ -23,6 +23,7 @@
 
 from ansys.additive.core.material_tuning import MaterialTuningInput
 from ansys.additive.core.microstructure import MicrostructureInput
+from ansys.additive.core.microstructure_3d import Microstructure3DInput
 from ansys.additive.core.porosity import PorosityInput
 from ansys.additive.core.single_bead import SingleBeadInput
 from ansys.additive.core.thermal_history import ThermalHistoryInput
@@ -37,6 +38,7 @@ class SimulationError:
             SingleBeadInput
             | PorosityInput
             | MicrostructureInput
+            | Microstructure3DInput
             | ThermalHistoryInput
             | MaterialTuningInput
         ),
@@ -55,6 +57,7 @@ class SimulationError:
         SingleBeadInput
         | PorosityInput
         | MicrostructureInput
+        | Microstructure3DInput
         | ThermalHistoryInput
         | MaterialTuningInput
     ):
