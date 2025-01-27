@@ -26,7 +26,7 @@ import os
 import time
 
 import grpc
-from google.longrunning.operations_pb2 import Operation
+from google.longrunning.operations_pb2 import Operation, ListOperationsRequest
 from google.protobuf.empty_pb2 import Empty
 
 import ansys.additive.core.misc as misc
@@ -467,6 +467,7 @@ class Additive:
         try:
             request = create_request(simulation_input, server, progress_handler)
             long_running_op = server.simulation_stub.Simulate(request)
+            print(long_running_op)
             simulation_task = SimulationTask(
                 server, long_running_op, simulation_input, self._user_data_path
             )
@@ -482,6 +483,8 @@ class Additive:
 
         if progress_handler:
             time.sleep(0.1)  # Allow time for the server to start the simulation
+            list_response = server.operations_stub.ListOperations(ListOperationsRequest())
+            print(list_response)
             progress_handler.update(simulation_task.status())
 
         return simulation_task
