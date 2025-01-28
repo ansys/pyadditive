@@ -58,7 +58,8 @@ from ansys.additive.core.progress_handler import (
     ProgressState,
 )
 from ansys.additive.core.server_connection import ServerConnection
-from ansys.additive.core.simulation import SimulationError
+from ansys.additive.core.simulation import SimulationStatus
+from ansys.additive.core.simulation_error import SimulationError
 from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
 from ansys.additive.core.thermal_history import (
     ThermalHistoryInput,
@@ -244,7 +245,7 @@ class SimulationTask:
         if operation.HasField("response"):
             response = SimulationResponse()
             operation.response.Unpack(response)
-            self._summary = self._create_summary_from_response(response)
+            self._summary = self._create_summary(response, progress)
         elif operation.HasField("error") and operation.error.code not in [
             Code.CANCELLED,
             Code.OK,
@@ -296,8 +297,8 @@ class SimulationTask:
 
         return progress
 
-    def _create_summary_from_response(
-        self, response: SimulationResponse
+    def _create_summary(
+        self, response: SimulationResponse, progress: Progress
     ) -> (
         SingleBeadSummary
         | PorositySummary
@@ -306,6 +307,12 @@ class SimulationTask:
         | Microstructure3DSummary
         | MaterialTuningSummary
     ):
+        progress_state_to_simulation_status = {
+            ProgressState.ERROR: SimulationStatus.ERROR,
+            ProgressState.WARNING: SimulationStatus.WARNING,
+            ProgressState.COMPLETED: SimulationStatus.COMPLETED,
+        }
+        simulation_status = progress_state_to_simulation_status[progress.state]
         if response.HasField("material_tuning_result"):
             return MaterialTuningSummary(
                 self._simulation_input,
@@ -331,15 +338,22 @@ class SimulationTask:
                 response.melt_pool,
                 logs,
                 thermal_history_output,
+                simulation_status,
             )
         if response.HasField("porosity_result"):
-            return PorositySummary(self._simulation_input, response.porosity_result, logs)
+            return PorositySummary(
+                self._simulation_input,
+                response.porosity_result,
+                logs,
+                simulation_status,
+            )
         if response.HasField("microstructure_result"):
             return MicrostructureSummary(
                 self._simulation_input,
                 response.microstructure_result,
                 logs,
                 self._user_data_path,
+                simulation_status,
             )
         if response.HasField("microstructure_3d_result"):
             return Microstructure3DSummary(
@@ -347,6 +361,7 @@ class SimulationTask:
                 response.microstructure_3d_result,
                 logs,
                 self._user_data_path,
+                simulation_status,
             )
         if response.HasField("thermal_history_result"):
             path = os.path.join(self._user_data_path, self._simulation_input.id, "coax_ave_output")
@@ -358,7 +373,7 @@ class SimulationTask:
             with zipfile.ZipFile(local_zip, "r") as zip:
                 zip.extractall(path)
             os.remove(local_zip)
-            return ThermalHistorySummary(self._simulation_input, path, logs)
+            return ThermalHistorySummary(self._simulation_input, path, logs, simulation_status)
 
     def _check_if_thermal_history_is_present(self, response) -> bool:
         """Check if thermal history output is present in the response."""

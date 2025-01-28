@@ -1366,7 +1366,7 @@ def test_update_updates_single_bead_permutation(tmp_path: pytest.TempPathFactory
     input._id = id
     mp_msg = test_utils.get_test_melt_pool_message()
     mp_median = MeltPool(mp_msg, tmp_path).data_frame().median()
-    summary = SingleBeadSummary(input, mp_msg, "logs", None)
+    summary = SingleBeadSummary(input, mp_msg, "logs", None, SimulationStatus.WARNING)
 
     # act
     study.update([summary])
@@ -1375,7 +1375,7 @@ def test_update_updates_single_bead_permutation(tmp_path: pytest.TempPathFactory
     df2 = study.data_frame()
     assert len(df2) == len(df1) == 1
     assert df1.loc[0, ColumnNames.STATUS] == SimulationStatus.NEW
-    assert df2.loc[0, ColumnNames.STATUS] == SimulationStatus.COMPLETED
+    assert df2.loc[0, ColumnNames.STATUS] == SimulationStatus.WARNING
     assert (
         df2.loc[0, ColumnNames.MELT_POOL_WIDTH] == mp_median[MeltPoolColumnNames.WIDTH]
     )
@@ -1417,7 +1417,7 @@ def test_update_updates_porosity_permutation(tmp_path: pytest.TempPathFactory):
         powder_ratio=11,
         solid_ratio=12,
     )
-    summary = PorositySummary(input, result, "logs")
+    summary = PorositySummary(input, result, "logs", SimulationStatus.WARNING)
 
     # act
     study.update([summary])
@@ -1426,7 +1426,7 @@ def test_update_updates_porosity_permutation(tmp_path: pytest.TempPathFactory):
     df2 = study.data_frame()
     assert len(df2) == len(df1) == 1
     assert df1.loc[0, ColumnNames.STATUS] == SimulationStatus.NEW
-    assert df2.loc[0, ColumnNames.STATUS] == SimulationStatus.COMPLETED
+    assert df2.loc[0, ColumnNames.STATUS] == SimulationStatus.WARNING
     assert df2.loc[0, ColumnNames.RELATIVE_DENSITY] == 12
 
 
@@ -1458,7 +1458,9 @@ def test_update_updates_microstructure_permutation(tmp_path: pytest.TempPathFact
     result.xy_circle_equivalence.append(xy_stats)
     result.xz_circle_equivalence.append(xz_stats)
     result.yz_circle_equivalence.append(yz_stats)
-    summary = MicrostructureSummary(input, result, "logs", user_data_path)
+    summary = MicrostructureSummary(
+        input, result, "logs", user_data_path, SimulationStatus.WARNING
+    )
 
     # act
     study.update([summary])
@@ -1467,7 +1469,7 @@ def test_update_updates_microstructure_permutation(tmp_path: pytest.TempPathFact
     df2 = study.data_frame()
     assert len(df2) == len(df1) == 1
     assert df1.loc[0, ColumnNames.STATUS] == SimulationStatus.NEW
-    assert df2.loc[0, ColumnNames.STATUS] == SimulationStatus.COMPLETED
+    assert df2.loc[0, ColumnNames.STATUS] == SimulationStatus.WARNING
     assert df2.loc[0, ColumnNames.XY_AVERAGE_GRAIN_SIZE] == 6
     assert df2.loc[0, ColumnNames.XZ_AVERAGE_GRAIN_SIZE] == 42
     assert df2.loc[0, ColumnNames.YZ_AVERAGE_GRAIN_SIZE] == 110

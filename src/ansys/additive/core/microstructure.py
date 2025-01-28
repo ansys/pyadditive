@@ -31,7 +31,11 @@ from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
 from ansys.additive.core import misc
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
-from ansys.additive.core.simulation_input_base import SimulationInputBase
+from ansys.additive.core.simulation import (
+    SimulationInputBase,
+    SimulationStatus,
+    SimulationSummaryBase,
+)
 from ansys.api.additive.v0.additive_domain_pb2 import (
     MicrostructureInput as MicrostructureInputMessage,
 )
@@ -512,7 +516,7 @@ class CircleEquivalenceColumnNames:
     """Orientation angle (degrees)."""
 
 
-class MicrostructureSummary:
+class MicrostructureSummary(SimulationSummaryBase):
     """Provides the summary of a microstructure simulation."""
 
     def __init__(
@@ -521,6 +525,7 @@ class MicrostructureSummary:
         result: MicrostructureResultMessage,
         logs: str,
         user_data_path: str,
+        status: SimulationStatus = SimulationStatus.COMPLETED,
     ) -> None:
         """Initialize a ``MicrostructureSummary`` object."""
         if not isinstance(input, MicrostructureInput):
@@ -531,6 +536,7 @@ class MicrostructureSummary:
             raise ValueError("Invalid user data path, " + self.__class__.__name__)
         if not isinstance(logs, str):
             raise ValueError("Invalid logs type passed to init, " + self.__class__.__name__)
+        super().__init__(logs, status)
         self._input = input
         id = input.id if input.id else misc.short_uuid()
         outpath = os.path.join(user_data_path, id)
@@ -617,11 +623,6 @@ class MicrostructureSummary:
     def yz_average_grain_size(self) -> float:
         """Average grain size (µm) for the YZ plane."""
         return self._result._yz_average_grain_size
-
-    @property
-    def logs(self) -> str:
-        """Provides simulation logs."""
-        return self._logs
 
     @staticmethod
     def _circle_equivalence_frame(src: RepeatedCompositeFieldContainer) -> pd.DataFrame:

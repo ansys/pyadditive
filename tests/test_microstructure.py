@@ -39,6 +39,8 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 )
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
+from ansys.additive.core.simulation import SimulationStatus
+
 
 def test_MicrostructureSummary_init_returns_expected_value():
     # arrange
@@ -94,6 +96,7 @@ def test_MicrostructureSummary_init_returns_expected_value():
     assert summary.xz_average_grain_size == 42
     assert summary.yz_average_grain_size == 110
     assert summary.logs == logs
+    assert summary.status == SimulationStatus.COMPLETED
 
     # clean up
     shutil.rmtree(user_data_path)
@@ -515,6 +518,8 @@ def test_MicrostructureSummary_repr_returns_expected_string():
     # act, assert
     assert repr(summary) == (
         "MicrostructureSummary\n"
+        + "logs: logs\n"
+        + "status: SimulationStatus.COMPLETED\n"
         + "input: MicrostructureInput\n"
         + f"id: {input.id}\n"
         + "sensor_dimension: 0.0005\n"
@@ -580,7 +585,6 @@ def test_MicrostructureSummary_repr_returns_expected_string():
         + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
         + "random_seed: 0\n"
         + "\n"
-        + "logs: logs\n"
         + "xy_vtk: "
         + os.path.join(expected_output_dir, "xy.vtk")
         + "\n"

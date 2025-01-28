@@ -23,7 +23,7 @@
 
 import os
 
-from ansys.additive.core.simulation_input_base import SimulationInputBase
+from ansys.additive.core.simulation import SimulationInputBase
 from ansys.api.additive.v0.additive_domain_pb2 import (
     MaterialTuningInput as MaterialTuningInputMessage,
 )

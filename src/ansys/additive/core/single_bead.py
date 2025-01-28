@@ -31,7 +31,11 @@ from pandas import DataFrame
 
 from ansys.additive.core.machine import AdditiveMachine
 from ansys.additive.core.material import AdditiveMaterial
-from ansys.additive.core.simulation_input_base import SimulationInputBase
+from ansys.additive.core.simulation import (
+    SimulationInputBase,
+    SimulationStatus,
+    SimulationSummaryBase,
+)
 from ansys.api.additive.v0.additive_domain_pb2 import MeltPool as MeltPoolMessage
 from ansys.api.additive.v0.additive_domain_pb2 import (
     SingleBeadInput as SingleBeadInputMessage,
@@ -287,7 +291,7 @@ class MeltPool:
         return self._thermal_history_output
 
 
-class SingleBeadSummary:
+class SingleBeadSummary(SimulationSummaryBase):
     """Provides a summary of a single bead simulation."""
 
     THERMAL_HISTORY_OUTPUT_ZIP = "gridfullthermal.zip"
@@ -298,6 +302,7 @@ class SingleBeadSummary:
         msg: MeltPoolMessage,
         logs: str,
         thermal_history_output: str | None = None,
+        status: SimulationStatus = SimulationStatus.COMPLETED,
     ):
         """Initialize a ``SingleBeadSummary`` object."""
         if not isinstance(input, SingleBeadInput):
@@ -306,9 +311,9 @@ class SingleBeadSummary:
             raise ValueError("Invalid message type passed to init, " + self.__class__.__name__)
         if not isinstance(logs, str):
             raise ValueError("Invalid logs type passed to init, " + self.__class__.__name__)
+        super().__init__(logs, status)
         self._input = input
         self._melt_pool = MeltPool(msg, thermal_history_output)
-        self._logs = logs
         if thermal_history_output is not None:
             self._extract_thermal_history(thermal_history_output)
 
@@ -321,11 +326,6 @@ class SingleBeadSummary:
     def melt_pool(self) -> MeltPool:
         """Resulting melt pool."""
         return self._melt_pool
-
-    @property
-    def logs(self) -> str:
-        """Simulation logs."""
-        return self._logs
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
