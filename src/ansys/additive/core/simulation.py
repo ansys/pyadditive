@@ -23,11 +23,7 @@
 
 from enum import Enum
 
-from ansys.additive.core.material_tuning import MaterialTuningInput
-from ansys.additive.core.microstructure import MicrostructureInput
-from ansys.additive.core.porosity import PorosityInput
-from ansys.additive.core.single_bead import SingleBeadInput
-from ansys.additive.core.thermal_history import ThermalHistoryInput
+from ansys.additive.core.misc import short_uuid
 
 
 class SimulationType(str, Enum):
@@ -66,45 +62,33 @@ class SimulationStatus(str, Enum):
     """Do not run this simulation, only applies to parametric studies."""
 
 
-class SimulationError:
-    """Provides simulation error information."""
+class SimulationInputBase:
+    """Provides a base class for simulation inputs."""
 
-    def __init__(
-        self,
-        input: (
-            SingleBeadInput
-            | PorosityInput
-            | MicrostructureInput
-            | ThermalHistoryInput
-            | MaterialTuningInput
-        ),
-        message: str,
-        logs: str,
-    ):
-        """Initialize a ``SimulationError`` object."""
-        self._input = input
-        self._message = message
+    def __init__(self) -> None:
+        """Initialize the simulation input base class."""
+        self._id: str = short_uuid()
+
+    @property
+    def id(self) -> str:
+        """Return a unique identifier for this simulation."""
+        return self._id
+
+
+class SimulationSummaryBase:
+    """Provides a base class for simulation summaries."""
+
+    def __init__(self, logs: str, status: SimulationStatus = SimulationStatus.COMPLETED):
+        """Initialize a ``SimulationSummaryBase`` object."""
         self._logs = logs
-
-    @property
-    def input(
-        self,
-    ) -> (
-        SingleBeadInput
-        | PorosityInput
-        | MicrostructureInput
-        | ThermalHistoryInput
-        | MaterialTuningInput
-    ):
-        """Simulation input."""
-        return self._input
-
-    @property
-    def message(self) -> str:
-        """Provides simulation error message."""
-        return self._message
+        self._status = status
 
     @property
     def logs(self) -> str:
-        """Provides simulation logs."""
+        """Simulation logs."""
         return self._logs
+
+    @property
+    def status(self) -> SimulationStatus:
+        """Simulation status."""
+        return self._status

@@ -55,7 +55,8 @@ from ansys.additive.core.material_tuning import (
     MaterialTuningSummary,
 )
 from ansys.additive.core.progress_handler import IProgressHandler, Progress
-from ansys.additive.core.simulation import SimulationError
+from ansys.additive.core.simulation import SimulationStatus
+from ansys.additive.core.simulation_error import SimulationError
 from ansys.api.additive.v0.additive_domain_pb2 import (
     MaterialTuningResult,
     Microstructure3DResult,
@@ -470,7 +471,7 @@ def test_extract_logs_with_invalid_zip_encoding():
     ],
 )
 @patch("ansys.additive.core.simulation_task.download_file")
-def test_create_summary_from_response(
+def test_create_summary(
     mock_download_file,
     sim_input,
     response,
@@ -488,15 +489,24 @@ def test_create_summary_from_response(
     )
     mock_download_file.return_value = tmp_zip_file
     task = SimulationTask(mock_server, Operation(), sim_input, tmp_path)
+    metadata = OperationMetadata(
+        simulation_id="id",
+        percent_complete=50.0,
+        message="executing",
+        state=ProgressMsgState.PROGRESS_STATE_WARNING,
+    )
+    progress = Progress.from_operation_metadata(metadata)
 
     # act
-    summary = task._create_summary_from_response(response)
+    summary = task._create_summary(response, progress)
 
     # assert
     assert isinstance(summary, expected_summary_type)
+    if not isinstance(summary, MaterialTuningSummary):
+        assert summary.status == SimulationStatus.WARNING
 
 
-def test_create_summary_from_response_with_logs_calls_extract_logs(
+def test_create_summary_with_logs_calls_extract_logs(
     tmp_path: pathlib.Path,
 ):
     # arrange
@@ -507,9 +517,16 @@ def test_create_summary_from_response_with_logs_calls_extract_logs(
     task = SimulationTask(mock_server, Operation(), sim_input, tmp_path)
     task._extract_logs = Mock()
     task._extract_logs.return_value = "logs"
+    metadata = OperationMetadata(
+        simulation_id="id",
+        percent_complete=50.0,
+        message="executing",
+        state=ProgressMsgState.PROGRESS_STATE_WARNING,
+    )
+    progress = Progress.from_operation_metadata(metadata)
 
     # act
-    summary = task._create_summary_from_response(response)
+    summary = task._create_summary(response, progress)
 
     # assert
     task._extract_logs.assert_called_once_with(response.logs)

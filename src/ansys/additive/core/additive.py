@@ -61,10 +61,10 @@ from ansys.additive.core.server_connection import (
     ServerConnection,
 )
 from ansys.additive.core.simulation import (
-    SimulationError,
     SimulationStatus,
     SimulationType,
 )
+from ansys.additive.core.simulation_error import SimulationError
 from ansys.additive.core.simulation_requests import create_request
 from ansys.additive.core.simulation_task import SimulationTask
 from ansys.additive.core.simulation_task_manager import SimulationTaskManager
@@ -733,7 +733,7 @@ class Additive:
         """
         SLEEP_INTERVAL = 2
         progress_handler = ParametricStudyProgressHandler(study)
-        num_summaries = 0
+        summaries = []
 
         try:
             task_mgr = self.simulate_study_async(
@@ -743,10 +743,11 @@ class Additive:
             time.sleep(SLEEP_INTERVAL)
             while not task_mgr.done:
                 task_mgr.status(progress_handler)
-                if len(task_mgr.summaries()) > num_summaries:
-                    # TODO: Only update the study with new summaries
-                    study.update(task_mgr.summaries())
-                    num_summaries = len(task_mgr.summaries())
+                current_summaries = task_mgr.summaries()
+                new_summaries = [s for s in current_summaries if s not in summaries]
+                if new_summaries:
+                    study.update(new_summaries)
+                    summaries = current_summaries
                 time.sleep(SLEEP_INTERVAL)
 
         except Exception as e:
@@ -764,6 +765,11 @@ class Additive:
         progress_handler: IProgressHandler = None,
     ) -> SimulationTaskManager:
         """Run the simulations in a parametric study asynchronously.
+
+        Notes
+        -----
+            The caller of this method is responsible for updating the study with the results of the simulations.
+            See :meth:`SimulationTaskManager.summaries` and :meth:`ParametricStudy.update`.
 
         Parameters
         ----------

@@ -47,10 +47,10 @@ from ansys.additive.core.microstructure import (
 )
 from ansys.additive.core.porosity import PorosityInput, PorositySummary
 from ansys.additive.core.simulation import (
-    SimulationError,
     SimulationStatus,
     SimulationType,
 )
+from ansys.additive.core.simulation_error import SimulationError
 from ansys.additive.core.single_bead import MeltPool, SingleBeadInput, SingleBeadSummary
 
 from .constants import DEFAULT_ITERATION, DEFAULT_PRIORITY, FORMAT_VERSION, ColumnNames
@@ -1185,12 +1185,13 @@ class ParametricStudy:
         """
         for summary in summaries:
             if isinstance(summary, SingleBeadSummary):
-                self._update_single_bead(summary.input.id, summary.melt_pool)
+                self._update_single_bead(summary.input.id, summary.status, summary.melt_pool)
             elif isinstance(summary, PorositySummary):
-                self._update_porosity(summary.input.id, summary.relative_density)
+                self._update_porosity(summary.input.id, summary.status, summary.relative_density)
             elif isinstance(summary, MicrostructureSummary):
                 self._update_microstructure(
                     summary.input.id,
+                    summary.status,
                     summary.xy_average_grain_size,
                     summary.xz_average_grain_size,
                     summary.yz_average_grain_size,
@@ -1202,7 +1203,7 @@ class ParametricStudy:
             else:
                 raise TypeError(f"Invalid simulation summary type: {type(summary)}")
 
-    def _update_single_bead(self, id: str, melt_pool: MeltPool):
+    def _update_single_bead(self, id: str, status: SimulationStatus, melt_pool: MeltPool):
         """Update the results of a single bead simulation in the parametric
         study data frame.
         """
@@ -1210,7 +1211,7 @@ class ParametricStudy:
             (self._data_frame[ColumnNames.ID] == id)
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD)
         ].index
-        self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
+        self._data_frame.loc[idx, ColumnNames.STATUS] = status
         self._data_frame.loc[idx, ColumnNames.MELT_POOL_WIDTH] = melt_pool.median_width()
         self._data_frame.loc[idx, ColumnNames.MELT_POOL_DEPTH] = melt_pool.median_depth()
         self._data_frame.loc[idx, ColumnNames.MELT_POOL_LENGTH] = melt_pool.median_length()
@@ -1227,7 +1228,7 @@ class ParametricStudy:
             melt_pool.depth_over_width()
         )
 
-    def _update_porosity(self, id: str, relative_density: float):
+    def _update_porosity(self, id: str, status: SimulationStatus, relative_density: float):
         """Update the results of a porosity simulation in the parametric study
         data frame.
         """
@@ -1236,12 +1237,13 @@ class ParametricStudy:
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.POROSITY)
         ].index
 
-        self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
+        self._data_frame.loc[idx, ColumnNames.STATUS] = status
         self._data_frame.loc[idx, ColumnNames.RELATIVE_DENSITY] = relative_density
 
     def _update_microstructure(
         self,
         id: str,
+        status: SimulationStatus,
         xy_avg_grain_size: float,
         xz_avg_grain_size: float,
         yz_avg_grain_size: float,
@@ -1254,7 +1256,7 @@ class ParametricStudy:
             & (self._data_frame[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE)
         ].index
 
-        self._data_frame.loc[idx, ColumnNames.STATUS] = SimulationStatus.COMPLETED
+        self._data_frame.loc[idx, ColumnNames.STATUS] = status
         self._data_frame.loc[idx, ColumnNames.XY_AVERAGE_GRAIN_SIZE] = xy_avg_grain_size
         self._data_frame.loc[idx, ColumnNames.XZ_AVERAGE_GRAIN_SIZE] = xz_avg_grain_size
         self._data_frame.loc[idx, ColumnNames.YZ_AVERAGE_GRAIN_SIZE] = yz_avg_grain_size
