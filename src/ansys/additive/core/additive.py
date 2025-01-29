@@ -265,6 +265,8 @@ class Additive:
     @property
     def connected(self) -> bool:
         """Return True if the client is connected to a server."""
+        if self._server is None:
+            return False
         return self._server.status().connected
 
     def about(self) -> str:
