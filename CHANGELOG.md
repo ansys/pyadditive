@@ -8,6 +8,8 @@
 
 ### Bug Fixes
 
+* Return `False` from `Additive.connected()` if the `_server` attribute is `None`
+
 ### Doc Improvements
 
 ### Contributors

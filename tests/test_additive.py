@@ -1436,3 +1436,16 @@ def test_connected_returns_false_when_server_is_not_connected(mock_connection):
     # assert
     assert result is False
     mock_server.status.assert_called_once()
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_connected_returns_false_when_server_is_none(mock_connection):
+    # arrange
+    additive = Additive()
+    additive._server = None
+
+    # act
+    result = additive.connected
+
+    # assert
+    assert result is False
