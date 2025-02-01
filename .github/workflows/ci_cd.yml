@@ -75,7 +75,7 @@ jobs:
 
       - name: Upload Coverage Results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-html
           path: .cov/html
@@ -179,14 +179,14 @@ jobs:
           BUILD_EXAMPLES_LONG: true
 
       - name: Upload HTML documentation
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: documentation-html
           path: doc/_build/html
           retention-days: 7
 
       - name: Upload PDF documentation
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: documentation-pdf
           path: doc/_build/latex/*.pdf
@@ -223,7 +223,7 @@ jobs:
 
       - name: "Upload container logs as artifacts"
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: docker-logs.txt
           path: docker-logs.txt
