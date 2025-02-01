@@ -22,21 +22,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # code-style:
-  #   name: "Running code style checks"
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: "Run PyAnsys code style checks"
-  #       uses: ansys/actions/code-style@v4
+  code-style:
+    name: "Running code style checks"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Run PyAnsys code style checks"
+        uses: ansys/actions/code-style@v8
 
-  # doc-style:
-  #   name: "Running documentation style checks"
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: "Running documentation style checks"
-  #       uses: ansys/actions/doc-style@v4
-  #       with:
-  #         token: ${{ secrets.GITHUB_TOKEN }}
+  doc-style:
+    name: "Running documentation style checks"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Running documentation style checks"
+        uses: ansys/actions/doc-style@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   smoke-tests:
     name: "Build wheelhouse for Python versions"
@@ -54,7 +54,7 @@ jobs:
             os: macos-latest
     steps:
       - name: "Build a wheelhouse of the Python library"
-        uses: ansys/actions/build-wheelhouse@v4
+        uses: ansys/actions/build-wheelhouse@v8
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           operating-system: ${{ matrix.os }}
@@ -71,7 +71,7 @@ jobs:
       fail-fast: false
     steps:
       - name: "Run pytest"
-        uses: ansys/actions/tests-pytest@v4
+        uses: ansys/actions/tests-pytest@v8
 
       - name: Upload Coverage Results
         if: always()
@@ -82,7 +82,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         if: matrix.os == 'ubuntu-latest'
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -133,7 +133,7 @@ jobs:
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
 
       - name: "Setup headless display"
-        uses: pyvista/setup-headless-display-action@v2
+        uses: pyvista/setup-headless-display-action@v3
 
       - name: "Checkout code"
         uses: actions/checkout@v4
@@ -234,7 +234,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Build library source and wheel artifacts"
-        uses: ansys/actions/build-library@v4
+        uses: ansys/actions/build-library@v8
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
@@ -246,14 +246,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Release to the PyPI repository"
-        uses: ansys/actions/release-pypi-public@v4
+        uses: ansys/actions/release-pypi-public@v8
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           twine-username: "__token__"
           twine-token: ${{ secrets.PYPI_TOKEN }}
 
       - name: "Release to GitHub"
-        uses: ansys/actions/release-github@v4
+        uses: ansys/actions/release-github@v8
         with:
           library-name: ${{ env.LIBRARY_NAME }}
 
@@ -264,7 +264,7 @@ jobs:
     if: github.event_name == 'push'
     steps:
       - name: "Deploy the latest documentation"
-        uses: ansys/actions/doc-deploy-dev@v4
+        uses: ansys/actions/doc-deploy-dev@v8
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -276,7 +276,7 @@ jobs:
     needs: [release]
     steps:
       - name: "Deploy the stable documentation"
-        uses: ansys/actions/doc-deploy-stable@v4
+        uses: ansys/actions/doc-deploy-stable@v8
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
