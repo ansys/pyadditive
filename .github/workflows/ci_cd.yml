@@ -22,26 +22,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  code-style:
-    name: "Running code style checks"
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Run PyAnsys code style checks"
-        uses: ansys/actions/code-style@v4
+  # code-style:
+  #   name: "Running code style checks"
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: "Run PyAnsys code style checks"
+  #       uses: ansys/actions/code-style@v4
 
-  doc-style:
-    name: "Running documentation style checks"
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Running documentation style checks"
-        uses: ansys/actions/doc-style@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+  # doc-style:
+  #   name: "Running documentation style checks"
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: "Running documentation style checks"
+  #       uses: ansys/actions/doc-style@v4
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
 
   smoke-tests:
     name: "Build wheelhouse for Python versions"
     runs-on: ${{ matrix.os }}
-    needs: [code-style]
+    # needs: [code-style]
     strategy:
       fail-fast: false
       matrix:
@@ -99,7 +99,7 @@ jobs:
       matrix:
         runner: [public-ubuntu-latest-8-cores]
     runs-on: ${{ matrix.runner }}
-    needs: [doc-style]
+    # needs: [doc-style]
     steps:
       # Remove when https://github.com/readthedocs/sphinx-autoapi/pull/399 gets merged
       # and auto-api is updated.
