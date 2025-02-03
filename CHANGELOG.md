@@ -1,5 +1,10 @@
 # Changelog
 
+## PyAdditive 0.17.3
+
+### Bug Fixes
+* Change DEFAULT_PRODUCT_VERSION to 241 to correspond to Ansys 2024 R1.
+
 ## PyAdditive 0.17.2
 
 ### Doc Improvements
