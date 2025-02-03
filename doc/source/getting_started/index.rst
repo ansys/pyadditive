@@ -6,6 +6,8 @@
 Getting started
 ###############
 
+.. vale off
+
 PyAdditive is a Python client library for the Ansys Additive server. The Ansys
 Additive server is distributed with the Additive option of the Structures package
 in the Ansys unified installation.
@@ -310,6 +312,7 @@ the building requirements and then executing the build module:
     python -m build
     python -m twine check dist/*
 
+.. vale on
 .. LINKS AND REFERENCES
 .. _black: https://github.com/psf/black
 .. _flake8: https://flake8.pycqa.org/en/latest/
