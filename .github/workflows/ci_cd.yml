@@ -41,7 +41,7 @@ jobs:
   smoke-tests:
     name: "Build wheelhouse for Python versions"
     runs-on: ${{ matrix.os }}
-    # needs: [code-style]
+    needs: [code-style]
     strategy:
       fail-fast: false
       matrix:
@@ -99,7 +99,7 @@ jobs:
       matrix:
         runner: [public-ubuntu-latest-8-cores]
     runs-on: ${{ matrix.runner }}
-    # needs: [doc-style]
+    needs: [doc-style]
     steps:
       # Remove when https://github.com/readthedocs/sphinx-autoapi/pull/399 gets merged
       # and auto-api is updated.
