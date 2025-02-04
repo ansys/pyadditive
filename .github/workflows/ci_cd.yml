@@ -89,148 +89,148 @@ jobs:
         with:
           files: .cov/xml
 
-  # doc-build:
-  #   name: "Building library documentation"
-  #   if: github.event_name != 'merge_group'
-  #   # This is dumb but the schema checker doesn't allow the runner name
-  #   # `public-ubuntu-latest-8-cores`. Circumvent this by using a matrix
-  #   # strategy.
-  #   strategy:
-  #     matrix:
-  #       runner: [public-ubuntu-latest-8-cores]
-  #   runs-on: ${{ matrix.runner }}
-  #   needs: [doc-style]
-  #   steps:
-  #     # Remove when https://github.com/readthedocs/sphinx-autoapi/pull/399 gets merged
-  #     # and auto-api is updated.
-  #     - name: "Install requirements"
-  #       shell: bash
-  #       run: |
-  #         sudo apt-get update
-  #         sudo apt-get install -y texlive-latex-extra latexmk pandoc
+  doc-build:
+    name: "Building library documentation"
+    if: github.event_name != 'merge_group'
+    # This is dumb but the schema checker doesn't allow the runner name
+    # `public-ubuntu-latest-8-cores`. Circumvent this by using a matrix
+    # strategy.
+    strategy:
+      matrix:
+        runner: [public-ubuntu-latest-8-cores]
+    runs-on: ${{ matrix.runner }}
+    needs: [doc-style]
+    steps:
+      # Remove when https://github.com/readthedocs/sphinx-autoapi/pull/399 gets merged
+      # and auto-api is updated.
+      - name: "Install requirements"
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra latexmk pandoc
 
-  #     - name: "Login into the GitHub registry container"
-  #       uses: docker/login-action@v3
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{ github.actor }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Login into the GitHub registry container"
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-  #     - name: "Download the Docker image for Ansys Additive"
-  #       run: |
-  #         docker pull ${{ env.ANSYS_PRODUCT_IMAGE }}
+      - name: "Download the Docker image for Ansys Additive"
+        run: |
+          docker pull ${{ env.ANSYS_PRODUCT_IMAGE }}
 
-  #     - name: "Start product server"
-  #       # Don't use --rm flag. The container is removed in a later step
-  #       # after collecting the logs.
-  #       run: |
-  #         docker run --detach \
-  #           --name ${{ env.ANSYS_PRODUCT_CONTAINER }} \
-  #           -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} \
-  #           -p 50052:50052 \
-  #           ${{ env.ANSYS_PRODUCT_IMAGE }}
-  #       env:
-  #         LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+      - name: "Start product server"
+        # Don't use --rm flag. The container is removed in a later step
+        # after collecting the logs.
+        run: |
+          docker run --detach \
+            --name ${{ env.ANSYS_PRODUCT_CONTAINER }} \
+            -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} \
+            -p 50052:50052 \
+            ${{ env.ANSYS_PRODUCT_IMAGE }}
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
 
-  #     - name: "Setup headless display"
-  #       uses: pyvista/setup-headless-display-action@v3
+      - name: "Setup headless display"
+        uses: pyvista/setup-headless-display-action@v3
 
-  #     - name: "Checkout code"
-  #       uses: actions/checkout@v4
+      - name: "Checkout code"
+        uses: actions/checkout@v4
 
-  #     # Remove when auto-api is updated
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: ${{ env.MAIN_PYTHON_VERSION }}
+      # Remove when auto-api is updated
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
-  #     # Remove when auto-api is updated
-  #     - name: Create Python venv
-  #       run: |
-  #         python -m venv .venv
-  #         ./.venv/bin/activate
-  #         python -m pip install --upgrade pip
-  #         pip install --upgrade build wheel pandoc
-  #         pip install .[doc]
-  #         pip uninstall --yes sphinx-autoapi
-  #         pip install "sphinx-autoapi @ git+https://github.com/ansys/sphinx-autoapi@feat/single-page-stable"
+      # Remove when auto-api is updated
+      - name: Create Python venv
+        run: |
+          python -m venv .venv
+          ./.venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install --upgrade build wheel pandoc
+          pip install .[doc]
+          pip uninstall --yes sphinx-autoapi
+          pip install "sphinx-autoapi @ git+https://github.com/ansys/sphinx-autoapi@feat/single-page-stable"
 
-  #     # # Remove when auto-api is updated
-  #     # - name: Build the documentation (HTML)
-  #     #   run: |
-  #     #     ./.venv/bin/activate
-  #     #     make -C doc html SPHINXOPTS="-j auto"
-  #     #     make -C doc pdf
-  #     #   env:
-  #     #     GENERATING_DOCS: 1
-  #     #     ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
-  #     #     BUILD_EXAMPLES_LONG: false
+      # Remove when auto-api is updated
+      - name: Build the documentation (HTML)
+        run: |
+          ./.venv/bin/activate
+          make -C doc html SPHINXOPTS="-j auto"
+          make -C doc pdf
+        env:
+          GENERATING_DOCS: 1
+          ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
+          BUILD_EXAMPLES_LONG: false
 
-  #     # # Remove when auto-api is updated
-  #     # - name: Build the long examples
-  #     #   if: github.event_name == 'push'
-  #     #   run: |
-  #     #     ./.venv/bin/activate
-  #     #     make -C doc html SPHINXOPTS="-j auto"
-  #     #     make -C doc pdf
-  #     #   env:
-  #     #     GENERATING_DOCS: 1
-  #     #     ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
-  #     #     BUILD_EXAMPLES_LONG: true
+      # Remove when auto-api is updated
+      - name: Build the long examples
+        if: github.event_name == 'push'
+        run: |
+          ./.venv/bin/activate
+          make -C doc html SPHINXOPTS="-j auto"
+          make -C doc pdf
+        env:
+          GENERATING_DOCS: 1
+          ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
+          BUILD_EXAMPLES_LONG: true
 
-  #     # - name: Upload HTML documentation
-  #     #   uses: actions/upload-artifact@v4
-  #     #   with:
-  #     #     name: documentation-html
-  #     #     path: doc/_build/html
-  #     #     retention-days: 7
+      - name: Upload HTML documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-html
+          path: doc/_build/html
+          retention-days: 7
 
-  #     # - name: Upload PDF documentation
-  #     #   uses: actions/upload-artifact@v4
-  #     #   with:
-  #     #     name: documentation-pdf
-  #     #     path: doc/_build/latex/*.pdf
-  #     #     retention-days: 7
+      - name: Upload PDF documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-pdf
+          path: doc/_build/latex/*.pdf
+          retention-days: 7
 
-  #     # Restore when auto-api is updated
-  #     # - name: "Build documentation with short examples"
-  #     #   uses: ansys/actions/doc-build@v4
-  #     #   with:
-  #     #     checkout: false
-  #     #     sphinxopts: "-j auto"
-  #     #     dependencies: "pandoc"
-  #     #   env:
-  #     #     GENERATING_DOCS: 1
-  #     #     ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
-  #     #     BUILD_EXAMPLES_LONG: false
+      # Restore when auto-api is updated
+      # - name: "Build documentation with short examples"
+      #   uses: ansys/actions/doc-build@v4
+      #   with:
+      #     checkout: false
+      #     sphinxopts: "-j auto"
+      #     dependencies: "pandoc"
+      #   env:
+      #     GENERATING_DOCS: 1
+      #     ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
+      #     BUILD_EXAMPLES_LONG: false
 
-  #     # - name: "Build documentation with long examples"
-  #     #   if: github.event_name == 'push'
-  #     #   uses: ansys/actions/doc-build@v4
-  #     #   with:
-  #     #     checkout: false
-  #     #     sphinxopts: "-j auto"
-  #     #   env:
-  #     #     GENERATING_DOCS: 1
-  #     #     ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
+      # - name: "Build documentation with long examples"
+      #   if: github.event_name == 'push'
+      #   uses: ansys/actions/doc-build@v4
+      #   with:
+      #     checkout: false
+      #     sphinxopts: "-j auto"
+      #   env:
+      #     GENERATING_DOCS: 1
+      #     ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
 
-  #     # - name: "Collect logs and shutdown server"
-  #     #   if: ${{ always() }}
-  #     #   run: |
-  #     #     docker stop ${{ env.ANSYS_PRODUCT_CONTAINER }}
-  #     #     docker logs ${{ env.ANSYS_PRODUCT_CONTAINER }} >> docker-logs.txt
-  #     #     docker rm ${{ env.ANSYS_PRODUCT_CONTAINER }}
+      - name: "Collect logs and shutdown server"
+        if: ${{ always() }}
+        run: |
+          docker stop ${{ env.ANSYS_PRODUCT_CONTAINER }}
+          docker logs ${{ env.ANSYS_PRODUCT_CONTAINER }} >> docker-logs.txt
+          docker rm ${{ env.ANSYS_PRODUCT_CONTAINER }}
 
-  #     # - name: "Upload container logs as artifacts"
-  #     #   if: ${{ always() }}
-  #     #   uses: actions/upload-artifact@v4
-  #     #   with:
-  #     #     name: docker-logs.txt
-  #     #     path: docker-logs.txt
+      - name: "Upload container logs as artifacts"
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-logs.txt
+          path: docker-logs.txt
 
   build-library:
     name: "Build library artifacts"
-    needs: [tests]
+    needs: [tests, doc-build]
     runs-on: ubuntu-latest
     steps:
       - name: "Build library source and wheel artifacts"
@@ -257,26 +257,26 @@ jobs:
         with:
           library-name: ${{ env.LIBRARY_NAME }}
 
-  # upload_dev_docs:
-  #   name: "Deploy developers documentation"
-  #   runs-on: ubuntu-latest
-  #   needs: [build-library]
-  #   if: github.event_name == 'push'
-  #   steps:
-  #     - name: "Deploy the latest documentation"
-  #       uses: ansys/actions/doc-deploy-dev@v8
-  #       with:
-  #         cname: ${{ env.DOCUMENTATION_CNAME }}
-  #         token: ${{ secrets.GITHUB_TOKEN }}
+  upload_dev_docs:
+    name: "Deploy developers documentation"
+    runs-on: ubuntu-latest
+    needs: [build-library]
+    if: github.event_name == 'push'
+    steps:
+      - name: "Deploy the latest documentation"
+        uses: ansys/actions/doc-deploy-dev@v8
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-  # upload_docs_release:
-  #   name: "Upload release documentation"
-  #   if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-  #   runs-on: ubuntu-latest
-  #   needs: [release]
-  #   steps:
-  #     - name: "Deploy the stable documentation"
-  #       uses: ansys/actions/doc-deploy-stable@v8
-  #       with:
-  #         cname: ${{ env.DOCUMENTATION_CNAME }}
-  #         token: ${{ secrets.GITHUB_TOKEN }}
+  upload_docs_release:
+    name: "Upload release documentation"
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    needs: [release]
+    steps:
+      - name: "Deploy the stable documentation"
+        uses: ansys/actions/doc-deploy-stable@v8
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
