@@ -74,7 +74,7 @@ doc = [
   "ipywidgets==8.1.5",
   "trame==3.7.6",
   "trame-vtk==2.8.14",
-  "trame-plotly==3.0.2",
+  "trame-plotly==3.1.0",
   "trame-vuetify==2.8.1",
   "imageio==2.37.0",
   "sphinx==8.1.3",
