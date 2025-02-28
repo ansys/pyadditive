@@ -14,7 +14,7 @@ permissions:
   packages: read
 
 env:
-  MAIN_PYTHON_VERSION: "3.10"
+  MAIN_PYTHON_VERSION: "3.12"
   DOCUMENTATION_CNAME: "additive.docs.pyansys.com"
   LIBRARY_NAME: "ansys-additive-core"
   # NOTE: The server needs to stay in a private registry.
@@ -140,6 +140,7 @@ jobs:
         if: github.event_name != 'push'
         uses: ansys/actions/doc-build@v8
         with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
           checkout: false
           sphinxopts: "-j auto"
           dependencies: "pandoc"
@@ -152,6 +153,7 @@ jobs:
         if: github.event_name == 'push'
         uses: ansys/actions/doc-build@v8
         with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
           checkout: false
           sphinxopts: "-j auto"
           dependencies: "pandoc"
