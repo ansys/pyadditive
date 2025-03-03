@@ -66,7 +66,7 @@ doc = [
   "enum-tools==0.12.0",
   "joblib==1.4.2",
   "jupyter_sphinx==0.5.3",
-  "matplotlib==3.10.0",
+  "matplotlib==3.10.1",
   "numpydoc==1.8.0",
   "phantomjs==1.4.1",
   "pypandoc==1.15",
