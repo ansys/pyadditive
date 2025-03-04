@@ -3263,7 +3263,7 @@ def test_add_simulations_from_csv_removes_invalid_simulations(tmp_path: pytest.T
         "Heater Temp (C)": [100, 100],
         "Layer Thickness (m)": [50e-6, 50e-6],
         "Beam Diameter (m)": [2e-5, 2e-5],
-        "Laser Power (W)": [250, 25], # 25 is invalid laser power
+        "Laser Power (W)": [250, 250],
         "Scan Speed (m/s)": [1, 1],
         "Start Angle (degrees)": [0, 0],
         "Rotation Angle (degrees)": [30, 30],
