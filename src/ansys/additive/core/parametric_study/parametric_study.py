@@ -1690,7 +1690,9 @@ class ParametricStudy:
         ----------
         file_path : str, os.PathLike, StringIO
             File name, path object, or file-like object containing simulation data as comma separated values (CSV).
-            See :meth:`read_csv <pandas.read_csv>` for details.
+            See :meth:`read_csv <pandas.read_csv>` for details. The CSV file must contain the columns defined by
+            :obj:`ColumnNames`. Values may be missing for some columns, but the column names must match exactly.
+            Additional columns will be ignored.
         overwrite_completed_dups : bool, default: True
             If True, overwrite duplicate completed simulations with the values from the CSV file.
 
