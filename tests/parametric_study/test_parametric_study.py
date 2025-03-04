@@ -3097,3 +3097,217 @@ def test_create_microstructure_input_assigns_defaults_for_nans():
     assert input.random_seed == MicrostructureInput.DEFAULT_RANDOM_SEED
     assert input.machine == machine
     assert input.material == material
+
+def test_add_simulations_from_csv_adds_valid_simulations(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ParametricStudy(tmp_path / "test_study", "material")
+    csv_file = tmp_path / "valid_simulations.csv"
+    data = {
+        "ID": ["sim_1", "sim_2"],
+        "Iteration": [0, 0],
+        "Priority": [1, 1],
+        "Type": [SimulationType.SINGLE_BEAD, SimulationType.POROSITY],
+        "Status": [SimulationStatus.NEW, SimulationStatus.NEW],
+        "Material": ["material", "material"],
+        "Heater Temp (C)": [100, 100],
+        "Layer Thickness (m)": [50e-6, 50e-6],
+        "Beam Diameter (m)": [2e-5, 2e-5],
+        "Laser Power (W)": [250, 250],
+        "Scan Speed (m/s)": [1, 1],
+        "Start Angle (degrees)": [0, 0],
+        "Rotation Angle (degrees)": [30, 30],
+        "Hatch Spacing (m)": [1e-4, 1e-4],
+        "Stripe Width (m)": [0.05, 0.05],
+        "Energy Density (J/m^3)": [None, None],
+        "Single Bead Length (m)": [0.01, None],
+        "Build Rate (m^3/s)": [None, None],
+        "Melt Pool Width (m)": [None, None],
+        "Melt Pool Depth (m)": [None, None],
+        "Melt Pool Length (m)": [None, None],
+        "Melt Pool Ref Width (m)": [None, None],
+        "Melt Pool Ref Depth (m)": [None, None],
+        "Melt Pool Ref Depth/Width": [None, None],
+        "Melt Pool Length/Width": [None, None],
+        "Porosity Size X (m)": [None, 0.001],
+        "Porosity Size Y (m)": [None, 0.002],
+        "Porosity Size Z (m)": [None, 0.003],
+        "Relative Density": [None, None],
+        "Micro Min X (m)": [None, None],
+        "Micro Min Y (m)": [None, None],
+        "Micro Min Z (m)": [None, None],
+        "Micro Size X (m)": [None, None],
+        "Micro Size Y (m)": [None, None],
+        "Micro Size Z (m)": [None, None],
+        "Micro Sensor Dim (m)": [None, None],
+        "Cooling Rate (K/s)": [None, None],
+        "Thermal Gradient (K/m)": [None, None],
+        "Micro Melt Pool Width (m)": [None, None],
+        "Micro Melt Pool Depth (m)": [None, None],
+        "Random Seed": [None, None],
+        "XY Average Grain Size (microns)": [None, None],
+        "XZ Average Grain Size (microns)": [None, None],
+        "YZ Average Grain Size (microns)": [None, None],
+        "Error Message": [None, None],
+    }
+    df = pd.DataFrame(data)
+    df.to_csv(csv_file)
+
+    # act
+    errors = study.add_simulations_from_csv(csv_file)
+
+    # assert
+    assert len(errors) == 0
+    assert len(study.data_frame()) == 2
+
+
+def test_add_simulations_from_csv_raises_error_for_invalid_file(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ParametricStudy(tmp_path / "test_study", "material")
+    invalid_csv_file = tmp_path / "invalid_simulations.csv"
+
+    # act, assert
+    with pytest.raises(ValueError, match="Unable to read CSV file"):
+        study.add_simulations_from_csv(invalid_csv_file)
+
+
+def test_add_simulations_from_csv_raises_error_for_missing_columns(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ParametricStudy(tmp_path / "test_study", "material")
+    csv_file = tmp_path / "missing_columns.csv"
+    data = {
+        "ID": ["sim_1"],
+        "Iteration": [0],
+        "Priority": [1],
+        "Type": [SimulationType.SINGLE_BEAD],
+        "Status": [SimulationStatus.NEW],
+        "Material": ["material"],
+    }
+    df = pd.DataFrame(data)
+    df.to_csv(csv_file)
+
+    # act, assert
+    with pytest.raises(ValueError, match="CSV is missing expected columns"):
+        study.add_simulations_from_csv(csv_file)
+
+
+def test_add_simulations_from_csv_raises_error_for_mismatched_material(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ParametricStudy(tmp_path / "test_study", "material")
+    csv_file = tmp_path / "mismatched_material.csv"
+    data = {
+        "ID": ["sim_1", "sim_2"],
+        "Iteration": [0, 0],
+        "Priority": [1, 1],
+        "Type": [SimulationType.SINGLE_BEAD, SimulationType.POROSITY],
+        "Status": [SimulationStatus.NEW, SimulationStatus.NEW],
+        "Material": ["unobtanium", "unobtanium"],
+        "Heater Temp (C)": [100, 100],
+        "Layer Thickness (m)": [50e-6, 50e-6],
+        "Beam Diameter (m)": [2e-5, 2e-5],
+        "Laser Power (W)": [250, 250],
+        "Scan Speed (m/s)": [1, 1],
+        "Start Angle (degrees)": [0, 0],
+        "Rotation Angle (degrees)": [30, 30],
+        "Hatch Spacing (m)": [1e-4, 1e-4],
+        "Stripe Width (m)": [0.05, 0.05],
+        "Energy Density (J/m^3)": [None, None],
+        "Single Bead Length (m)": [0.01, None],
+        "Build Rate (m^3/s)": [None, None],
+        "Melt Pool Width (m)": [None, None],
+        "Melt Pool Depth (m)": [None, None],
+        "Melt Pool Length (m)": [None, None],
+        "Melt Pool Ref Width (m)": [None, None],
+        "Melt Pool Ref Depth (m)": [None, None],
+        "Melt Pool Ref Depth/Width": [None, None],
+        "Melt Pool Length/Width": [None, None],
+        "Porosity Size X (m)": [None, 0.001],
+        "Porosity Size Y (m)": [None, 0.002],
+        "Porosity Size Z (m)": [None, 0.003],
+        "Relative Density": [None, None],
+        "Micro Min X (m)": [None, None],
+        "Micro Min Y (m)": [None, None],
+        "Micro Min Z (m)": [None, None],
+        "Micro Size X (m)": [None, None],
+        "Micro Size Y (m)": [None, None],
+        "Micro Size Z (m)": [None, None],
+        "Micro Sensor Dim (m)": [None, None],
+        "Cooling Rate (K/s)": [None, None],
+        "Thermal Gradient (K/m)": [None, None],
+        "Micro Melt Pool Width (m)": [None, None],
+        "Micro Melt Pool Depth (m)": [None, None],
+        "Random Seed": [None, None],
+        "XY Average Grain Size (microns)": [None, None],
+        "XZ Average Grain Size (microns)": [None, None],
+        "YZ Average Grain Size (microns)": [None, None],
+        "Error Message": [None, None],
+    }
+    df = pd.DataFrame(data)
+    df.to_csv(csv_file)
+
+    # act, assert
+    with pytest.raises(ValueError, match="Material in CSV 'unobtanium' does not match study material 'material'"):
+        study.add_simulations_from_csv(csv_file)
+
+
+def test_add_simulations_from_csv_removes_invalid_simulations(tmp_path: pytest.TempPathFactory):
+    # arrange
+    study = ParametricStudy(tmp_path / "test_study", "material")
+    csv_file = tmp_path / "invalid_simulations.csv"
+    data = {
+        "ID": ["sim_1", "sim_2"],
+        "Iteration": [0, 0],
+        "Priority": [1, 1],
+        "Type": [SimulationType.SINGLE_BEAD, SimulationType.POROSITY],
+        "Status": [SimulationStatus.NEW, SimulationStatus.NEW],
+        "Material": ["material", "material"],
+        "Heater Temp (C)": [100, 100],
+        "Layer Thickness (m)": [50e-6, 50e-6],
+        "Beam Diameter (m)": [2e-5, 2e-5],
+        "Laser Power (W)": [250, 25], # 25 is invalid laser power
+        "Scan Speed (m/s)": [1, 1],
+        "Start Angle (degrees)": [0, 0],
+        "Rotation Angle (degrees)": [30, 30],
+        "Hatch Spacing (m)": [1e-4, 1e-4],
+        "Stripe Width (m)": [0.05, 0.05],
+        "Energy Density (J/m^3)": [None, None],
+        "Single Bead Length (m)": [0.01, None],
+        "Build Rate (m^3/s)": [None, None],
+        "Melt Pool Width (m)": [None, None],
+        "Melt Pool Depth (m)": [None, None],
+        "Melt Pool Length (m)": [None, None],
+        "Melt Pool Ref Width (m)": [None, None],
+        "Melt Pool Ref Depth (m)": [None, None],
+        "Melt Pool Ref Depth/Width": [None, None],
+        "Melt Pool Length/Width": [None, None],
+        "Porosity Size X (m)": [None, 0.001],
+        "Porosity Size Y (m)": [None, 0.002],
+        "Porosity Size Z (m)": [None, 0.003],
+        "Relative Density": [None, None],
+        "Micro Min X (m)": [None, None],
+        "Micro Min Y (m)": [None, None],
+        "Micro Min Z (m)": [None, None],
+        "Micro Size X (m)": [None, None],
+        "Micro Size Y (m)": [None, None],
+        "Micro Size Z (m)": [None, None],
+        "Micro Sensor Dim (m)": [None, None],
+        "Cooling Rate (K/s)": [None, None],
+        "Thermal Gradient (K/m)": [None, None],
+        "Micro Melt Pool Width (m)": [None, None],
+        "Micro Melt Pool Depth (m)": [None, None],
+        "Random Seed": [None, None],
+        "XY Average Grain Size (microns)": [None, None],
+        "XZ Average Grain Size (microns)": [None, None],
+        "YZ Average Grain Size (microns)": [None, None],
+        "Error Message": [None, None],
+    }
+    df = pd.DataFrame(data)
+    df.loc[1, "Laser Power (W)"] = MachineConstants.MAX_LASER_POWER + 1  # Invalid laser power
+    df.to_csv(csv_file)
+
+    # act
+    errors = study.add_simulations_from_csv(csv_file)
+
+    # assert
+    assert len(errors) == 1
+    assert "Invalid parameter combination" in errors[0]
+    assert len(study.data_frame()) == 1

@@ -147,7 +147,7 @@ class ParametricStudy:
         file_path = pathlib.Path(file_name).absolute()
         if not file_path.exists():
             raise ValueError(f"{file_name} does not exist.")
-        return self._add_simulations_from_csv(file_path)
+        return self.add_simulations_from_csv(file_path)
 
     @property
     def format_version(self) -> int:
@@ -1680,13 +1680,17 @@ class ParametricStudy:
         return df
 
     @save_on_return
-    def _add_simulations_from_csv(self, file_path: str | os.PathLike) -> list[str]:
+    def add_simulations_from_csv(
+        self, file_path: str | os.PathLike, overwrite_completed_dups: bool = True
+    ) -> list[str]:
         """Add simulations from an imported CSV file to the parametric study.
 
         Parameters
         ----------
         file_path : str, os.PathLike
-            Absolute path to the CSV file containing simulation data.
+            Path to a CSV file containing simulation data.
+        overwrite_completed_dups : bool, default: True
+            If True, overwrite duplicate completed simulations with the values from the CSV file.
 
         Returns
         -------
@@ -1747,7 +1751,7 @@ class ParametricStudy:
                     ignore_index=True,
                 )
                 duplicates += self._remove_duplicate_entries(
-                    overwrite=(status == SimulationStatus.COMPLETED)
+                    overwrite=(overwrite_completed_dups and (status == SimulationStatus.COMPLETED))
                 )
 
         # convert priority, iteration, and random seed to int type explicitly
