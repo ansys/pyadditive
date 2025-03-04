@@ -28,6 +28,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import os
+    from io import StringIO
 import pathlib
 import platform
 import warnings
@@ -1681,14 +1682,15 @@ class ParametricStudy:
 
     @save_on_return
     def add_simulations_from_csv(
-        self, file_path: str | os.PathLike, overwrite_completed_dups: bool = True
+        self, file_path: str | os.PathLike | StringIO, overwrite_completed_dups: bool = True
     ) -> list[str]:
         """Add simulations from an imported CSV file to the parametric study.
 
         Parameters
         ----------
-        file_path : str, os.PathLike
-            Path to a CSV file containing simulation data.
+        file_path : str, os.PathLike, StringIO
+            File name, path object, or file-like object containing simulation data as comma separated values (CSV).
+            See :meth:`read_csv <pandas.read_csv>` for details.
         overwrite_completed_dups : bool, default: True
             If True, overwrite duplicate completed simulations with the values from the CSV file.
 
