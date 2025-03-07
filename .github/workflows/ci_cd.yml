@@ -14,7 +14,7 @@ permissions:
   packages: read
 
 env:
-  MAIN_PYTHON_VERSION: "3.13"
+  MAIN_PYTHON_VERSION: "3.12"
   DOCUMENTATION_CNAME: "additive.docs.pyansys.com"
   LIBRARY_NAME: "ansys-additive-core"
   # NOTE: The server needs to stay in a private registry.
