@@ -5,6 +5,7 @@
 ### New Features
 
 * Simulation logs are included in the simulation summary.
+* Added support for Python 3.13.
 
 ### Bug Fixes
 
