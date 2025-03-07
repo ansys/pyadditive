@@ -46,8 +46,8 @@ dependencies = [
 tests = [
   "ansys-platform-instancemanagement==1.1.2",
   "dill==0.3.9",
-  "google-api-python-client==2.162.0",
-  "googleapis-common-protos==1.68.0",
+  "google-api-python-client==2.163.0",
+  "googleapis-common-protos==1.69.1",
   "grpcio==1.60.0",
   "grpcio-health-checking==1.48.2",
   "numpy==2.2.3",
