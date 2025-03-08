@@ -2354,6 +2354,26 @@ def test_import_csv_study_adds_simulations_to_existing_study(
     assert len(study.data_frame()) == 8
 
 
+def test_import_csv_study_creates_ids_for_simulations_without_ids(
+    tmp_path: pytest.TempPathFactory,
+):
+    # arrange
+    study_name = "test_study"
+    csv_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "test-study-without-ids.csv"
+    )
+    study = ParametricStudy(tmp_path / study_name, "material")
+
+    # act
+    study.import_csv_study(csv_file)
+
+    # assert
+    ids = study.data_frame()[ColumnNames.ID]
+    assert len(ids) == 5
+    assert all(ids != "")
+    assert all(ids.notna())
+
+
 @pytest.mark.parametrize(
     "file_name, argument",
     [

@@ -1739,6 +1739,11 @@ class ParametricStudy:
         # drop invalid inputs
         df = df.drop(drop_indices)
 
+        # assign any missing simulation ids
+        if any(df[ColumnNames.ID].isna() | df[ColumnNames.ID].eq("")):
+            df[ColumnNames.ID] = df[ColumnNames.ID].fillna("")
+            df[ColumnNames.ID] = df[ColumnNames.ID].apply(lambda x: x if x else misc.short_uuid())
+
         # add simulations to the parametric study and drop duplicates
         for status in [s.value for s in SimulationStatus]:
             if len(df[df[ColumnNames.STATUS] == status]) > 0:
