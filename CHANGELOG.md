@@ -5,10 +5,12 @@
 ### New Features
 
 * Simulation logs are included in the simulation summary.
+* Added support for Python 3.13.
 
 ### Bug Fixes
 
 * Return `False` from `Additive.connected()` if the `_server` attribute is `None`
+* Assign id to simulations imported into a parametric study if the value is missing.
 
 ### Doc Improvements
 
