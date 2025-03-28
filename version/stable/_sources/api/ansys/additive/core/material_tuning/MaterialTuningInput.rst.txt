@@ -1,0 +1,152 @@
+
+
+
+
+
+
+:class:`MaterialTuningInput`
+============================
+
+.. py:class:: ansys.additive.core.material_tuning.MaterialTuningInput(*, experiment_data_file: str, material_configuration_file: str, thermal_properties_lookup_file: str, characteristic_width_lookup_file: str = None, allowable_error: float = 0.05, max_iterations: int = 15, base_plate_temperature: float = 353.15)
+
+   Bases: :py:obj:`ansys.additive.core.simulation_input_base.SimulationInputBase`
+
+
+   
+   Provides input parameters for tuning a custom material.
+
+
+   :Parameters:
+
+       **experiment_data_file: str**
+           Name of the CSV file containing the experimental results data.
+
+       **material_configuration_file: str**
+           Name of the JSON file containing the material parameters.
+
+       **thermal_properties_lookup_file: str**
+           Name of the CSV file containing a lookup table for thermal-dependent properties.
+
+       **characteristic_width_lookup_file: str, None**
+           Name of the CSV file containing a lookup table for the characteristic melt pool
+           width at a given temperature. The default is ``None``, in which case the characteristic
+           width is calculated. However, a value must be provided for the ``base_plate_temperature``
+           parameter.
+
+       **allowable_error: float, 0.05**
+           Maximum allowable error between experimental and simulated results.
+           The default is ``0.05``, which is 5 percent.
+
+       **max_iterations: int, 15**
+           Maximum number of iterations to perform when trying to match
+           simulation results to an experiment if the allowable error is not met.
+
+       **base_plate_temperature: float, 353.15**
+           Temperature of the base plate in Kelvin. This is only required if the
+           value for the ``characteristic_width_lookup_file`` parameter is ``None``.
+           This value is ignored otherwise. The default is ``353.15`` K, which is 80 C.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. py:currentmodule:: MaterialTuningInput
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~allowable_error`
+            - 
+          * - :py:attr:`~max_iterations`
+            - 
+          * - :py:attr:`~experiment_data_file`
+            - 
+          * - :py:attr:`~material_configuration_file`
+            - 
+          * - :py:attr:`~thermal_properties_lookup_file`
+            - 
+          * - :py:attr:`~characteristic_width_lookup_file`
+            - 
+          * - :py:attr:`~base_plate_temperature`
+            - 
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+          * - :py:attr:`~__eq__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.material_tuning import MaterialTuningInput
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: allowable_error
+
+.. py:attribute:: max_iterations
+
+.. py:attribute:: experiment_data_file
+
+.. py:attribute:: material_configuration_file
+
+.. py:attribute:: thermal_properties_lookup_file
+
+.. py:attribute:: characteristic_width_lookup_file
+
+.. py:attribute:: base_plate_temperature
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+.. py:method:: __eq__(other: object) -> bool
+
+
+
+
