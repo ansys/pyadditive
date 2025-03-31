@@ -3088,7 +3088,7 @@ def test_create_microstructure_input_assigns_defaults_for_nans():
             ColumnNames.THERMAL_GRADIENT: float("nan"),
             ColumnNames.MICRO_MELT_POOL_WIDTH: float("nan"),
             ColumnNames.MICRO_MELT_POOL_DEPTH: float("nan"),
-            ColumnNames.RANDOM_SEED: float("nan"),
+            ColumnNames.RANDOM_SEED: pd.NA,
         }
     )
     machine = AdditiveMachine(laser_power=123)
