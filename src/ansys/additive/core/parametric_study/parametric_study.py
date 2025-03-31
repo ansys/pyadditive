@@ -2158,9 +2158,11 @@ class ParametricStudy:
                 if not np.isnan(row[ColumnNames.MICRO_MELT_POOL_DEPTH])
                 else MicrostructureInput.DEFAULT_MELT_POOL_DEPTH
             ),
+            # Use np.isscalar as RANDOM_SEED is of type Int64 and an empty value
+            # will come in as pd.NA which is not scalar. np.isnan will result in a TypeError.
             random_seed=(
                 row[ColumnNames.RANDOM_SEED]
-                if not np.isnan(row[ColumnNames.RANDOM_SEED])
+                if np.isscalar(row[ColumnNames.RANDOM_SEED])
                 else MicrostructureInput.DEFAULT_RANDOM_SEED
             ),
         )
