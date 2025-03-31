@@ -1154,6 +1154,7 @@ class ParametricStudy:
                                                     ColumnNames.RANDOM_SEED: (
                                                         pd.NA  # random seed is of type int
                                                         if random_seed is None
+                                                        or np.isnan(random_seed)
                                                         else random_seed
                                                     ),
                                                 }
