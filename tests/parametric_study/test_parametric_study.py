@@ -1113,7 +1113,7 @@ def test_generate_microstructure_with_Nones_NANs_succeeds(
     assert np.isnan(df.loc[0, ColumnNames.THERMAL_GRADIENT])
     assert np.isnan(df.loc[0, ColumnNames.MICRO_MELT_POOL_WIDTH])
     assert np.isnan(df.loc[0, ColumnNames.MICRO_MELT_POOL_DEPTH])
-    assert np.isnan(df.loc[0, ColumnNames.RANDOM_SEED])
+    assert not np.isscalar(df.loc[0, ColumnNames.RANDOM_SEED])
 
 
 @pytest.mark.parametrize("value", [None, np.nan])
@@ -1168,7 +1168,7 @@ def test_generate_microstructure_permutations_converts_Nones_to_NANs_in_datafram
     assert np.isnan(df.loc[0, ColumnNames.THERMAL_GRADIENT])
     assert np.isnan(df.loc[0, ColumnNames.MICRO_MELT_POOL_WIDTH])
     assert np.isnan(df.loc[0, ColumnNames.MICRO_MELT_POOL_DEPTH])
-    assert np.isnan(df.loc[0, ColumnNames.RANDOM_SEED])
+    assert not np.isscalar(df.loc[0, ColumnNames.RANDOM_SEED])
 
 
 def test_generate_microstructure_permutations_filters_by_energy_density(

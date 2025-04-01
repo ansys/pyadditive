@@ -11,6 +11,7 @@
 
 * Return `False` from `Additive.connected()` if the `_server` attribute is `None`
 * Assign id to simulations imported into a parametric study if the value is missing.
+* Fix importing of random seeds when loading study from CSV.
 
 ### Doc Improvements
 
