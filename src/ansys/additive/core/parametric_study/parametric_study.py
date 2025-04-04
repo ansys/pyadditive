@@ -1152,8 +1152,9 @@ class ParametricStudy:
                                                         else melt_pool_depth
                                                     ),
                                                     ColumnNames.RANDOM_SEED: (
-                                                        float("nan")
+                                                        pd.NA  # random seed is of type int
                                                         if random_seed is None
+                                                        or np.isnan(random_seed)
                                                         else random_seed
                                                     ),
                                                 }
