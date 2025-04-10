@@ -1,0 +1,118 @@
+
+
+
+
+
+
+The ``parametric_study.py`` module
+==================================
+
+.. py:module:: ansys.additive.core.parametric_study.parametric_study
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: parametric_study
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.parametric_study.parametric_study.ParametricStudy`
+            - Provides data storage and utility methods for a parametric study.
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~save_on_return`
+            - Save study file upon method return.
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> ParametricStudy</api/ansys/additive/core/parametric_study/parametric_study/ParametricStudy>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides data storage and utilities to perform a parametric study.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: save_on_return(func)
+
+   
+   Save study file upon method return.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
