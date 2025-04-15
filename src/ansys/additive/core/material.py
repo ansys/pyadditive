@@ -310,6 +310,8 @@ class AdditiveMaterial:
         anisotropic_strain_coefficient_parallel: float = 0,
         anisotropic_strain_coefficient_perpendicular: float = 0,
         anisotropic_strain_coefficient_z: float = 0,
+        cooling_rate_sim_coeff_a: float = 0,
+        cooling_rate_sim_coeff_b: float = 0,
         description: str = "",
         elastic_modulus: float = 0,
         hardening_factor: float = 0,
@@ -350,6 +352,8 @@ class AdditiveMaterial:
             anisotropic_strain_coefficient_perpendicular
         )
         self._anisotropic_strain_coefficient_z = anisotropic_strain_coefficient_z
+        self._cooling_rate_sim_coeff_a = cooling_rate_sim_coeff_a
+        self._cooling_rate_sim_coeff_b = cooling_rate_sim_coeff_b
         self._description = description
         self._elastic_modulus = elastic_modulus
         self._hardening_factor = hardening_factor
@@ -492,6 +496,26 @@ class AdditiveMaterial:
     def anisotropic_strain_coefficient_z(self, value: float):
         """Set anisotropic strain coefficient z."""
         self._anisotropic_strain_coefficient_z = value
+
+    @property
+    def cooling_rate_sim_coeff_a(self) -> float:
+        """First coefficient for the cooling rate SIM model."""
+        return self._cooling_rate_sim_coeff_a
+
+    @cooling_rate_sim_coeff_a.setter
+    def cooling_rate_sim_coeff_a(self, value: float):
+        """Set cooling rate SIM model coefficient A."""
+        self._cooling_rate_sim_coeff_a = value
+
+    @property
+    def cooling_rate_sim_coeff_b(self) -> float:
+        """Second coefficient for the cooling rate SIM model."""
+        return self._cooling_rate_sim_coeff_b
+
+    @cooling_rate_sim_coeff_b.setter
+    def cooling_rate_sim_coeff_b(self, value: float):
+        """Set cooling rate SIM model coefficient B."""
+        self._cooling_rate_sim_coeff_b = value
 
     @property
     def description(self) -> str:
