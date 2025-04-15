@@ -253,6 +253,8 @@ def test_ThermalHistoryInput_repr_creates_expected_string():
         + "anisotropic_strain_coefficient_parallel: 0\n"
         + "anisotropic_strain_coefficient_perpendicular: 0\n"
         + "anisotropic_strain_coefficient_z: 0\n"
+        + "cooling_rate_sim_coeff_a: 0\n"
+        + "cooling_rate_sim_coeff_b: 0\n"
         + "description: \n"
         + "elastic_modulus: 0\n"
         + "hardening_factor: 0\n"
