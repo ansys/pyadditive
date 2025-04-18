@@ -1,0 +1,360 @@
+
+
+
+
+
+The ``server_connection.py`` module
+===================================
+
+.. py:module:: ansys.additive.core.server_connection.server_connection
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: server_connection
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ServerConnectionStatus`
+            - Provides status information about a server.
+
+
+          * - :py:attr:`~ServerConnection`
+            - Provides connection to Additive server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+
+
+
+.. py:class:: ServerConnectionStatus
+
+
+
+
+Provides status information about a server.
+
+
+
+
+
+
+
+
+
+
+
+
+.. tab-set::
+
+
+
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~connected`
+            - 
+          * - :py:attr:`~channel_str`
+            - 
+          * - :py:attr:`~metadata`
+            - 
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.server_connection.server_connection import ServerConnectionStatus
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: connected
+   :type: bool
+
+   
+
+.. py:attribute:: channel_str
+   :type: str
+
+   
+
+.. py:attribute:: metadata
+   :type: dict
+
+   
+
+
+
+
+
+
+
+
+
+.. py:class:: ServerConnection(channel: grpc.Channel | None = None, addr: str | None = None, product_version: str = DEFAULT_ANSYS_VERSION, log: logging.Logger = None)
+
+
+
+
+Provides connection to Additive server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. tab-set::
+
+
+
+    .. tab-item:: Methods
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~status`
+            - Return the server connection status.
+          * - :py:attr:`~ready`
+            - Return whether the server is ready.
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~channel_str`
+            - GRPC channel target.
+          * - :py:attr:`~materials_stub`
+            - Materials service stub.
+          * - :py:attr:`~simulation_stub`
+            - Simulation service stub.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.server_connection.server_connection import ServerConnection
+
+
+Property detail
+---------------
+.. py:property:: channel_str
+   :canonical: ansys.additive.core.server_connection.server_connection.ServerConnection.channel_str
+   :type: str
+
+
+   
+   GRPC channel target.
+
+   The form is generally ``"ip:port"``. For example, ``"127.0.0.1:50052"``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: materials_stub
+   :canonical: ansys.additive.core.server_connection.server_connection.ServerConnection.materials_stub
+   :type: ansys.api.additive.v0.additive_materials_pb2_grpc.MaterialsServiceStub
+
+
+   
+   Materials service stub.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: simulation_stub
+   :canonical: ansys.additive.core.server_connection.server_connection.ServerConnection.simulation_stub
+   :type: ansys.api.additive.v0.additive_simulation_pb2_grpc.SimulationServiceStub
+
+
+   
+   Simulation service stub.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: status() -> ServerConnectionStatus
+
+   
+   Return the server connection status.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:method:: ready(retries: int = 5) -> bool
+
+   
+   Return whether the server is ready.
+
+
+   :Parameters:
+
+       **retries: int**
+           Number of times to retry before giving up. An linearly increasing delay
+           is used between each retry.
+
+   :Returns:
+
+       bool:
+           True means server is ready. False means the number of retries was exceeded
+           without receiving a response from the server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

@@ -1,0 +1,417 @@
+
+
+
+
+
+
+The ``geometry_file.py`` module
+===============================
+
+.. py:module:: ansys.additive.core.geometry_file
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: geometry_file
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~BuildFile`
+            - Provides the build file description.
+
+
+          * - :py:obj:`~StlFile`
+            - Container for the STL file definition.
+
+
+
+    .. tab-item:: Enums
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~MachineType`
+            - Machine type values.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides a container for part geometry files.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+.. py:class:: BuildFile(type: MachineType, path: os.PathLike)
+
+   
+   Provides the build file description.
+
+   In the context of PyAdditive, a build file is a ZIP archive
+   containing:
+
+   - A part geometry file in STL format.
+   - Zero or more support geometry files in STL format. Support file
+     names must end in ``*_vless.stl`` for volumeless supports and
+     ``*_solid.stl`` for solid supports.
+   - One or more machine instruction files. The number and type of
+     files depend upon the machine type.
+
+   These files must be placed in the root of the archive and not
+   under a folder.
+
+   :Parameters:
+
+       **type: MachineType**
+           Type of additive machine the build file is for.
+
+       **path: os.PathLike**
+           Path to the build file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: BuildFile
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~type`
+            - Additive manufacturing machine type this file is for.
+          * - :py:attr:`~path`
+            - Path of the ZIP file.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.geometry_file import BuildFile
+
+Property detail
+---------------
+.. py:property:: type
+   :type: MachineType
+
+   
+   Additive manufacturing machine type this file is for.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: path
+   :type: str
+
+   
+   Path of the ZIP file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+    
+
+
+
+
+
+.. py:class:: StlFile(path: str)
+
+   
+   Container for the STL file definition.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: StlFile
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~path`
+            - Path of the STL file.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.geometry_file import StlFile
+
+Property detail
+---------------
+.. py:property:: path
+   :type: str
+
+   
+   Path of the STL file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+    
+
+
+
+
+
+.. py:class:: MachineType
+
+   Bases: :py:obj:`enum.IntEnum`
+
+
+   
+   Machine type values.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: MachineType
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~NONE`
+            - 
+          * - :py:attr:`~ADDITIVE_INDUSTRIES`
+            - 
+          * - :py:attr:`~SLM`
+            - 
+          * - :py:attr:`~RENISHAW`
+            - 
+          * - :py:attr:`~EOS`
+            - 
+          * - :py:attr:`~TRUMPF`
+            - 
+          * - :py:attr:`~HB3D`
+            - 
+          * - :py:attr:`~SISMA`
+            - 
+      
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.geometry_file import MachineType
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: NONE
+
+.. py:attribute:: ADDITIVE_INDUSTRIES
+
+.. py:attribute:: SLM
+
+.. py:attribute:: RENISHAW
+
+.. py:attribute:: EOS
+
+.. py:attribute:: TRUMPF
+
+.. py:attribute:: HB3D
+
+.. py:attribute:: SISMA
+
+    
+
+
+
+
+

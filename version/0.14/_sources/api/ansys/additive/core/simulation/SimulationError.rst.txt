@@ -1,0 +1,116 @@
+
+
+
+
+SimulationError
+===============
+
+.. py:class:: SimulationError(input: Union[ansys.additive.core.single_bead.SingleBeadInput, ansys.additive.core.porosity.PorosityInput, ansys.additive.core.microstructure.MicrostructureInput, ansys.additive.core.thermal_history.ThermalHistoryInput], message: str)
+   :canonical: ansys.additive.core.simulation.SimulationError
+
+
+
+
+Provides simulation errors.
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: SimulationError
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Simulation input.
+          * - :py:attr:`~message`
+            - Provides simulation error message.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.simulation import SimulationError
+
+
+Property detail
+---------------
+.. py:property:: input
+   :canonical: ansys.additive.core.simulation.SimulationError.input
+   :type: Union[ansys.additive.core.single_bead.SingleBeadInput, ansys.additive.core.porosity.PorosityInput, ansys.additive.core.microstructure.MicrostructureInput, ansys.additive.core.thermal_history.ThermalHistoryInput]
+
+
+   
+   Simulation input.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: message
+   :canonical: ansys.additive.core.simulation.SimulationError.message
+   :type: str
+
+
+   
+   Provides simulation error message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
