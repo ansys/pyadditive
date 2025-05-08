@@ -56,7 +56,6 @@ tests = [
   "platformdirs==4.3.8",
   "protobuf==6.30.2",
   "platformdirs==4.3.8",
-  "protobuf==5.29.3",
   "six==1.17.0",
   "tqdm==4.67.1",
   "pydantic==2.11.4",
