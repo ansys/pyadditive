@@ -1,0 +1,34 @@
+﻿ansys.additive.porosity.PorosityInput
+=====================================
+
+.. currentmodule:: ansys.additive.porosity
+
+.. autoclass:: PorosityInput
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      PorosityInput.id
+      PorosityInput.machine
+      PorosityInput.material
+      PorosityInput.size_x
+      PorosityInput.size_y
+      PorosityInput.size_z
+   
+   
