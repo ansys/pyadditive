@@ -4,7 +4,9 @@
 
 ### New Features
 
+* Default version of Additive Server is 25.2 when creating a client connection.
 * Simulation logs are included in the simulation summary.
+* Simulation status is included in the simulation summary.
 * Added support for Python 3.13.
 
 ### Bug Fixes
