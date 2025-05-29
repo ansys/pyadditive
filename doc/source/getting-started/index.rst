@@ -27,6 +27,8 @@ The following table lists the compatibility between PyAdditive and Ansys release
 
     * - PyAdditive Version
       - Ansys Release Version
+    * - 0.20.x
+      - 2025 R2
     * - 0.19.x
       - 2025 R1
     * - 0.18.x
