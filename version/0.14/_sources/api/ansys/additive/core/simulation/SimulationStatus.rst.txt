@@ -1,0 +1,87 @@
+
+
+
+
+SimulationStatus
+================
+
+.. py:class:: SimulationStatus
+   :canonical: ansys.additive.core.simulation.SimulationStatus
+
+
+
+
+Simulation status values.
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: SimulationStatus
+.. tab-set::
+
+
+
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~PENDING`
+            - 
+          * - :py:attr:`~COMPLETED`
+            - 
+          * - :py:attr:`~ERROR`
+            - 
+          * - :py:attr:`~SKIP`
+            - 
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.simulation import SimulationStatus
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: PENDING
+   :value: 'Pending'
+
+   
+
+.. py:attribute:: COMPLETED
+   :value: 'Completed'
+
+   
+
+.. py:attribute:: ERROR
+   :value: 'Error'
+
+   
+
+.. py:attribute:: SKIP
+   :value: 'Skip'
+
+   
+
+
+

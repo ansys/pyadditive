@@ -1,0 +1,111 @@
+
+
+
+
+
+The ``display`` package 
+===========================
+
+.. py:module:: ansys.additive.core.parametric_study.display
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: display
+.. tab-set::
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.display.ave_grain_size_plot`
+            - Provides a plot for average grain size.
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.display.porosity_contour_plot`
+            - Provides a contour plot for relative density and build rate.
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.display.porosity_eval_plot`
+            - Provides interactive plot of porosity results.
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.display.show_table`
+            - Provides an interactive interface for the parametric study simulation table.
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.display.single_bead_eval_plot`
+            - Provides an interactive heatmap to evaluate single bead results.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🗎 ave_grain_size_plot<ave_grain_size_plot/index.rst>
+    🗎 porosity_contour_plot<porosity_contour_plot/index.rst>
+    🗎 porosity_eval_plot<porosity_eval_plot/index.rst>
+    🗎 show_table<show_table/index.rst>
+    🗎 single_bead_eval_plot<single_bead_eval_plot/index.rst>
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+
+Provides plots and interactive interfaces for parametric study results.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
