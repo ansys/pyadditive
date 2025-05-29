@@ -57,15 +57,15 @@ tests = [
   "protobuf==5.29.3",
   "six==1.17.0",
   "tqdm==4.67.1",
-  "pydantic==2.11.4",
+  "pydantic==2.11.5",
   "pytest==8.3.5",
   "pytest-cov==6.1.1",
 ]
 
 doc = [
-  "ansys-sphinx-theme[autoapi]==1.4.4",
+  "ansys-sphinx-theme[autoapi]==1.5.0",
   "enum-tools==0.13.0",
-  "joblib==1.5.0",
+  "joblib==1.5.1",
   "jupyter_sphinx==0.5.3",
   "matplotlib==3.10.3",
   "numpydoc==1.8.0",
@@ -73,7 +73,7 @@ doc = [
   "pypandoc==1.15",
   "pyvista==0.45.2",
   "ipywidgets==8.1.7",
-  "trame==3.9.0",
+  "trame==3.10.1",
   "trame-vtk==2.8.15",
   "trame-plotly==3.1.0",
   "trame-vuetify==3.0.1",
