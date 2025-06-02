@@ -1,5 +1,20 @@
 # Changelog
 
+## PyAdditive 0.21.0
+
+### New Features
+
+### Bug Fixes
+
+### Doc Improvements
+
+### Contributors
+
+* pkrull-ansys
+* safeerehman
+* deleon117
+
+
 ## PyAdditive 0.20.0
 
 ### New Features
