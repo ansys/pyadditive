@@ -59,7 +59,7 @@ tests = [
   "tqdm==4.67.1",
   "pydantic==2.11.5",
   "pytest==8.4.0",
-  "pytest-cov==6.2.0",
+  "pytest-cov==6.2.1",
 ]
 
 doc = [
