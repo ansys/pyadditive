@@ -1,0 +1,6 @@
+penetration\_depth\_solid\_coefficient\_a
+=========================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.penetration_depth_solid_coefficient_a

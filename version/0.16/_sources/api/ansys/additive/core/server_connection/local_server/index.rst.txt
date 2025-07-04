@@ -1,0 +1,199 @@
+
+
+
+
+
+The ``local_server.py`` module
+==============================
+
+.. py:module:: ansys.additive.core.server_connection.local_server
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: local_server
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~LocalServer`
+            - Provides startup utilities for a local Additive server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+
+
+
+.. py:class:: LocalServer
+
+
+
+
+Provides startup utilities for a local Additive server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. tab-set::
+
+
+
+
+
+
+    .. tab-item:: Static methods
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~launch`
+            - Launch a local gRPC server for the Additive service.
+          * - :py:attr:`~find_open_port`
+            - Find an open port on the local host.
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.server_connection.local_server import LocalServer
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: launch(port: int, cwd: str = USER_DATA_PATH, product_version: str = DEFAULT_ANSYS_VERSION) -> subprocess.Popen
+   :staticmethod:
+
+   
+   Launch a local gRPC server for the Additive service.
+
+
+   :Parameters:
+
+       **port: int**
+           Port number to use for gRPC connections.
+
+       **cwd: str**
+           Current working directory to use for the server process.
+
+       **product_version: str**
+           Version of the Ansys installation to use, of the form ``"YYR"``, where
+           ``YY`` is the two digit year and ``R`` is the release for
+           that year. For example, Ansys 2024 R1 would be ``"241"``.
+
+   :Returns:
+
+       process: :obj:`subprocess.Popen`
+           Server process. To stop the server, call the ``kill()`` method on the returned object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:method:: find_open_port() -> int
+   :staticmethod:
+
+   
+   Find an open port on the local host.
+
+
+
+   :Returns:
+
+       port: :class:`python:int`
+           Open port number.
+
+       .. note::
+           This port may be taken by the time you try to use it.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
