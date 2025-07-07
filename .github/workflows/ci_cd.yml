@@ -140,13 +140,13 @@ jobs:
         run: |
           docker pull ${{ env.ANSYS_PRODUCT_IMAGE }}
 
-      - name: "Start product server"
+      - name: "Start product server"  # zizmor ignore[template-injection]
         # Don't use --rm flag. The container is removed in a later step
         # after collecting the logs.
         run: |
           docker run --detach \
             --name ${{ env.ANSYS_PRODUCT_CONTAINER }} \
-            -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} \ #zizmor ignore[template-injection]
+            -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} \
             -p 50052:50052 \
             ${{ env.ANSYS_PRODUCT_IMAGE }}
         env:
