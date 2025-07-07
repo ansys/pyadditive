@@ -140,7 +140,7 @@ jobs:
         run: |
           docker pull ${{ env.ANSYS_PRODUCT_IMAGE }}
 
-      - name: "Start product server"  # zizmor ignore[template-injection]
+      - name: "Start product server"
         # Don't use --rm flag. The container is removed in a later step
         # after collecting the logs.
         run: |
@@ -150,7 +150,7 @@ jobs:
             -p 50052:50052 \
             ${{ env.ANSYS_PRODUCT_IMAGE }}
         env:
-          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}  # zizmor ignore[template-injection]
 
       - name: "Setup headless display"
         uses: pyvista/setup-headless-display-action@7d84ae825e6d9297a8e99bdbbae20d1b919a0b19
