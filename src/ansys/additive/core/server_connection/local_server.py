@@ -23,7 +23,7 @@
 
 import os
 import socket
-import subprocess
+import subprocess  # nosec: B404
 import time
 from datetime import datetime
 from pathlib import Path
@@ -111,7 +111,7 @@ class LocalServer:
         start_time = datetime.now().strftime("%Y%m%d_%H%M%S")
 
         with open(os.path.join(cwd, f"additiveserver_{start_time}.log"), "w") as log_file:
-            server_process = subprocess.Popen(  # noqa: S603
+            server_process = subprocess.Popen(  # noqa: S603 # nosec: B602
                 f'"{server_exe}" --port {port}',
                 shell=os.name != "nt",  # use shell on Linux
                 cwd=cwd,
