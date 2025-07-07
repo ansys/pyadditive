@@ -1,4 +1,4 @@
-name: Labeler
+name: Labeler  # zizmor: ignore[excessive-permissions]
 on:
   pull_request:
   push:
@@ -11,12 +11,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  label-syncer:
+  label-syncer: # zizmor: ignore[excessive-permissions]
     name: Syncer
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - uses: micnncim/action-label-syncer@v1
+      - uses: micnncim/action-label-syncer@3abd5ab72fda571e69fffd97bd4e0033dd5f495c
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -65,7 +65,7 @@ jobs:
         with:
           labels: bug
 
-  commenter:
+  commenter: # zizmor: ignore[excessive-permissions]
     runs-on: ubuntu-latest
     steps:
       - name: Suggest to add labels

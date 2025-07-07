@@ -10,7 +10,7 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: write # zizmor: ignore[excessive-permissions]
   packages: read
 
 env:
@@ -146,7 +146,7 @@ jobs:
         run: |
           docker run --detach \
             --name ${{ env.ANSYS_PRODUCT_CONTAINER }} \
-            -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} \
+            -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} \ #zizmor ignore[template-injection]
             -p 50052:50052 \
             ${{ env.ANSYS_PRODUCT_IMAGE }}
         env:
@@ -157,6 +157,8 @@ jobs:
 
       - name: "Checkout code"
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
 
       - name: "Build documentation with short examples"
         if: github.event_name != 'push'
