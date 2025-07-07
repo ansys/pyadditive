@@ -140,7 +140,7 @@ jobs:
         run: |
           docker pull ${{ env.ANSYS_PRODUCT_IMAGE }}
 
-      - name: "Start product server" # zizmor ignore[template-injection]
+      - name: "Start product server" # zizmor: ignore[template-injection]
         run: | 
           # Don't use --rm flag. The container is removed in a later step
           # after collecting the logs.
