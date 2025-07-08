@@ -24,7 +24,13 @@
 import math
 
 import ansys.additive.core.conversions as conversions
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    HeatSourceModelType as HeatSourceModelEnumMessage,
+)
 from ansys.api.additive.v0.additive_domain_pb2 import MachineSettings as MachineMessage
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    RingModeCoefficientSets as RingModeCoefficientSetsEnumMessage,
+)
 
 
 class MachineConstants:
@@ -84,6 +90,18 @@ class MachineConstants:
     """Minimum slicing stripe width (m)."""
     MAX_SLICING_STRIPE_WIDTH = 0.1
     """Maximum slicing stripe width (m)."""
+    HEAT_SOURCE_MODEL_NAME_GAUSSIAN = "gaussian"
+    """Heat source model name for a Gaussian heat source."""
+    HEAT_SOURCE_MODEL_NAME_RING = "ring"
+    """Heat source model name for a Ring Mode heat source."""
+    DEFAULT_HEAT_SOURCE_MODEL_NAME = HEAT_SOURCE_MODEL_NAME_GAUSSIAN
+    """Default heat source model type used in simulations."""
+    DEFAULT_RING_COEFFICIENTS_SET_INDEX = 0
+    """Default ring coefficient set (only applicable for ring heat source)."""
+    MIN_RING_COEFFICIENTS_SET_INDEX = 0
+    """Minimum ring coefficient set index."""
+    MAX_RING_COEFFICIENTS_SET_INDEX = 6
+    """Maximum ring coefficient set index."""
 
 
 class AdditiveMachine:
@@ -105,6 +123,8 @@ class AdditiveMachine:
         layer_rotation_angle: float = MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE,
         hatch_spacing: float = MachineConstants.DEFAULT_HATCH_SPACING,
         slicing_stripe_width: float = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH,
+        heat_source_model: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
+        ring_mode_coefficient_set_index: int = MachineConstants.DEFAULT_RING_COEFFICIENTS_SET_INDEX,
     ):
         """Initialize an ``AdditiveMachine`` object."""
         self.laser_power = laser_power
@@ -116,6 +136,8 @@ class AdditiveMachine:
         self.layer_rotation_angle = layer_rotation_angle
         self.hatch_spacing = hatch_spacing
         self.slicing_stripe_width = slicing_stripe_width
+        self.heat_source_model = heat_source_model
+        self.ring_mode_coefficient_set_index = ring_mode_coefficient_set_index
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
@@ -128,6 +150,10 @@ class AdditiveMachine:
         repr += "layer_rotation_angle: {} °\n".format(self._layer_rotation_angle)
         repr += "hatch_spacing: {} m\n".format(self._hatch_spacing)
         repr += "slicing_stripe_width: {} m\n".format(self._slicing_stripe_width)
+        repr += "heat_source_model: {}\n".format(self._heat_source_model)
+        repr += "ring_mode_coefficient_set_index: {}\n".format(
+            self._ring_mode_coefficient_set_index
+        )
         return repr
 
     def __eq__(self, __o: object) -> bool:
@@ -140,6 +166,72 @@ class AdditiveMachine:
             raise ValueError("{} must be a number.".format(name))
         if value < min or value > max:
             raise ValueError("{} must be between {} and {}.".format(name, min, max))
+
+    @staticmethod
+    def __convert_heat_source_model_str(name: str):
+        """Convert a heat source model string to the corresponding enum value."""
+        if name == MachineConstants.HEAT_SOURCE_MODEL_NAME_GAUSSIAN:
+            return HeatSourceModelEnumMessage.HEAT_SOURCE_MODEL_GAUSSIAN
+        elif name == MachineConstants.HEAT_SOURCE_MODEL_NAME_RING:
+            return HeatSourceModelEnumMessage.HEAT_SOURCE_MODEL_RING
+        else:
+            raise ValueError(
+                "Invalid heat_source_model name: {}. "
+                "Valid values are 'gaussian' and 'ring'.".format(name)
+            )
+
+    @staticmethod
+    def __convert_heat_source_model_type(modelType: HeatSourceModelEnumMessage):
+        """Convert a heat source model enum value to the corresponding string."""
+        if modelType == HeatSourceModelEnumMessage.HEAT_SOURCE_MODEL_GAUSSIAN:
+            return MachineConstants.HEAT_SOURCE_MODEL_NAME_GAUSSIAN
+        elif modelType == HeatSourceModelEnumMessage.HEAT_SOURCE_MODEL_RING:
+            return MachineConstants.HEAT_SOURCE_MODEL_NAME_RING
+        else:
+            raise ValueError("Invalid heat_source_model type: {}. ".format(modelType))
+
+    @staticmethod
+    def __convert_ring_mode_coefficients_set_index(index: int):
+        """Convert a ring mode coefficient set index to the corresponding enum value."""
+        if index == 0:
+            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_00
+        elif index == 1:
+            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_01
+        elif index == 2:
+            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_02
+        elif index == 3:
+            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_03
+        elif index == 4:
+            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_04
+        elif index == 5:
+            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_05
+        elif index == 6:
+            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_06
+        else:
+            raise ValueError(
+                "Invalid ring_mode_coefficient_set_index: {}. "
+                "Valid values are from 0 to 6.".format(index)
+            )
+
+    @staticmethod
+    def __convert_ring_mode_coefficients_set(coefficients: RingModeCoefficientSetsEnumMessage):
+        """Convert a ring mode coefficient set enum value to the corresponding index."""
+        if coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_00:
+            return 0
+        elif coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_01:
+            return 1
+        elif coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_02:
+            return 2
+        elif coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_03:
+            return 3
+        elif coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_04:
+            return 4
+        elif coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_05:
+            return 5
+        elif coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_06:
+            return 6
+        else:
+            raise ValueError("Invalid ring mode coefficient set: {}. ".format(coefficients))
 
     @property
     def laser_power(self) -> float:
@@ -316,6 +408,48 @@ class AdditiveMachine:
         )
         self._slicing_stripe_width = value
 
+    @property
+    def heat_source_model(self) -> str:
+        """Type of heat source model used in simulations.
+        The heat source model defines how the laser beam is modeled in the simulation.
+
+        Valid values are "gaussian" and "ring".
+        """
+        return self._heat_source_model
+
+    @heat_source_model.setter
+    def heat_source_model(self, value: str):
+        self.__convert_heat_source_model_str(value)
+        self._heat_source_model = value
+
+    @property
+    def ring_mode_coefficient_set_index(self) -> int:
+        """Ring mode coefficient set index.
+
+        Valid values are from 0 to 6.
+
+        Index   I_core       I_ring       w_core       w_ring       mag_factor
+        -----   ------       ------       ------       ------       ----------
+        0       1.0          0.002318185  7.852573158  2.727108436  7.97
+        1       1.0          0.030949501  7.894735871  5.68926878   14.4
+        2       1.0          0.066852674  8.247689717  5.935956868  12.0
+        3       1.0          0.137767519  9.114878353  6.718224435  10.29
+        4       1.0          0.378443621  9.068578634  5.831482362  9.0
+        5       0.976592386  1.0          10.56770793  5.620488993  8.57
+        6       0.424764857  1.0          13.87474845  6.098845453  7.66
+        """
+        return self._ring_mode_coefficient_set_index
+
+    @ring_mode_coefficient_set_index.setter
+    def ring_mode_coefficient_set_index(self, value: int):
+        self.__validate_range(
+            value,
+            MachineConstants.MIN_RING_COEFFICIENTS_SET_INDEX,
+            MachineConstants.MAX_RING_COEFFICIENTS_SET_INDEX,
+            "ring_mode_coefficient_set_index",
+        )
+        self._ring_mode_coefficient_set_index = value
+
     @staticmethod
     def _from_machine_message(msg: MachineMessage):
         """Create an additive machine from a machine message received from the
@@ -332,6 +466,12 @@ class AdditiveMachine:
                 layer_rotation_angle=math.degrees(msg.layer_rotation_angle),
                 hatch_spacing=msg.hatch_spacing,
                 slicing_stripe_width=msg.slicing_stripe_width,
+                heat_source_model=AdditiveMachine.__convert_heat_source_model_type(
+                    modelType=msg.heat_source_model
+                ),
+                ring_mode_coefficient_set_index=AdditiveMachine.__convert_ring_mode_coefficients_set(
+                    coefficients=msg.ring_mode_coefficient_set
+                ),
             )
         else:
             raise ValueError("Invalid message type passed to _from_machine_message()")
@@ -350,4 +490,8 @@ class AdditiveMachine:
             layer_rotation_angle=math.radians(self.layer_rotation_angle),
             hatch_spacing=self.hatch_spacing,
             slicing_stripe_width=self.slicing_stripe_width,
+            heat_source_model=self.__convert_heat_source_model_str(self.heat_source_model),
+            ring_mode_coefficient_set=self.__convert_ring_mode_coefficients_set_index(
+                self.ring_mode_coefficient_set_index
+            ),
         )

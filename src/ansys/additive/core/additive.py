@@ -34,6 +34,7 @@ from ansys.additive.core import USER_DATA_PATH, __version__
 from ansys.additive.core.download import download_logs
 from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
 from ansys.additive.core.logger import LOG
+from ansys.additive.core.machine import MachineConstants
 from ansys.additive.core.material import RESERVED_MATERIAL_NAMES, AdditiveMaterial
 from ansys.additive.core.material_tuning import (
     MaterialTuningInput,
@@ -463,6 +464,16 @@ class Additive:
         ):
             raise BetaFeatureNotEnabledError(
                 "This simulation requires beta features to be enabled.\n"
+                "Set enable_beta_features=True when creating the Additive client."
+            )
+
+        if (
+            simulation_input.machine.heat_source_model
+            != MachineConstants.HEAT_SOURCE_MODEL_NAME_GAUSSIAN
+            and self.enable_beta_features is False
+        ):
+            raise BetaFeatureNotEnabledError(
+                "Heat source models other than the default require beta features to be enabled.\n"
                 "Set enable_beta_features=True when creating the Additive client."
             )
 

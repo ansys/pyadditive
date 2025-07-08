@@ -149,3 +149,17 @@ def get_test_material_tuning_input() -> MaterialTuningInput:
         material_configuration_file=file_name,
         thermal_properties_lookup_file=file_name,
     )
+
+def get_default_machine_repr() -> str:
+        return ("machine: AdditiveMachine\n"
+        + "laser_power: 195 W\n"
+        + "scan_speed: 1.0 m/s\n"
+        + "heater_temperature: 80 °C\n"
+        + "layer_thickness: 5e-05 m\n"
+        + "beam_diameter: 0.0001 m\n"
+        + "starting_layer_angle: 57 °\n"
+        + "layer_rotation_angle: 67 °\n"
+        + "hatch_spacing: 0.0001 m\n"
+        + "slicing_stripe_width: 0.01 m\n"
+        + "heat_source_model: gaussian\n"
+        + "ring_mode_coefficient_set_index: 0\n")

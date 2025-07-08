@@ -38,9 +38,6 @@ import pytest
 from google.longrunning.operations_pb2 import Operation
 
 import ansys.additive.core.additive
-import ansys.additive.core.server_connection.server_connection
-import ansys.additive.core.simulation_task
-import ansys.api.additive.v0.additive_settings_pb2_grpc
 from ansys.additive.core import (
     USER_DATA_PATH,
     Additive,
@@ -55,6 +52,7 @@ from ansys.additive.core import (
     __version__,
 )
 from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
+from ansys.additive.core.machine import AdditiveMachine, MachineConstants
 from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput
 from ansys.additive.core.parametric_study.constants import ColumnNames
@@ -1376,7 +1374,7 @@ def test_enable_beta_features_setter_assigns_value(_):
     ],
 )
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_3d_microstructure_without_beta_enabled_raises_exception(_, sim_input):
+def test_beta_simulation_types_without_beta_enabled_raises_exception(_, sim_input):
     # arrange
     additive = Additive()
 
@@ -1384,6 +1382,43 @@ def test_3d_microstructure_without_beta_enabled_raises_exception(_, sim_input):
     with pytest.raises(BetaFeatureNotEnabledError):
         additive.simulate(sim_input)
 
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_non_default_heat_source_without_beta_enabled_raises_exception(_):
+    # arrange
+    additive = Additive()
+
+    # single bead does not require beta features enabled
+    sim_input = SingleBeadInput(material=AdditiveMaterial(name="my_material"))
+    sim_input.machine = AdditiveMachine(heat_source_model=MachineConstants.HEAT_SOURCE_MODEL_NAME_RING)
+
+    # act, assert
+    with pytest.raises(BetaFeatureNotEnabledError):
+        additive.simulate(sim_input)
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_default_heat_source_without_beta_enabled_does_not_raise_exception(_):
+    # arrange
+    # single bead does not require beta features enabled
+    sim_input = SingleBeadInput(material=AdditiveMaterial(name="my_material"))
+    sim_input.machine = AdditiveMachine()
+    mock_summary = SingleBeadSummary(
+        sim_input, test_utils.get_test_melt_pool_message(), "logs"
+    )
+    mock_task_mgr = Mock(SimulationTaskManager)
+    mock_task_mgr.summaries.return_value = [mock_summary]
+    with patch(
+        "ansys.additive.core.additive.Additive.simulate_async"
+    ) as sim_async_patch:
+        sim_async_patch.return_value = mock_task_mgr
+    additive = Additive()
+    additive.simulate_async = sim_async_patch
+
+    # act
+    summary = additive.simulate(sim_input)
+
+    # assert
+    assert isinstance(summary, SingleBeadSummary)
+    sim_async_patch.assert_called_once()
 
 @patch("ansys.additive.core.additive.download_logs")
 @patch("ansys.additive.core.additive.ServerConnection")
