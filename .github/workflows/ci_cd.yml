@@ -10,7 +10,7 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: write # zizmor: ignore[excessive-permissions]
   packages: read
 
 env:
@@ -26,6 +26,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  actions-security:
+    name: "Check actions security"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ansys/actions/check-actions-security@v10.0
+        with:
+          generate-summary: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          auditing-level: 'high'
+          trust-ansys-actions: true
+
   code-style:
     name: "Running code style checks"
     runs-on: ubuntu-latest
@@ -41,6 +52,17 @@ jobs:
         uses: ansys/actions/doc-style@v10
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  check-vulnerabilities:
+    name: "Check library vulnerabilities"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ansys/actions/check-vulnerabilities@v10.0
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          python-package-name: ${{ env.LIBRARY_NAME }}
+          dev-mode: ${{ github.ref != 'refs/heads/main' }}
 
   smoke-tests:
     name: "Build wheelhouse for Python versions"
@@ -81,14 +103,14 @@ jobs:
 
       - name: Upload Coverage Results
         if: (matrix.python-version == env.MAIN_PYTHON_VERSION) && (runner.os == 'Linux')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: coverage-html
           path: .cov/html
           retention-days: 7
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24
         if: (matrix.python-version == env.MAIN_PYTHON_VERSION) && (runner.os == 'Linux')
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -108,7 +130,7 @@ jobs:
     timeout-minutes: 90
     steps:
       - name: "Login into the GitHub registry container"
-        uses: docker/login-action@v3
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -118,10 +140,10 @@ jobs:
         run: |
           docker pull ${{ env.ANSYS_PRODUCT_IMAGE }}
 
-      - name: "Start product server"
+      - name: "Start product server" # zizmor: ignore[template-injection]
         # Don't use --rm flag. The container is removed in a later step
         # after collecting the logs.
-        run: |
+        run: | 
           docker run --detach \
             --name ${{ env.ANSYS_PRODUCT_CONTAINER }} \
             -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} \
@@ -131,10 +153,12 @@ jobs:
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
 
       - name: "Setup headless display"
-        uses: pyvista/setup-headless-display-action@v4
+        uses: pyvista/setup-headless-display-action@7d84ae825e6d9297a8e99bdbbae20d1b919a0b19
 
       - name: "Checkout code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
 
       - name: "Build documentation with short examples"
         if: github.event_name != 'push'
@@ -170,7 +194,7 @@ jobs:
 
       - name: "Upload container logs as artifacts"
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: docker-logs.txt
           path: docker-logs.txt
