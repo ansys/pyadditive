@@ -27,7 +27,9 @@ import ansys.additive.core.conversions as conversions
 from ansys.api.additive.v0.additive_domain_pb2 import (
     HeatSourceModelType as HeatSourceModelEnumMessage,
 )
-from ansys.api.additive.v0.additive_domain_pb2 import MachineSettings as MachineMessage
+from ansys.api.additive.v0.additive_domain_pb2 import (
+    MachineSettings as MachineMessage,
+)
 from ansys.api.additive.v0.additive_domain_pb2 import (
     RingModeCoefficientSets as RingModeCoefficientSetsEnumMessage,
 )
@@ -427,16 +429,6 @@ class AdditiveMachine:
         """Ring mode coefficient set index.
 
         Valid values are from 0 to 6.
-
-        Index   I_core       I_ring       w_core       w_ring       mag_factor
-        -----   ------       ------       ------       ------       ----------
-        0       1.0          0.002318185  7.852573158  2.727108436  7.97
-        1       1.0          0.030949501  7.894735871  5.68926878   14.4
-        2       1.0          0.066852674  8.247689717  5.935956868  12.0
-        3       1.0          0.137767519  9.114878353  6.718224435  10.29
-        4       1.0          0.378443621  9.068578634  5.831482362  9.0
-        5       0.976592386  1.0          10.56770793  5.620488993  8.57
-        6       0.424764857  1.0          13.87474845  6.098845453  7.66
         """
         return self._ring_mode_coefficient_set_index
 
