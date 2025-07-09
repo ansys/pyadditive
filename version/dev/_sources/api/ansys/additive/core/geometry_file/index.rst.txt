@@ -1,0 +1,107 @@
+
+
+
+
+
+
+The ``geometry_file.py`` module
+===============================
+
+.. py:module:: ansys.additive.core.geometry_file
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: geometry_file
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.geometry_file.BuildFile`
+            - Provides the build file description.
+
+
+          * - :py:obj:`~ansys.additive.core.geometry_file.StlFile`
+            - Container for the STL file definition.
+
+
+
+    .. tab-item:: Enums
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.geometry_file.MachineType`
+            - Machine type values.
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> BuildFile</api/ansys/additive/core/geometry_file/BuildFile>
+    <span class="nf nf-cod-symbol_class"></span> StlFile</api/ansys/additive/core/geometry_file/StlFile>
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_enum"></span> MachineType</api/ansys/additive/core/geometry_file/MachineType>
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides a container for part geometry files.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

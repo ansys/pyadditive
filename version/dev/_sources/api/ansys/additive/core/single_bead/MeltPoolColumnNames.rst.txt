@@ -1,0 +1,207 @@
+
+
+
+
+
+
+:class:`MeltPoolColumnNames`
+============================
+
+
+.. py:class:: ansys.additive.core.single_bead.MeltPoolColumnNames
+
+   
+   Provides column names for the melt pool data frame.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: MeltPoolColumnNames
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~WIDTH`
+            - Width of melt pool (m).
+          * - :py:attr:`~DEPTH`
+            - Depth of melt pool (m).
+          * - :py:attr:`~LENGTH`
+            - Length of melt pool (m).
+          * - :py:attr:`~REFERENCE_WIDTH`
+            - Width of melt pool at the surface of the base plate (m).
+          * - :py:attr:`~REFERENCE_DEPTH`
+            - Depth of melt pool measured from the surface of the base plate (m).
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.single_bead import MeltPoolColumnNames
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: WIDTH
+   :value: 'width'
+
+
+   
+   Width of melt pool (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEPTH
+   :value: 'depth'
+
+
+   
+   Depth of melt pool (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: LENGTH
+   :value: 'length'
+
+
+   
+   Length of melt pool (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: REFERENCE_WIDTH
+   :value: 'reference_width'
+
+
+   
+   Width of melt pool at the surface of the base plate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: REFERENCE_DEPTH
+   :value: 'reference_depth'
+
+
+   
+   Depth of melt pool measured from the surface of the base plate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

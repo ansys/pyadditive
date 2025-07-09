@@ -1,0 +1,6 @@
+scan\_speed
+===========
+
+.. currentmodule:: ansys.additive.machine
+
+.. autoproperty:: AdditiveMachine.scan_speed
