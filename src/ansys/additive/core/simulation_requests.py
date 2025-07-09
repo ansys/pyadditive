@@ -1,4 +1,4 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -55,7 +55,7 @@ def __file_upload_reader(file_name: str, chunk_size=2 * 1024**2) -> Iterator[Upl
                 name=short_name,
                 total_size=file_size,
                 content=chunk,
-                content_md5=hashlib.md5(chunk).hexdigest(),  # noqa: S324
+                content_md5=hashlib.md5(chunk, usedforsecurity=False).hexdigest(),
             )
 
 

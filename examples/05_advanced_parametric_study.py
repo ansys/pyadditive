@@ -1,4 +1,4 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -27,11 +27,7 @@ This example shows how to use PyAdditive to perform a parametric study.
 You perform a parametric study if you want to optimize additive machine parameters
 to achieve a specific result. Here, the :class:`ParametricStudy` class is used to
 conduct a parametric study. While not essential, the :class:`ParametricStudy`
-class provides data management features that make the work easier. Also, the
-``ansys.additive.widgets`` package can be used to create interactive visualizations
-for of parametric study results. An example is available at
-`Parametric Study Example
-<https://widgets.additive.docs.pyansys.com/version/stable/examples/gallery_examples>`_.
+class provides data management features that make the work easier.
 
 
 Units are SI (m, kg, s, K) unless otherwise noted.

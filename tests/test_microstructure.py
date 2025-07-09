@@ -1,4 +1,4 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -40,6 +40,8 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
 
 from ansys.additive.core.simulation import SimulationStatus
+
+from . import test_utils
 
 
 def test_MicrostructureSummary_init_returns_expected_value():
@@ -434,16 +436,7 @@ def test_MicrostructureInput_repr_returns_expected_string():
         + "melt_pool_width: 0.00015\n"
         + "melt_pool_depth: 0.0001\n"
         + "\n"
-        + "machine: AdditiveMachine\n"
-        + "laser_power: 195 W\n"
-        + "scan_speed: 1.0 m/s\n"
-        + "heater_temperature: 80 °C\n"
-        + "layer_thickness: 5e-05 m\n"
-        + "beam_diameter: 0.0001 m\n"
-        + "starting_layer_angle: 57 °\n"
-        + "layer_rotation_angle: 67 °\n"
-        + "hatch_spacing: 0.0001 m\n"
-        + "slicing_stripe_width: 0.01 m\n"
+        + test_utils.get_default_machine_repr()
         + "\n"
         + "material: AdditiveMaterial\n"
         + "absorptivity_maximum: 0\n"
@@ -537,16 +530,7 @@ def test_MicrostructureSummary_repr_returns_expected_string():
         + "melt_pool_width: 0.00015\n"
         + "melt_pool_depth: 0.0001\n"
         + "\n"
-        + "machine: AdditiveMachine\n"
-        + "laser_power: 195 W\n"
-        + "scan_speed: 1.0 m/s\n"
-        + "heater_temperature: 80 °C\n"
-        + "layer_thickness: 5e-05 m\n"
-        + "beam_diameter: 0.0001 m\n"
-        + "starting_layer_angle: 57 °\n"
-        + "layer_rotation_angle: 67 °\n"
-        + "hatch_spacing: 0.0001 m\n"
-        + "slicing_stripe_width: 0.01 m\n"
+        + test_utils.get_default_machine_repr()
         + "\n"
         + "material: AdditiveMaterial\n"
         + "absorptivity_maximum: 0\n"

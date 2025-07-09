@@ -1,4 +1,4 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -205,16 +205,7 @@ def test_SingleBeadInput_repr_creates_expected_string():
         + f"id: {input.id}\n"
         + "bead_length: 0.003\n"
         + "\n"
-        + "machine: AdditiveMachine\n"
-        + "laser_power: 195 W\n"
-        + "scan_speed: 1.0 m/s\n"
-        + "heater_temperature: 80 °C\n"
-        + "layer_thickness: 5e-05 m\n"
-        + "beam_diameter: 0.0001 m\n"
-        + "starting_layer_angle: 57 °\n"
-        + "layer_rotation_angle: 67 °\n"
-        + "hatch_spacing: 0.0001 m\n"
-        + "slicing_stripe_width: 0.01 m\n"
+        + test_utils.get_default_machine_repr()
         + "\n"
         + "material: AdditiveMaterial\n"
         + "absorptivity_maximum: 0\n"
@@ -274,16 +265,7 @@ def test_SingleBeadInput_repr_with_thermal_history_creates_expected_string():
         + f"id: {input.id}\n"
         + "bead_length: 0.003\n"
         + "\n"
-        + "machine: AdditiveMachine\n"
-        + "laser_power: 195 W\n"
-        + "scan_speed: 1.0 m/s\n"
-        + "heater_temperature: 80 °C\n"
-        + "layer_thickness: 5e-05 m\n"
-        + "beam_diameter: 0.0001 m\n"
-        + "starting_layer_angle: 57 °\n"
-        + "layer_rotation_angle: 67 °\n"
-        + "hatch_spacing: 0.0001 m\n"
-        + "slicing_stripe_width: 0.01 m\n"
+        + test_utils.get_default_machine_repr()
         + "\n"
         + "material: AdditiveMaterial\n"
         + "absorptivity_maximum: 0\n"
@@ -430,16 +412,7 @@ def test_SingleBeadSummary_repr_returns_expected_string():
         + f"id: {input.id}\n"
         + "bead_length: 0.003\n"
         + "\n"
-        + "machine: AdditiveMachine\n"
-        + "laser_power: 195 W\n"
-        + "scan_speed: 1.0 m/s\n"
-        + "heater_temperature: 80 °C\n"
-        + "layer_thickness: 5e-05 m\n"
-        + "beam_diameter: 0.0001 m\n"
-        + "starting_layer_angle: 57 °\n"
-        + "layer_rotation_angle: 67 °\n"
-        + "hatch_spacing: 0.0001 m\n"
-        + "slicing_stripe_width: 0.01 m\n"
+        + test_utils.get_default_machine_repr()
         + "\n"
         + "material: AdditiveMaterial\n"
         + "absorptivity_maximum: 0\n"

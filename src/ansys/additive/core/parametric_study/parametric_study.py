@@ -1,4 +1,4 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -34,7 +34,7 @@ import warnings
 from functools import wraps
 from typing import Callable
 
-import dill
+import dill  # nosec: B403
 import numpy as np
 
 import ansys.additive.core.misc as misc
@@ -225,7 +225,7 @@ class ParametricStudy:
 
         try:
             with open(file_name, "rb") as f:
-                study = dill.load(f)  # noqa: S301
+                study = dill.load(f)  # noqa: S301 # nosec: B301
         except Exception:
             raise
         finally:

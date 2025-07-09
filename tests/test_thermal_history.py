@@ -1,4 +1,4 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -44,6 +44,8 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 )
 from ansys.api.additive.v0.additive_domain_pb2 import StlFile as StlFileMessage
 from ansys.api.additive.v0.additive_simulation_pb2 import SimulationRequest
+
+from . import test_utils
 
 
 def test_Range_init_with_parameters_returns_expected_value():
@@ -232,16 +234,7 @@ def test_ThermalHistoryInput_repr_creates_expected_string():
         == "ThermalHistoryInput\n"
         + f"id: {input.id}\n"
         + "\n"
-        + "machine: AdditiveMachine\n"
-        + "laser_power: 195 W\n"
-        + "scan_speed: 1.0 m/s\n"
-        + "heater_temperature: 80 °C\n"
-        + "layer_thickness: 5e-05 m\n"
-        + "beam_diameter: 0.0001 m\n"
-        + "starting_layer_angle: 57 °\n"
-        + "layer_rotation_angle: 67 °\n"
-        + "hatch_spacing: 0.0001 m\n"
-        + "slicing_stripe_width: 0.01 m\n"
+        + test_utils.get_default_machine_repr()
         + "\n"
         + "material: AdditiveMaterial\n"
         + "absorptivity_maximum: 0\n"

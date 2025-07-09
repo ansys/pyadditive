@@ -1,4 +1,4 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -38,4 +38,4 @@ def short_uuid(nchars: int = 12) -> str:
     """
     alphabet = string.ascii_letters + string.digits
     nchars = max(6, nchars)
-    return "".join(random.choices(alphabet, k=nchars))  # noqa: S311
+    return "".join(random.choices(alphabet, k=nchars))  # noqa: S311  # nosec B311

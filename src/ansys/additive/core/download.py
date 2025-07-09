@@ -1,4 +1,4 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -131,7 +131,7 @@ def handle_download_file_response(
                     Progress.from_proto_msg(response.progress)
                 )  # pragma: no cover
             if len(response.content) > 0:
-                md5 = hashlib.md5(response.content).hexdigest()  # noqa: S324
+                md5 = hashlib.md5(response.content, usedforsecurity=False).hexdigest()
                 if md5 != response.content_md5:
                     msg = "Download error, MD5 sums did not match"
                     if progress_handler:  # pragma: no cover

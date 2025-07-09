@@ -25,7 +25,7 @@ requires-python = ">=3.10,<4"
 version = "0.21.0b1"
 
 dependencies = [
-  "ansys-api-additive==5.0.3",
+  "ansys-api-additive==5.1.1",
   "ansys-platform-instancemanagement>=1.1.1",
   "dill>=0.3.7",
   "google-api-python-client>=1.7.11",
@@ -52,18 +52,18 @@ tests = [
   "grpcio==1.70.0",
   "grpcio-health-checking==1.70.0",
   "numpy==2.2.6",
-  "pandas==2.2.3",
+  "pandas==2.3.1",
   "platformdirs==4.3.8",
   "protobuf==5.29.3",
   "six==1.17.0",
   "tqdm==4.67.1",
-  "pydantic==2.11.5",
-  "pytest==8.3.5",
-  "pytest-cov==6.1.1",
+  "pydantic==2.11.7",
+  "pytest==8.4.1",
+  "pytest-cov==6.2.1",
 ]
 
 doc = [
-  "ansys-sphinx-theme[autoapi]==1.5.0",
+  "ansys-sphinx-theme[autoapi]==1.5.2",
   "enum-tools==0.13.0",
   "joblib==1.5.1",
   "jupyter_sphinx==0.5.3",
@@ -73,8 +73,8 @@ doc = [
   "pypandoc==1.15",
   "pyvista==0.45.2",
   "ipywidgets==8.1.7",
-  "trame==3.10.1",
-  "trame-vtk==2.8.15",
+  "trame==3.10.2",
+  "trame-vtk==2.9.0",
   "trame-plotly==3.1.0",
   "trame-vuetify==3.0.1",
   "imageio==2.37.0",
