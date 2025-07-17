@@ -1,0 +1,852 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Getting started &#8212; PyAdditive 0.14.1 documentation</title>
+
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css?v=572af1d6" />
+    <link rel="stylesheet" type="text/css" href="../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/ansys_sphinx_theme.css?v=62c9ccaa" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f23d505c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+ 
+<link href="../_static/css/breadcrumbs.css" rel="stylesheet" />
+
+    <script src="../_static/documentation_options.js?v=9f5afd58"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/thebelab-helper.js"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=49e1bf35"></script>
+    <script src="../_static/js/table.js?v=b64f5182"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'getting_started/index';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://additive.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.14';
+        </script>
+    <link rel="icon" href="../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API reference" href="../api/index.html" />
+    <link rel="prev" title="PyAdditive documentation 0.14.1" href="../index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <link rel="canonical" href="https://additive.docs.pyansys.com/version/stable/getting_started/index.html" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container"><!-- Debugging: html_theme_options =  -->
+
+<!-- If there is no MiliSearch enabled, use the PyData search -->
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+   
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pyansys-logo-black-cropped.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/pyansys-logo-black-cropped.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        Getting started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../examples/gallery_examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button type="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown">
+      0.14  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div class="version-switcher__menu dropdown-menu list-group-flush py-0">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa fa-comment fa-fw"></i></span>
+            <label class="sr-only">Support</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+    <div id="announcement_msg"></div>
+<script>
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(
+      (text) => (document.getElementById("announcement_msg").innerHTML = text),
+    )
+    .catch((error) => console.error(`Fetch problem: ${error.message}`));
+</script>   <div class="container-xl">
+  <div class="row">
+    <div class="col-12 col-md-3" id="breadcrumbs-spacer"></div>
+    <div class="col-12 col-md-11 col-xl-9" id="breadcrumbs">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul> 
+<li class="nav-item nav-item-additional-breadcrumb">
+  <a href="https://docs.pyansys.com/">PyAnsys</a> » 
+</li>
+ 
+<li class="nav-item nav-item-0">
+  <a href="../index.html">PyAdditive 0.14.1 documentation</a> » 
+</li>
+ 
+        <li class="nav-item nav-item-this"><a href="">Getting started</a></li> 
+      </ul>
+    </div></div>
+  </div>
+</div>
+ 
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        Getting started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../examples/gallery_examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button type="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown">
+      0.14  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div class="version-switcher__menu dropdown-menu list-group-flush py-0">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa fa-comment fa-fw"></i></span>
+            <label class="sr-only">Support</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="getting-started">
+<span id="ref-getting-started"></span><h1>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h1>
+<p>PyAdditive is a Python client library for the Ansys Additive service.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>PyAdditive has not been made public and is currently hosted in a private
+PyPI repository. The PyAnsys team can provide you a read-only token to
+assign to an environment variable named <code class="docutils literal notranslate"><span class="pre">PYANSYS_PYPI_PRIVATE_PAT</span></code>.
+To request a token, email
+<a class="reference external" href="mailto:pyansys&#46;support&#37;&#52;&#48;ansys&#46;com">pyansys<span>&#46;</span>support<span>&#64;</span>ansys<span>&#46;</span>com</a>.</p>
+<p>Additionally, the Docker image for the Additive service is stored under the private
+PyAnsys organization packages on GitHub. If you want to run the image yourself,
+you must have a GitHub account with two-factor authentication. For more
+information, see <a class="reference external" href="https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/configuring-two-factor-authentication">Configuring two-factor authentication</a>
+in the GitHub documentation. You must also contact
+<a class="reference external" href="mailto:pyansys&#46;support&#37;&#52;&#48;ansys&#46;com">pyansys<span>&#46;</span>support<span>&#64;</span>ansys<span>&#46;</span>com</a>
+to request that you be added to the PyAnsys organization.
+Lastly, you must create a personal access token with <code class="docutils literal notranslate"><span class="pre">read:packages</span></code> scope and
+authorize it for single sign on. For more information, see these topics in the
+GitHub documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token">Managing your personal access tokens</a></p></li>
+<li><p><a class="reference external" href="https://docs.github.com/en/enterprise-cloud&#64;latest/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on">Authorizing a personal access token for use with SAML single sign-on</a>.</p></li>
+</ul>
+</div>
+<section id="ansys-lab-usage">
+<h2>Ansys Lab usage<a class="headerlink" href="#ansys-lab-usage" title="Link to this heading">#</a></h2>
+<p>The easiest way to use PyAdditive is within a Jupyter notebook in the <a class="reference external" href="https://account.activedirectory.windowsazure.com/applications/signin/d95b9231-50da-45bf-badd-4afa22a5d067?tenantId=34c6ce67-15b8-4eff-80e9-52da8be89706">Ansys Lab</a>
+cloud environment.</p>
+<p>Once you sign in to Ansys Lab, create a Jupyter notebook and connect to the Additive
+service with this code:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ansys.additive.core</span> <span class="k">as</span> <span class="nn">pyadditive</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">additive</span> <span class="o">=</span> <span class="n">pyadditive</span><span class="o">.</span><span class="n">Additive</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Example notebooks are available in <a class="reference external" href="https://additive.docs.pyansys.com/version/dev/examples/gallery_examples/index.html">Examples</a>.</p>
+</section>
+<section id="standalone-usage">
+<h2>Standalone usage<a class="headerlink" href="#standalone-usage" title="Link to this heading">#</a></h2>
+<p>To use PyAdditive in standalone mode, first start the Additive service locally. If you have
+Docker installed, you must be authenticated to ghcr.io. For more information, see
+<a class="reference external" href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry">Working with the Container registry</a>
+in the GitHub documentation.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>To authenticate to ghcr.io, you must have your GitHub user
+account added to the PyAnsys organization as indicated in
+the preceding note.</p>
+</div>
+<p>Start the Additive service locally with this Docker command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--name<span class="w"> </span>additive<span class="w"> </span>-p<span class="w"> </span><span class="m">50052</span>:50052<span class="w"> </span>ghcr.io/pyansys/pyadditive:latest
+</pre></div>
+</div>
+<p>Next, connect to the Additive service with this code:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ansys.additive.core</span> <span class="k">as</span> <span class="nn">pyadditive</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">additive</span> <span class="o">=</span> <span class="n">pyadditive</span><span class="o">.</span><span class="n">Additive</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<section id="package-dependencies">
+<h3>Package dependencies<a class="headerlink" href="#package-dependencies" title="Link to this heading">#</a></h3>
+<p>PyAdditive is supported on Python version 3.8 and later. Previous versions of Python are
+no longer supported as outlined in this <a class="reference external" href="https://python3statement.org/">Moving to require Python 3</a>
+statement.</p>
+<p>PyAdditive dependencies are automatically checked when packages are installed. These projects
+are required dependencies for PyAdditive:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><a class="reference external" href="https://github.com/ansys/ansys-api-additive">ansys-api-additive</a>: Python package containing the auto-generated</dt><dd><p>gRPC Python interface files for the Additive service</p>
+</dd>
+</dl>
+</li>
+<li><p><a class="reference external" href="https://pandoc.org/installing.html">pandoc</a>: Universal document converter for documentation generation</p></li>
+<li><dl class="simple">
+<dt><a class="reference external" href="https://pypi.org/project/numpy/">NumPy</a>: Fundamental package for scientific computing with Python, providing</dt><dd><p>data array access for PyAdditive</p>
+</dd>
+</dl>
+</li>
+<li><p><a class="reference external" href="https://pypi.org/project/pyvista/">PyVista</a>: 3D visualization library for interactive 3D plotting of
+PyAdditive results.</p></li>
+</ul>
+</section>
+<section id="install-the-package">
+<h3>Install the package<a class="headerlink" href="#install-the-package" title="Link to this heading">#</a></h3>
+<p>PyAdditive has three installation modes: user, developer, and offline.</p>
+<section id="install-in-user-mode">
+<h4>Install in user mode<a class="headerlink" href="#install-in-user-mode" title="Link to this heading">#</a></h4>
+<p>On a Windows system, install <a class="reference external" href="https://www.python.org/downloads">Python</a> if it is not already installed.</p>
+<p>Before installing PyAdditive in user mode, run this command to make sure that you have the latest version
+of <a class="reference external" href="https://pypi.org/project/pip/">pip</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>pip
+</pre></div>
+</div>
+<p>Then, run this command to install PyAdditive:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>ansys-additive-core
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Until PyAdditive is made public, you must provide the index
+URL to the private PyPI repository when performing a <code class="docutils literal notranslate"><span class="pre">pip</span></code> install:</p>
+<ul class="simple">
+<li><p>Index URL: <code class="docutils literal notranslate"><span class="pre">https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/</span></code></p></li>
+</ul>
+<p>If access to this package registry is needed, email <a class="reference external" href="mailto:pyansys&#46;core&#37;&#52;&#48;ansys&#46;com">pyansys<span>&#46;</span>core<span>&#64;</span>ansys<span>&#46;</span>com</a>
+to request access. The PyAnsys team can provide you a read-only token to be inserted in <code class="docutils literal notranslate"><span class="pre">${PRIVATE_PYPI_ACCESS_TOKEN}</span></code>.</p>
+<p>Once you have the token run the installation command for your OS:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># On Linux</span>
+pip<span class="w"> </span>install<span class="w"> </span>ansys-additive-core<span class="w"> </span>--index-url<span class="o">=</span>https://<span class="si">${</span><span class="nv">PYANSYS_PYPI_PRIVATE_PAT</span><span class="si">}</span>@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
+
+<span class="c1"># On Windows</span>
+pip<span class="w"> </span>install<span class="w"> </span>ansys-additive<span class="w"> </span>--index-url<span class="o">=</span>https://%PYANSYS_PYPI_PRIVATE_PAT%@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
+</pre></div>
+</div>
+</div>
+</section>
+<section id="install-in-developer-mode">
+<h4>Install in developer mode<a class="headerlink" href="#install-in-developer-mode" title="Link to this heading">#</a></h4>
+<p>Installing PyAdditive in developer mode allows you to modify the source code and enhance it.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Before contributing to PyAdditive, see the <a class="reference external" href="https://dev.docs.pyansys.com/how-to/contributing.html">Contributing</a> topic
+in the <em>PyAnsys Developer’s Guide</em>. You should be thoroughly familiar with this guide.</p>
+</div>
+<p>To install PyAdditive in developer mode, perform these steps:</p>
+<ol class="arabic">
+<li><p>Clone the repository and access the directory where it has been cloned:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ansys/pyadditive
+<span class="nb">cd</span><span class="w"> </span>pyadditive
+</pre></div>
+</div>
+</li>
+<li><p>Create a clean Python virtual environment and activate it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a virtual environment</span>
+python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+
+<span class="c1"># Activate it in a POSIX system</span>
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+
+<span class="c1"># Activate it in Windows CMD shell</span>
+.venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate.bat
+
+<span class="c1"># Activate it in Windows Powershell</span>
+.venv<span class="se">\S</span>cripts<span class="se">\A</span>ctivate.ps1
+</pre></div>
+</div>
+<p>If you require additional information on virtual environments, see <a class="reference external" href="https://docs.python.org/3/library/venv.html">Creation of virtual environments</a> in the Python documentation.</p>
+</li>
+<li><p>Install the required build system tools:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>pip<span class="w"> </span>tox
+</pre></div>
+</div>
+</li>
+<li><p>Verify your development installation:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tox
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Optionally, install the project in editable mode:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>When finished, you can exit the virtual environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>deactivate
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="install-in-offline-mode">
+<h4>Install in offline mode<a class="headerlink" href="#install-in-offline-mode" title="Link to this heading">#</a></h4>
+<p>If you lack an internet connection on your installation machine (or you do not have access to the
+private Ansys PyPI packages repository), you should install PyAdditive by downloading the wheelhouse
+archive from the <a class="reference external" href="https://github.com/ansys/pyadditive/releases">Releases</a> page for your
+corresponding machine architecture.</p>
+<p>Each wheelhouse archive contains all the Python wheels necessary to install PyAdditive from scratch on Windows,
+Linux, and MacOS from Python 3.8 to 3.11. You can unzip and install the wheelhouse archive on an isolated
+system with a fresh Python installation or in a virtual environment.</p>
+<p>For example, on Linux with Python 3.8, unzip then install the wheelhouse archive with these commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>unzip<span class="w"> </span>ansys-additive-core-v0.1.dev0-wheelhouse-Linux-3.8.zip<span class="w"> </span>wheelhouse
+pip<span class="w"> </span>install<span class="w"> </span>ansys-additive-core<span class="w"> </span>-f<span class="w"> </span>wheelhouse<span class="w"> </span>--no-index<span class="w"> </span>--upgrade<span class="w"> </span>--ignore-installed
+</pre></div>
+</div>
+<p>If you’re on Windows with Python 3.9, unzip the wheelhouse archive to a wheelhouse directory and
+then install using the preceding command.</p>
+<p>Consider using a virtual environment for the installation.</p>
+</section>
+</section>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading">#</a></h2>
+<p>This project takes advantage of <a class="reference external" href="https://tox.wiki/">tox</a>. This tool automates common
+development tasks (similar to Makefile), but it is oriented towards Python
+development.</p>
+<section id="using-tox">
+<h3>Using <code class="docutils literal notranslate"><span class="pre">tox</span></code><a class="headerlink" href="#using-tox" title="Link to this heading">#</a></h3>
+<p>While Makefile has rules, <a class="reference external" href="https://tox.wiki/">tox</a> has environments. In fact, <code class="docutils literal notranslate"><span class="pre">tox</span></code> creates its
+own virtual environment so that anything being tested is isolated from the project to
+guarantee the project’s integrity.</p>
+<p>The following commands are provided:</p>
+<ul class="simple">
+<li><p><strong>tox -e style</strong>: Checks for coding style quality.</p></li>
+<li><p><strong>tox -e py</strong>: Checks for and runs unit tests.</p></li>
+<li><p><strong>tox -e py-coverage</strong>: Checks for and runs unit tests, generating code coverage reports.</p></li>
+<li><p><strong>tox -e doc</strong>: Checks for building the documentation successfully.</p></li>
+</ul>
+</section>
+<section id="raw-testing">
+<h3>Raw testing<a class="headerlink" href="#raw-testing" title="Link to this heading">#</a></h3>
+<p>If required, from the command line, you can call style commands like <a class="reference external" href="https://github.com/psf/black">black</a>, <a class="reference external" href="https://github.com/PyCQA/isort">isort</a>,
+and <a class="reference external" href="https://flake8.pycqa.org/en/latest/">flake8</a> and call unit testing commands like <a class="reference external" href="https://docs.pytest.org/en/stable/">pytest</a>. However,
+this does not guarantee that your project is being tested in an isolated
+environment, which is the reason why tools like <code class="docutils literal notranslate"><span class="pre">tox</span></code> exist.</p>
+<p>To run unit tests without using <code class="docutils literal notranslate"><span class="pre">tox</span></code>, first install the <code class="docutils literal notranslate"><span class="pre">pytest-cov</span></code> package in
+editable mode:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>pytest-cov
+
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+<p>Then, run this command from the root folder of the project:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pytest
+</pre></div>
+</div>
+</section>
+<section id="system-testing-on-localhost">
+<h3>System testing on localhost<a class="headerlink" href="#system-testing-on-localhost" title="Link to this heading">#</a></h3>
+<p>Install the <a class="reference external" href="https://docs.docker.com/compose/">docker-compose</a> package, if necessary.
+Start the server by running this command from the root folder of the project:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up
+</pre></div>
+</div>
+<p>Open a Jupyter notebook in Visual Studio Code and execute it.</p>
+<p>Or, use these commands to start <a class="reference external" href="https://pypi.org/project/jupyterlab/">JupyterLab</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>jupyter_venv​
+
+jupyter_venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate.bat​
+
+pip<span class="w"> </span>install<span class="w"> </span>jupyterlab​
+
+pip<span class="w"> </span>install<span class="w"> </span>jupyterlab
+
+jupyter<span class="w"> </span>lab
+</pre></div>
+</div>
+<p>The URL for opening JupyterLab in your browser is <code class="docutils literal notranslate"><span class="pre">http://localhost:8888/lab</span></code>. Note that the port number may
+be different, but the port number that you should use is listed in the JupyterLab startup messages. You can find
+example Jupyter notebooks in the <code class="docutils literal notranslate"><span class="pre">examples</span></code> folder of the PyAdditive repository.</p>
+<section id="a-note-on-pre-commit">
+<h4>A note on <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code><a class="headerlink" href="#a-note-on-pre-commit" title="Link to this heading">#</a></h4>
+<p>The style checks take advantage of <a class="reference external" href="https://pre-commit.com/">pre-commit</a>. Developers are not forced but
+encouraged to install this tool by running this command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>pre-commit<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>pre-commit<span class="w"> </span>install
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">#</a></h2>
+<p>For building documentation, you can run the usual rules provided in the
+<a class="reference external" href="https://www.sphinx-doc.org/en/master/">Sphinx</a> Makefile, such as:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>-C<span class="w"> </span>doc/<span class="w"> </span>html<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>your_browser_name<span class="w"> </span>doc/html/index.html
+</pre></div>
+</div>
+<p>However, the recommended way of checking documentation integrity is to use <code class="docutils literal notranslate"><span class="pre">tox</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tox<span class="w"> </span>-e<span class="w"> </span>doc<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>your_browser_name<span class="w"> </span>.tox/doc_out/index.html
+</pre></div>
+</div>
+</section>
+<section id="distributing">
+<h2>Distributing<a class="headerlink" href="#distributing" title="Link to this heading">#</a></h2>
+<p>If you would like to create either source or wheel files, start by installing
+the building requirements and then executing the build module:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>pip<span class="w"> </span>build<span class="w"> </span>twine
+python<span class="w"> </span>-m<span class="w"> </span>build
+python<span class="w"> </span>-m<span class="w"> </span>twine<span class="w"> </span>check<span class="w"> </span>dist/*
+</pre></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ansys-lab-usage">Ansys Lab usage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standalone-usage">Standalone usage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#package-dependencies">Package dependencies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#install-the-package">Install the package</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#install-in-user-mode">Install in user mode</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#install-in-developer-mode">Install in developer mode</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#install-in-offline-mode">Install in offline mode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-tox">Using <code class="docutils literal notranslate"><span class="pre">tox</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#raw-testing">Raw testing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#system-testing-on-localhost">System testing on localhost</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#a-note-on-pre-commit">A note on <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distributing">Distributing</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item"> 
+<div class="tocsection editthispage">
+  <a href="https://github.com/ansys/pyadditive/edit/main/doc/source/getting_started/index.rst">
+    <i class="fa-solid fa-pencil"></i>
+       Edit
+    on GitHub  
+  </a>
+</div>
+
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright (c) 2023 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.5.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the
+  <a href="https://sphinxdocs.ansys.com/version/stable/index.html"
+    >Ansys Sphinx Theme</a
+  >
+  0.11.1. <br />Last updated on
+  <span id="date"></span>
+</p>
+<script>
+  var options = { day: "numeric", month: "long", year: "numeric" };
+  var lastModifiedDate = new Date(document.lastModified);
+  var date = lastModifiedDate.toLocaleDateString("en-US", options);
+  document.getElementById("date").innerHTML = date;
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
