@@ -1,0 +1,63 @@
+﻿ansys.additive.material.AdditiveMaterial
+========================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoclass:: AdditiveMaterial
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      AdditiveMaterial.absorptivity_maximum
+      AdditiveMaterial.absorptivity_minimum
+      AdditiveMaterial.absorptivity_powder_coefficient_a
+      AdditiveMaterial.absorptivity_powder_coefficient_b
+      AdditiveMaterial.absorptivity_solid_coefficient_a
+      AdditiveMaterial.absorptivity_solid_coefficient_b
+      AdditiveMaterial.anisotropic_strain_coefficient_parallel
+      AdditiveMaterial.anisotropic_strain_coefficient_perpendicular
+      AdditiveMaterial.anisotropic_strain_coefficient_z
+      AdditiveMaterial.characteristic_width_data
+      AdditiveMaterial.elastic_modulus
+      AdditiveMaterial.hardening_factor
+      AdditiveMaterial.liquidus_temperature
+      AdditiveMaterial.material_yield_strength
+      AdditiveMaterial.name
+      AdditiveMaterial.nucleation_constant_bulk
+      AdditiveMaterial.nucleation_constant_interface
+      AdditiveMaterial.penetration_depth_maximum
+      AdditiveMaterial.penetration_depth_minimum
+      AdditiveMaterial.penetration_depth_powder_coefficient_a
+      AdditiveMaterial.penetration_depth_powder_coefficient_b
+      AdditiveMaterial.penetration_depth_solid_coefficient_a
+      AdditiveMaterial.penetration_depth_solid_coefficient_b
+      AdditiveMaterial.poisson_ratio
+      AdditiveMaterial.powder_packing_density
+      AdditiveMaterial.purging_gas_convection_coefficient
+      AdditiveMaterial.solid_density_at_room_temperature
+      AdditiveMaterial.solid_specific_heat_at_room_temperature
+      AdditiveMaterial.solid_thermal_conductivity_at_room_temperature
+      AdditiveMaterial.solidus_temperature
+      AdditiveMaterial.strain_scaling_factor
+      AdditiveMaterial.support_yield_strength_ratio
+      AdditiveMaterial.thermal_expansion_coefficient
+      AdditiveMaterial.thermal_properties_data
+      AdditiveMaterial.vaporization_temperature
+   
+   
