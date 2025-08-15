@@ -1,0 +1,164 @@
+
+
+
+
+
+The ``server_utils.py`` module
+==============================
+
+.. py:module:: ansys.additive.core.server_utils
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: server_utils
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~launch_server`
+            - Launch a local gRPC server for the Additive service.
+
+
+          * - :py:attr:`~find_open_port`
+            - Find an open port on the local host.
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~DEFAULT_ANSYS_VERSION`
+            - 
+
+
+          * - :py:attr:`~ADDITIVE_SERVER_EXE_NAME`
+            - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+.. py:function:: launch_server(port: int, cwd: str = USER_DATA_PATH) -> subprocess.Popen
+
+   
+   Launch a local gRPC server for the Additive service.
+
+
+   :Parameters:
+
+       **port: int**
+           Port number to use for gRPC connections.
+
+       **cwd: str, USER_DATA_PATH**
+           Current working directory to use for the server process.
+
+   :Returns:
+
+       process: :obj:`subprocess.Popen`
+           Server process. To stop the server, call the ``kill()`` method on the returned object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:function:: find_open_port() -> int
+
+   
+   Find an open port on the local host.
+
+
+
+   :Returns:
+
+       port: :class:`python:int`
+           Open port number.
+           
+           .. note::
+              This port may be taken by the time you try to use it.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: DEFAULT_ANSYS_VERSION
+   :value: '241'
+
+   
+
+.. py:data:: ADDITIVE_SERVER_EXE_NAME
+   :value: 'Additive.Grpc'
+
+   
+
+
+
