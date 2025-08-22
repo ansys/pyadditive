@@ -52,7 +52,7 @@ tests = [
   "grpcio==1.73.1",
   "grpcio-health-checking==1.73.1",
   "numpy==2.2.6",
-  "pandas==2.3.1",
+  "pandas==2.3.2",
   "platformdirs==4.3.8",
   "protobuf==6.32.0",
   "six==1.17.0",
