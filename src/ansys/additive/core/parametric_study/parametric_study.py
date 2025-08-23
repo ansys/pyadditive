@@ -455,6 +455,8 @@ class ParametricStudy:
         max_pv_ratio: float | None = None,
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
+        thermal_history_interval: int = 1,
+        output_thermal_history: bool = False,
     ) -> int:
         """Add single bead permutations to the parametric study.
 
@@ -496,6 +498,13 @@ class ParametricStudy:
             Iteration number for this set of simulations.
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for this set of simulations.
+        thermal_history_interval : int, default: 1
+            Interval (in number of time steps) at which to record the thermal history.
+            If this value is ``None``, :obj:`DEFAULT_THERMAL_HISTORY_INTERVAL <SingleBeadInput.DEFAULT_THERMAL_HISTORY_INTERVAL>`
+            is used. Valid values are from :obj:`MIN_THERMAL_HISTORY_INTERVAL <SingleBeadInput.MIN_THERMAL_HISTORY_INTERVAL>`
+            to :obj:`MAX_THERMAL_HISTORY_INTERVAL <SingleBeadInput.MAX_THERMAL_HISTORY_INTERVAL>`.
+        output_thermal_history : bool, default: False
+            Whether to output the thermal history data.
 
         Returns
         -------
@@ -518,6 +527,14 @@ class ParametricStudy:
             if heater_temperatures is not None
             else [MachineConstants.DEFAULT_HEATER_TEMP]
         )
+
+        thermal_history = output_thermal_history if output_thermal_history is not None else False
+        interval = (
+            thermal_history_interval
+            if thermal_history_interval is not None
+            else SingleBeadInput.DEFAULT_THERMAL_HISTORY_INTERVAL
+        )
+
         min_pv = min_pv_ratio or 0.0
         max_pv = max_pv_ratio or float("inf")
         num_permutations_added = int()
@@ -543,6 +560,8 @@ class ParametricStudy:
                                     bead_length=bead_length,
                                     machine=machine,
                                     material=AdditiveMaterial(),
+                                    thermal_history_interval=interval,
+                                    output_thermal_history=thermal_history,
                                 )
                             except ValueError as e:
                                 LOG.error(f"Invalid parameter combination: {e}")
@@ -568,6 +587,8 @@ class ParametricStudy:
                                     ColumnNames.ENERGY_DENSITY: None,
                                     ColumnNames.BUILD_RATE: None,
                                     ColumnNames.SINGLE_BEAD_LENGTH: bead_length,
+                                    ColumnNames.SB_THERMAL_HISTORY_FLAG: thermal_history,
+                                    ColumnNames.SB_THERMAL_HISTORY_INTERVAL: interval,
                                 }
                             )
                             self._data_frame = pd.concat(
@@ -2085,6 +2106,8 @@ class ParametricStudy:
             material=material,
             machine=machine,
             bead_length=row[ColumnNames.SINGLE_BEAD_LENGTH],
+            output_thermal_history=row[ColumnNames.SB_THERMAL_HISTORY_FLAG],
+            thermal_history_interval=row[ColumnNames.SB_THERMAL_HISTORY_INTERVAL],
         )
         # overwrite the ID value with the simulation ID from the table
         sb_input._id = row[ColumnNames.ID]

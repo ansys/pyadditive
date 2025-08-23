@@ -122,6 +122,10 @@ class ColumnNames:
     """Average microstructure grain size in the YZ plane (microns)."""
     ERROR_MESSAGE = "Error Message"
     """Error message if simulation failed."""
+    SB_THERMAL_HISTORY_FLAG = "Single Bead Thermal History Flag"
+    """Flag indicating whether to output single bead thermal history."""
+    SB_THERMAL_HISTORY_INTERVAL = "Single Bead Thermal History Interval (steps)"
+    """Interval at which to output single bead thermal history in number of time steps."""
 
 
 DEFAULT_ITERATION = 0
