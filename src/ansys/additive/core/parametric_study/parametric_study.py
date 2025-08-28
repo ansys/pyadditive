@@ -457,6 +457,8 @@ class ParametricStudy:
         priority: int = DEFAULT_PRIORITY,
         thermal_history_interval: int = 1,
         output_thermal_history: bool = False,
+        heat_source: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
+        ring_mode_coefficient_set_index: int = MachineConstants.DEFAULT_RING_COEFFICIENTS_SET_INDEX,
     ) -> int:
         """Add single bead permutations to the parametric study.
 
@@ -555,6 +557,8 @@ class ParametricStudy:
                                     heater_temperature=t,
                                     layer_thickness=thickness,
                                     beam_diameter=d,
+                                    heat_source_model=heat_source,
+                                    ring_mode_coefficient_set_index=ring_mode_coefficient_set_index,
                                 )
                                 SingleBeadInput(
                                     bead_length=bead_length,
@@ -589,6 +593,8 @@ class ParametricStudy:
                                     ColumnNames.SINGLE_BEAD_LENGTH: bead_length,
                                     ColumnNames.SB_THERMAL_HISTORY_FLAG: thermal_history,
                                     ColumnNames.SB_THERMAL_HISTORY_INTERVAL: interval,
+                                    ColumnNames.HEAT_SOURCE: heat_source,
+                                    ColumnNames.RING_MODE_COEFFICIENT_SET: ring_mode_coefficient_set_index,
                                 }
                             )
                             self._data_frame = pd.concat(
@@ -618,6 +624,8 @@ class ParametricStudy:
         max_build_rate: float | None = None,
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
+        heat_source: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
+        ring_mode_coefficient_set_index: int = MachineConstants.DEFAULT_RING_COEFFICIENTS_SET_INDEX,
     ) -> int:
         """Add porosity permutations to the parametric study.
 
@@ -775,6 +783,8 @@ class ParametricStudy:
                                                     layer_rotation_angle=r,
                                                     hatch_spacing=h,
                                                     slicing_stripe_width=w,
+                                                    heat_source_model=heat_source,
+                                                    ring_mode_coefficient_set_index=ring_mode_coefficient_set_index,
                                                 )
                                                 PorosityInput(
                                                     size_x=size_x,
@@ -1425,7 +1435,11 @@ class ParametricStudy:
         ]
 
         # Additional columns to check for duplicates as per simulation type
-        sb_params = common_params + [ColumnNames.SINGLE_BEAD_LENGTH]
+        sb_params = common_params + [
+            ColumnNames.SINGLE_BEAD_LENGTH,
+            ColumnNames.HEAT_SOURCE,
+            ColumnNames.RING_MODE_COEFFICIENT_SET,
+        ]
 
         porosity_params = common_params + [
             ColumnNames.START_ANGLE,
@@ -1841,6 +1855,8 @@ class ParametricStudy:
                 layer_rotation_angle=input[ColumnNames.ROTATION_ANGLE],
                 hatch_spacing=input[ColumnNames.HATCH_SPACING],
                 slicing_stripe_width=input[ColumnNames.STRIPE_WIDTH],
+                heat_source_model=input[ColumnNames.HEAT_SOURCE],
+                ring_mode_coefficient_set_index=input[ColumnNames.RING_MODE_COEFFICIENT_SET],
             )
 
             material = AdditiveMaterial(name=str(input[ColumnNames.MATERIAL]))
@@ -2095,6 +2111,16 @@ class ParametricStudy:
                 row[ColumnNames.STRIPE_WIDTH]
                 if not np.isnan(row[ColumnNames.STRIPE_WIDTH])
                 else MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH
+            ),
+            heat_source_model=(
+                row[ColumnNames.HEAT_SOURCE]
+                if isinstance(row[ColumnNames.HEAT_SOURCE], str)
+                else MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME
+            ),
+            ring_mode_coefficient_set_index=(
+                row[ColumnNames.RING_MODE_COEFFICIENT_SET]
+                if not np.isnan(row[ColumnNames.RING_MODE_COEFFICIENT_SET])
+                else MachineConstants.DEFAULT_RING_COEFFICIENTS_SET_INDEX
             ),
         )
 

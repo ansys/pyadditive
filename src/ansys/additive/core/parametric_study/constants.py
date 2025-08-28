@@ -126,6 +126,10 @@ class ColumnNames:
     """Flag indicating whether to output single bead thermal history."""
     SB_THERMAL_HISTORY_INTERVAL = "Single Bead Thermal History Interval (steps)"
     """Interval at which to output single bead thermal history in number of time steps."""
+    HEAT_SOURCE = "Heat Source"
+    """Type of heat source used in the simulation."""
+    RING_MODE_COEFFICIENT_SET = "Ring Mode Coefficient Set"
+    """Set of prescribed coefficients used for ring mode simulations."""
 
 
 DEFAULT_ITERATION = 0

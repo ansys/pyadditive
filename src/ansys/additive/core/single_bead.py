@@ -54,7 +54,7 @@ class SingleBeadInput(SimulationInputBase):
     """Maximum bead length (m)."""
     DEFAULT_OUTPUT_THERMAL_HISTORY = False
     """Default output thermal history flag."""
-    DEFAULT_THERMAL_HISTORY_INTERVAL = 1
+    DEFAULT_THERMAL_HISTORY_INTERVAL = 9999
     """Default thermal history interval."""
     MIN_THERMAL_HISTORY_INTERVAL = 1
     """Minimum thermal history interval."""
