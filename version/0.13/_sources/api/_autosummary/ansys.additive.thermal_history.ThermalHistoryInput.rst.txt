@@ -1,0 +1,29 @@
+﻿ThermalHistoryInput
+===================
+
+.. currentmodule:: ansys.additive.thermal_history
+
+.. autoclass:: ThermalHistoryInput
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      ThermalHistoryInput.geometry
+   
+   

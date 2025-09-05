@@ -1,0 +1,180 @@
+
+
+
+
+
+
+:class:`CircleEquivalenceColumnNames`
+=====================================
+
+
+.. py:class:: ansys.additive.core.microstructure.CircleEquivalenceColumnNames
+
+   
+   Provides column names for the circle equivalence data frame.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: CircleEquivalenceColumnNames
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~GRAIN_NUMBER`
+            - Grain number.
+          * - :py:attr:`~AREA_FRACTION`
+            - Area fraction for grain.
+          * - :py:attr:`~DIAMETER`
+            - Grain diameter (µm).
+          * - :py:attr:`~ORIENTATION_ANGLE`
+            - Orientation angle (degrees).
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.microstructure import CircleEquivalenceColumnNames
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: GRAIN_NUMBER
+   :value: 'grain_number'
+
+
+   
+   Grain number.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: AREA_FRACTION
+   :value: 'area_fraction'
+
+
+   
+   Area fraction for grain.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DIAMETER
+   :value: 'diameter_um'
+
+
+   
+   Grain diameter (µm).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: ORIENTATION_ANGLE
+   :value: 'orientation_angle'
+
+
+   
+   Orientation angle (degrees).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

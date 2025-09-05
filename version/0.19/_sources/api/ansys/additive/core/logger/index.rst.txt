@@ -1,0 +1,308 @@
+
+
+
+
+
+
+The ``logger.py`` module
+========================
+
+.. py:module:: ansys.additive.core.logger
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: logger
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.logger.PyAdditivePercentStyle`
+            - Provides a common messaging style for the ``PyAdditiveFormatter`` class.
+
+
+          * - :py:obj:`~ansys.additive.core.logger.PyAdditiveFormatter`
+            - Provides a ``Formatter`` class for overwriting default format styles.
+
+
+          * - :py:obj:`~ansys.additive.core.logger.Logger`
+            - Provides the logger used for each PyAdditive session.
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~is_notebook`
+            - Check if the code is running in a Jupyter notebook.
+
+
+          * - :py:obj:`~addfile_handler`
+            - Add a file handler to the input.
+
+
+          * - :py:obj:`~add_stdout_handler`
+            - Add a standout handler to the logger.
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~LOG_LEVEL`
+            - 
+
+
+          * - :py:obj:`~FILE_NAME`
+            - 
+
+
+          * - :py:obj:`~STDOUT_MSG_FORMAT`
+            - 
+
+
+          * - :py:obj:`~FILE_MSG_FORMAT`
+            - 
+
+
+          * - :py:obj:`~DATE_FORMAT`
+            - 
+
+
+          * - :py:obj:`~LOG`
+            - 
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> PyAdditivePercentStyle</api/ansys/additive/core/logger/PyAdditivePercentStyle>
+    <span class="nf nf-cod-symbol_class"></span> PyAdditiveFormatter</api/ansys/additive/core/logger/PyAdditiveFormatter>
+    <span class="nf nf-cod-symbol_class"></span> Logger</api/ansys/additive/core/logger/Logger>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides a general framework for logging in PyAdditive.
+
+Logger usage
+------------
+
+Global logger
+~~~~~~~~~~~~~
+There is a global logger named ``PyAdditive_global`` that is created when
+``ansys.additive.core.__init__`` is called. If you want to use this global
+logger, you must call it at the top of your module:
+
+.. code:: python
+
+   from ansys.additive.core import LOG
+
+You can rename this logger to avoid conflicts with other loggers (if any):
+
+.. code:: python
+
+   from ansys.additive.core import LOG as logger
+
+The default logging level of ``LOG`` is ``WARNING``.
+You can change this level and output lower-level messages with
+this code:
+
+.. code:: python
+
+   LOG.logger.setLevel("DEBUG")
+   LOG.file_handler.setLevel("DEBUG")  # If present.
+   LOG.stdout_handler.setLevel("DEBUG")  # If present.
+
+Alternatively, you can ensure that all the handlers are set to the input log
+level with this code:
+
+.. code:: python
+
+   LOG.setLevel("DEBUG")
+
+This logger does not log to a file by default. If you want, you can
+add a file handler with this code:
+
+.. code:: python
+
+   import os
+
+   file_path = os.path.join(os.getcwd(), "pyadditive.log")
+   LOG.log_to_file(file_path)
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: is_notebook() -> bool
+
+   
+   Check if the code is running in a Jupyter notebook.
+
+   Returns:
+       bool: True if running in a Jupyter notebook, False otherwise.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: addfile_handler(logger, filename=FILE_NAME, level=LOG_LEVEL)
+
+   
+   Add a file handler to the input.
+
+
+   :Parameters:
+
+       **logger** : :obj:`logging.Logger`
+           Logger to add the file handler to.
+
+       **filename** : str, default: obj:`FILE_NAME`
+           Name of the output file.
+
+       **level** : :obj:`default` : :obj:`DEBUG`
+           Logging level to filter the message severity allowed in the logger.
+
+
+
+   :Returns:
+
+       :obj:`Logger`
+           :class:`Logger` or :class:`logging.Logger` object.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: add_stdout_handler(logger, level=LOG_LEVEL)
+
+   
+   Add a standout handler to the logger.
+
+
+   :Parameters:
+
+       **logger** : :obj:`logging.Logger`
+           Logger to add the file handler to.
+
+       **level** : :obj:`default` : :obj:`DEBUG`
+           Logging level to filter the message severity allowed in the logger.
+
+
+
+   :Returns:
+
+       :obj:`Logger`
+           :class:`Logger` or :class:`logging.Logger` object.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: LOG_LEVEL
+
+.. py:data:: FILE_NAME
+   :value: 'pyadditive.log'
+
+
+.. py:data:: STDOUT_MSG_FORMAT
+   :value: '%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(message)s'
+
+
+.. py:data:: FILE_MSG_FORMAT
+
+.. py:data:: DATE_FORMAT
+   :value: '%Y-%m-%d %H:%M:%S'
+
+
+.. py:data:: LOG
+
+
+
