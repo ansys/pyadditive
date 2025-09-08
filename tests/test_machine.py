@@ -43,7 +43,7 @@ def test_AdditiveMachine_init_returns_default():
     assert machine.hatch_spacing == 1e-4
     assert machine.slicing_stripe_width == 0.01
     assert machine.heat_source_model == "gaussian"
-    assert machine.ring_mode_coefficient_set_index == 0
+    assert machine.ring_mode_index == 0
 
 
 def test_from_machine_message_returns_AdditiveMachine():
@@ -59,7 +59,7 @@ def test_from_machine_message_returns_AdditiveMachine():
         hatch_spacing=8e-5,
         slicing_stripe_width=0.009,
         heat_source_model=HeatSourceModelEnumMessage.HEAT_SOURCE_MODEL_RING,
-        ring_mode_coefficient_set= RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_05,
+        ring_mode_index= RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_05,
     )
 
     # act
@@ -78,7 +78,7 @@ def test_from_machine_message_returns_AdditiveMachine():
     assert machine.hatch_spacing == 8e-5
     assert machine.slicing_stripe_width == 0.009
     assert machine.heat_source_model == "ring"
-    assert machine.ring_mode_coefficient_set_index == 5
+    assert machine.ring_mode_index == 5
 
 
 @pytest.mark.parametrize(
@@ -108,7 +108,7 @@ def test_to_machine_message_returns_MachineMessage():
         hatch_spacing=8e-5,
         slicing_stripe_width=0.009,
         heat_source_model="ring",
-        ring_mode_coefficient_set_index=4
+        ring_mode_index=4
     )
 
     # act
@@ -127,7 +127,7 @@ def test_to_machine_message_returns_MachineMessage():
     assert msg.hatch_spacing == 8e-5
     assert msg.slicing_stripe_width == 0.009
     assert msg.heat_source_model == HeatSourceModelEnumMessage.HEAT_SOURCE_MODEL_RING
-    assert msg.ring_mode_coefficient_set == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_04
+    assert msg.ring_mode_index == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_04
 
 
 def test_AdditiveMachine_eq_returns_expected_value():
@@ -181,10 +181,10 @@ def test_range_check_raises_exception_for_invalid_value():
         AdditiveMachine(slicing_stripe_width=0.11)
     with pytest.raises(ValueError, match="heat_source_model"):
         AdditiveMachine(heat_source_model="not_a_valid_model")
-    with pytest.raises(ValueError, match="ring_mode_coefficient_set_index"):
-        AdditiveMachine(ring_mode_coefficient_set_index=11)
-    with pytest.raises(ValueError, match="ring_mode_coefficient_set_index"):
-        AdditiveMachine(ring_mode_coefficient_set_index=-2)
+    with pytest.raises(ValueError, match="ring_mode_index"):
+        AdditiveMachine(ring_mode_index=11)
+    with pytest.raises(ValueError, match="ring_mode_index"):
+        AdditiveMachine(ring_mode_index=-2)
 
 
 def test_range_check_raises_exception_for_nan_value():
@@ -207,8 +207,8 @@ def test_range_check_raises_exception_for_nan_value():
         AdditiveMachine(hatch_spacing=float("nan"))
     with pytest.raises(ValueError, match="slicing_stripe_width must be a number"):
         AdditiveMachine(slicing_stripe_width=float("nan"))
-    with pytest.raises(ValueError, match="ring_mode_coefficient_set_index must be a number"):
-        AdditiveMachine(ring_mode_coefficient_set_index=float("nan"))
+    with pytest.raises(ValueError, match="ring_mode_index must be a number"):
+        AdditiveMachine(ring_mode_index=float("nan"))
 
 
 def test_setters_set_correct_values():

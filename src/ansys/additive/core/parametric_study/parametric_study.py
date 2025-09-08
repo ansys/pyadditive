@@ -24,7 +24,7 @@
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     import os
@@ -321,6 +321,10 @@ class ParametricStudy:
                 ColumnNames.BUILD_RATE: None,
                 ColumnNames.ENERGY_DENSITY: None,
                 ColumnNames.SINGLE_BEAD_LENGTH: summary.input.bead_length,
+                ColumnNames.SB_THERMAL_HISTORY_FLAG: summary.input.output_thermal_history,
+                ColumnNames.SB_THERMAL_HISTORY_INTERVAL: summary.input.thermal_history_interval,
+                ColumnNames.HEAT_SOURCE: summary.input.machine.heat_source_model,
+                ColumnNames.RING_MODE_INDEX: summary.input.machine.ring_mode_index,
                 ColumnNames.MELT_POOL_WIDTH: mp.median_width(),
                 ColumnNames.MELT_POOL_DEPTH: mp.median_depth(),
                 ColumnNames.MELT_POOL_LENGTH: mp.median_length(),
@@ -409,7 +413,7 @@ class ParametricStudy:
         self,
         summary: SingleBeadSummary | PorositySummary | MicrostructureSummary,
         iteration: int = DEFAULT_ITERATION,
-    ) -> dict[str, any]:
+    ) -> dict[str, Any]:
         """Convert common simulation parameters to a dictionary.
 
         Parameters
@@ -458,7 +462,7 @@ class ParametricStudy:
         thermal_history_interval: int = 1,
         output_thermal_history: bool = False,
         heat_source: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
-        ring_mode_coefficient_set_index: int = MachineConstants.DEFAULT_RING_COEFFICIENTS_SET_INDEX,
+        ring_mode_index: int = MachineConstants.DEFAULT_RING_COEFFICIENTS_SET_INDEX,
     ) -> int:
         """Add single bead permutations to the parametric study.
 
@@ -507,6 +511,14 @@ class ParametricStudy:
             to :obj:`MAX_THERMAL_HISTORY_INTERVAL <SingleBeadInput.MAX_THERMAL_HISTORY_INTERVAL>`.
         output_thermal_history : bool, default: False
             Whether to output the thermal history data.
+        heat_source : str, default: :obj:`MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME`
+            Heat source model name to use for simulations. Available models are listed in
+            :obj:`AVAILABLE_HEAT_SOURCE_MODELS <MachineConstants.AVAILABLE_HEAT_SOURCE_MODELS>`.
+        ring_mode_index : int, default: :obj:`MachineConstants.DEFAULT_RING_MODE_INDEX`
+            Ring mode index to use. See https://www.nlight.net/articles-content/ring-beams-change-the-game-for-powder-bed-fusion-nedmx for more information.
+            This parameter is only applicable if the ``heat_source`` parameter is set to :obj:`MachineConstants.HEAT_SOURCE_MODEL_NAME_RING`.
+            Valid values are from :obj:`MIN_RING_MODE_INDEX <MachineConstants.MIN_RING_MODE_INDEX>`
+            to :obj:`MAX_RING_MODE_INDEX <MachineConstants.MAX_RING_MODE_INDEX>`.
 
         Returns
         -------
@@ -558,7 +570,7 @@ class ParametricStudy:
                                     layer_thickness=thickness,
                                     beam_diameter=d,
                                     heat_source_model=heat_source,
-                                    ring_mode_coefficient_set_index=ring_mode_coefficient_set_index,
+                                    ring_mode_index=ring_mode_index,
                                 )
                                 SingleBeadInput(
                                     bead_length=bead_length,
@@ -594,7 +606,7 @@ class ParametricStudy:
                                     ColumnNames.SB_THERMAL_HISTORY_FLAG: thermal_history,
                                     ColumnNames.SB_THERMAL_HISTORY_INTERVAL: interval,
                                     ColumnNames.HEAT_SOURCE: heat_source,
-                                    ColumnNames.RING_MODE_COEFFICIENT_SET: ring_mode_coefficient_set_index,
+                                    ColumnNames.RING_MODE_INDEX: ring_mode_index,
                                 }
                             )
                             self._data_frame = pd.concat(
@@ -625,7 +637,7 @@ class ParametricStudy:
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
         heat_source: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
-        ring_mode_coefficient_set_index: int = MachineConstants.DEFAULT_RING_COEFFICIENTS_SET_INDEX,
+        ring_mode_index: int = MachineConstants.DEFAULT_RING_COEFFICIENTS_SET_INDEX,
     ) -> int:
         """Add porosity permutations to the parametric study.
 
@@ -659,8 +671,7 @@ class ParametricStudy:
             to :obj:`MAX_LAYER_THICKNESS <MachineConstants.MAX_LAYER_THICKNESS>`.
         heater_temperatures : list[float], default: None
             Heater temperatures (C) to use for porosity simulations.
-            If this value is ``None``,
-            :obj:`DEFAULT_HEATER_TEMP <MachineConstants.DEFAULT_HEATER_TEMP>`
+            If this value is ``None``, :obj:`DEFAULT_HEATER_TEMP <MachineConstants.DEFAULT_HEATER_TEMP>`
             is used. Valid values are from :obj:`MIN_HEATER_TEMP <MachineConstants.MIN_HEATER_TEMP>`
             to :obj:`MAX_HEATER_TEMP <MachineConstants.MAX_HEATER_TEMP>`.
         beam_diameters : list[float], default: None
@@ -710,6 +721,14 @@ class ParametricStudy:
             Iteration number for this set of simulations.
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for this set of simulations.
+        heat_source : str, default: :obj:`MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME`
+            Heat source model name to use for simulations. Available models are listed in
+            :obj:`AVAILABLE_HEAT_SOURCE_MODELS <MachineConstants.AVAILABLE_HEAT_SOURCE_MODELS>`.
+        ring_mode_index : int, default: :obj:`MachineConstants.DEFAULT_RING_MODE_INDEX`
+            Ring mode index to use. See https://www.nlight.net/articles-content/ring-beams-change-the-game-for-powder-bed-fusion-nedmx for more information.
+            This parameter is only applicable if the ``heat_source`` parameter is set to :obj:`MachineConstants.HEAT_SOURCE_MODEL_NAME_RING`.
+            Valid values are from :obj:`MIN_RING_MODE_INDEX <MachineConstants.MIN_RING_MODE_INDEX>`
+            to :obj:`MAX_RING_MODE_INDEX <MachineConstants.MAX_RING_MODE_INDEX>`.
 
         Returns
         -------
@@ -784,7 +803,7 @@ class ParametricStudy:
                                                     hatch_spacing=h,
                                                     slicing_stripe_width=w,
                                                     heat_source_model=heat_source,
-                                                    ring_mode_coefficient_set_index=ring_mode_coefficient_set_index,
+                                                    ring_mode_index=ring_mode_index,
                                                 )
                                                 PorosityInput(
                                                     size_x=size_x,
@@ -862,6 +881,8 @@ class ParametricStudy:
         random_seed: int | None = None,
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
+        heat_source: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
+        ring_mode_index: int = MachineConstants.DEFAULT_RING_COEFFICIENTS_SET_INDEX,
     ) -> int:
         """Add microstructure permutations to the parametric study.
 
@@ -999,6 +1020,14 @@ class ParametricStudy:
             Iteration number for this set of simulations.
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for this set of simulations.
+        heat_source : str, default: :obj:`MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME`
+            Heat source model name to use for simulations. Available models are listed in
+            :obj:`AVAILABLE_HEAT_SOURCE_MODELS <MachineConstants.AVAILABLE_HEAT_SOURCE_MODELS>`.
+        ring_mode_index : int, default: :obj:`MachineConstants.DEFAULT_RING_MODE_INDEX`
+            Ring mode index to use. See https://www.nlight.net/articles-content/ring-beams-change-the-game-for-powder-bed-fusion-nedmx for more information.
+            This parameter is only applicable if the ``heat_source`` parameter is set to :obj:`MachineConstants.HEAT_SOURCE_MODEL_NAME_RING`.
+            Valid values are from :obj:`MIN_RING_MODE_INDEX <MachineConstants.MIN_RING_MODE_INDEX>`
+            to :obj:`MAX_RING_MODE_INDEX <MachineConstants.MAX_RING_MODE_INDEX>`.
 
         Returns
         -------
@@ -1085,6 +1114,8 @@ class ParametricStudy:
                                                     layer_rotation_angle=r,
                                                     hatch_spacing=h,
                                                     slicing_stripe_width=w,
+                                                    heat_source_model=heat_source,
+                                                    ring_mode_index=ring_mode_index,
                                                 )
                                                 MicrostructureInput(
                                                     sample_min_x=min_x,
@@ -1334,6 +1365,8 @@ class ParametricStudy:
             if isinstance(input, SingleBeadInput):
                 dict[ColumnNames.TYPE] = SimulationType.SINGLE_BEAD
                 dict[ColumnNames.SINGLE_BEAD_LENGTH] = input.bead_length
+                dict[ColumnNames.SB_THERMAL_HISTORY_FLAG] = input.output_thermal_history
+                dict[ColumnNames.SB_THERMAL_HISTORY_INTERVAL] = input.thermal_history_interval
             elif isinstance(input, PorosityInput):
                 dict[ColumnNames.TYPE] = SimulationType.POROSITY
                 dict[ColumnNames.POROSITY_SIZE_X] = input.size_x
@@ -1372,6 +1405,8 @@ class ParametricStudy:
             dict[ColumnNames.ROTATION_ANGLE] = input.machine.layer_rotation_angle
             dict[ColumnNames.HATCH_SPACING] = input.machine.hatch_spacing
             dict[ColumnNames.STRIPE_WIDTH] = input.machine.slicing_stripe_width
+            dict[ColumnNames.HEAT_SOURCE] = input.machine.heat_source_model
+            dict[ColumnNames.RING_MODE_INDEX] = input.machine.ring_mode_index
 
             self._data_frame = pd.concat(
                 [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
@@ -1437,8 +1472,10 @@ class ParametricStudy:
         # Additional columns to check for duplicates as per simulation type
         sb_params = common_params + [
             ColumnNames.SINGLE_BEAD_LENGTH,
+            ColumnNames.SB_THERMAL_HISTORY_FLAG,
+            ColumnNames.SB_THERMAL_HISTORY_INTERVAL,
             ColumnNames.HEAT_SOURCE,
-            ColumnNames.RING_MODE_COEFFICIENT_SET,
+            ColumnNames.RING_MODE_INDEX,
         ]
 
         porosity_params = common_params + [
@@ -1656,7 +1693,7 @@ class ParametricStudy:
         LOG.warning("Updating parametric study to latest version.")
 
         # WARNING: Create a new study with the same file name but empty data frame
-        new_study = ParametricStudy._new(study.file_name)
+        new_study = ParametricStudy._new(pathlib.Path(study.file_name))
         df = study.data_frame()
 
         if version < 2:
@@ -1710,6 +1747,10 @@ class ParametricStudy:
         """
         if ColumnNames.PV_RATIO not in df.columns:
             scan_speed_index = df.columns.get_loc(ColumnNames.SCAN_SPEED)
+            if not isinstance(scan_speed_index, int):
+                raise TypeError(
+                    f"scan_speed_index must be of type int, got {type(scan_speed_index)}"
+                )
             df.insert(scan_speed_index + 1, ColumnNames.PV_RATIO, None)
 
         df[ColumnNames.PV_RATIO] = df[ColumnNames.LASER_POWER] / df[ColumnNames.SCAN_SPEED]
@@ -1856,17 +1897,21 @@ class ParametricStudy:
                 hatch_spacing=input[ColumnNames.HATCH_SPACING],
                 slicing_stripe_width=input[ColumnNames.STRIPE_WIDTH],
                 heat_source_model=input[ColumnNames.HEAT_SOURCE],
-                ring_mode_coefficient_set_index=input[ColumnNames.RING_MODE_COEFFICIENT_SET],
+                ring_mode_index=input[ColumnNames.RING_MODE_INDEX],
             )
 
             material = AdditiveMaterial(name=str(input[ColumnNames.MATERIAL]))
 
             if input[ColumnNames.TYPE] == SimulationType.SINGLE_BEAD:
                 valid, error = self._validate_single_bead_input(machine, material, input)
-            if input[ColumnNames.TYPE] == SimulationType.POROSITY:
+            elif input[ColumnNames.TYPE] == SimulationType.POROSITY:
                 valid, error = self._validate_porosity_input(machine, material, input)
-            if input[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE:
+            elif input[ColumnNames.TYPE] == SimulationType.MICROSTRUCTURE:
                 valid, error = self._validate_microstructure_input(machine, material, input)
+            else:
+                # Handle unknown simulation type
+                return (False, f"Unknown simulation type: {input[ColumnNames.TYPE]}")
+
             if not valid:
                 return (False, error)
             return (True, "")
@@ -2025,10 +2070,10 @@ class ParametricStudy:
     def simulation_inputs(
         self,
         get_material_func: Callable[[str], AdditiveMaterial],
-        simulation_ids: list[str] = None,
-        types: list[SimulationType] = None,
-        priority: int = None,
-        iteration: int = None,
+        simulation_ids: list[str] = None,  # type: ignore
+        types: list[SimulationType] = None,  # type: ignore
+        priority: int = None,  # type: ignore
+        iteration: int = None,  # type: ignore
     ) -> list[SingleBeadInput | PorosityInput | MicrostructureInput]:
         """Get a list of simulation inputs from the parametric study.
 
@@ -2060,7 +2105,7 @@ class ParametricStudy:
 
         df = self.filter_data_frame(simulation_ids, types, priority, iteration)
 
-        material = get_material_func(self.material_name)
+        material = get_material_func(str(self.material_name))
 
         # NOTE: We use iterrows() instead of itertuples() here to
         # access values by column name
@@ -2117,9 +2162,9 @@ class ParametricStudy:
                 if isinstance(row[ColumnNames.HEAT_SOURCE], str)
                 else MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME
             ),
-            ring_mode_coefficient_set_index=(
-                row[ColumnNames.RING_MODE_COEFFICIENT_SET]
-                if not np.isnan(row[ColumnNames.RING_MODE_COEFFICIENT_SET])
+            ring_mode_index=(
+                row[ColumnNames.RING_MODE_INDEX]
+                if not np.isnan(row[ColumnNames.RING_MODE_INDEX])
                 else MachineConstants.DEFAULT_RING_COEFFICIENTS_SET_INDEX
             ),
         )

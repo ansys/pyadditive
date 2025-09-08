@@ -31,7 +31,7 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
     MachineSettings as MachineMessage,
 )
 from ansys.api.additive.v0.additive_domain_pb2 import (
-    RingModeCoefficientSets as RingModeCoefficientSetsEnumMessage,
+    RingModeIndex as RingModeIndexEnumMessage,
 )
 
 
@@ -98,6 +98,8 @@ class MachineConstants:
     """Heat source model name for a Ring Mode heat source."""
     DEFAULT_HEAT_SOURCE_MODEL_NAME = HEAT_SOURCE_MODEL_NAME_GAUSSIAN
     """Default heat source model type used in simulations."""
+    AVAILABLE_HEAT_SOURCE_MODELS = [HEAT_SOURCE_MODEL_NAME_GAUSSIAN, HEAT_SOURCE_MODEL_NAME_RING]
+    """List of available heat source model types."""
     DEFAULT_RING_COEFFICIENTS_SET_INDEX = 0
     """Default ring coefficient set (only applicable for ring heat source)."""
     MIN_RING_COEFFICIENTS_SET_INDEX = 0
@@ -126,7 +128,7 @@ class AdditiveMachine:
         hatch_spacing: float = MachineConstants.DEFAULT_HATCH_SPACING,
         slicing_stripe_width: float = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH,
         heat_source_model: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
-        ring_mode_coefficient_set_index: int = MachineConstants.DEFAULT_RING_COEFFICIENTS_SET_INDEX,
+        ring_mode_index: int = MachineConstants.DEFAULT_RING_COEFFICIENTS_SET_INDEX,
     ):
         """Initialize an ``AdditiveMachine`` object."""
         self.laser_power = laser_power
@@ -139,7 +141,7 @@ class AdditiveMachine:
         self.hatch_spacing = hatch_spacing
         self.slicing_stripe_width = slicing_stripe_width
         self.heat_source_model = heat_source_model
-        self.ring_mode_coefficient_set_index = ring_mode_coefficient_set_index
+        self.ring_mode_index = ring_mode_index
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
@@ -153,9 +155,7 @@ class AdditiveMachine:
         repr += "hatch_spacing: {} m\n".format(self._hatch_spacing)
         repr += "slicing_stripe_width: {} m\n".format(self._slicing_stripe_width)
         repr += "heat_source_model: {}\n".format(self._heat_source_model)
-        repr += "ring_mode_coefficient_set_index: {}\n".format(
-            self._ring_mode_coefficient_set_index
-        )
+        repr += "ring_mode_index: {}\n".format(self._ring_mode_index)
         return repr
 
     def __eq__(self, __o: object) -> bool:
@@ -193,44 +193,43 @@ class AdditiveMachine:
             raise ValueError("Invalid heat_source_model type: {}. ".format(modelType))
 
     @staticmethod
-    def __convert_ring_mode_coefficients_set_index(index: int):
-        """Convert a ring mode coefficient set index to the corresponding enum value."""
+    def __convert_ring_mode_index_to_enum(index: int):
+        """Convert a ring mode index to the corresponding enum value."""
         if index == 0:
-            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_00
+            return RingModeIndexEnumMessage.RING_MODE_INDEX_00
         elif index == 1:
-            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_01
+            return RingModeIndexEnumMessage.RING_MODE_INDEX_01
         elif index == 2:
-            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_02
+            return RingModeIndexEnumMessage.RING_MODE_INDEX_02
         elif index == 3:
-            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_03
+            return RingModeIndexEnumMessage.RING_MODE_INDEX_03
         elif index == 4:
-            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_04
+            return RingModeIndexEnumMessage.RING_MODE_INDEX_04
         elif index == 5:
-            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_05
+            return RingModeIndexEnumMessage.RING_MODE_INDEX_05
         elif index == 6:
-            return RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_06
+            return RingModeIndexEnumMessage.RING_MODE_INDEX_06
         else:
             raise ValueError(
-                "Invalid ring_mode_coefficient_set_index: {}. "
-                "Valid values are from 0 to 6.".format(index)
+                "Invalid ring_mode_index: {}. " "Valid values are from 0 to 6.".format(index)
             )
 
     @staticmethod
-    def __convert_ring_mode_coefficients_set(coefficients: RingModeCoefficientSetsEnumMessage):
+    def __convert_ring_mode_enum_to_index(coefficients: RingModeIndexEnumMessage):
         """Convert a ring mode coefficient set enum value to the corresponding index."""
-        if coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_00:
+        if coefficients == RingModeIndexEnumMessage.RING_MODE_INDEX_00:
             return 0
-        elif coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_01:
+        elif coefficients == RingModeIndexEnumMessage.RING_MODE_INDEX_01:
             return 1
-        elif coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_02:
+        elif coefficients == RingModeIndexEnumMessage.RING_MODE_INDEX_02:
             return 2
-        elif coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_03:
+        elif coefficients == RingModeIndexEnumMessage.RING_MODE_INDEX_03:
             return 3
-        elif coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_04:
+        elif coefficients == RingModeIndexEnumMessage.RING_MODE_INDEX_04:
             return 4
-        elif coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_05:
+        elif coefficients == RingModeIndexEnumMessage.RING_MODE_INDEX_05:
             return 5
-        elif coefficients == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_06:
+        elif coefficients == RingModeIndexEnumMessage.RING_MODE_INDEX_06:
             return 6
         else:
             raise ValueError("Invalid ring mode coefficient set: {}. ".format(coefficients))
@@ -425,22 +424,22 @@ class AdditiveMachine:
         self._heat_source_model = value
 
     @property
-    def ring_mode_coefficient_set_index(self) -> int:
+    def ring_mode_index(self) -> int:
         """Ring mode coefficient set index.
 
         Valid values are from 0 to 6.
         """
-        return self._ring_mode_coefficient_set_index
+        return self._ring_mode_index
 
-    @ring_mode_coefficient_set_index.setter
-    def ring_mode_coefficient_set_index(self, value: int):
+    @ring_mode_index.setter
+    def ring_mode_index(self, value: int):
         self.__validate_range(
             value,
             MachineConstants.MIN_RING_COEFFICIENTS_SET_INDEX,
             MachineConstants.MAX_RING_COEFFICIENTS_SET_INDEX,
-            "ring_mode_coefficient_set_index",
+            "ring_mode_index",
         )
-        self._ring_mode_coefficient_set_index = value
+        self._ring_mode_index = value
 
     @staticmethod
     def _from_machine_message(msg: MachineMessage):
@@ -459,10 +458,10 @@ class AdditiveMachine:
                 hatch_spacing=msg.hatch_spacing,
                 slicing_stripe_width=msg.slicing_stripe_width,
                 heat_source_model=AdditiveMachine.__convert_heat_source_model_type(
-                    modelType=msg.heat_source_model
+                    modelType=msg.heat_source_model  # type: ignore
                 ),
-                ring_mode_coefficient_set_index=AdditiveMachine.__convert_ring_mode_coefficients_set(
-                    coefficients=msg.ring_mode_coefficient_set
+                ring_mode_index=AdditiveMachine.__convert_ring_mode_enum_to_index(
+                    coefficients=msg.ring_mode_index  # type: ignore
                 ),
             )
         else:
@@ -483,7 +482,5 @@ class AdditiveMachine:
             hatch_spacing=self.hatch_spacing,
             slicing_stripe_width=self.slicing_stripe_width,
             heat_source_model=self.__convert_heat_source_model_str(self.heat_source_model),
-            ring_mode_coefficient_set=self.__convert_ring_mode_coefficients_set_index(
-                self.ring_mode_coefficient_set_index
-            ),
+            ring_mode_index=self.__convert_ring_mode_index_to_enum(self.ring_mode_index),
         )

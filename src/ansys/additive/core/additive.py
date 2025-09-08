@@ -774,8 +774,8 @@ class Additive:
         simulation_ids: list[str] | None = None,
         types: list[SimulationType] | None = None,
         priority: int | None = None,
-        iteration: int = None,
-        progress_handler: IProgressHandler = None,
+        iteration: int = None,  # type: ignore
+        progress_handler: IProgressHandler = None,  # type: ignore
     ) -> SimulationTaskManager:
         """Run the simulations in a parametric study asynchronously.
 

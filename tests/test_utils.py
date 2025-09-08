@@ -162,4 +162,4 @@ def get_default_machine_repr() -> str:
         + "hatch_spacing: 0.0001 m\n"
         + "slicing_stripe_width: 0.01 m\n"
         + "heat_source_model: gaussian\n"
-        + "ring_mode_coefficient_set_index: 0\n")
+        + "ring_mode_index: 0\n")
