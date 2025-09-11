@@ -98,14 +98,17 @@ class MachineConstants:
     """Heat source model name for a Ring Mode heat source."""
     DEFAULT_HEAT_SOURCE_MODEL_NAME = HEAT_SOURCE_MODEL_NAME_GAUSSIAN
     """Default heat source model type used in simulations."""
-    AVAILABLE_HEAT_SOURCE_MODELS = [HEAT_SOURCE_MODEL_NAME_GAUSSIAN, HEAT_SOURCE_MODEL_NAME_RING]
-    """List of available heat source model types."""
-    DEFAULT_RING_COEFFICIENTS_SET_INDEX = 0
-    """Default ring coefficient set (only applicable for ring heat source)."""
-    MIN_RING_COEFFICIENTS_SET_INDEX = 0
-    """Minimum ring coefficient set index."""
-    MAX_RING_COEFFICIENTS_SET_INDEX = 6
-    """Maximum ring coefficient set index."""
+    AVAILABLE_HEAT_SOURCE_MODELS: list[str] = [
+        HEAT_SOURCE_MODEL_NAME_GAUSSIAN,
+        HEAT_SOURCE_MODEL_NAME_RING,
+    ]
+    """List of available heat source model types: [:obj:`HEAT_SOURCE_MODEL_NAME_GAUSSIAN <HEAT_SOURCE_MODEL_NAME_GAUSSIAN>`, :obj:`HEAT_SOURCE_MODEL_NAME_RING <HEAT_SOURCE_MODEL_NAME_RING>`]"""
+    DEFAULT_RING_MODE_INDEX = 0
+    """Default ring mode index (only applicable for ring heat source)."""
+    MIN_RING_MODE_INDEX = 0
+    """Minimum ring mode index."""
+    MAX_RING_MODE_INDEX = 6
+    """Maximum ring mode index."""
 
 
 class AdditiveMachine:
@@ -128,7 +131,7 @@ class AdditiveMachine:
         hatch_spacing: float = MachineConstants.DEFAULT_HATCH_SPACING,
         slicing_stripe_width: float = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH,
         heat_source_model: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
-        ring_mode_index: int = MachineConstants.DEFAULT_RING_COEFFICIENTS_SET_INDEX,
+        ring_mode_index: int = MachineConstants.DEFAULT_RING_MODE_INDEX,
     ):
         """Initialize an ``AdditiveMachine`` object."""
         self.laser_power = laser_power
@@ -178,8 +181,9 @@ class AdditiveMachine:
             return HeatSourceModelEnumMessage.HEAT_SOURCE_MODEL_RING
         else:
             raise ValueError(
-                "Invalid heat_source_model name: {}. "
-                "Valid values are 'gaussian' and 'ring'.".format(name)
+                "Invalid heat_source_model name: {}. " "Valid values are {}.".format(
+                    name, MachineConstants.AVAILABLE_HEAT_SOURCE_MODELS
+                )
             )
 
     @staticmethod
@@ -435,8 +439,8 @@ class AdditiveMachine:
     def ring_mode_index(self, value: int):
         self.__validate_range(
             value,
-            MachineConstants.MIN_RING_COEFFICIENTS_SET_INDEX,
-            MachineConstants.MAX_RING_COEFFICIENTS_SET_INDEX,
+            MachineConstants.MIN_RING_MODE_INDEX,
+            MachineConstants.MAX_RING_MODE_INDEX,
             "ring_mode_index",
         )
         self._ring_mode_index = value

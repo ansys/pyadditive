@@ -2883,6 +2883,8 @@ def test_create_machine_assigns_all_values():
     rotation_angle = 22
     hatch_spacing = 110e-6
     stripe_width = 5e-3
+    heat_source_model = 'gaussian'
+    ring_mode_index = 2
     series = pd.Series(
         {
             ColumnNames.LASER_POWER: power,
@@ -2894,6 +2896,8 @@ def test_create_machine_assigns_all_values():
             ColumnNames.ROTATION_ANGLE: rotation_angle,
             ColumnNames.HATCH_SPACING: hatch_spacing,
             ColumnNames.STRIPE_WIDTH: stripe_width,
+            ColumnNames.HEAT_SOURCE: heat_source_model,
+            ColumnNames.RING_MODE_INDEX: ring_mode_index,
         }
     )
 
@@ -2931,6 +2935,8 @@ def test_create_machine_assigns_default_values():
             ColumnNames.ROTATION_ANGLE: float("nan"),
             ColumnNames.HATCH_SPACING: float("nan"),
             ColumnNames.STRIPE_WIDTH: float("nan"),
+            ColumnNames.HEAT_SOURCE: float("nan"),
+            ColumnNames.RING_MODE_INDEX: float("nan"),
         }
     )
 
@@ -2953,10 +2959,13 @@ def test_create_machine_assigns_default_values():
 def test_create_single_bead_input():
     # arrange
     bead_length = 9.5e-3
+    th_interval = 555
     series = pd.Series(
         {
             ColumnNames.ID: "test_id",
             ColumnNames.SINGLE_BEAD_LENGTH: bead_length,
+            ColumnNames.SB_THERMAL_HISTORY_FLAG: True,
+            ColumnNames.SB_THERMAL_HISTORY_INTERVAL: th_interval,
         }
     )
     machine = AdditiveMachine(laser_power=123)
@@ -2971,6 +2980,8 @@ def test_create_single_bead_input():
     assert isinstance(input, SingleBeadInput)
     assert input.id == "test_id"
     assert input.bead_length == bead_length
+    assert input.output_thermal_history is True
+    assert input.thermal_history_interval == th_interval
     assert input.machine == machine
     assert input.material == material
 

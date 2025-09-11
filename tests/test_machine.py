@@ -24,7 +24,7 @@ import math
 
 import pytest
 
-from ansys.additive.core.machine import AdditiveMachine, MachineMessage, HeatSourceModelEnumMessage, RingModeCoefficientSetsEnumMessage
+from ansys.additive.core.machine import AdditiveMachine, MachineMessage, HeatSourceModelEnumMessage, RingModeIndexEnumMessage
 
 
 def test_AdditiveMachine_init_returns_default():
@@ -59,7 +59,7 @@ def test_from_machine_message_returns_AdditiveMachine():
         hatch_spacing=8e-5,
         slicing_stripe_width=0.009,
         heat_source_model=HeatSourceModelEnumMessage.HEAT_SOURCE_MODEL_RING,
-        ring_mode_index= RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_05,
+        ring_mode_index=RingModeIndexEnumMessage.RING_MODE_INDEX_05,
     )
 
     # act
@@ -127,7 +127,7 @@ def test_to_machine_message_returns_MachineMessage():
     assert msg.hatch_spacing == 8e-5
     assert msg.slicing_stripe_width == 0.009
     assert msg.heat_source_model == HeatSourceModelEnumMessage.HEAT_SOURCE_MODEL_RING
-    assert msg.ring_mode_index == RingModeCoefficientSetsEnumMessage.RING_MODE_COEFFICIENT_SET_04
+    assert msg.ring_mode_index == RingModeIndexEnumMessage.RING_MODE_INDEX_04
 
 
 def test_AdditiveMachine_eq_returns_expected_value():
@@ -208,7 +208,7 @@ def test_range_check_raises_exception_for_nan_value():
     with pytest.raises(ValueError, match="slicing_stripe_width must be a number"):
         AdditiveMachine(slicing_stripe_width=float("nan"))
     with pytest.raises(ValueError, match="ring_mode_index must be a number"):
-        AdditiveMachine(ring_mode_index=float("nan"))
+        AdditiveMachine(ring_mode_index=float("nan")) # type: ignore
 
 
 def test_setters_set_correct_values():
@@ -236,3 +236,12 @@ def test_setters_set_correct_values():
     assert machine.layer_rotation_angle == 90
     assert machine.hatch_spacing == 6e-5
     assert machine.slicing_stripe_width == 0.001
+
+def test_default_heat_source_is_gaussian():
+    # Other heat source models are marked as beta, the default should not be a beta feature
+
+    # arrange, act
+    machine = AdditiveMachine()
+
+    # assert
+    assert machine.heat_source_model == "gaussian"
