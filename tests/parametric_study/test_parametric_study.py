@@ -65,7 +65,7 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 from tests import test_utils
 
 
-def test_init_correctly_initializes_object(tmp_path: pytest.TempPathFactory):
+def test_init_correctly_initializes_object(tmp_path: pathlib.Path):
     # arrange
     study_name = "test_study"
     expected_path = tmp_path / f"{study_name}.ps"
@@ -77,7 +77,7 @@ def test_init_correctly_initializes_object(tmp_path: pytest.TempPathFactory):
 
 
 def test_load_raises_exception_when_file_does_not_exist(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     filename = str(uuid.uuid4())
@@ -86,7 +86,7 @@ def test_load_raises_exception_when_file_does_not_exist(
         ParametricStudy.load(filename)
 
 
-def test_load_raises_exception_for_unpickled_file(tmp_path: pytest.TempPathFactory):
+def test_load_raises_exception_for_unpickled_file(tmp_path: pathlib.Path):
     # arrange
     filename = tmp_path / "unpickled_file.ps"
     with open(filename, "w") as f:
@@ -97,7 +97,7 @@ def test_load_raises_exception_for_unpickled_file(tmp_path: pytest.TempPathFacto
 
 
 def test_load_raises_exception_when_file_not_parametric_study(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     filename = tmp_path / "nonstudy.ps"
@@ -110,7 +110,7 @@ def test_load_raises_exception_when_file_not_parametric_study(
 
 
 def test_update_format_raises_exception_when_version_too_great(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     with patch(
@@ -126,7 +126,7 @@ def test_update_format_raises_exception_when_version_too_great(
 
 # @pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
 @pytest.mark.skip(reason="Invalid test data file.")
-def test_load_reads_linux_file_on_windows(tmp_path: pytest.TempPathFactory):
+def test_load_reads_linux_file_on_windows(tmp_path: pathlib.Path):
     # arrange
     test_file = test_utils.get_test_file_path("linux.ps")
     temp_dir = tempfile.gettempdir()
@@ -141,7 +141,7 @@ def test_load_reads_linux_file_on_windows(tmp_path: pytest.TempPathFactory):
 
 
 @pytest.mark.skipif(platform.system() == "Windows", reason="Test only valid on Linux.")
-def test_load_reads_windows_file_on_linux(tmp_path: pytest.TempPathFactory):
+def test_load_reads_windows_file_on_linux(tmp_path: pathlib.Path):
     # arrange
     filename = test_utils.get_test_file_path("windows.ps")
 
@@ -152,7 +152,7 @@ def test_load_reads_windows_file_on_linux(tmp_path: pytest.TempPathFactory):
     assert study is not None
 
 
-def test_save_and_load_returns_original_object(tmp_path: pytest.TempPathFactory):
+def test_save_and_load_returns_original_object(tmp_path: pathlib.Path):
     # arrange
     study_name = tmp_path / "test_study.ps"
     test_path = tmp_path / "parametric_save_and_load_test" / "study_copy.ps"
@@ -169,7 +169,7 @@ def test_save_and_load_returns_original_object(tmp_path: pytest.TempPathFactory)
     assert study2.material_name == "material"
 
 
-def test_init_and_load_returns_original_object(tmp_path: pytest.TempPathFactory):
+def test_init_and_load_returns_original_object(tmp_path: pathlib.Path):
     # arrange
     study_name = tmp_path / "test_study.ps"
     study = ParametricStudy(study_name, "material")
@@ -183,7 +183,7 @@ def test_init_and_load_returns_original_object(tmp_path: pytest.TempPathFactory)
     assert study2.material_name == "material"
 
 
-def test_add_summaries_with_porosity_summary_adds_row(tmp_path: pytest.TempPathFactory):
+def test_add_summaries_with_porosity_summary_adds_row(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     machine = AdditiveMachine()
@@ -234,7 +234,7 @@ def test_add_summaries_with_porosity_summary_adds_row(tmp_path: pytest.TempPathF
 
 
 def test_add_summaries_with_single_bead_summary_adds_row(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -299,7 +299,7 @@ def test_add_summaries_with_single_bead_summary_adds_row(
 
 
 def test_add_summaries_with_microstructure_summary_adds_row(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -379,7 +379,7 @@ def test_add_summaries_with_microstructure_summary_adds_row(
 
 
 def test_add_summaries_with_unknown_summaries_raises_error(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -391,7 +391,7 @@ def test_add_summaries_with_unknown_summaries_raises_error(
 
 
 def test_add_summaries_returns_correct_number_of_added_summaries(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -420,7 +420,7 @@ def test_add_summaries_returns_correct_number_of_added_summaries(
     assert re_added == 0
 
 
-def test_add_summaries_removes_duplicate_entries(tmp_path: pytest.TempPathFactory):
+def test_add_summaries_removes_duplicate_entries(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     machine = AdditiveMachine()
@@ -452,7 +452,7 @@ def test_add_summaries_removes_duplicate_entries(tmp_path: pytest.TempPathFactor
 )
 def test_add_summaries_overwrites_duplicate_entries_with_simulation_status_completed(
     input_status,
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     material_name = "material"
@@ -519,7 +519,7 @@ def test_add_summaries_overwrites_duplicate_entries_with_simulation_status_compl
 
 
 def test_add_summaries_overwrites_duplicate_completed_simulations_with_newer_entry(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -585,15 +585,15 @@ def test_add_summaries_overwrites_duplicate_completed_simulations_with_newer_ent
 
 
 def test_generate_single_bead_permutations_creates_permutations(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     bead_length = 0.005
-    powers = [50, 250, 700]
-    scan_speeds = [0.35, 1, 2.5]
+    powers = [50., 250., 700.]
+    scan_speeds = [0.35, 1., 2.5]
     layer_thicknesses = [30e-6, 50e-6]
-    heater_temperatures = [80, 100]
+    heater_temperatures = [80., 100.]
     beam_diameters = [2e-5]
 
     # act
@@ -636,12 +636,12 @@ def test_generate_single_bead_permutations_creates_permutations(
 
 
 def test_generate_single_bead_permutations_filters_by_pv_ratio(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
-    powers = [50, 250, 700]
-    scan_speeds = [1]
+    powers = [50., 250., 700.]
+    scan_speeds = [1.]
     layer_thicknesses = [50e-6]
     min_pv_ratio = 100
     max_pv_ratio = 400
@@ -662,11 +662,11 @@ def test_generate_single_bead_permutations_filters_by_pv_ratio(
 
 
 def test_generate_single_bead_parameters_correctly_filters_at_limits(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
-    powers = [50, 700]
+    powers = [50., 700.]
     scan_speeds = [0.35, 2.5]
     min_pv_ratio = 50 / 2.5
     max_pv_ratio = 700 / 0.35
@@ -684,7 +684,7 @@ def test_generate_single_bead_parameters_correctly_filters_at_limits(
 
 
 def test_generate_single_bead_permutations_only_adds_valid_permutations(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -710,15 +710,15 @@ def test_generate_single_bead_permutations_only_adds_valid_permutations(
 
 
 def test_generate_single_bead_permuations_returns_correct_number_of_simulations_added(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     bead_length = 0.005
-    powers = [50, 250, 700]
-    scan_speeds = [0.35, 1, 2.4]
+    powers = [50., 250., 700.]
+    scan_speeds = [0.35, 1., 2.4]
     layer_thicknesses = [30e-6, 50e-6]
-    heater_temperatures = [80, 100]
+    heater_temperatures = [80., 100.]
     beam_diameters = [2e-5]
 
     # act
@@ -746,17 +746,17 @@ def test_generate_single_bead_permuations_returns_correct_number_of_simulations_
 
 
 def test_generate_porosity_permutations_creates_permutations(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
-    powers = [50, 250, 700]
-    scan_speeds = [0.35, 1, 2.4]
+    powers = [50., 250., 700.]
+    scan_speeds = [0.35, 1., 2.4]
     layer_thicknesses = [30e-6, 50e-6]
-    heater_temperatures = [80, 100]
+    heater_temperatures = [80., 100.]
     beam_diameters = [2e-5]
-    start_angles = [22.5, 0]
-    rotation_angles = [30]
+    start_angles = [22.5, 0.]
+    rotation_angles = [30.]
     hatch_spacings = [1e-4]
     stripe_widths = [0.05]
     size_x = 0.001
@@ -830,12 +830,12 @@ def test_generate_porosity_permutations_creates_permutations(
 
 
 def test_generate_porosity_permutations_filters_by_energy_density(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
-    powers = [50, 250, 700]
-    scan_speeds = [1]
+    powers = [50., 250., 700.]
+    scan_speeds = [1.0]
     layer_thicknesses = [50e-6]
     hatch_spacings = [1e-4]
     min_energy_density = 1.1e10
@@ -858,12 +858,12 @@ def test_generate_porosity_permutations_filters_by_energy_density(
 
 
 def test_generate_porosity_permutations_filters_by_build_rate(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
-    powers = [50]
-    scan_speeds = [1]
+    powers = [50.]
+    scan_speeds = [1.]
     layer_thicknesses = [30e-6, 50e-6, 90e-6]
     hatch_spacings = [1e-4]
     min_build_rate = 31e-10
@@ -886,7 +886,7 @@ def test_generate_porosity_permutations_filters_by_build_rate(
 
 
 def test_generate_porosity_permutations_only_adds_valid_permutations(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -912,17 +912,17 @@ def test_generate_porosity_permutations_only_adds_valid_permutations(
 
 
 def test_generate_porosity_permutations_returns_correct_number_of_simulations_added(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
-    powers = [50, 250, 700]
-    scan_speeds = [0.35, 1, 2.4]
+    powers = [50., 250., 700.]
+    scan_speeds = [0.35, 1., 2.4]
     layer_thicknesses = [30e-6, 50e-6]
-    heater_temperatures = [80, 100]
+    heater_temperatures = [80., 100.]
     beam_diameters = [2e-5]
-    start_angles = [22.5, 0]
-    rotation_angles = [30]
+    start_angles = [22.5, 0.]
+    rotation_angles = [30.]
     hatch_spacings = [1e-4]
     stripe_widths = [0.05]
     size_x = 0.001
@@ -966,17 +966,17 @@ def test_generate_porosity_permutations_returns_correct_number_of_simulations_ad
 
 
 def test_generate_microstructure_permutations_creates_permutations(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
-    powers = [50, 250, 700]
-    scan_speeds = [0.35, 1, 2.4]
+    powers = [50., 250., 700.]
+    scan_speeds = [0.35, 1., 2.4]
     layer_thicknesses = [30e-6, 50e-6]
-    heater_temperatures = [80, 100]
+    heater_temperatures = [80., 100.]
     beam_diameters = [2e-5]
-    start_angles = [22.5, 0]
-    rotation_angles = [30]
+    start_angles = [22.5, 0.]
+    rotation_angles = [30.]
     hatch_spacings = [1e-4]
     stripe_widths = [0.05]
     min_x = 1
@@ -1082,12 +1082,12 @@ def test_generate_microstructure_permutations_creates_permutations(
 
 @pytest.mark.parametrize("value", [None, np.nan])
 def test_generate_microstructure_with_Nones_NANs_succeeds(
-    value, tmp_path: pytest.TempPathFactory
+    value, tmp_path: pathlib.Path
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
-    powers = [50]
-    scan_speeds = [1]
+    powers = [50.]
+    scan_speeds = [1.]
     cooling_rate = value
     thermal_gradient = value
     melt_pool_width = value
@@ -1118,7 +1118,7 @@ def test_generate_microstructure_with_Nones_NANs_succeeds(
 
 @pytest.mark.parametrize("value", [None, np.nan])
 def test_validate_microstructure_with_Nones_NANs_succeeds(
-    value, tmp_path: pytest.TempPathFactory
+    value, tmp_path: pathlib.Path
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -1151,12 +1151,12 @@ def test_validate_microstructure_with_Nones_NANs_succeeds(
 
 
 def test_generate_microstructure_permutations_converts_Nones_to_NANs_in_dataframe(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
-    powers = [50]
-    scan_speeds = [1]
+    powers = [50.]
+    scan_speeds = [1.]
 
     # act
     study.generate_microstructure_permutations(powers, scan_speeds)
@@ -1172,12 +1172,12 @@ def test_generate_microstructure_permutations_converts_Nones_to_NANs_in_datafram
 
 
 def test_generate_microstructure_permutations_filters_by_energy_density(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
-    powers = [50, 250, 700]
-    scan_speeds = [1]
+    powers = [50., 250., 700.]
+    scan_speeds = [1.]
     layer_thicknesses = [50e-6]
     hatch_spacings = [1e-4]
     min_energy_density = 1.1e10
@@ -1200,12 +1200,12 @@ def test_generate_microstructure_permutations_filters_by_energy_density(
 
 
 def test_generate_microstructure_permutations_filters_by_build_rate(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
-    powers = [50]
-    scan_speeds = [1]
+    powers = [50.]
+    scan_speeds = [1.]
     layer_thicknesses = [30e-6, 50e-6, 90e-6]
     hatch_spacings = [1e-4]
     min_build_rate = 31e-10
@@ -1228,7 +1228,7 @@ def test_generate_microstructure_permutations_filters_by_build_rate(
 
 
 def test_generate_microstructure_permutations_only_adds_valid_permutations(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -1254,17 +1254,17 @@ def test_generate_microstructure_permutations_only_adds_valid_permutations(
 
 
 def test_generate_microstructure_permutations_returns_correct_number_of_simulations_added(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
-    powers = [50, 250, 700]
-    scan_speeds = [0.35, 1, 2.4]
+    powers = [50., 250., 700.]
+    scan_speeds = [0.35, 1., 2.4]
     layer_thicknesses = [30e-6, 50e-6]
-    heater_temperatures = [80, 100]
+    heater_temperatures = [80., 100.]
     beam_diameters = [2e-5]
-    start_angles = [22.5, 0]
-    rotation_angles = [30]
+    start_angles = [22.5, 0.]
+    rotation_angles = [30.]
     hatch_spacings = [1e-4]
     stripe_widths = [0.05]
     min_x = 1
@@ -1333,7 +1333,7 @@ def test_generate_microstructure_permutations_returns_correct_number_of_simulati
     assert duplicate_num_sim_added == 0
 
 
-def test_update_updates_error_status(tmp_path: pytest.TempPathFactory):
+def test_update_updates_error_status(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.generate_single_bead_permutations([50], [1])
@@ -1341,7 +1341,7 @@ def test_update_updates_error_status(tmp_path: pytest.TempPathFactory):
     id = df1.loc[0, ColumnNames.ID]
     input = SingleBeadInput()
     # overwrite the id to match the one in the study
-    input._id = id
+    input._id = str(id)
     error = SimulationError(input, "error message", "logs")
 
     # act
@@ -1355,7 +1355,7 @@ def test_update_updates_error_status(tmp_path: pytest.TempPathFactory):
     assert df2.loc[0, ColumnNames.ERROR_MESSAGE] == "error message"
 
 
-def test_update_updates_single_bead_permutation(tmp_path: pytest.TempPathFactory):
+def test_update_updates_single_bead_permutation(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.generate_single_bead_permutations([50], [1])
@@ -1363,9 +1363,9 @@ def test_update_updates_single_bead_permutation(tmp_path: pytest.TempPathFactory
     id = df1.loc[0, ColumnNames.ID]
     input = SingleBeadInput()
     # overwrite the id to match the one in the study
-    input._id = id
+    input._id = str(id)
     mp_msg = test_utils.get_test_melt_pool_message()
-    mp_median = MeltPool(mp_msg, tmp_path).data_frame().median()
+    mp_median = MeltPool(mp_msg, str(tmp_path)).data_frame().median()
     summary = SingleBeadSummary(input, mp_msg, "logs", None, SimulationStatus.WARNING)
 
     # act
@@ -1403,7 +1403,7 @@ def test_update_updates_single_bead_permutation(tmp_path: pytest.TempPathFactory
     )
 
 
-def test_update_updates_porosity_permutation(tmp_path: pytest.TempPathFactory):
+def test_update_updates_porosity_permutation(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.generate_porosity_permutations([50], [1])
@@ -1411,7 +1411,7 @@ def test_update_updates_porosity_permutation(tmp_path: pytest.TempPathFactory):
     id = df1.loc[0, ColumnNames.ID]
     input = PorosityInput()
     # overwrite the id to match the one in the study
-    input._id = id
+    input._id = str(id)
     result = PorosityResult(
         void_ratio=10,
         powder_ratio=11,
@@ -1430,7 +1430,7 @@ def test_update_updates_porosity_permutation(tmp_path: pytest.TempPathFactory):
     assert df2.loc[0, ColumnNames.RELATIVE_DENSITY] == 12
 
 
-def test_update_updates_microstructure_permutation(tmp_path: pytest.TempPathFactory):
+def test_update_updates_microstructure_permutation(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.generate_microstructure_permutations([50], [1])
@@ -1439,7 +1439,7 @@ def test_update_updates_microstructure_permutation(tmp_path: pytest.TempPathFact
     user_data_path = tmp_path / "ps_microstructure_update_test"
     input = MicrostructureInput()
     # overwrite the id to match the one in the study
-    input._id = id
+    input._id = str(id)
     xy_vtk_bytes = bytes(range(3))
     xz_vtk_bytes = bytes(range(4, 6))
     yz_vtk_bytes = bytes(range(7, 9))
@@ -1459,7 +1459,7 @@ def test_update_updates_microstructure_permutation(tmp_path: pytest.TempPathFact
     result.xz_circle_equivalence.append(xz_stats)
     result.yz_circle_equivalence.append(yz_stats)
     summary = MicrostructureSummary(
-        input, result, "logs", user_data_path, SimulationStatus.WARNING
+        input, result, "logs", str(user_data_path), SimulationStatus.WARNING
     )
 
     # act
@@ -1475,17 +1475,17 @@ def test_update_updates_microstructure_permutation(tmp_path: pytest.TempPathFact
     assert df2.loc[0, ColumnNames.YZ_AVERAGE_GRAIN_SIZE] == 110
 
 
-def test_update_raises_error_for_unknown_summary_type(tmp_path: pytest.TempPathFactory):
+def test_update_raises_error_for_unknown_summary_type(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     summary = "invalid summary"
 
     # act
     with pytest.raises(TypeError):
-        study.update([summary])
+        study.update([summary]) # type: ignore
 
 
-def test_add_inputs_creates_new_rows(tmp_path: pytest.TempPathFactory):
+def test_add_inputs_creates_new_rows(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     inputs = [
@@ -1503,7 +1503,7 @@ def test_add_inputs_creates_new_rows(tmp_path: pytest.TempPathFactory):
     assert len(df[df[ColumnNames.STATUS] == SimulationStatus.NEW]) == 3
 
 
-def test_add_inputs_raises_error_for_invalid_input(tmp_path: pytest.TempPathFactory):
+def test_add_inputs_raises_error_for_invalid_input(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     inputs = [
@@ -1513,11 +1513,11 @@ def test_add_inputs_raises_error_for_invalid_input(tmp_path: pytest.TempPathFact
 
     # act, assert
     with pytest.raises(TypeError, match="Invalid simulation input type"):
-        study.add_inputs(inputs, status=SimulationStatus.NEW)
+        study.add_inputs(inputs, status=SimulationStatus.NEW) # type: ignore
 
 
 def test_add_inputs_returns_correct_number_of_added_inputs(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -1536,22 +1536,22 @@ def test_add_inputs_returns_correct_number_of_added_inputs(
     assert re_added == 0
 
 
-def test_add_inputs_assigns_common_params_correctly(tmp_path: pytest.TempPathFactory):
+def test_add_inputs_assigns_common_params_correctly(tmp_path: pathlib.Path):
     # arrange
     material_name = "test_material"
     study = ParametricStudy(tmp_path / "test_study", material_name)
-    power = 50
+    power = 50.0
     speed = 1.2
     layer_thickness = 40e-6
     beam_diameter = 75e-6
-    heater_temperature = 120
-    start_angle = 15
-    rotation_angle = 22
+    heater_temperature = 120.0
+    start_angle = 15.0
+    rotation_angle = 22.0
     hatch_spacing = 110e-6
     stripe_width = 5e-3
     status = SimulationStatus.SKIP
-    iteration = (7,)
-    priority = (8,)
+    iteration = 7
+    priority = 8
     machine = AdditiveMachine(
         laser_power=power,
         scan_speed=speed,
@@ -1588,7 +1588,7 @@ def test_add_inputs_assigns_common_params_correctly(tmp_path: pytest.TempPathFac
     assert df.loc[0, ColumnNames.STRIPE_WIDTH] == stripe_width
 
 
-def test_add_inputs_assigns_porosity_params_correctly(tmp_path: pytest.TempPathFactory):
+def test_add_inputs_assigns_porosity_params_correctly(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     size_x = 1.1e-3
@@ -1609,7 +1609,7 @@ def test_add_inputs_assigns_porosity_params_correctly(tmp_path: pytest.TempPathF
 
 
 def test_add_inputs_assigns_all_microstructure_params_correctly(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -1663,7 +1663,7 @@ def test_add_inputs_assigns_all_microstructure_params_correctly(
 
 
 def test_add_inputs_assigns_unspecified_microstructure_params_correctly(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -1716,7 +1716,7 @@ def test_add_inputs_assigns_unspecified_microstructure_params_correctly(
     ],
 )
 def test_add_inputs_only_adds_entries_with_simulation_status_pending_or_skip(
-    input_status, expected_len, tmp_path: pytest.TempPathFactory
+    input_status, expected_len, tmp_path: pathlib.Path
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -1742,7 +1742,7 @@ def test_add_inputs_only_adds_entries_with_simulation_status_pending_or_skip(
     ],
 )
 def test_add_inputs_raises_error_with_simulation_status_completed_or_error(
-    input_status, tmp_path: pytest.TempPathFactory
+    input_status, tmp_path: pathlib.Path
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -1758,7 +1758,7 @@ def test_add_inputs_raises_error_with_simulation_status_completed_or_error(
 
 
 def test_add_inputs_returns_correct_number_of_simulations_added_to_the_study(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -1782,7 +1782,7 @@ def test_add_inputs_returns_correct_number_of_simulations_added_to_the_study(
     "input_status", [(SimulationStatus.NEW), (SimulationStatus.SKIP)]
 )
 def test_add_inputs_overwrites_duplicate_entries_by_keeping_earlier_entry(
-    input_status, tmp_path: pytest.TempPathFactory
+    input_status, tmp_path: pathlib.Path
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -1822,7 +1822,7 @@ def test_add_inputs_overwrites_duplicate_entries_by_keeping_earlier_entry(
     "input_status", [(SimulationStatus.NEW), (SimulationStatus.SKIP)]
 )
 def test_add_inputs_overwrites_duplicate_entries_with_priority_to_simulation_status_new(
-    input_status, tmp_path: pytest.TempPathFactory
+    input_status, tmp_path: pathlib.Path
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -1844,7 +1844,7 @@ def test_add_inputs_overwrites_duplicate_entries_with_priority_to_simulation_sta
     "input_status", [(SimulationStatus.NEW), (SimulationStatus.SKIP)]
 )
 def test_add_inputs_does_not_overwrite_simulation_with_status_completed(
-    input_status, tmp_path: pytest.TempPathFactory
+    input_status, tmp_path: pathlib.Path
 ):
     # arrange
     material_name = "test_material"
@@ -1865,7 +1865,7 @@ def test_add_inputs_does_not_overwrite_simulation_with_status_completed(
     assert df.loc[0, ColumnNames.ID] == sb.id
 
 
-def test_remove_deletes_multiple_rows_from_dataframe(tmp_path: pytest.TempPathFactory):
+def test_remove_deletes_multiple_rows_from_dataframe(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     for i in range(4):
@@ -1883,7 +1883,7 @@ def test_remove_deletes_multiple_rows_from_dataframe(tmp_path: pytest.TempPathFa
     assert len(df2[df2[ColumnNames.ID].isin(ids)]) == 0
 
 
-def test_remove_deletes_single_row_from_dataframe(tmp_path: pytest.TempPathFactory):
+def test_remove_deletes_single_row_from_dataframe(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     for i in range(4):
@@ -1901,7 +1901,7 @@ def test_remove_deletes_single_row_from_dataframe(tmp_path: pytest.TempPathFacto
     assert len(df2[df2[ColumnNames.ID] == id]) == 0
 
 
-def test_set_simulation_status_changes_status(tmp_path: pytest.TempPathFactory):
+def test_set_simulation_status_changes_status(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     for i in range(4):
@@ -1926,7 +1926,7 @@ def test_set_simulation_status_changes_status(tmp_path: pytest.TempPathFactory):
             assert status2[i] == status1[i]
 
 
-def test_set_simulation_status_updates_error_message(tmp_path: pytest.TempPathFactory):
+def test_set_simulation_status_updates_error_message(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     for i in range(4):
@@ -1954,7 +1954,7 @@ def test_set_simulation_status_updates_error_message(tmp_path: pytest.TempPathFa
 
 
 def test_set_simulation_status_changes_status_for_single_id(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -1976,7 +1976,7 @@ def test_set_simulation_status_changes_status_for_single_id(
             assert status2[i] == status1[i]
 
 
-def test_create_unique_id_returns_unique_id(tmp_path: pytest.TempPathFactory):
+def test_create_unique_id_returns_unique_id(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
 
@@ -1991,7 +1991,7 @@ def test_create_unique_id_returns_unique_id(tmp_path: pytest.TempPathFactory):
     assert len(id2) > len("sim_")
 
 
-def test_clear_removes_all_rows_but_not_columns(tmp_path: pytest.TempPathFactory):
+def test_clear_removes_all_rows_but_not_columns(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.add_inputs([SingleBeadInput()])
@@ -2008,7 +2008,7 @@ def test_clear_removes_all_rows_but_not_columns(tmp_path: pytest.TempPathFactory
     assert len(df2.columns) > 0
 
 
-def test_format_version_returns_proper_version(tmp_path: pytest.TempPathFactory):
+def test_format_version_returns_proper_version(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
 
@@ -2019,7 +2019,7 @@ def test_format_version_returns_proper_version(tmp_path: pytest.TempPathFactory)
 @pytest.mark.skipif(
     platform.system() != "Windows", reason="Test only valid on Windows."
 )
-def test_update_format_updates_version_1_to_latest(tmp_path: pytest.TempPathFactory):
+def test_update_format_updates_version_1_to_latest(tmp_path: pathlib.Path):
     # arrange
     v1_file = tmp_path / "version1.ps"
     shutil.copyfile(test_utils.get_test_file_path("v1.with-simulations.ps"), v1_file)
@@ -2056,7 +2056,7 @@ def test_update_format_updates_version_1_to_latest(tmp_path: pytest.TempPathFact
     platform.system() != "Windows", reason="Test only valid on Windows."
 )
 def test_update_format_raises_error_when_no_simulations_present(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     # load a version 1 study with no simulations
@@ -2076,7 +2076,7 @@ def test_update_format_raises_error_when_no_simulations_present(
 @pytest.mark.skipif(
     platform.system() != "Windows", reason="Test only valid on Windows."
 )
-def test_update_format_updates_Ansys_242_to_latest(tmp_path: pytest.TempPathFactory):
+def test_update_format_updates_Ansys_242_to_latest(tmp_path: pathlib.Path):
     # arrange
     study_file = tmp_path / "v242.ps"
     shutil.copyfile(test_utils.get_test_file_path("242demo-study-IN718.ps"), study_file)
@@ -2095,7 +2095,7 @@ def test_update_format_updates_Ansys_242_to_latest(tmp_path: pytest.TempPathFact
     assert ColumnNames.PV_RATIO in updated_study.data_frame().columns
 
 
-def test_reset_simulation_status_sets_status_to_new(tmp_path: pytest.TempPathFactory):
+def test_reset_simulation_status_sets_status_to_new(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.add_inputs([SingleBeadInput(), PorosityInput()])
@@ -2113,7 +2113,7 @@ def test_reset_simulation_status_sets_status_to_new(tmp_path: pytest.TempPathFac
         assert row[ColumnNames.STATUS] == SimulationStatus.NEW
 
 
-def test_clear_errors_clears_all_error_messages(tmp_path: pytest.TempPathFactory):
+def test_clear_errors_clears_all_error_messages(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.add_inputs([SingleBeadInput(), PorosityInput()])
@@ -2127,7 +2127,7 @@ def test_clear_errors_clears_all_error_messages(tmp_path: pytest.TempPathFactory
     assert study._data_frame[ColumnNames.ERROR_MESSAGE].isna().all()
 
 
-def test_clear_errors_clears_some_error_messages(tmp_path: pytest.TempPathFactory):
+def test_clear_errors_clears_some_error_messages(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.add_inputs([SingleBeadInput(), PorosityInput()])
@@ -2143,7 +2143,7 @@ def test_clear_errors_clears_some_error_messages(tmp_path: pytest.TempPathFactor
     assert not study._data_frame[ColumnNames.ERROR_MESSAGE].isna().values[1]
 
 
-def test_set_priority_sets_priority(tmp_path: pytest.TempPathFactory):
+def test_set_priority_sets_priority(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     for i in range(4):
@@ -2164,7 +2164,7 @@ def test_set_priority_sets_priority(tmp_path: pytest.TempPathFactory):
             assert priority2[i] == priority1[i]
 
 
-def test_set_iteration_sets_iteration(tmp_path: pytest.TempPathFactory):
+def test_set_iteration_sets_iteration(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     for i in range(4):
@@ -2186,7 +2186,7 @@ def test_set_iteration_sets_iteration(tmp_path: pytest.TempPathFactory):
 
 
 def test_import_csv_study_raises_exception_when_file_does_not_exist(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2201,7 +2201,7 @@ def test_import_csv_study_raises_exception_when_file_does_not_exist(
 
 
 def test_import_csv_study_raises_exception_when_file_is_not_a_csv(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2216,7 +2216,7 @@ def test_import_csv_study_raises_exception_when_file_is_not_a_csv(
 
 
 def test_import_csv_study_raises_exception_when_file_does_not_have_correct_headers(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2234,7 +2234,7 @@ def test_import_csv_study_raises_exception_when_file_does_not_have_correct_heade
 
 
 def test_import_csv_study_adds_simulations_to_new_study(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2252,7 +2252,7 @@ def test_import_csv_study_adds_simulations_to_new_study(
 
 
 def test_import_csv_raises_exception_when_material_does_not_match(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     material = "not-a-material"
@@ -2271,7 +2271,7 @@ def test_import_csv_raises_exception_when_material_does_not_match(
 
 
 def test_import_csv_study_adds_pv_column_for_csv_file_without_the_column(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2288,7 +2288,7 @@ def test_import_csv_study_adds_pv_column_for_csv_file_without_the_column(
 
 
 def test_import_csv_study_reads_pv_column_for_csv_file_containing_the_column(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2305,7 +2305,7 @@ def test_import_csv_study_reads_pv_column_for_csv_file_containing_the_column(
 
 
 def test_import_csv_study_adds_simulations_of_multiple_input_types_to_new_study(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2332,7 +2332,7 @@ def test_import_csv_study_adds_simulations_of_multiple_input_types_to_new_study(
 
 
 def test_import_csv_study_adds_simulations_to_existing_study(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2355,7 +2355,7 @@ def test_import_csv_study_adds_simulations_to_existing_study(
 
 
 def test_import_csv_study_creates_ids_for_simulations_without_ids(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2384,7 +2384,7 @@ def test_import_csv_study_creates_ids_for_simulations_without_ids(
     ],
 )
 def test_import_csv_study_calls_remove_duplicates_entries_correctly(
-    monkeypatch, file_name, argument, tmp_path: pytest.TempPathFactory
+    monkeypatch, file_name, argument, tmp_path: pathlib.Path
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "IN718")
@@ -2402,7 +2402,7 @@ def test_import_csv_study_calls_remove_duplicates_entries_correctly(
 
 
 def test_import_csv_study_drops_duplicates_with_correct_simulation_status_heirarchy(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2432,7 +2432,7 @@ def test_import_csv_study_drops_duplicates_with_correct_simulation_status_heirar
 
 
 def test_import_csv_study_does_not_add_simulations_with_invalid_inputs_and_returns_expected_error(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2461,7 +2461,7 @@ def test_import_csv_study_does_not_add_simulations_with_invalid_inputs_and_retur
 def test_import_csv_study_does_not_add_simulations_with_nan_inputs_and_returns_expected_error(
     file_name,
     len_error_list,
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2481,7 +2481,7 @@ def test_import_csv_study_does_not_add_simulations_with_nan_inputs_and_returns_e
 
 
 def test_import_csv_adds_microstructure_simulations_with_nan_thermal_parameter_values(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2499,7 +2499,7 @@ def test_import_csv_adds_microstructure_simulations_with_nan_thermal_parameter_v
 
 
 def test_import_csv_study_does_not_add_simulations_with_invalid_status_or_type_and_returns_expected_error(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
@@ -2520,7 +2520,7 @@ def test_import_csv_study_does_not_add_simulations_with_invalid_status_or_type_a
 @patch("ansys.additive.core.parametric_study.ParametricStudy.filter_data_frame")
 def test_simulation_inputs_calls_filter_data_frame(
     mock_filter_data_frame,
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -2538,7 +2538,7 @@ def test_simulation_inputs_calls_filter_data_frame(
 
 
 def test_simulation_inputs_calls_client_call_for_material(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     material_name = "material"
@@ -2555,7 +2555,7 @@ def test_simulation_inputs_calls_client_call_for_material(
 
 
 def test_simulation_inputs_logs_warning_when_no_simulations_meet_criteria(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
     caplog,
 ):
     # arrange
@@ -2576,7 +2576,7 @@ def test_simulation_inputs_logs_warning_when_no_simulations_meet_criteria(
         assert "No simulations meet the specified crtiteria." in record.message
 
 
-def test_filter_data_frame_sorts_by_priority(tmp_path: pytest.TempPathFactory):
+def test_filter_data_frame_sorts_by_priority(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.add_inputs([SingleBeadInput()], priority=3)
@@ -2592,7 +2592,7 @@ def test_filter_data_frame_sorts_by_priority(tmp_path: pytest.TempPathFactory):
     assert df.iloc[2][ColumnNames.PRIORITY] == 3
 
 
-def test_filter_data_frame_filters_by_priority(tmp_path: pytest.TempPathFactory):
+def test_filter_data_frame_filters_by_priority(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.add_inputs([SingleBeadInput()], priority=3)
@@ -2607,7 +2607,7 @@ def test_filter_data_frame_filters_by_priority(tmp_path: pytest.TempPathFactory)
     assert df.iloc[0][ColumnNames.PRIORITY] == 1
 
 
-def test_filter_data_frame_filters_by_iteration(tmp_path: pytest.TempPathFactory):
+def test_filter_data_frame_filters_by_iteration(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.add_inputs([SingleBeadInput()], iteration=1)
@@ -2622,7 +2622,7 @@ def test_filter_data_frame_filters_by_iteration(tmp_path: pytest.TempPathFactory
     assert df.iloc[0][ColumnNames.ITERATION] == 2
 
 
-def test_filter_data_frame_filters_by_simulation_type(tmp_path: pytest.TempPathFactory):
+def test_filter_data_frame_filters_by_simulation_type(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.add_inputs([SingleBeadInput()])
@@ -2638,7 +2638,7 @@ def test_filter_data_frame_filters_by_simulation_type(tmp_path: pytest.TempPathF
 
 
 def test_filter_data_frame_filters_by_multiple_simulation_types(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -2658,7 +2658,7 @@ def test_filter_data_frame_filters_by_multiple_simulation_types(
     assert SimulationType.SINGLE_BEAD in types
 
 
-def test_filter_data_frame_filters_by_simulation_ids(tmp_path: pytest.TempPathFactory):
+def test_filter_data_frame_filters_by_simulation_ids(tmp_path: pathlib.Path):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.add_inputs([SingleBeadInput()])
@@ -2684,7 +2684,7 @@ def test_filter_data_frame_filters_by_simulation_ids(tmp_path: pytest.TempPathFa
     ],
 )
 def test_filter_data_frame_skips_filter_by_simulation_ids_if_the_list_is_empty_or_none(
-    simulation_ids_input, tmp_path: pytest.TempPathFactory
+    simulation_ids_input, tmp_path: pathlib.Path
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -2700,7 +2700,7 @@ def test_filter_data_frame_skips_filter_by_simulation_ids_if_the_list_is_empty_o
 
 
 def test_filter_data_frame_logs_warnings_for_simulation_ids_not_found(
-    tmp_path: pytest.TempPathFactory, caplog
+    tmp_path: pathlib.Path, caplog
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -2726,7 +2726,7 @@ def test_filter_data_frame_logs_warnings_for_simulation_ids_not_found(
 
 
 def test_filter_data_frame_logs_debug_for_duplicate_simulation_id(
-    tmp_path: pytest.TempPathFactory, caplog
+    tmp_path: pathlib.Path, caplog
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -2744,7 +2744,7 @@ def test_filter_data_frame_logs_debug_for_duplicate_simulation_id(
 
 
 def test_filter_data_frame_filters_by_simulation_id_and_sorts_by_priority(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -2766,14 +2766,14 @@ def test_filter_data_frame_filters_by_simulation_id_and_sorts_by_priority(
 
 
 def test_filter_data_frame_filters_by_simulation_id_and_iteration(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
     study.add_inputs([SingleBeadInput()], iteration=1)
     study.add_inputs([PorosityInput()], iteration=2)
     study.add_inputs([MicrostructureInput()], iteration=1)
-    ids = study.data_frame()[ColumnNames.ID].array
+    ids = study.data_frame()[ColumnNames.ID].array.tolist()
     # act
     df = study.filter_data_frame(simulation_ids=ids, iteration=1)
 
@@ -2784,7 +2784,7 @@ def test_filter_data_frame_filters_by_simulation_id_and_iteration(
 
 
 def test_filter_data_frame_filters_by_simulation_id_and_type(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -2805,7 +2805,7 @@ def test_filter_data_frame_filters_by_simulation_id_and_type(
 
 
 def test_filter_data_frame_filters_by_simulation_id_and_priority(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -2826,7 +2826,7 @@ def test_filter_data_frame_filters_by_simulation_id_and_priority(
 
 
 def test_filter_data_frame_with_simulation_ids_ignores_status(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -2850,7 +2850,7 @@ def test_filter_data_frame_with_simulation_ids_ignores_status(
 
 
 def test_filter_data_frame_without_simulations_ids_only_adds_new_simulations(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: pathlib.Path,
 ):
     # arrange
     study = ParametricStudy(tmp_path / "test_study", "material")
@@ -2883,6 +2883,8 @@ def test_create_machine_assigns_all_values():
     rotation_angle = 22
     hatch_spacing = 110e-6
     stripe_width = 5e-3
+    heat_source_model = 'gaussian'
+    ring_mode_index = 2
     series = pd.Series(
         {
             ColumnNames.LASER_POWER: power,
@@ -2894,6 +2896,8 @@ def test_create_machine_assigns_all_values():
             ColumnNames.ROTATION_ANGLE: rotation_angle,
             ColumnNames.HATCH_SPACING: hatch_spacing,
             ColumnNames.STRIPE_WIDTH: stripe_width,
+            ColumnNames.HEAT_SOURCE: heat_source_model,
+            ColumnNames.RING_MODE_INDEX: ring_mode_index,
         }
     )
 
@@ -2911,9 +2915,12 @@ def test_create_machine_assigns_all_values():
     assert machine.layer_rotation_angle == rotation_angle
     assert machine.hatch_spacing == hatch_spacing
     assert machine.slicing_stripe_width == stripe_width
+    assert machine.heat_source_model == heat_source_model
+    assert machine.ring_mode_index == ring_mode_index
 
 
-def test_create_machine_assigns_default_values():
+@pytest.mark.parametrize("heat_source_value", [float("nan"), ""])
+def test_create_machine_assigns_default_values(heat_source_value):
     # arrange
     power = 50
     speed = 1.2
@@ -2931,6 +2938,8 @@ def test_create_machine_assigns_default_values():
             ColumnNames.ROTATION_ANGLE: float("nan"),
             ColumnNames.HATCH_SPACING: float("nan"),
             ColumnNames.STRIPE_WIDTH: float("nan"),
+            ColumnNames.HEAT_SOURCE: heat_source_value,
+            ColumnNames.RING_MODE_INDEX: float("nan"),
         }
     )
 
@@ -2948,15 +2957,20 @@ def test_create_machine_assigns_default_values():
     assert machine.layer_rotation_angle == MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE
     assert machine.hatch_spacing == MachineConstants.DEFAULT_HATCH_SPACING
     assert machine.slicing_stripe_width == MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH
+    assert machine.heat_source_model == MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME
+    assert machine.ring_mode_index == MachineConstants.DEFAULT_RING_MODE_INDEX
 
 
 def test_create_single_bead_input():
     # arrange
     bead_length = 9.5e-3
+    th_interval = 555
     series = pd.Series(
         {
             ColumnNames.ID: "test_id",
             ColumnNames.SINGLE_BEAD_LENGTH: bead_length,
+            ColumnNames.SB_THERMAL_HISTORY_FLAG: True,
+            ColumnNames.SB_THERMAL_HISTORY_INTERVAL: th_interval,
         }
     )
     machine = AdditiveMachine(laser_power=123)
@@ -2971,6 +2985,8 @@ def test_create_single_bead_input():
     assert isinstance(input, SingleBeadInput)
     assert input.id == "test_id"
     assert input.bead_length == bead_length
+    assert input.output_thermal_history is True
+    assert input.thermal_history_interval == th_interval
     assert input.machine == machine
     assert input.material == material
 

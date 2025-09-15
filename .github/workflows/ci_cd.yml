@@ -136,8 +136,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Download the Docker image for Ansys Additive"
-        run: |
+      - name: "Download the Docker image for Ansys Additive"  # zizmor: ignore[template-injection]
+        run: |  # zizmor: ignore[template-injection]
           docker pull ${{ env.ANSYS_PRODUCT_IMAGE }}
 
       - name: "Start product server" # zizmor: ignore[template-injection]
@@ -187,7 +187,7 @@ jobs:
 
       - name: "Collect logs and shutdown server"
         if: ${{ always() }}
-        run: |
+        run: |  # zizmor: ignore[template-injection]
           docker stop ${{ env.ANSYS_PRODUCT_CONTAINER }}
           docker logs ${{ env.ANSYS_PRODUCT_CONTAINER }} >> docker-logs.txt
           docker rm ${{ env.ANSYS_PRODUCT_CONTAINER }}
