@@ -25,7 +25,7 @@ requires-python = ">=3.10,<4"
 version = "0.21.dev4"
 
 dependencies = [
-  "ansys-api-additive==5.1.2",
+  "ansys-api-additive==5.1.3",
   "ansys-platform-instancemanagement>=1.1.1",
   "dill>=0.3.7",
   "google-api-python-client>=1.7.11",
