@@ -215,7 +215,7 @@ class AdditiveMachine:
             return RingModeIndexEnumMessage.RING_MODE_INDEX_06
         else:
             raise ValueError(
-                "Invalid ring_mode_index: {}. " "Valid values are from 0 to 6.".format(index)
+                f"Invalid ring_mode_index: {index}. Valid values are from {MIN_RING_MODE_INDEX} to  {MAX_RING_MODE_INDEX}."
             )
 
     @staticmethod
