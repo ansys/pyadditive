@@ -2074,10 +2074,10 @@ class ParametricStudy:
     def simulation_inputs(
         self,
         get_material_func: Callable[[str], AdditiveMaterial],
-        simulation_ids: list[str] = None,  # type: ignore
-        types: list[SimulationType] = None,  # type: ignore
-        priority: int = None,  # type: ignore
-        iteration: int = None,  # type: ignore
+        simulation_ids: list[str] | None = None,
+        types: list[SimulationType] | None = None,
+        priority: int | None = None,
+        iteration: int | None = None,
     ) -> list[SingleBeadInput | PorosityInput | MicrostructureInput]:
         """Get a list of simulation inputs from the parametric study.
 
@@ -2271,10 +2271,10 @@ class ParametricStudy:
 
     def filter_data_frame(
         self,
-        simulation_ids: list[str] = None,
-        types: list[SimulationType] = None,
-        priority: int = None,
-        iteration: int = None,
+        simulation_ids: list[str] | None = None,
+        types: list[SimulationType] | None = None,
+        priority: int | None = None,
+        iteration: int | None = None,
     ) -> pd.DataFrame:
         """Apply filters to the parametric study and return the filtered data frame.
 

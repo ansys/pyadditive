@@ -215,7 +215,7 @@ class AdditiveMachine:
             return RingModeIndexEnumMessage.RING_MODE_INDEX_06
         else:
             raise ValueError(
-                f"Invalid ring_mode_index: {index}. Valid values are from {MIN_RING_MODE_INDEX} to  {MAX_RING_MODE_INDEX}."
+                f"Invalid ring_mode_index: {index}. Valid values are from {MachineConstants.MIN_RING_MODE_INDEX} to  {MachineConstants.MAX_RING_MODE_INDEX}."
             )
 
     @staticmethod
@@ -431,7 +431,7 @@ class AdditiveMachine:
     def ring_mode_index(self) -> int:
         """Ring mode coefficient set index.
 
-        Valid values are from 0 to 6.
+        Valid values are from :const:`MachineConstants.MIN_RING_MODE_INDEX` to :const:`MachineConstants.MAX_RING_MODE_INDEX`.
         """
         return self._ring_mode_index
 

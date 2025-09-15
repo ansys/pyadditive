@@ -54,19 +54,19 @@ class SingleBeadInput(SimulationInputBase):
     """Maximum bead length (m)."""
     DEFAULT_OUTPUT_THERMAL_HISTORY = False
     """Default output thermal history flag."""
-    DEFAULT_THERMAL_HISTORY_INTERVAL = 9999
-    """Default thermal history interval."""
     MIN_THERMAL_HISTORY_INTERVAL = 1
     """Minimum thermal history interval."""
     MAX_THERMAL_HISTORY_INTERVAL = 10000
     """Maximum thermal history interval."""
+    DEFAULT_THERMAL_HISTORY_INTERVAL = MAX_THERMAL_HISTORY_INTERVAL
+    """Default thermal history interval."""
 
     def __init__(
         self,
         *,
         bead_length: float = DEFAULT_BEAD_LENGTH,
-        machine: AdditiveMachine = None,
-        material: AdditiveMaterial = None,
+        machine: AdditiveMachine | None = None,
+        material: AdditiveMaterial | None = None,
         output_thermal_history: bool = DEFAULT_OUTPUT_THERMAL_HISTORY,
         thermal_history_interval: int = DEFAULT_THERMAL_HISTORY_INTERVAL,
     ):

@@ -488,4 +488,4 @@ def test_SingleBeadInput_setters_returns_expected_default_values():
     # assert
     assert input.bead_length == 0.003
     assert input.output_thermal_history is False
-    assert input.thermal_history_interval == 9999
+    assert input.thermal_history_interval == 10000
