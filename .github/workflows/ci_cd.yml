@@ -110,7 +110,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24
+        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
         if: (matrix.python-version == env.MAIN_PYTHON_VERSION) && (runner.os == 'Linux')
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -130,14 +130,14 @@ jobs:
     timeout-minutes: 90
     steps:
       - name: "Login into the GitHub registry container"
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Download the Docker image for Ansys Additive"
-        run: |
+      - name: "Download the Docker image for Ansys Additive"  # zizmor: ignore[template-injection]
+        run: |  # zizmor: ignore[template-injection]
           docker pull ${{ env.ANSYS_PRODUCT_IMAGE }}
 
       - name: "Start product server" # zizmor: ignore[template-injection]
@@ -156,7 +156,7 @@ jobs:
         uses: pyvista/setup-headless-display-action@7d84ae825e6d9297a8e99bdbbae20d1b919a0b19
 
       - name: "Checkout code"
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
         with:
           persist-credentials: false
 
@@ -187,7 +187,7 @@ jobs:
 
       - name: "Collect logs and shutdown server"
         if: ${{ always() }}
-        run: |
+        run: |  # zizmor: ignore[template-injection]
           docker stop ${{ env.ANSYS_PRODUCT_CONTAINER }}
           docker logs ${{ env.ANSYS_PRODUCT_CONTAINER }} >> docker-logs.txt
           docker rm ${{ env.ANSYS_PRODUCT_CONTAINER }}
@@ -216,12 +216,19 @@ jobs:
     needs: [build-library]
     runs-on: ubuntu-latest
     steps:
-      - name: "Release to the PyPI repository"
-        uses: ansys/actions/release-pypi-public@v10
+      - name: "Download the library artifacts from build-library step"
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
-          library-name: ${{ env.LIBRARY_NAME }}
-          twine-username: "__token__"
-          twine-token: ${{ secrets.PYPI_TOKEN }}
+          name: ${{ env.LIBRARY_NAME }}-artifacts
+          path: ${{ env.LIBRARY_NAME }}-artifacts
+
+      - name: "Upload artifacts to PyPI using trusted publisher"
+        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
+        with:
+          repository-url: "https://upload.pypi.org/legacy/"
+          print-hash: true
+          packages-dir: ${{ env.LIBRARY_NAME }}-artifacts
+          skip-existing: false
 
       - name: "Release to GitHub"
         uses: ansys/actions/release-github@v10

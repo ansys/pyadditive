@@ -15,7 +15,7 @@ jobs:
     name: Syncer
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
         with:
           persist-credentials: false
       - uses: micnncim/action-label-syncer@3abd5ab72fda571e69fffd97bd4e0033dd5f495c
@@ -33,7 +33,7 @@ jobs:
     steps:
       # Label based on modified files
       - name: Label based on changed files
-        uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9
+        uses: actions/labeler@634933edcd8ababfe52f92936142cc22ac488b1b
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           sync-labels: false
@@ -68,6 +68,7 @@ jobs:
           labels: bug
 
   commenter: # zizmor: ignore[excessive-permissions]
+    name: Commenter
     runs-on: ubuntu-latest
     steps:
       - name: Suggest to add labels
