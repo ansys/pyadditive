@@ -152,9 +152,9 @@ def get_test_material_tuning_input() -> MaterialTuningInput:
 
 def get_default_machine_repr() -> str:
         return ("machine: AdditiveMachine\n"
-        + "laser_power: 195 W\n"
+        + "laser_power: 195.0 W\n"
         + "scan_speed: 1.0 m/s\n"
-        + "heater_temperature: 80 °C\n"
+        + "heater_temperature: 80.0 °C\n"
         + "layer_thickness: 5e-05 m\n"
         + "beam_diameter: 0.0001 m\n"
         + "starting_layer_angle: 57 °\n"
