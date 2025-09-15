@@ -38,11 +38,11 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 class MachineConstants:
     """Provides constants for additive manufacturing machine settings."""
 
-    DEFAULT_LASER_POWER = 195
+    DEFAULT_LASER_POWER = 195.0
     """Default laser power (W)."""
-    MIN_LASER_POWER = 50
+    MIN_LASER_POWER = 50.0
     """Minimum laser power (W)."""
-    MAX_LASER_POWER = 700
+    MAX_LASER_POWER = 700.0
     """Maximum laser power (W)."""
     DEFAULT_SCAN_SPEED = 1.0
     """Default scan speed (m/s)."""
@@ -50,11 +50,11 @@ class MachineConstants:
     """Minimum scan speed (m/s)."""
     MAX_SCAN_SPEED = 2.5
     """Maximum scan speed (m/s)."""
-    DEFAULT_HEATER_TEMP = 80
+    DEFAULT_HEATER_TEMP = 80.0
     """Default heater temperature (C)."""
-    MIN_HEATER_TEMP = 20
+    MIN_HEATER_TEMP = 20.0
     """Minimum heater temperature (C)."""
-    MAX_HEATER_TEMP = 500
+    MAX_HEATER_TEMP = 500.0
     """Maximum heater temperature (C)."""
     DEFAULT_LAYER_THICKNESS = 5e-5
     """Default layer thickness (m)."""

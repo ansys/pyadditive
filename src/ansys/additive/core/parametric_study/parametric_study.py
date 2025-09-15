@@ -2163,7 +2163,7 @@ class ParametricStudy:
             ),
             heat_source_model=(
                 row[ColumnNames.HEAT_SOURCE]
-                if isinstance(row[ColumnNames.HEAT_SOURCE], str)
+                if isinstance(row[ColumnNames.HEAT_SOURCE], str) and row[ColumnNames.HEAT_SOURCE]
                 else MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME
             ),
             ring_mode_index=(
