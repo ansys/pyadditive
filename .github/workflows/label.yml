@@ -68,6 +68,7 @@ jobs:
           labels: bug
 
   commenter: # zizmor: ignore[excessive-permissions]
+    name: Commenter
     runs-on: ubuntu-latest
     steps:
       - name: Suggest to add labels
