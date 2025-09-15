@@ -247,7 +247,7 @@ def test_SingleBeadInput_repr_creates_expected_string():
         + "characteristic_width_data: CharacteristicWidthDataPoint[]\n"
         + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
         + "output_thermal_history: False\n"
-        + "thermal_history_interval: 9999\n"
+        + "thermal_history_interval: 10000\n"
     )
 
 
@@ -454,7 +454,7 @@ def test_SingleBeadSummary_repr_returns_expected_string():
         + "characteristic_width_data: CharacteristicWidthDataPoint[]\n"
         + "thermal_properties_data: ThermalPropertiesDataPoint[]\n"
         + "output_thermal_history: False\n"
-        + "thermal_history_interval: 9999\n"
+        + "thermal_history_interval: 10000\n"
         + "\n"
         + "melt_pool: MeltPool\n"
         + "Empty DataFrame\nColumns: [length, width, depth, reference_width, reference_depth]\nIndex: []\n"
