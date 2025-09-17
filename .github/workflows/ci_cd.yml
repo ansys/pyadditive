@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write # zizmor: ignore[excessive-permissions]
+  id-token: write # zizmor: ignore[excessive-permissions]
   packages: read
 
 env:
