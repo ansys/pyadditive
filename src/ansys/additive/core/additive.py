@@ -29,6 +29,7 @@ from datetime import datetime
 import hashlib
 import logging
 import os
+from pathlib import Path
 import zipfile
 
 from ansys.api.additive import __version__ as api_version
@@ -54,6 +55,7 @@ from ansys.additive.core.progress_handler import (
     ProgressState,
 )
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
+from ansys.additive.core.server_connection.constants import TransportMode
 from ansys.additive.core.simulation import SimulationError
 from ansys.additive.core.single_bead import SingleBeadInput, SingleBeadSummary
 from ansys.additive.core.thermal_history import ThermalHistoryInput, ThermalHistorySummary
@@ -139,6 +141,7 @@ class Additive:
     def __init__(
         self,
         server_connections: list[str | grpc.Channel] = None,
+        transport_mode: TransportMode = TransportMode.UDS,
         host: str | None = None,
         port: int = DEFAULT_ADDITIVE_SERVICE_PORT,
         nsims_per_server: int = 1,
@@ -148,6 +151,8 @@ class Additive:
         log_file: str = "",
         enable_beta_features: bool = False,
         linux_install_path: os.PathLike | None = None,
+        uds_dir: Path | None = None,
+        uds_id: str | None = None,
     ) -> None:
         """Initialize server connections."""
         if product_version is None or product_version == "":
@@ -157,7 +162,16 @@ class Additive:
         self._log.debug("Logging set to %s", log_level)
 
         self._servers = Additive._connect_to_servers(
-            server_connections, host, port, nservers, product_version, self._log, linux_install_path
+            server_connections=server_connections,
+            host=host,
+            port=port,
+            nservers=nservers,
+            product_version=product_version,
+            log=self._log,
+            linux_install_path=linux_install_path,
+            transport_mode=transport_mode,
+            uds_dir=uds_dir,
+            uds_id=uds_id,
         )
         self._nsims_per_server = nsims_per_server
         self._enable_beta_features = enable_beta_features
@@ -193,12 +207,15 @@ class Additive:
     @staticmethod
     def _connect_to_servers(
         server_connections: list[str | grpc.Channel] = None,
+        transport_mode: TransportMode = TransportMode.UDS,
         host: str | None = None,
         port: int = DEFAULT_ADDITIVE_SERVICE_PORT,
         nservers: int = 1,
         product_version: str = DEFAULT_PRODUCT_VERSION,
         log: logging.Logger = None,
         linux_install_path: os.PathLike | None = None,
+        uds_dir: Path | None = None,
+        uds_id: str | None = None,
     ) -> list[ServerConnection]:
         """Connect to Additive servers.
 
@@ -212,9 +229,25 @@ class Additive:
                 else:
                     connections.append(ServerConnection(addr=target, log=log))
         elif host:
-            connections.append(ServerConnection(addr=f"{host}:{port}", log=log))
+            connections.append(
+                ServerConnection(
+                    addr=f"{host}:{port}",
+                    log=log,
+                    transport_mode=transport_mode,
+                    unix_domain_socket_dir=uds_dir,
+                    unix_domain_socket_id=uds_id,
+                )
+            )
         elif os.getenv("ANSYS_ADDITIVE_ADDRESS"):
-            connections.append(ServerConnection(addr=os.getenv("ANSYS_ADDITIVE_ADDRESS"), log=log))
+            connections.append(
+                ServerConnection(
+                    addr=os.getenv("ANSYS_ADDITIVE_ADDRESS"),
+                    log=log,
+                    transport_mode=transport_mode,
+                    unix_domain_socket_dir=uds_dir,
+                    unix_domain_socket_id=uds_id,
+                )
+            )
         else:
             for _ in range(nservers):
                 connections.append(
@@ -222,6 +255,9 @@ class Additive:
                         product_version=product_version,
                         log=log,
                         linux_install_path=linux_install_path,
+                        transport_mode=transport_mode,
+                        unix_domain_socket_dir=uds_dir,
+                        unix_domain_socket_id=uds_id,
                     )
                 )
 

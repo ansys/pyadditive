@@ -21,6 +21,7 @@
 # SOFTWARE.
 """Constants used for server connections."""
 
+from enum import StrEnum
 from pathlib import Path
 
 LOCALHOST = "127.0.0.1"
@@ -33,3 +34,18 @@ ADDITIVE_SERVER_EXE_NAME = "additiveserver"
 """Name of the Additive server executable."""
 ADDITIVE_SERVER_SUBDIR = Path("Additive") / "additiveserver"
 """Subdirectory for the Additive server in the Ansys installation directory."""
+DEFAULT_UNIX_DOMAIN_SOCKET_WINDOWS = Path.home() / ".conn"
+"""Default Unix domain socket path for Windows."""
+DEFAULT_UNIX_DOMAIN_SOCKET_LINUX = Path("/tmp")
+"""Default Unix domain socket path for Linux."""
+UNIX_DOMAIN_SOCKET_PREFIX = "additiveserver"
+"""Prefix for Unix domain socket files."""
+
+
+class TransportMode(StrEnum):
+    """Enum for transport modes."""
+
+    INSECURE = "insecure"
+    """Use insecure transport."""
+    UDS = "uds"
+    """Use Unix Domain Socket transport."""

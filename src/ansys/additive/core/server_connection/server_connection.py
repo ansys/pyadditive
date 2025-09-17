@@ -19,12 +19,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""Provides definitions and untilities for connecting to the Additive server."""
+"""Provides definitions and utilities for connecting to the Additive server."""
 from __future__ import annotations
 
 from dataclasses import dataclass
 import logging
 import os
+from pathlib import Path
 import time
 
 from ansys.api.additive.v0.about_pb2_grpc import AboutServiceStub
@@ -38,6 +39,7 @@ from ansys.additive.core.server_connection.constants import (
     DEFAULT_PRODUCT_VERSION,
     LOCALHOST,
     PYPIM_PRODUCT_NAME,
+    TransportMode,
 )
 from ansys.additive.core.server_connection.local_server import LocalServer
 from ansys.additive.core.server_connection.network_utils import create_channel
@@ -80,7 +82,7 @@ class ServerConnection:
     channel: grpc.Channel, None
         gRPC channel connected to server.
     addr: str, None
-        IPv4 address of server of the form ``host:port``.
+        IPv4 address of server of the form ``host:port``. For UDS transport, port is ignored.
     product_version: str
         Version of the Ansys product installation in the form ``"YYR"``, where ``YY``
         is the two-digit year and ``R`` is the release number. For example, the release
@@ -94,15 +96,24 @@ class ServerConnection:
         required when Ansys has not been installed in the default location. Example:
         ``/usr/shared/ansys_inc``. Note that the path should not include the product
         version.
+    unix_domain_socket_dir: Path | None
+        Directory in which to create the Unix Domain Socket (UDS) file for server communication.
+        Used only when transport_mode is UDS. See :obj:`DEFAULT_UNIX_DOMAIN_SOCKET_WINDOWS` and
+        :obj:`DEFAULT_UNIX_DOMAIN_SOCKET_LINUX` for default values when ``None``.
+    unix_domain_socket_id: str | None
+        Optional identifier to append to the UDS filename. Used only when transport_mode is UDS.
     """
 
     def __init__(
         self,
         channel: grpc.Channel | None = None,
         addr: str | None = None,
+        transport_mode: TransportMode = TransportMode.UDS,
         product_version: str = DEFAULT_PRODUCT_VERSION,
-        log: logging.Logger = None,
+        log: logging.Logger | None = None,
         linux_install_path: os.PathLike | None = None,
+        unix_domain_socket_dir: Path | None = None,
+        unix_domain_socket_id: str | None = None,
     ) -> None:
         """Initialize a server connection."""
 
@@ -130,7 +141,12 @@ class ServerConnection:
                     port, product_version=product_version, linux_install_path=linux_install_path
                 )
                 target = f"{LOCALHOST}:{port}"
-            self._channel = create_channel(target)
+            self._channel = create_channel(
+                target=target,
+                transport_mode=transport_mode,
+                uds_dir=unix_domain_socket_dir,
+                uds_id=unix_domain_socket_id,
+            )
 
         # assign service stubs
         self._materials_stub = MaterialsServiceStub(self._channel)

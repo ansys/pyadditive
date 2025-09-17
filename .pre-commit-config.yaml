@@ -26,6 +26,7 @@ repos:
       - id: docformatter
         additional_dependencies: [tomli]
         args: ["--wrap-summaries", "0", "-i", "--black"]
+        language: python
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.5

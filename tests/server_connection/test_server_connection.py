@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from pathlib import Path
 from unittest.mock import ANY, Mock, create_autospec
 
 from ansys.api.additive.v0.about_pb2 import AboutResponse
@@ -32,7 +33,11 @@ from google.protobuf.empty_pb2 import Empty
 import grpc
 import pytest
 
-from ansys.additive.core.server_connection.constants import LOCALHOST, PYPIM_PRODUCT_NAME
+from ansys.additive.core.server_connection.constants import (
+    LOCALHOST,
+    PYPIM_PRODUCT_NAME,
+    TransportMode,
+)
 import ansys.additive.core.server_connection.local_server
 import ansys.additive.core.server_connection.server_connection
 from ansys.additive.core.server_connection.server_connection import (
@@ -92,7 +97,7 @@ def test_init_connects_with_addr(monkeypatch):
     )
 
     # act
-    server = ServerConnection(addr=addr)
+    server = ServerConnection(addr=addr, transport_mode=TransportMode.INSECURE)
 
     # assert
     assert server.channel_str == addr
@@ -134,7 +139,7 @@ def test_init_connects_with_pypim(monkeypatch):
     monkeypatch.setattr(pypim, "is_configured", mock_is_configured)
 
     # act
-    server = ServerConnection(product_version="123")
+    server = ServerConnection(product_version="123", transport_mode=TransportMode.INSECURE)
 
     # assert
     assert server.channel_str == target
@@ -166,7 +171,7 @@ def test_init_starts_local_server(monkeypatch):
     )
 
     # act
-    server = ServerConnection(product_version="123")
+    server = ServerConnection(product_version="123", transport_mode=TransportMode.INSECURE)
 
     # assert
     assert LOCALHOST in server.channel_str
@@ -304,3 +309,114 @@ def test_status_when_not_connected_returns_expected_status():
     assert status.connected == False
     assert status.channel_str == "channel_str"
     assert status.metadata == None
+
+
+def test_init_with_uds_transport_mode_and_addr(monkeypatch, tmp_path: Path):
+    # Arrange
+    addr = "localhost:1234"
+    mock_ready = create_autospec(
+        ansys.additive.core.server_connection.server_connection.ServerConnection.ready,
+        return_value=True,
+    )
+    monkeypatch.setattr(
+        ansys.additive.core.server_connection.server_connection.ServerConnection,
+        "ready",
+        mock_ready,
+    )
+
+    # Create a socket file to simulate UDS
+    uds_file = tmp_path / "unittest.sock"
+    uds_file.touch()
+    uds_target = f"unix:{uds_file}"
+
+    # Patch create_channel to check arguments
+    called_args = {}
+
+    def mock_create_channel(target, transport_mode, uds_dir=None, uds_id=None):
+        called_args["target"] = target
+        called_args["transport_mode"] = transport_mode
+        called_args["uds_dir"] = uds_dir
+        called_args["uds_id"] = uds_id
+        return grpc.insecure_channel(uds_target)
+
+    monkeypatch.setattr(
+        "ansys.additive.core.server_connection.server_connection.create_channel",
+        mock_create_channel,
+    )
+
+    # Act
+    server = ServerConnection(addr=addr, transport_mode=TransportMode.UDS)
+
+    # Assert
+    assert server.channel_str == uds_target
+    assert called_args["target"] == addr
+    assert called_args["transport_mode"] == TransportMode.UDS
+    assert called_args["uds_dir"] is None
+    assert called_args["uds_id"] is None
+    assert isinstance(server.materials_stub, MaterialsServiceStub)
+    assert isinstance(server.simulation_stub, SimulationServiceStub)
+    assert isinstance(server._about_stub, AboutServiceStub)
+
+    # cleanup
+    if uds_file.exists():
+        uds_file.unlink()
+
+
+def test_init_with_uds_transport_mode_with_addr_and_dir_and_id(monkeypatch, tmp_path: Path):
+    # Arrange
+    addr = "localhost:1234"
+    mock_ready = create_autospec(
+        ansys.additive.core.server_connection.server_connection.ServerConnection.ready,
+        return_value=True,
+    )
+    monkeypatch.setattr(
+        ansys.additive.core.server_connection.server_connection.ServerConnection,
+        "ready",
+        mock_ready,
+    )
+
+    # Create a socket file to simulate UDS
+    uds_test_dir = Path("uds_dir")
+    uds_test_id = "1234"
+    uds_file = tmp_path / "unittest.sock"
+    uds_file.touch()
+    uds_target = f"unix:{uds_file}"
+
+    # Patch create_channel to check arguments
+    called_args = {}
+
+    def mock_create_channel(target, transport_mode, uds_dir, uds_id):
+        called_args["target"] = target
+        called_args["transport_mode"] = transport_mode
+        called_args["uds_dir"] = uds_dir
+        called_args["uds_id"] = uds_id
+        return grpc.insecure_channel(uds_target)
+
+    monkeypatch.setattr(
+        "ansys.additive.core.server_connection.server_connection.create_channel",
+        mock_create_channel,
+    )
+
+    # Act
+    server = ServerConnection(
+        addr=addr,
+        transport_mode=TransportMode.UDS,
+        unix_domain_socket_dir=uds_test_dir,
+        unix_domain_socket_id=uds_test_id,
+    )
+
+    # Assert
+    # The unit tests for create_channel will test the creation of the appropriate UDS path.
+    # For now, mock_create_channel uses the socket path defined above.
+    assert server.channel_str == uds_target
+    assert called_args["target"] == addr
+    assert called_args["transport_mode"] == TransportMode.UDS
+    assert called_args["uds_dir"] == uds_test_dir
+    assert called_args["uds_id"] == uds_test_id
+    assert isinstance(server.materials_stub, MaterialsServiceStub)
+    assert isinstance(server.simulation_stub, SimulationServiceStub)
+    assert isinstance(server._about_stub, AboutServiceStub)
+
+    # cleanup
+    if uds_file.exists():
+        uds_file.unlink()
