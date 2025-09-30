@@ -459,8 +459,8 @@ class ParametricStudy:
         max_pv_ratio: float | None = None,
         iteration: int = DEFAULT_ITERATION,
         priority: int = DEFAULT_PRIORITY,
-        thermal_history_interval: int = 1,
-        output_thermal_history: bool = False,
+        thermal_history_interval: int = SingleBeadInput.DEFAULT_THERMAL_HISTORY_INTERVAL,
+        output_thermal_history: bool = SingleBeadInput.DEFAULT_OUTPUT_THERMAL_HISTORY,
         heat_source: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
         ring_mode_index: int = MachineConstants.DEFAULT_RING_MODE_INDEX,
     ) -> int:
@@ -504,12 +504,12 @@ class ParametricStudy:
             Iteration number for this set of simulations.
         priority : int, default: :obj:`DEFAULT_PRIORITY <constants.DEFAULT_PRIORITY>`
             Priority for this set of simulations.
-        thermal_history_interval : int, default: 1
+        thermal_history_interval : int, default: :const:`DEFAULT_THERMAL_HISTORY_INTERVAL <SingleBeadInput.DEFAULT_THERMAL_HISTORY_INTERVAL>`
             Interval (in number of time steps) at which to record the thermal history.
             If this value is ``None``, :obj:`DEFAULT_THERMAL_HISTORY_INTERVAL <SingleBeadInput.DEFAULT_THERMAL_HISTORY_INTERVAL>`
             is used. Valid values are from :obj:`MIN_THERMAL_HISTORY_INTERVAL <SingleBeadInput.MIN_THERMAL_HISTORY_INTERVAL>`
             to :obj:`MAX_THERMAL_HISTORY_INTERVAL <SingleBeadInput.MAX_THERMAL_HISTORY_INTERVAL>`.
-        output_thermal_history : bool, default: False
+        output_thermal_history : bool, default: :const:`DEFAULT_OUTPUT_THERMAL_HISTORY <SingleBeadInput.DEFAULT_OUTPUT_THERMAL_HISTORY>`
             Whether to output the thermal history data.
         heat_source : str, default: :obj:`DEFAULT_HEAT_SOURCE_MODEL_NAME <MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME>`
             Heat source model name to use for simulations. Available models are listed in
@@ -1669,6 +1669,11 @@ class ParametricStudy:
     def update_format(study: ParametricStudy) -> ParametricStudy:
         """Update a parametric study to the latest format version.
 
+        Version 1: Initial version.
+        Version 2: Rename columns to use consistent units and naming conventions.
+        Version 3: Add material name and PV ratio columns.
+        Version 4: Add heat source, ring mode index and two single-bead thermal history columns.
+
         Parameters
         ----------
         study : ParametricStudy
@@ -1729,6 +1734,44 @@ class ParametricStudy:
 
             # add p/v column to the dataframe
             df = ParametricStudy._add_pv_ratio(df)
+
+        if version < 4:
+
+            def add_missing_column(col_name, default_value, insert_after_col_name):
+                if col_name not in df.columns:
+                    insert_index = df.columns.get_loc(insert_after_col_name)
+                    if isinstance(insert_index, int):
+                        insert_index += 1
+                    else:
+                        raise TypeError(
+                            f"insert_index must be of type int, got {type(insert_index)}"
+                        )
+                    # insert column
+                    df.insert(insert_index, col_name, default_value)
+
+            # Add missing columns with default values
+            add_missing_column(
+                ColumnNames.HEAT_SOURCE,
+                MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
+                ColumnNames.STRIPE_WIDTH,
+            )
+            add_missing_column(
+                ColumnNames.RING_MODE_INDEX,
+                MachineConstants.DEFAULT_RING_MODE_INDEX,
+                ColumnNames.HEAT_SOURCE,
+            )
+            add_missing_column(
+                ColumnNames.SB_THERMAL_HISTORY_FLAG,
+                SingleBeadInput.DEFAULT_OUTPUT_THERMAL_HISTORY,
+                ColumnNames.SINGLE_BEAD_LENGTH,
+            )
+            add_missing_column(
+                ColumnNames.SB_THERMAL_HISTORY_INTERVAL,
+                SingleBeadInput.DEFAULT_THERMAL_HISTORY_INTERVAL,
+                ColumnNames.SB_THERMAL_HISTORY_FLAG,
+            )
+
+            version = 4
 
         # Update the dataframe in the new study
         new_study._data_frame = df
