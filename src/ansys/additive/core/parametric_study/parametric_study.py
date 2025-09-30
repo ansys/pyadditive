@@ -1669,10 +1669,10 @@ class ParametricStudy:
     def update_format(study: ParametricStudy) -> ParametricStudy:
         """Update a parametric study to the latest format version.
 
-        Version 1: Initial version.
-        Version 2: Rename columns to use consistent units and naming conventions.
-        Version 3: Add material name and PV ratio columns.
-        Version 4: Add heat source, ring mode index and two single-bead thermal history columns.
+        - Version 1: Initial version.
+        - Version 2: Rename columns to use consistent units and naming conventions.
+        - Version 3: Add material name and PV ratio columns.
+        - Version 4: Add heat source, ring mode index and two single-bead thermal history columns.
 
         Parameters
         ----------

@@ -137,4 +137,4 @@ DEFAULT_ITERATION = 0
 DEFAULT_PRIORITY = 1
 """Default priority assigned to new simulations."""
 FORMAT_VERSION = 4
-"""Parametric study file format version. See :meth:`ParametricStudy.update_format`."""
+"""Parametric study file format version. See :meth:`ParametricStudy.update_format` for details."""
