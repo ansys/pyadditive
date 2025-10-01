@@ -64,6 +64,8 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 )
 from tests import test_utils
 
+EXPECTED_NUM_COLUMNS = 50
+
 
 def test_init_correctly_initializes_object(tmp_path: pathlib.Path):
     # arrange
@@ -2002,10 +2004,8 @@ def test_clear_removes_all_rows_but_not_columns(tmp_path: pathlib.Path):
 
     # assert
     df2 = study.data_frame()
-    assert len(df1) == 1
-    assert len(df2) == 0
-    assert len(df1.columns) == len(df2.columns)
-    assert len(df2.columns) > 0
+    assert df1.shape == (1, EXPECTED_NUM_COLUMNS) # (rows, columns)
+    assert df2.shape == (0, EXPECTED_NUM_COLUMNS)
 
 
 def test_format_version_returns_proper_version(tmp_path: pathlib.Path):
@@ -2090,7 +2090,7 @@ def test_update_format_updates_Ansys_242_to_latest(tmp_path: pathlib.Path):
     # assert
     assert updated_study is not None
     assert updated_study.format_version == FORMAT_VERSION
-    assert len(updated_study.data_frame()) == 48
+    assert updated_study.data_frame().shape == (48, EXPECTED_NUM_COLUMNS) # (rows, columns)
     assert updated_study.material_name == "IN718"
     assert ColumnNames.PV_RATIO in updated_study.data_frame().columns
 
@@ -2108,7 +2108,7 @@ def test_reset_simulation_status_sets_status_to_new(tmp_path: pathlib.Path):
 
     # assert
     df = study.data_frame()
-    assert len(df) == 2
+    assert df.shape == (2, EXPECTED_NUM_COLUMNS) # (rows, columns)
     for _, row in df.iterrows():
         assert row[ColumnNames.STATUS] == SimulationStatus.NEW
 
@@ -2149,7 +2149,7 @@ def test_set_priority_sets_priority(tmp_path: pathlib.Path):
     for i in range(4):
         study.add_inputs([SingleBeadInput(bead_length=(i + 1) * 0.001)])
     priority1 = study.data_frame()[ColumnNames.PRIORITY]
-    ids = study.data_frame().iloc[0:2][ColumnNames.ID].array
+    ids = study.data_frame().iloc[0:2][ColumnNames.ID].array.tolist()
 
     # act
     study.set_priority(ids, 5)
@@ -2170,7 +2170,7 @@ def test_set_iteration_sets_iteration(tmp_path: pathlib.Path):
     for i in range(4):
         study.add_inputs([SingleBeadInput(bead_length=(i + 1) * 0.001)])
     iteration1 = study.data_frame()[ColumnNames.ITERATION]
-    ids = study.data_frame().iloc[0:2][ColumnNames.ID].array
+    ids = study.data_frame().iloc[0:2][ColumnNames.ID].array.tolist()
 
     # act
     study.set_iteration(ids, 5)
@@ -2247,7 +2247,7 @@ def test_import_csv_study_adds_simulations_to_new_study(
 
     # assert
     assert len(errors) == 0
-    assert len(study.data_frame()) == 5
+    assert study.data_frame().shape == (5, EXPECTED_NUM_COLUMNS) # (rows, columns)
     assert len(study.data_frame()[ColumnNames.LASER_POWER].unique()) == 5
 
 
@@ -2327,7 +2327,7 @@ def test_import_csv_study_adds_simulations_of_multiple_input_types_to_new_study(
 
     # assert
     assert len(errors) == 0
-    assert len(study.data_frame()) == 15
+    assert study.data_frame().shape == (15, EXPECTED_NUM_COLUMNS) # (rows, columns)
     assert len(study.data_frame().index) == len(study.data_frame().index.unique())
 
 
@@ -2340,7 +2340,7 @@ def test_import_csv_study_adds_simulations_to_existing_study(
         pathlib.Path("csv") / "single-bead-test-study.csv"
     )
     study = ParametricStudy(tmp_path / study_name, "material")
-    powers = [50, 250, 700]
+    powers = [50., 250., 700.]
     scan_speeds = [0.35]
     study.generate_porosity_permutations(
         laser_powers=powers,
@@ -2351,7 +2351,7 @@ def test_import_csv_study_adds_simulations_to_existing_study(
     study.import_csv_study(single_bead_demo_csv_file)
 
     # assert
-    assert len(study.data_frame()) == 8
+    assert study.data_frame().shape == (8, EXPECTED_NUM_COLUMNS) # (rows, columns)
 
 
 def test_import_csv_study_creates_ids_for_simulations_without_ids(
@@ -2416,7 +2416,7 @@ def test_import_csv_study_drops_duplicates_with_correct_simulation_status_heirar
 
     # assert
     df = study.data_frame()
-    assert len(df) == 5
+    assert df.shape == (5, EXPECTED_NUM_COLUMNS) # (rows, columns)
     assert df.iloc[0][ColumnNames.STATUS] == SimulationStatus.COMPLETED
     assert df.iloc[0][ColumnNames.ID] == "sb_c_d"
     assert df.iloc[1][ColumnNames.STATUS] == SimulationStatus.WARNING
@@ -2477,7 +2477,7 @@ def test_import_csv_study_does_not_add_simulations_with_nan_inputs_and_returns_e
     assert len(error_list) == len_error_list
     for error_message in error_list:
         assert "must be a number" in error_message
-    assert len(study.data_frame()) == 0
+    assert study.data_frame().shape == (0, EXPECTED_NUM_COLUMNS)  # (rows, columns)
 
 
 def test_import_csv_adds_microstructure_simulations_with_nan_thermal_parameter_values(
@@ -2603,7 +2603,7 @@ def test_filter_data_frame_filters_by_priority(tmp_path: pathlib.Path):
     df = study.filter_data_frame(priority=1)
 
     # assert
-    assert len(df) == 1
+    assert df.shape == (1, EXPECTED_NUM_COLUMNS) # (rows, columns)
     assert df.iloc[0][ColumnNames.PRIORITY] == 1
 
 
@@ -2618,7 +2618,7 @@ def test_filter_data_frame_filters_by_iteration(tmp_path: pathlib.Path):
     df = study.filter_data_frame(iteration=2)
 
     # assert
-    assert len(df) == 1
+    assert df.shape == (1, EXPECTED_NUM_COLUMNS)  # (rows, columns)
     assert df.iloc[0][ColumnNames.ITERATION] == 2
 
 
@@ -2633,7 +2633,7 @@ def test_filter_data_frame_filters_by_simulation_type(tmp_path: pathlib.Path):
     df = study.filter_data_frame(types=[SimulationType.POROSITY])
 
     # assert
-    assert len(df) == 1
+    assert df.shape == (1, EXPECTED_NUM_COLUMNS) # (rows, columns)
     assert df.iloc[0][ColumnNames.TYPE] == SimulationType.POROSITY
 
 
@@ -2652,7 +2652,7 @@ def test_filter_data_frame_filters_by_multiple_simulation_types(
     )
 
     # assert
-    assert len(df) == 2
+    assert df.shape == (2, EXPECTED_NUM_COLUMNS)  # (rows, columns)
     types = df[ColumnNames.TYPE].array
     assert SimulationType.POROSITY in types
     assert SimulationType.SINGLE_BEAD in types
@@ -2670,7 +2670,7 @@ def test_filter_data_frame_filters_by_simulation_ids(tmp_path: pathlib.Path):
     df = study.filter_data_frame(simulation_ids=[ids[0], ids[2], "bogus"])
 
     # assert
-    assert len(df) == 2
+    assert df.shape == (2, EXPECTED_NUM_COLUMNS)  # (rows, columns)
     assert df.iloc[0][ColumnNames.ID] in ids
     assert df.iloc[1][ColumnNames.ID] in ids
     assert df.iloc[0][ColumnNames.ID] != df.iloc[1][ColumnNames.ID]
@@ -2696,7 +2696,7 @@ def test_filter_data_frame_skips_filter_by_simulation_ids_if_the_list_is_empty_o
     df = study.filter_data_frame(simulation_ids=simulation_ids_input)
 
     # assert
-    assert len(df) == 3
+    assert df.shape == (3, EXPECTED_NUM_COLUMNS)  # (rows, columns)
 
 
 def test_filter_data_frame_logs_warnings_for_simulation_ids_not_found(
@@ -2713,7 +2713,7 @@ def test_filter_data_frame_logs_warnings_for_simulation_ids_not_found(
     df = study.filter_data_frame(simulation_ids=["bogus", "bogus2"])
 
     # assert
-    assert len(df) == 0
+    assert df.shape == (0, EXPECTED_NUM_COLUMNS)  # (rows, columns)
     assert len(caplog.records) == 2
     assert (
         "Simulation ID 'bogus' not found in the parametric study"
@@ -2738,7 +2738,7 @@ def test_filter_data_frame_logs_debug_for_duplicate_simulation_id(
     df = study.filter_data_frame(simulation_ids=[id, id])
 
     # assert
-    assert len(df) == 1
+    assert df.shape == (1, EXPECTED_NUM_COLUMNS) # (rows, columns)
     assert len(caplog.records) == 1
     assert "has already been added" in caplog.records[0].message
 
@@ -2760,7 +2760,7 @@ def test_filter_data_frame_filters_by_simulation_id_and_sorts_by_priority(
     df = study.filter_data_frame(simulation_ids=ids)
 
     # assert
-    assert len(df) == 2
+    assert df.shape == (2, EXPECTED_NUM_COLUMNS)  # (rows, columns)
     assert df.iloc[0][ColumnNames.PRIORITY] == 1
     assert df.iloc[1][ColumnNames.PRIORITY] == 3
 
@@ -2778,7 +2778,7 @@ def test_filter_data_frame_filters_by_simulation_id_and_iteration(
     df = study.filter_data_frame(simulation_ids=ids, iteration=1)
 
     # assert
-    assert len(df) == 2
+    assert df.shape == (2, EXPECTED_NUM_COLUMNS)  # (rows, columns)
     assert SimulationType.SINGLE_BEAD in df[ColumnNames.TYPE].array
     assert SimulationType.MICROSTRUCTURE in df[ColumnNames.TYPE].array
 
@@ -2800,7 +2800,7 @@ def test_filter_data_frame_filters_by_simulation_id_and_type(
     df = study.filter_data_frame(simulation_ids=ids, types=[SimulationType.POROSITY])
 
     # assert
-    assert len(df) == 1
+    assert df.shape == (1, EXPECTED_NUM_COLUMNS) # (rows, columns)
     assert df.iloc[0][ColumnNames.TYPE] == SimulationType.POROSITY
 
 
@@ -2821,7 +2821,7 @@ def test_filter_data_frame_filters_by_simulation_id_and_priority(
     df = study.filter_data_frame(simulation_ids=ids, priority=1)
 
     # assert
-    assert len(df) == 1
+    assert df.shape == (1, EXPECTED_NUM_COLUMNS)  # (rows, columns)
     assert df.iloc[0][ColumnNames.PRIORITY] == 1
 
 
@@ -2846,7 +2846,7 @@ def test_filter_data_frame_with_simulation_ids_ignores_status(
     )
 
     # assert
-    assert len(df) == len(ids)
+    assert df.shape == (len(ids), EXPECTED_NUM_COLUMNS)  # (rows, columns)
 
 
 def test_filter_data_frame_without_simulations_ids_only_adds_new_simulations(

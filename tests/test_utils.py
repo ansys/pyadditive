@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import os
+from pathlib import Path
 
 from ansys.additive.core.material import (
     AdditiveMaterial,
@@ -136,7 +137,7 @@ def get_test_SingleBeadSummary(input: SingleBeadInput = None) -> SingleBeadSumma
     return SingleBeadSummary(input, melt_pool_msg, "logs", None)
 
 
-def get_test_file_path(name: str) -> str:
+def get_test_file_path(name: str | Path) -> str:
     """Retrieve the absolute path to a test file in the data folder."""
     dir_name = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(dir_name, "data", name)
