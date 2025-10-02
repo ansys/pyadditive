@@ -131,7 +131,7 @@ jobs:
     timeout-minutes: 90
     steps:
       - name: "Login into the GitHub registry container"
-        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -190,15 +190,8 @@ jobs:
         if: ${{ always() }}
         run: |  # zizmor: ignore[template-injection]
           docker stop ${{ env.ANSYS_PRODUCT_CONTAINER }}
-          docker logs ${{ env.ANSYS_PRODUCT_CONTAINER }} >> docker-logs.txt
+          docker logs ${{ env.ANSYS_PRODUCT_CONTAINER }}
           docker rm ${{ env.ANSYS_PRODUCT_CONTAINER }}
-
-      - name: "Upload container logs as artifacts"
-        if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: docker-logs.txt
-          path: docker-logs.txt
 
   build-library:
     name: "Build library artifacts"
