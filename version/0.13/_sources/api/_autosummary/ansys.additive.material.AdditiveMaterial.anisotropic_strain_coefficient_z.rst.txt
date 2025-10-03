@@ -1,0 +1,6 @@
+anisotropic\_strain\_coefficient\_z
+===================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.anisotropic_strain_coefficient_z
