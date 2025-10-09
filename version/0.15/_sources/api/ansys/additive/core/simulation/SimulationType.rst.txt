@@ -1,0 +1,80 @@
+
+
+
+
+SimulationType
+==============
+
+.. py:class:: SimulationType
+   :canonical: ansys.additive.core.simulation.SimulationType
+
+
+
+
+Provides simulation types.
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: SimulationType
+.. tab-set::
+
+
+
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~SINGLE_BEAD`
+            - 
+          * - :py:attr:`~POROSITY`
+            - 
+          * - :py:attr:`~MICROSTRUCTURE`
+            - 
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.simulation import SimulationType
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: SINGLE_BEAD
+   :value: 'SingleBead'
+
+   
+
+.. py:attribute:: POROSITY
+   :value: 'Porosity'
+
+   
+
+.. py:attribute:: MICROSTRUCTURE
+   :value: 'Microstructure'
+
+   
+
+
+

@@ -1,0 +1,108 @@
+
+
+
+
+MachineType
+===========
+
+.. py:class:: MachineType
+   :canonical: ansys.additive.core.geometry_file.MachineType
+
+
+
+Bases: :py:obj:`enum.IntEnum`
+
+Enum where members are also (and must be) ints
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: MachineType
+.. tab-set::
+
+
+
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~NONE`
+            - 
+          * - :py:attr:`~ADDITIVE_INDUSTRIES`
+            - 
+          * - :py:attr:`~SLM`
+            - 
+          * - :py:attr:`~RENISHAW`
+            - 
+          * - :py:attr:`~EOS`
+            - 
+          * - :py:attr:`~TRUMPF`
+            - 
+          * - :py:attr:`~HB3D`
+            - 
+          * - :py:attr:`~SISMA`
+            - 
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.geometry_file import MachineType
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: NONE
+
+   
+
+.. py:attribute:: ADDITIVE_INDUSTRIES
+
+   
+
+.. py:attribute:: SLM
+
+   
+
+.. py:attribute:: RENISHAW
+
+   
+
+.. py:attribute:: EOS
+
+   
+
+.. py:attribute:: TRUMPF
+
+   
+
+.. py:attribute:: HB3D
+
+   
+
+.. py:attribute:: SISMA
+
+   
+
+
+

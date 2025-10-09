@@ -1,0 +1,6 @@
+strain\_scaling\_factor
+=======================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.strain_scaling_factor
