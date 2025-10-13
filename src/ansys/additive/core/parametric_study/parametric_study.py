@@ -1827,6 +1827,16 @@ class ParametricStudy:
         # older CSV files may not have the PV_RATIO column
         columns.remove(ColumnNames.PV_RATIO)
 
+        # for backwards compatibility with study format versions less than 4, add missing columns with default values
+        if ColumnNames.HEAT_SOURCE not in df.columns:
+            df[ColumnNames.HEAT_SOURCE] = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME
+        if ColumnNames.RING_MODE_INDEX not in df.columns:
+            df[ColumnNames.RING_MODE_INDEX] = MachineConstants.DEFAULT_RING_MODE_INDEX
+        if ColumnNames.SB_THERMAL_HISTORY_FLAG not in df.columns:
+            df[ColumnNames.SB_THERMAL_HISTORY_FLAG] = SingleBeadInput.DEFAULT_OUTPUT_THERMAL_HISTORY
+        if ColumnNames.SB_THERMAL_HISTORY_INTERVAL not in df.columns:
+            df[ColumnNames.SB_THERMAL_HISTORY_INTERVAL] = SingleBeadInput.DEFAULT_THERMAL_HISTORY_INTERVAL
+
         if not set(df.columns).issuperset(columns):
             raise ValueError(
                 f"CSV is missing expected columns: {', '.join(str(v) for v in (columns - set(df.columns)))}"
