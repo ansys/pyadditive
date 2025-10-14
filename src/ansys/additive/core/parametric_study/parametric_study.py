@@ -1835,7 +1835,9 @@ class ParametricStudy:
         if ColumnNames.SB_THERMAL_HISTORY_FLAG not in df.columns:
             df[ColumnNames.SB_THERMAL_HISTORY_FLAG] = SingleBeadInput.DEFAULT_OUTPUT_THERMAL_HISTORY
         if ColumnNames.SB_THERMAL_HISTORY_INTERVAL not in df.columns:
-            df[ColumnNames.SB_THERMAL_HISTORY_INTERVAL] = SingleBeadInput.DEFAULT_THERMAL_HISTORY_INTERVAL
+            df[ColumnNames.SB_THERMAL_HISTORY_INTERVAL] = (
+                SingleBeadInput.DEFAULT_THERMAL_HISTORY_INTERVAL
+            )
 
         if not set(df.columns).issuperset(columns):
             raise ValueError(
