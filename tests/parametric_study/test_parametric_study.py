@@ -2270,21 +2270,31 @@ def test_import_csv_raises_exception_when_material_does_not_match(
         study.import_csv_study(single_bead_demo_csv_file)
 
 
-def test_import_csv_study_adds_pv_column_for_csv_file_without_the_column(
-    tmp_path: pathlib.Path,
+@pytest.mark.parametrize(
+    "columnName, expectedNumUniqueRows",
+    [
+        (ColumnNames.PV_RATIO, 5),
+        (ColumnNames.SB_THERMAL_HISTORY_FLAG, 1),
+        (ColumnNames.SB_THERMAL_HISTORY_INTERVAL, 1),
+        (ColumnNames.HEAT_SOURCE, 1),
+        (ColumnNames.RING_MODE_INDEX, 1),
+    ],
+)
+def test_import_csv_study_adds_missing_column_for_older_csv_files(
+    columnName, expectedNumUniqueRows, tmp_path: pathlib.Path,
 ):
     # arrange
     study_name = "test_study"
     single_bead_demo_csv_file = test_utils.get_test_file_path(
-        pathlib.Path("csv") / "single-bead-test-study.csv"
+        pathlib.Path("csv") / "missing-columns-format-version4.csv"
     )
     # act
     study = ParametricStudy(tmp_path / study_name, "material")
     errors = study.import_csv_study(single_bead_demo_csv_file)
 
     # assert
-    assert len(errors) == 0
-    assert len(study.data_frame()[ColumnNames.PV_RATIO].unique()) == 5
+    assert not errors
+    assert study.data_frame()[columnName].unique().shape == (expectedNumUniqueRows,)
 
 
 def test_import_csv_study_reads_pv_column_for_csv_file_containing_the_column(
@@ -2300,8 +2310,28 @@ def test_import_csv_study_reads_pv_column_for_csv_file_containing_the_column(
     errors = study.import_csv_study(single_bead_demo_csv_file)
 
     # assert
-    assert len(errors) == 0
+    assert not errors
     assert len(study.data_frame()[ColumnNames.PV_RATIO].unique()) == 6
+
+def test_import_csv_study_reads_single_bead_and_heat_source_columns(
+    tmp_path: pathlib.Path,
+):
+    # arrange
+    study_name = "test_study"
+    single_bead_demo_csv_file = test_utils.get_test_file_path(
+        pathlib.Path("csv") / "single-bead-test-study.csv"
+    )
+    # act
+    study = ParametricStudy(tmp_path / study_name, "material")
+    errors = study.import_csv_study(single_bead_demo_csv_file)
+    result_df = study.data_frame()
+
+    # assert
+    assert not errors
+    assert (result_df[ColumnNames.HEAT_SOURCE].unique() == np.array(["gaussian", "ring"])).all()
+    assert (result_df[ColumnNames.RING_MODE_INDEX].unique() == np.array([0, 1, 2, 4, 5])).all()
+    assert result_df[ColumnNames.SB_THERMAL_HISTORY_FLAG].all()
+    assert (result_df[ColumnNames.SB_THERMAL_HISTORY_INTERVAL] == 1000).all()
 
 
 def test_import_csv_study_adds_simulations_of_multiple_input_types_to_new_study(
