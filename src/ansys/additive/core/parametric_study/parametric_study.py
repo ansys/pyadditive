@@ -1674,6 +1674,8 @@ class ParametricStudy:
         - Version 3: Add material name and PV ratio columns.
         - Version 4: Add heat source, ring mode index and two single-bead thermal history columns.
 
+        Note: The _add_simulations_from_csv method will need to be updated with new versions.
+
         Parameters
         ----------
         study : ParametricStudy
@@ -1832,6 +1834,8 @@ class ParametricStudy:
     @save_on_return
     def _add_simulations_from_csv(self, file_path: str | os.PathLike) -> list[str]:
         """Add simulations from an imported CSV file to the parametric study.
+
+        Note: Reference the update_format method to update this method when there are new study format versions.
 
         Parameters
         ----------
