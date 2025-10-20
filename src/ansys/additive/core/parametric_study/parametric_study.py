@@ -1674,6 +1674,8 @@ class ParametricStudy:
         - Version 3: Add material name and PV ratio columns.
         - Version 4: Add heat source, ring mode index and two single-bead thermal history columns.
 
+        Note: The _add_simulations_from_csv method will need to be updated with new versions.
+
         Parameters
         ----------
         study : ParametricStudy
@@ -1779,7 +1781,7 @@ class ParametricStudy:
 
     @staticmethod
     def _add_pv_ratio(df: pd.DataFrame) -> pd.DataFrame:
-        """Add PV Ratio column to the parametric study.
+        """Add the P/V ratio column to the parametric study.
 
         Parameters
         ----------
@@ -1792,20 +1794,48 @@ class ParametricStudy:
             Updated data frame.
 
         """
-        if ColumnNames.PV_RATIO not in df.columns:
-            scan_speed_index = df.columns.get_loc(ColumnNames.SCAN_SPEED)
-            if not isinstance(scan_speed_index, int):
-                raise TypeError(
-                    f"scan_speed_index must be of type int, got {type(scan_speed_index)}"
-                )
-            df.insert(scan_speed_index + 1, ColumnNames.PV_RATIO, None)
+        return ParametricStudy._insert_column(
+            df,
+            ColumnNames.PV_RATIO,
+            df[ColumnNames.LASER_POWER] / df[ColumnNames.SCAN_SPEED],
+            ColumnNames.SCAN_SPEED,
+        )
 
-        df[ColumnNames.PV_RATIO] = df[ColumnNames.LASER_POWER] / df[ColumnNames.SCAN_SPEED]
+    @staticmethod
+    def _insert_column(
+        df: pd.DataFrame, col_name: str, default_value, insert_after_col_name: str
+    ) -> pd.DataFrame:
+        """Insert a column after the specified existing column into the parametric study.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Data frame containing the parametric study.
+        col_name : str
+            Name of the column to insert.
+        default_value : any
+            Default value to assign to the new column.
+        insert_after_col_name : str
+            Name of the existing column after which to insert the new column.
+
+        Returns
+        -------
+        pd.DataFrame
+            Updated data frame.
+
+        """
+        if col_name not in df.columns:
+            insert_index = df.columns.get_loc(insert_after_col_name)
+            if not isinstance(insert_index, int):
+                raise TypeError(f"insert_index must be of type int, got {type(insert_index)}")
+            df.insert(insert_index + 1, col_name, default_value)
         return df
 
     @save_on_return
     def _add_simulations_from_csv(self, file_path: str | os.PathLike) -> list[str]:
         """Add simulations from an imported CSV file to the parametric study.
+
+        Note: Reference the update_format method to update this method when there are new study format versions.
 
         Parameters
         ----------
@@ -1824,8 +1854,15 @@ class ParametricStudy:
             raise ValueError(f"Unable to read CSV file: {e}") from e
 
         columns = {getattr(ColumnNames, c) for c in ColumnNames.__dict__ if not c.startswith("_")}
-        # older CSV files may not have the PV_RATIO column
-        columns.remove(ColumnNames.PV_RATIO)
+        # older CSV files may not contain these columns
+        columns_to_remove = {
+            ColumnNames.PV_RATIO,
+            ColumnNames.HEAT_SOURCE,
+            ColumnNames.RING_MODE_INDEX,
+            ColumnNames.SB_THERMAL_HISTORY_FLAG,
+            ColumnNames.SB_THERMAL_HISTORY_INTERVAL,
+        }
+        columns.difference_update(columns_to_remove)
 
         if not set(df.columns).issuperset(columns):
             raise ValueError(
@@ -1835,6 +1872,32 @@ class ParametricStudy:
         # add PV_RATIO column to the dataframe if not present
         if ColumnNames.PV_RATIO not in df:
             df = ParametricStudy._add_pv_ratio(df)
+
+        # for backwards compatibility with study format versions less than 4, add missing columns with default values
+        ParametricStudy._insert_column(
+            df,
+            ColumnNames.HEAT_SOURCE,
+            MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
+            ColumnNames.STRIPE_WIDTH,
+        )
+        ParametricStudy._insert_column(
+            df,
+            ColumnNames.RING_MODE_INDEX,
+            MachineConstants.DEFAULT_RING_MODE_INDEX,
+            ColumnNames.HEAT_SOURCE,
+        )
+        ParametricStudy._insert_column(
+            df,
+            ColumnNames.SB_THERMAL_HISTORY_FLAG,
+            SingleBeadInput.DEFAULT_OUTPUT_THERMAL_HISTORY,
+            ColumnNames.SINGLE_BEAD_LENGTH,
+        )
+        ParametricStudy._insert_column(
+            df,
+            ColumnNames.SB_THERMAL_HISTORY_INTERVAL,
+            SingleBeadInput.DEFAULT_THERMAL_HISTORY_INTERVAL,
+            ColumnNames.SB_THERMAL_HISTORY_FLAG,
+        )
 
         # check material name
         csv_material = str(df[ColumnNames.MATERIAL].iloc[0])
