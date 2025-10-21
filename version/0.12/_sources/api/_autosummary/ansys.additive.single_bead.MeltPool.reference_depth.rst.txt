@@ -1,0 +1,6 @@
+reference\_depth
+================
+
+.. currentmodule:: ansys.additive.single_bead
+
+.. autoproperty:: MeltPool.reference_depth

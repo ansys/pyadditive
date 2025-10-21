@@ -1,0 +1,1498 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Porosity analysis &#8212; PyAdditive 0.21.dev8 documentation</title>
+  
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/ansys-sphinx-theme.css?v=9e79609d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/ansys-sphinx-theme.css?v=9e79609d" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://www.nerdfonts.com/assets/css/webfont.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=f23d505c" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+
+  <!-- Include desired assets -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  
+
+  
+    <link href="../../_static/css/breadcrumbs.css" rel="stylesheet" />
+  
+    <script src="../../_static/documentation_options.js?v=f82e9bdd"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/thebelab-helper.js"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=49e1bf35"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/gallery_examples/01_additive_porosity';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://additive.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="icon" href="../../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="2D Microstructure analysis" href="02_additive_2d_microstructure.html" />
+    <link rel="prev" title="Single bead analysis" href="00_additive_single_bead.html" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.21.dev8" />
+  <meta property="og:site_name" content="PyAnsys" />
+  <meta name="physics" content="Structures" />
+  <link rel="canonical" href="https://additive.docs.pyansys.com/version/stable/examples/gallery_examples/01_additive_porosity.html" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="https://docs.pyansys.com/">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/pyansys_logo_transparent_black.png" class="logo__image only-light" alt="PyAdditive 0.21.dev8 documentation - Home"/>
+    <img src="../../_static/pyansys_logo_transparent_white.png" class="logo__image only-dark pst-js-only" alt="PyAdditive 0.21.dev8 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html" title="PyAdditive 0.21.dev8 documentation home">Home</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting-started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing.html">
+    Contribute
+  </a>
+</li>
+
+  </ul>
+</nav>
+</div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+</div></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+  
+    <div id="announcement_msg"></div>
+<script>
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(
+      (text) => (document.getElementById("announcement_msg").innerHTML = text),
+    )
+    .catch((error) => console.error(`Fetch problem: ${error.message}`));
+</script>
+  
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html" title="PyAdditive 0.21.dev8 documentation home">Home</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting-started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing.html">
+    Contribute
+  </a>
+</li>
+
+  </ul>
+</nav>
+</div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+</div></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="00_additive_single_bead.html">Single bead analysis</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Porosity analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_additive_2d_microstructure.html">2D Microstructure analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_using_a_custom_material.html">Using a custom material</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_custom_material_tuning.html">Custom material tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_advanced_parametric_study.html">Parametric study</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_additive_3d_microstructure.html">3D Microstructure analysis (BETA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_additive_thermal_history.html">Thermal history analysis (BETA)</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+         
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="https://docs.pyansys.com/" class="nav-link">PyAnsys</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a
+        href="../../index.html"
+        class="nav-link"
+        aria-label="Home"
+      >
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="index.html" class="nav-link">Examples</a>
+    </li>
+      
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Porosity analysis</span></li>
+    
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-examples-gallery-examples-01-additive-porosity-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="porosity-analysis">
+<span id="sphx-glr-examples-gallery-examples-01-additive-porosity-py"></span><h1>Porosity analysis<a class="headerlink" href="#porosity-analysis" title="Link to this heading">#</a></h1>
+<p>This example shows how to use PyAdditive to determine
+porosity for a given material and machine parameter combinations.</p>
+<p>Units are SI (m, kg, s, K) unless otherwise noted.</p>
+<section id="perform-required-import-and-connect">
+<h2>Perform required import and connect<a class="headerlink" href="#perform-required-import-and-connect" title="Link to this heading">#</a></h2>
+<p>Perform the required import and connect to the Additive service.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.additive.core</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Additive</span><span class="p">,</span>
+    <span class="n">AdditiveMachine</span><span class="p">,</span>
+    <span class="n">PorosityInput</span><span class="p">,</span>
+    <span class="n">SimulationError</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">additive</span> <span class="o">=</span> <span class="n">Additive</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="select-material">
+<h2>Select material<a class="headerlink" href="#select-material" title="Link to this heading">#</a></h2>
+<p>Select a material. You can use the <a class="reference internal" href="../../api/ansys/additive/core/additive/Additive.html#Additive.materials_list" title="Additive.materials_list"><code class="xref py py-meth docutils literal notranslate"><span class="pre">materials_list()</span></code></a> method to
+obtain a list of available materials.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available material names: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">additive</span><span class="o">.</span><span class="n">materials_list</span><span class="p">()))</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Available material names: [&#39;17-4PH&#39;, &#39;AlSi10Mg&#39;, &#39;IN718&#39;, &#39;316L&#39;, &#39;Ti64&#39;, &#39;IN625&#39;, &#39;CoCr&#39;, &#39;Al357&#39;]
+</pre></div>
+</div>
+<p>You can obtain the parameters for a single material by passing a name
+from the materials list to the <a class="reference internal" href="../../api/ansys/additive/core/additive/Additive.html#Additive.material" title="Additive.material"><code class="xref py py-meth docutils literal notranslate"><span class="pre">material()</span></code></a> method.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">material</span> <span class="o">=</span> <span class="n">additive</span><span class="o">.</span><span class="n">material</span><span class="p">(</span><span class="s2">&quot;316L&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="specify-machine-parameters">
+<h2>Specify machine parameters<a class="headerlink" href="#specify-machine-parameters" title="Link to this heading">#</a></h2>
+<p>Specify machine parameters by first creating an <code class="xref py py-class docutils literal notranslate"><span class="pre">AdditiveMachine</span></code> object
+and then assigning the desired values. All values are in SI units (m, kg, s, K)
+unless otherwise noted.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">machine</span> <span class="o">=</span> <span class="n">AdditiveMachine</span><span class="p">()</span>
+
+<span class="c1"># Show available parameters</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">machine</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>AdditiveMachine
+laser_power: 195.0 W
+scan_speed: 1.0 m/s
+heater_temperature: 80.0 °C
+layer_thickness: 5e-05 m
+beam_diameter: 0.0001 m
+starting_layer_angle: 57 °
+layer_rotation_angle: 67 °
+hatch_spacing: 0.0001 m
+slicing_stripe_width: 0.01 m
+heat_source_model: gaussian
+ring_mode_index: 0
+</pre></div>
+</div>
+</section>
+<section id="set-laser-power-and-scan-speed">
+<h2>Set laser power and scan speed<a class="headerlink" href="#set-laser-power-and-scan-speed" title="Link to this heading">#</a></h2>
+<p>Set the laser power and scan speed.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">machine</span><span class="o">.</span><span class="n">scan_speed</span> <span class="o">=</span> <span class="mf">1.2</span>  <span class="c1"># m/s</span>
+<span class="n">machine</span><span class="o">.</span><span class="n">laser_power</span> <span class="o">=</span> <span class="mi">250</span>  <span class="c1"># W</span>
+</pre></div>
+</div>
+</section>
+<section id="specify-inputs-for-porosity-simulation">
+<h2>Specify inputs for porosity simulation<a class="headerlink" href="#specify-inputs-for-porosity-simulation" title="Link to this heading">#</a></h2>
+<p>Create a <code class="xref py py-class docutils literal notranslate"><span class="pre">PorosityInput</span></code> object containing the desired simulation parameters.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">input</span> <span class="o">=</span> <span class="n">PorosityInput</span><span class="p">(</span>
+    <span class="n">machine</span><span class="o">=</span><span class="n">machine</span><span class="p">,</span>
+    <span class="n">material</span><span class="o">=</span><span class="n">material</span><span class="p">,</span>
+    <span class="n">size_x</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>  <span class="c1"># meters</span>
+    <span class="n">size_y</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+    <span class="n">size_z</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="run-simulation">
+<h2>Run simulation<a class="headerlink" href="#run-simulation" title="Link to this heading">#</a></h2>
+<p>Use the <a class="reference internal" href="../../api/ansys/additive/core/additive/Additive.html#Additive.simulate" title="Additive.simulate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">simulate()</span></code></a> method of the <code class="docutils literal notranslate"><span class="pre">additive</span></code> object to run the simulation.
+The returned object is either a <code class="xref py py-class docutils literal notranslate"><span class="pre">PorositySummary</span></code> object
+containing the input and the relative density of the simulated sample or a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationError</span></code> object.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="n">additive</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">summary</span><span class="p">,</span> <span class="n">SimulationError</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="print-relative-density">
+<h2>Print relative density<a class="headerlink" href="#print-relative-density" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;For </span><span class="si">{</span><span class="n">summary</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> with </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">machine</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">    relative density = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">relative_density</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>For 316L with
+ AdditiveMachine
+laser_power: 250 W
+scan_speed: 1.2 m/s
+heater_temperature: 80.0 °C
+layer_thickness: 5e-05 m
+beam_diameter: 0.0001 m
+starting_layer_angle: 57 °
+layer_rotation_angle: 67 °
+hatch_spacing: 0.0001 m
+slicing_stripe_width: 0.01 m
+heat_source_model: gaussian
+ring_mode_index: 0
+
+
+    relative density = 0.99999
+</pre></div>
+</div>
+</section>
+<section id="print-the-simulation-logs">
+<h2>Print the simulation logs<a class="headerlink" href="#print-the-simulation-logs" title="Link to this heading">#</a></h2>
+<p>To print the simulation logs, use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">logs()</span></code> property.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">logs</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>File: thermal-log.log
+Tue Oct 21 07:57:20 2025 -&gt; SOLVERINFO: Number of elements traveled by laser per step: 1.200000
+Tue Oct 21 07:57:24 2025 -&gt; DESKTOPINFO: License successfully obtained.
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: Skipping HPC license checkout as 4 are being requested.
+Tue Oct 21 07:57:24 2025 -&gt; USERINFO: Starting ThermalSolver v34.4.0-dev, SolverCommon v14.108.0
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: Begin Run
+Tue Oct 21 07:57:24 2025 -&gt; DESKTOPINFO: Using 4 threads for solver
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: PartX: 0.001000
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: PartY: 0.001000
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: ZoomZ: 0.000400
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: XYResolution: 0.000025
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: MeshLayersPerLayer: 4
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: LayerThickness: 0.000050
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: ZResolution: 0.000010
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: MeshPadding: 0.000400
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: PlateThickness: 0.010000
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: NumberOfDepositLayers: 20
+Tue Oct 21 07:57:24 2025 -&gt; USERINFO: Total number of deposit layers: 20
+Tue Oct 21 07:57:24 2025 -&gt; USERINFO: Total number of solution layers: 20
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: StepTime: 0.000025
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: ScanSpeed: 1.200000
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: BeamDiameter: 0.000100
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: LaserWattage: 250.000000
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: TotalCoolingTime: 0.001000
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: HeaterTemperature: 353.150000
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: InterScanTime: 0.000500
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: FluxModelName: timeint-gauss
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: MaterialID: -1
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: LookupFilePath: /tmp/additive/68229eac71006/material-thermal-data.csv
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: MeanFreePathInPowder: 11669.916045
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: MeanFreePathInBulk: 11669.916045
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: ScanPatternFilePath: /tmp/additive/68229eac71006/hatch-files/LaserPosition
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: NumberOfBufferLayers: 1
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: DisableThermalCalculation: 0
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: ThermalCalculationInterval: 1
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: DisableStatemapCorrection: 0
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: UseMinimumMeltPool: 1
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: StrainMethod: NONE
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: OutputMeltpool: 0
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: OutputStateMap: 1
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: StateMapFileOutputPath: /tmp/additive/68229eac71006/statemap/
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: StateMapRefinement: 4
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: OutputVirtualSensorDataAsBinary: 1
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: OutputCoaxialAverageSensor: 0
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: OutputCoaxialFullThermalSensor: 0
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: OutputPointProbe: 0
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: OutputMicrostructureSensor: 0
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: OutputStationaryFullThermalSensor: 0
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: SolverRelativeTolerance: 0.000000
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: SolverAbsoluteTolerance: 0.000001
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: ExplicitSolutionLength: 0.003000
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: FarRegionResolutionMultiplier: 2
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: MaxTemperatureCap: 3186.000000
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: ModifiedBaseTemperature: 354.150000
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: MonotonicThermalHistoryOn: 1
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: TailCutoffLength: 0.000174
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: SurfaceRoughnessAnalysis: 0
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: BallingAnalysis: 0
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: KeyHoleAnalysis: 0
+Tue Oct 21 07:57:24 2025 -&gt; SOLVERINFO: SolutionAssemblerType: transition-distance-blending
+Tue Oct 21 07:57:27 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 0.5
+Tue Oct 21 07:57:27 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 1
+Tue Oct 21 07:57:27 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 1.5
+Tue Oct 21 07:57:27 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 2
+Tue Oct 21 07:57:27 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 2.5
+Tue Oct 21 07:57:28 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 3
+Tue Oct 21 07:57:28 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 3.5
+Tue Oct 21 07:57:28 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 4
+Tue Oct 21 07:57:28 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 4.5
+Tue Oct 21 07:57:29 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 5
+Tue Oct 21 07:57:29 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 5.5
+Tue Oct 21 07:57:29 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 6
+Tue Oct 21 07:57:29 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 6.5
+Tue Oct 21 07:57:29 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 7
+Tue Oct 21 07:57:30 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 7.5
+Tue Oct 21 07:57:30 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 8
+Tue Oct 21 07:57:30 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 8.5
+Tue Oct 21 07:57:30 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 9
+Tue Oct 21 07:57:31 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 9.5
+Tue Oct 21 07:57:31 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 10
+Tue Oct 21 07:57:31 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 10.5
+Tue Oct 21 07:57:31 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 11
+Tue Oct 21 07:57:32 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 11.5
+Tue Oct 21 07:57:32 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 12
+Tue Oct 21 07:57:32 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 12.5
+Tue Oct 21 07:57:32 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 13
+Tue Oct 21 07:57:32 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 13.5
+Tue Oct 21 07:57:33 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 14
+Tue Oct 21 07:57:33 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 14.5
+Tue Oct 21 07:57:33 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 15
+Tue Oct 21 07:57:33 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 15.5
+Tue Oct 21 07:57:34 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 16
+Tue Oct 21 07:57:34 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 16.5
+Tue Oct 21 07:57:34 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 17
+Tue Oct 21 07:57:34 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 17.5
+Tue Oct 21 07:57:34 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 18
+Tue Oct 21 07:57:35 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 18.5
+Tue Oct 21 07:57:35 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 19
+Tue Oct 21 07:57:35 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 19.5
+Tue Oct 21 07:57:35 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 20
+Tue Oct 21 07:57:36 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 20.5
+Tue Oct 21 07:57:36 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 21
+Tue Oct 21 07:57:36 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 21.5
+Tue Oct 21 07:57:36 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 22
+Tue Oct 21 07:57:37 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 22.5
+Tue Oct 21 07:57:37 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 23
+Tue Oct 21 07:57:37 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 23.5
+Tue Oct 21 07:57:37 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 24
+Tue Oct 21 07:57:37 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 24.5
+Tue Oct 21 07:57:38 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 25
+Tue Oct 21 07:57:38 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 25.5
+Tue Oct 21 07:57:38 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 26
+Tue Oct 21 07:57:38 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 26.5
+Tue Oct 21 07:57:39 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 27
+Tue Oct 21 07:57:39 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 27.5
+Tue Oct 21 07:57:39 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 28
+Tue Oct 21 07:57:39 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 28.5
+Tue Oct 21 07:57:40 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 29
+Tue Oct 21 07:57:40 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 29.5
+Tue Oct 21 07:57:40 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 30
+Tue Oct 21 07:57:40 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 30.5
+Tue Oct 21 07:57:40 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 31
+Tue Oct 21 07:57:41 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 31.5
+Tue Oct 21 07:57:41 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 32
+Tue Oct 21 07:57:41 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 32.5
+Tue Oct 21 07:57:41 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 33
+Tue Oct 21 07:57:42 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 33.5
+Tue Oct 21 07:57:42 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 34
+Tue Oct 21 07:57:42 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 34.5
+Tue Oct 21 07:57:42 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 35
+Tue Oct 21 07:57:42 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 35.5
+Tue Oct 21 07:57:43 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 36
+Tue Oct 21 07:57:43 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 36.5
+Tue Oct 21 07:57:43 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 37
+Tue Oct 21 07:57:43 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 37.5
+Tue Oct 21 07:57:44 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 38
+Tue Oct 21 07:57:44 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 38.5
+Tue Oct 21 07:57:44 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 39
+Tue Oct 21 07:57:44 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 39.5
+Tue Oct 21 07:57:45 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 40
+Tue Oct 21 07:57:45 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 40.5
+Tue Oct 21 07:57:45 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 41
+Tue Oct 21 07:57:45 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 41.5
+Tue Oct 21 07:57:45 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 42
+Tue Oct 21 07:57:46 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 42.5
+Tue Oct 21 07:57:46 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 43
+Tue Oct 21 07:57:46 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 43.5
+Tue Oct 21 07:57:46 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 44
+Tue Oct 21 07:57:47 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 44.5
+Tue Oct 21 07:57:47 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 45
+Tue Oct 21 07:57:47 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 45.5
+Tue Oct 21 07:57:47 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 46
+Tue Oct 21 07:57:47 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 46.5
+Tue Oct 21 07:57:48 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 47
+Tue Oct 21 07:57:48 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 47.5
+Tue Oct 21 07:57:48 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 48
+Tue Oct 21 07:57:48 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 48.5
+Tue Oct 21 07:57:49 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 49
+Tue Oct 21 07:57:49 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 49.5
+Tue Oct 21 07:57:49 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 50
+Tue Oct 21 07:57:51 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 50.5
+Tue Oct 21 07:57:51 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 51
+Tue Oct 21 07:57:52 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 51.5
+Tue Oct 21 07:57:52 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 52
+Tue Oct 21 07:57:52 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 52.5
+Tue Oct 21 07:57:52 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 53
+Tue Oct 21 07:57:52 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 53.5
+Tue Oct 21 07:57:53 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 54
+Tue Oct 21 07:57:53 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 54.5
+Tue Oct 21 07:57:53 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 55
+Tue Oct 21 07:57:53 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 55.5
+Tue Oct 21 07:57:54 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 56
+Tue Oct 21 07:57:54 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 56.5
+Tue Oct 21 07:57:54 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 57
+Tue Oct 21 07:57:54 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 57.5
+Tue Oct 21 07:57:55 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 58
+Tue Oct 21 07:57:55 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 58.5
+Tue Oct 21 07:57:55 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 59
+Tue Oct 21 07:57:55 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 59.5
+Tue Oct 21 07:57:55 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 60
+Tue Oct 21 07:57:56 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 60.5
+Tue Oct 21 07:57:56 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 61
+Tue Oct 21 07:57:56 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 61.5
+Tue Oct 21 07:57:56 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 62
+Tue Oct 21 07:57:57 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 62.5
+Tue Oct 21 07:57:57 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 63
+Tue Oct 21 07:57:57 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 63.5
+Tue Oct 21 07:57:57 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 64
+Tue Oct 21 07:57:58 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 64.5
+Tue Oct 21 07:57:58 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 65
+Tue Oct 21 07:57:58 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 65.5
+Tue Oct 21 07:57:58 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 66
+Tue Oct 21 07:57:58 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 66.5
+Tue Oct 21 07:57:59 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 67
+Tue Oct 21 07:57:59 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 67.5
+Tue Oct 21 07:57:59 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 68
+Tue Oct 21 07:57:59 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 68.5
+Tue Oct 21 07:58:00 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 69
+Tue Oct 21 07:58:00 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 69.5
+Tue Oct 21 07:58:00 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 70
+Tue Oct 21 07:58:00 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 70.5
+Tue Oct 21 07:58:00 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 71
+Tue Oct 21 07:58:01 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 71.5
+Tue Oct 21 07:58:01 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 72
+Tue Oct 21 07:58:01 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 72.5
+Tue Oct 21 07:58:01 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 73
+Tue Oct 21 07:58:02 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 73.5
+Tue Oct 21 07:58:02 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 74
+Tue Oct 21 07:58:02 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 74.5
+Tue Oct 21 07:58:02 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 75
+Tue Oct 21 07:58:03 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 75.5
+Tue Oct 21 07:58:03 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 76
+Tue Oct 21 07:58:03 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 76.5
+Tue Oct 21 07:58:03 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 77
+Tue Oct 21 07:58:04 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 77.5
+Tue Oct 21 07:58:04 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 78
+Tue Oct 21 07:58:04 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 78.5
+Tue Oct 21 07:58:04 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 79
+Tue Oct 21 07:58:04 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 79.5
+Tue Oct 21 07:58:05 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 80
+Tue Oct 21 07:58:05 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 80.5
+Tue Oct 21 07:58:05 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 81
+Tue Oct 21 07:58:05 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 81.5
+Tue Oct 21 07:58:06 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 82
+Tue Oct 21 07:58:06 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 82.5
+Tue Oct 21 07:58:06 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 83
+Tue Oct 21 07:58:06 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 83.5
+Tue Oct 21 07:58:07 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 84
+Tue Oct 21 07:58:07 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 84.5
+Tue Oct 21 07:58:07 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 85
+Tue Oct 21 07:58:07 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 85.5
+Tue Oct 21 07:58:08 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 86
+Tue Oct 21 07:58:08 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 86.5
+Tue Oct 21 07:58:08 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 87
+Tue Oct 21 07:58:08 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 87.5
+Tue Oct 21 07:58:08 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 88
+Tue Oct 21 07:58:09 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 88.5
+Tue Oct 21 07:58:09 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 89
+Tue Oct 21 07:58:09 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 89.5
+Tue Oct 21 07:58:09 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 90
+Tue Oct 21 07:58:10 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 90.5
+Tue Oct 21 07:58:10 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 91
+Tue Oct 21 07:58:10 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 91.5
+Tue Oct 21 07:58:10 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 92
+Tue Oct 21 07:58:11 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 92.5
+Tue Oct 21 07:58:11 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 93
+Tue Oct 21 07:58:11 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 93.5
+Tue Oct 21 07:58:11 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 94
+Tue Oct 21 07:58:11 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 94.5
+Tue Oct 21 07:58:12 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 95
+Tue Oct 21 07:58:12 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 95.5
+Tue Oct 21 07:58:12 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 96
+Tue Oct 21 07:58:12 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 96.5
+Tue Oct 21 07:58:13 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 97
+Tue Oct 21 07:58:13 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 97.5
+Tue Oct 21 07:58:13 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 98
+Tue Oct 21 07:58:13 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 98.5
+Tue Oct 21 07:58:14 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 99
+Tue Oct 21 07:58:14 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 99.5
+Tue Oct 21 07:58:14 2025 -&gt; USERINFO: Explicit Solution -&gt; PercentComplete: 100
+Tue Oct 21 07:58:14 2025 -&gt; SOLVERINFO: Running with restricted thermal solution.
+Tue Oct 21 07:58:14 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 13
+Tue Oct 21 07:58:14 2025 -&gt; USERINFO: Run Layer : 1
+Tue Oct 21 07:58:14 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 339
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:15 2025 -&gt; USERINFO: Completed deposit layer 1 (solution layer 1 of 20).
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: PercentComplete: 5
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.810 s, ( 92.01 %)
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 0.605 s, ( 68.74 %)
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: TIME:           fill:  = 0.528 s, ( 59.99 %)
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.001 s, ( 0.06 %)
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: TIME:           update:  = 0.076 s, ( 8.66 %)
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.010 s, ( 1.19 %)
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.143 s, ( 16.24 %)
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.015 s, ( 1.69 %)
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.001 s, ( 0.06 %)
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.023 s, ( 2.64 %)
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.618 s, ( 70.19 %)
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.879866 s, (100.000000 %)
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 25
+Tue Oct 21 07:58:15 2025 -&gt; USERINFO: Run Layer : 2
+Tue Oct 21 07:58:15 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 344
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:16 2025 -&gt; USERINFO: Completed deposit layer 2 (solution layer 2 of 20).
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: PercentComplete: 10
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.389 s, ( 87.24 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 0.823 s, ( 184.49 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:           fill:  = 0.699 s, ( 156.85 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.001 s, ( 0.19 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:           update:  = 0.122 s, ( 27.34 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.012 s, ( 2.71 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.118 s, ( 26.56 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.006 s, ( 1.30 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.08 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.026 s, ( 5.89 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.226 s, ( 50.69 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.445957 s, (100.000000 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 11
+Tue Oct 21 07:58:16 2025 -&gt; USERINFO: Run Layer : 3
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 336
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:16 2025 -&gt; USERINFO: Completed deposit layer 3 (solution layer 3 of 20).
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: PercentComplete: 15
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.625 s, ( 89.64 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 1.252 s, ( 179.64 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:           fill:  = 1.052 s, ( 150.89 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.001 s, ( 0.17 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:           update:  = 0.199 s, ( 28.49 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.005 s, ( 0.77 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.139 s, ( 19.89 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.010 s, ( 1.46 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.04 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.029 s, ( 4.22 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.441 s, ( 63.24 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.696932 s, (100.000000 %)
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 12
+Tue Oct 21 07:58:16 2025 -&gt; USERINFO: Run Layer : 4
+Tue Oct 21 07:58:16 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 343
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:17 2025 -&gt; USERINFO: Completed deposit layer 4 (solution layer 4 of 20).
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: PercentComplete: 20
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.719 s, ( 90.63 %)
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 1.769 s, ( 223.03 %)
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: TIME:           fill:  = 1.486 s, ( 187.42 %)
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.001 s, ( 0.19 %)
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: TIME:           update:  = 0.280 s, ( 35.30 %)
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.006 s, ( 0.72 %)
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.140 s, ( 17.68 %)
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.011 s, ( 1.34 %)
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.04 %)
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.033 s, ( 4.10 %)
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.529 s, ( 66.73 %)
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.792987 s, (100.000000 %)
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 13
+Tue Oct 21 07:58:17 2025 -&gt; USERINFO: Run Layer : 5
+Tue Oct 21 07:58:17 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 338
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:18 2025 -&gt; USERINFO: Completed deposit layer 5 (solution layer 5 of 20).
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: PercentComplete: 25
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.867 s, ( 92.27 %)
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 2.426 s, ( 258.16 %)
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: TIME:           fill:  = 2.064 s, ( 219.58 %)
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.002 s, ( 0.19 %)
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: TIME:           update:  = 0.360 s, ( 38.26 %)
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.006 s, ( 0.65 %)
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.140 s, ( 14.88 %)
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.015 s, ( 1.56 %)
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.03 %)
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.036 s, ( 3.78 %)
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.671 s, ( 71.36 %)
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.939813 s, (100.000000 %)
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 14
+Tue Oct 21 07:58:18 2025 -&gt; USERINFO: Run Layer : 6
+Tue Oct 21 07:58:18 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 342
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:19 2025 -&gt; USERINFO: Completed deposit layer 6 (solution layer 6 of 20).
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: PercentComplete: 30
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.873 s, ( 92.19 %)
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 3.083 s, ( 325.79 %)
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: TIME:           fill:  = 2.639 s, ( 278.88 %)
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.002 s, ( 0.22 %)
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: TIME:           update:  = 0.440 s, ( 46.53 %)
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.007 s, ( 0.69 %)
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.143 s, ( 15.11 %)
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.014 s, ( 1.46 %)
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.03 %)
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.039 s, ( 4.07 %)
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.670 s, ( 70.83 %)
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.946415 s, (100.000000 %)
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 15
+Tue Oct 21 07:58:19 2025 -&gt; USERINFO: Run Layer : 7
+Tue Oct 21 07:58:19 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 337
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:20 2025 -&gt; USERINFO: Completed deposit layer 7 (solution layer 7 of 20).
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: PercentComplete: 35
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.612 s, ( 89.57 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 3.490 s, ( 511.03 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:           fill:  = 2.970 s, ( 434.86 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.002 s, ( 0.35 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:           update:  = 0.516 s, ( 75.55 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.008 s, ( 1.19 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.133 s, ( 19.53 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.010 s, ( 1.47 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.05 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.042 s, ( 6.14 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.418 s, ( 61.18 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.682918 s, (100.000000 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 12
+Tue Oct 21 07:58:20 2025 -&gt; USERINFO: Run Layer : 8
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 338
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:20 2025 -&gt; USERINFO: Completed deposit layer 8 (solution layer 8 of 20).
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: PercentComplete: 40
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.657 s, ( 90.10 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 3.934 s, ( 539.24 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:           fill:  = 3.336 s, ( 457.31 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.003 s, ( 0.38 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:           update:  = 0.593 s, ( 81.28 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.006 s, ( 0.82 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.139 s, ( 19.02 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.011 s, ( 1.55 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.05 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.045 s, ( 6.15 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.456 s, ( 62.51 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.729567 s, (100.000000 %)
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 14
+Tue Oct 21 07:58:20 2025 -&gt; USERINFO: Run Layer : 9
+Tue Oct 21 07:58:20 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 340
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:21 2025 -&gt; USERINFO: Completed deposit layer 9 (solution layer 9 of 20).
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: PercentComplete: 45
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.912 s, ( 92.70 %)
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 4.626 s, ( 470.42 %)
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: TIME:           fill:  = 3.948 s, ( 401.44 %)
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.003 s, ( 0.32 %)
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: TIME:           update:  = 0.673 s, ( 68.43 %)
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.006 s, ( 0.65 %)
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.139 s, ( 14.12 %)
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.015 s, ( 1.55 %)
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.04 %)
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.045 s, ( 4.60 %)
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.705 s, ( 71.73 %)
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.983435 s, (100.000000 %)
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 13
+Tue Oct 21 07:58:21 2025 -&gt; USERINFO: Run Layer : 10
+Tue Oct 21 07:58:21 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 340
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:22 2025 -&gt; USERINFO: Completed deposit layer 10 (solution layer 10 of 20).
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: PercentComplete: 50
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.865 s, ( 92.22 %)
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 5.273 s, ( 562.43 %)
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: TIME:           fill:  = 4.513 s, ( 481.38 %)
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.003 s, ( 0.36 %)
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: TIME:           update:  = 0.754 s, ( 80.42 %)
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.006 s, ( 0.65 %)
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.140 s, ( 14.91 %)
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.013 s, ( 1.42 %)
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.03 %)
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.045 s, ( 4.80 %)
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.660 s, ( 70.40 %)
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.937509 s, (100.000000 %)
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 11
+Tue Oct 21 07:58:22 2025 -&gt; USERINFO: Run Layer : 11
+Tue Oct 21 07:58:22 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 339
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:23 2025 -&gt; USERINFO: Completed deposit layer 11 (solution layer 11 of 20).
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: PercentComplete: 55
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.585 s, ( 89.05 %)
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 5.647 s, ( 859.89 %)
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: TIME:           fill:  = 4.810 s, ( 732.55 %)
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.004 s, ( 0.57 %)
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: TIME:           update:  = 0.830 s, ( 126.35 %)
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.005 s, ( 0.82 %)
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.139 s, ( 21.17 %)
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.010 s, ( 1.53 %)
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.05 %)
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.045 s, ( 6.87 %)
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.385 s, ( 58.60 %)
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.656666 s, (100.000000 %)
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 12
+Tue Oct 21 07:58:23 2025 -&gt; USERINFO: Run Layer : 12
+Tue Oct 21 07:58:23 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 340
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:24 2025 -&gt; USERINFO: Completed deposit layer 12 (solution layer 12 of 20).
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: PercentComplete: 60
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.736 s, ( 91.02 %)
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 6.169 s, ( 763.41 %)
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: TIME:           fill:  = 5.253 s, ( 650.05 %)
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.004 s, ( 0.51 %)
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: TIME:           update:  = 0.909 s, ( 112.48 %)
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.006 s, ( 0.71 %)
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.138 s, ( 17.12 %)
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.011 s, ( 1.33 %)
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.04 %)
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.045 s, ( 5.57 %)
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.535 s, ( 66.25 %)
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.808128 s, (100.000000 %)
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 13
+Tue Oct 21 07:58:24 2025 -&gt; USERINFO: Run Layer : 13
+Tue Oct 21 07:58:24 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 338
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:25 2025 -&gt; USERINFO: Completed deposit layer 13 (solution layer 13 of 20).
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: PercentComplete: 65
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.942 s, ( 92.79 %)
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 6.891 s, ( 678.78 %)
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: TIME:           fill:  = 5.893 s, ( 580.50 %)
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.004 s, ( 0.44 %)
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: TIME:           update:  = 0.990 s, ( 97.53 %)
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.006 s, ( 0.59 %)
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.139 s, ( 13.73 %)
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.016 s, ( 1.58 %)
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.03 %)
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.045 s, ( 4.45 %)
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.735 s, ( 72.39 %)
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 1.015170 s, (100.000000 %)
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 13
+Tue Oct 21 07:58:25 2025 -&gt; USERINFO: Run Layer : 14
+Tue Oct 21 07:58:25 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 341
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:26 2025 -&gt; USERINFO: Completed deposit layer 14 (solution layer 14 of 20).
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: PercentComplete: 70
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.848 s, ( 92.10 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 7.523 s, ( 817.05 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:           fill:  = 6.444 s, ( 699.83 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.005 s, ( 0.51 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:           update:  = 1.071 s, ( 116.33 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.006 s, ( 0.68 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.138 s, ( 15.00 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.013 s, ( 1.36 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.03 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.045 s, ( 4.89 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.646 s, ( 70.14 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.920803 s, (100.000000 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 10
+Tue Oct 21 07:58:26 2025 -&gt; USERINFO: Run Layer : 15
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 338
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:26 2025 -&gt; USERINFO: Completed deposit layer 15 (solution layer 15 of 20).
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: PercentComplete: 75
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.615 s, ( 89.21 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 7.930 s, ( 1149.37 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:           fill:  = 6.767 s, ( 980.89 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.005 s, ( 0.73 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:           update:  = 1.154 s, ( 167.21 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.005 s, ( 0.70 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.137 s, ( 19.86 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.010 s, ( 1.44 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.05 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.045 s, ( 6.55 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.418 s, ( 60.59 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.689905 s, (100.000000 %)
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 12
+Tue Oct 21 07:58:26 2025 -&gt; USERINFO: Run Layer : 16
+Tue Oct 21 07:58:26 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 342
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:27 2025 -&gt; USERINFO: Completed deposit layer 16 (solution layer 16 of 20).
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: PercentComplete: 80
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.744 s, ( 90.96 %)
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 8.458 s, ( 1034.62 %)
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: TIME:           fill:  = 7.215 s, ( 882.53 %)
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.005 s, ( 0.65 %)
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: TIME:           update:  = 1.234 s, ( 150.95 %)
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.006 s, ( 0.68 %)
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.140 s, ( 17.12 %)
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.011 s, ( 1.37 %)
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.04 %)
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.045 s, ( 5.52 %)
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.541 s, ( 66.22 %)
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.817536 s, (100.000000 %)
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 14
+Tue Oct 21 07:58:27 2025 -&gt; USERINFO: Run Layer : 17
+Tue Oct 21 07:58:27 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 341
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:28 2025 -&gt; USERINFO: Completed deposit layer 17 (solution layer 17 of 20).
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: PercentComplete: 85
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.912 s, ( 92.62 %)
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 9.145 s, ( 928.69 %)
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: TIME:           fill:  = 7.821 s, ( 794.30 %)
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.006 s, ( 0.57 %)
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: TIME:           update:  = 1.313 s, ( 133.39 %)
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.007 s, ( 0.66 %)
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.142 s, ( 14.47 %)
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.018 s, ( 1.83 %)
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.03 %)
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.045 s, ( 4.58 %)
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.700 s, ( 71.04 %)
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.984684 s, (100.000000 %)
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 23
+Tue Oct 21 07:58:28 2025 -&gt; USERINFO: Run Layer : 18
+Tue Oct 21 07:58:28 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 344
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:29 2025 -&gt; USERINFO: Completed deposit layer 18 (solution layer 18 of 20).
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: PercentComplete: 90
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.455 s, ( 88.30 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 9.407 s, ( 1826.94 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:           fill:  = 8.032 s, ( 1559.85 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.006 s, ( 1.15 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:           update:  = 1.365 s, ( 265.08 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.012 s, ( 2.28 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.118 s, ( 22.89 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.008 s, ( 1.58 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.06 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.045 s, ( 8.74 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.272 s, ( 52.74 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.514916 s, (100.000000 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 10
+Tue Oct 21 07:58:29 2025 -&gt; USERINFO: Run Layer : 19
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 340
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:29 2025 -&gt; USERINFO: Completed deposit layer 19 (solution layer 19 of 20).
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: PercentComplete: 95
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.573 s, ( 88.38 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 9.767 s, ( 1507.61 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:           fill:  = 8.311 s, ( 1282.78 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.006 s, ( 0.96 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:           update:  = 1.446 s, ( 223.14 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.005 s, ( 0.76 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.141 s, ( 21.74 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.010 s, ( 1.56 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.05 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.045 s, ( 6.95 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.371 s, ( 57.31 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.647851 s, (100.000000 %)
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: Total ScanLines in layer: 13
+Tue Oct 21 07:58:29 2025 -&gt; USERINFO: Run Layer : 20
+Tue Oct 21 07:58:29 2025 -&gt; SOLVERINFO: Total TimeSteps in layer: 340
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: Peak memory usage: 728.863 MBytes
+Tue Oct 21 07:58:30 2025 -&gt; USERINFO: Completed deposit layer 20 (solution layer 20 of 20).
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: PercentComplete: 100
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME: Layer Temperature map:  = 0.759 s, ( 91.32 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   FineSolidMap:  = 10.308 s, ( 1239.58 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:           fill:  = 8.773 s, ( 1054.98 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:           shift:  = 0.007 s, ( 0.78 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:           update:  = 1.524 s, ( 183.23 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   Layer cooling calculation time:  = 0.006 s, ( 0.72 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   Layer copy-paste time:  = 0.140 s, ( 16.81 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   Layer sample line generation time:  = 0.011 s, ( 1.35 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   Layer sensor time (including output):  = 0.000 s, ( 0.01 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   Layer state initialization time:  = 0.000 s, ( 0.04 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   Layer state output time:  = 0.048 s, ( 5.76 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   Layer state update time:  = 0.554 s, ( 66.62 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME: Total layer time:  = 0.831610 s, (100.000000 %)
+Tue Oct 21 07:58:30 2025 -&gt; USERINFO: Total time steps simulated: 6800
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME: Total Solver time:  = 65.962 s, ( 100.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   Explicit solution generation:  = 49.670 s, ( 75.30 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   Hatch generation time:  = 0.002 s, ( 0.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   Output states time:  = 0.816 s, ( 1.24 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   Output strains time:  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   State calculation time:  = 10.551 s, ( 15.99 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   State layer initialization time:  = 0.002 s, ( 0.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   Strain calculation time:  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:   Temperature map:  = 3.122 s, ( 4.73 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:           Add temperature time:  = 0.321 s, ( 0.49 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:           Blending assembler:  = 0.252 s, ( 0.38 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                   Get solution for step time:  = 0.159 s, ( 0.24 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                   Initialize scan line time:  = 0.093 s, ( 0.14 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                           State map slicing time:  = 0.018 s, ( 0.03 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                           Transition distance BCG initialize scan line time:  = 0.075 s, ( 0.11 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                                   Find transition distances time:  = 0.044 s, ( 0.07 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                                   Find transition nodes time:  = 0.030 s, ( 0.05 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                                   State copy time:  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:           Cooling calculation time:  = 0.136 s, ( 0.21 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:           Cooling calculator:  = 5.427 s, ( 8.23 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:           Generate-heat time:  = 2.747 s, ( 4.16 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:           Meltpool time:  = 0.775 s, ( 1.17 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:           Sample line building:  = 0.238 s, ( 0.36 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                   Long copy:  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                           Cooling timer:  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                                   Cooling calculator:  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                           Resize timer:  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                           Translate timer:  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                   Short copy:  = 0.235 s, ( 0.36 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:           SensorManager:  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:                   IO:  = 0.000 s, ( 0.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: TIME:           Virtual sensor_time (including output):  = 0.001 s, ( 0.00 %)
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: End Run
+Tue Oct 21 07:58:30 2025 -&gt; USERINFO: Thermal Solver run completed
+Tue Oct 21 07:58:30 2025 -&gt; SOLVERINFO: License successfully returned.
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 10.925 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-examples-gallery-examples-01-additive-porosity-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/ff708b7cdb9431e5cea31773b1405cd9/01_additive_porosity.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">01_additive_porosity.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/1015c1b78a5ee7aa905b52ff17a8f0cd/01_additive_porosity.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">01_additive_porosity.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/4ac4876d6aa73d570e8e73a7a74fede5/01_additive_porosity.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">01_additive_porosity.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#perform-required-import-and-connect">Perform required import and connect</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#select-material">Select material</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-machine-parameters">Specify machine parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-laser-power-and-scan-speed">Set laser power and scan speed</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-inputs-for-porosity-simulation">Specify inputs for porosity simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-simulation">Run simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#print-relative-density">Print relative density</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#print-the-simulation-logs">Print the simulation logs</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item"> 
+<div class="tocsection editthispage">
+  <a href="https://github.com/ansys/pyadditive/edit/main/doc/source/examples/gallery_examples/01_additive_porosity.rst">
+    <i class="fa-solid fa-pencil"></i>
+       Edit
+    on GitHub  
+  </a>
+</div>
+
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+
+  <!-- Include desired assets -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.7/require.min.js"></script>
+
+<script>
+// Passing the search options to the search.js file
+const SEARCH_OPTIONS = JSON.parse('{"keys": ["title", "text", "objectID"], "limit": 10, "threshold": 0.2}');
+const SEARCH_FILE = "../../_static/search.json";
+const ADVANCE_SEARCH_PATH = "../../search.html";
+const EXTRA_SOURCES = JSON.parse('""');
+</script>
+
+
+<script src="../../_static/js/search.js"></script>
+
+  
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright (c) 2025 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the
+  <a href="https://sphinxdocs.ansys.com/version/stable/index.html"
+    >Ansys Sphinx Theme</a
+  >
+  1.6.3. <br />Last updated on
+  <span id="ast_build_date"></span>
+</p>
+<script>
+  var options = { day: "numeric", month: "long", year: "numeric" };
+  var ast_lastModifiedDate = new Date(document.lastModified);
+  var ast_build_date = ast_lastModifiedDate.toLocaleDateString("en-US", options);
+  document.getElementById("ast_build_date").innerHTML = ast_build_date;
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
