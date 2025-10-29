@@ -339,7 +339,7 @@ def test_characteristic_width_data_setter_raises_exception_for_nonsequence_type(
 
     # act, assert
     with pytest.raises(TypeError, match="Invalid object type") as exc_info:
-        material.characteristic_width_data = CharacteristicWidthDataPoint()
+        material.characteristic_width_data = CharacteristicWidthDataPoint() # type: ignore
 
 
 def test_characteristic_width_data_setter_assigns_characteristic_width_data_points():
@@ -369,7 +369,7 @@ def test_thermal_properties_data_setter_raises_exception_for_nonsequence_type():
 
     # act, assert
     with pytest.raises(TypeError, match="Invalid object type") as exc_info:
-        material.thermal_properties_data = ThermalPropertiesDataPoint()
+        material.thermal_properties_data = ThermalPropertiesDataPoint() # type: ignore
 
 
 def test_thermal_properties_data_setter_assigns_thermal_properties_data_points():
@@ -424,6 +424,10 @@ def test_from_material_message_creates_AdditiveMaterial():
         support_yield_strength_ratio=30,
         thermal_expansion_coefficient=31,
         vaporization_temperature=32,
+        fresnal_absorption_coefficient=33,
+        laser_distribution_parameter=34,
+        laser_shape_parameter=35,
+        absorption_conduction_mode=36,
     )
     msg.characteristic_width_data_points.append(
         CharacteristicWidthDataPointMessage(
@@ -483,6 +487,11 @@ def test_from_material_message_creates_AdditiveMaterial():
     assert am.support_yield_strength_ratio == 30
     assert am.thermal_expansion_coefficient == 31
     assert am.vaporization_temperature == 32
+    assert am.fresnal_absorption_coefficient == 33
+    assert am.laser_distribution_parameter == 34
+    assert am.laser_shape_parameter == 35
+    assert am.absorption_in_conduction_mode == 36
+
     assert len(am.characteristic_width_data) == 1
     cw = am.characteristic_width_data[0]
     assert cw.characteristic_width == 1
@@ -536,6 +545,10 @@ def test_to_material_message_returns_MaterialMessage():
     am.support_yield_strength_ratio = 30
     am.thermal_expansion_coefficient = 31
     am.vaporization_temperature = 32
+    am.fresnal_absorption_coefficient = 33
+    am.laser_distribution_parameter = 34
+    am.laser_shape_parameter = 35
+    am.absorption_in_conduction_mode = 36
     am.characteristic_width_data.append(
         CharacteristicWidthDataPoint(
             characteristic_width=1,
@@ -593,6 +606,11 @@ def test_to_material_message_returns_MaterialMessage():
     assert msg.support_yield_strength_ratio == 30
     assert msg.thermal_expansion_coefficient == 31
     assert msg.vaporization_temperature == 32
+    assert msg.fresnal_absorption_coefficient == 33
+    assert msg.laser_distribution_parameter == 34
+    assert msg.laser_shape_parameter == 35
+    assert msg.absorption_conduction_mode == 36
+
     assert len(msg.characteristic_width_data_points) == 1
     cw = msg.characteristic_width_data_points[0]
     assert cw.characteristic_width == 1
