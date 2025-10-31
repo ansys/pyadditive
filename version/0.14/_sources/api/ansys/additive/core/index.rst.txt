@@ -1,0 +1,231 @@
+
+
+
+
+
+The ``ansys.additive.core`` library
+===================================
+
+.. py:module:: ansys.additive.core
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: core
+.. tab-set::
+
+    .. tab-item:: Subpackages
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ansys.additive.core.examples`
+            - Provides utilities for use with PyAdditive examples.
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study`
+            - 
+
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ansys.additive.core.additive`
+            - Provides for interacting with the Additive service.
+
+
+          * - :py:attr:`~ansys.additive.core.conversions`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.download`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.geometry_file`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.machine`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.material`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.material_tuning`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.microstructure`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.misc`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.porosity`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.progress_logger`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.server_utils`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.simulation`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.single_bead`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.thermal_history`
+            - 
+
+
+
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~APP_NAME`
+            - 
+
+
+          * - :py:attr:`~COMPANY_NAME`
+            - 
+
+
+          * - :py:attr:`~USER_DATA_PATH`
+            - 
+
+
+          * - :py:attr:`~EXAMPLES_PATH`
+            - 
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🖿 examples<examples/index.rst>
+    🖿 parametric_study<parametric_study/index.rst>
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🗎 additive<additive/index.rst>
+    🗎 conversions<conversions/index.rst>
+    🗎 download<download/index.rst>
+    🗎 geometry_file<geometry_file/index.rst>
+    🗎 machine<machine/index.rst>
+    🗎 material<material/index.rst>
+    🗎 material_tuning<material_tuning/index.rst>
+    🗎 microstructure<microstructure/index.rst>
+    🗎 misc<misc/index.rst>
+    🗎 porosity<porosity/index.rst>
+    🗎 progress_logger<progress_logger/index.rst>
+    🗎 server_utils<server_utils/index.rst>
+    🗎 simulation<simulation/index.rst>
+    🗎 single_bead<single_bead/index.rst>
+    🗎 thermal_history<thermal_history/index.rst>
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+
+Python client for the Ansys Additive service.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: APP_NAME
+   :value: 'ansys-pyadditive'
+
+   
+
+.. py:data:: COMPANY_NAME
+   :value: 'Ansys Inc'
+
+   
+
+.. py:data:: USER_DATA_PATH
+
+   
+
+.. py:data:: EXAMPLES_PATH
+
+   
+
+
+

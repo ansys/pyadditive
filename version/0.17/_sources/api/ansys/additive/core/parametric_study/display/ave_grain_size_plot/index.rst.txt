@@ -1,0 +1,128 @@
+
+
+
+
+
+The ``ave_grain_size_plot.py`` module
+=====================================
+
+.. py:module:: ansys.additive.core.parametric_study.display.ave_grain_size_plot
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: ave_grain_size_plot
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ave_grain_size_plot`
+            - Plot average grain size for laser power versus scan speed.
+
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~min_ags`
+            - 
+
+
+          * - :py:attr:`~max_ags`
+            - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides a plot for average grain size.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: ave_grain_size_plot(ps: ansys.additive.core.parametric_study.ParametricStudy)
+
+   
+   Plot average grain size for laser power versus scan speed.
+
+
+   :Parameters:
+
+       **ps** : :obj:`ParametricStudy`
+           Parametric study to plot.
+
+   :Returns:
+
+       :obj:`panel.Row`
+           Interactive plot.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: min_ags
+
+   
+
+.. py:data:: max_ags
+
+   
+
+
+
