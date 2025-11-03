@@ -1382,14 +1382,18 @@ def test_beta_simulation_types_without_beta_enabled_raises_exception(_, sim_inpu
     with pytest.raises(BetaFeatureNotEnabledError):
         additive.simulate(sim_input)
 
+@pytest.mark.parametrize("heat_source", [
+    MachineConstants.HEAT_SOURCE_MODEL_NAME_RING,
+    MachineConstants.HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS]
+)
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_non_default_heat_source_without_beta_enabled_raises_exception(_):
+def test_non_default_heat_source_without_beta_enabled_raises_exception(_, heat_source):
     # arrange
     additive = Additive()
 
     # single bead does not require beta features enabled
     sim_input = SingleBeadInput(material=AdditiveMaterial(name="my_material"))
-    sim_input.machine = AdditiveMachine(heat_source_model=MachineConstants.HEAT_SOURCE_MODEL_NAME_RING)
+    sim_input.machine = AdditiveMachine(heat_source_model=heat_source)
 
     # act, assert
     with pytest.raises(BetaFeatureNotEnabledError):
