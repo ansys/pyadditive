@@ -112,12 +112,12 @@ class MachineConstants:
     """Minimum ring mode index."""
     MAX_RING_MODE_INDEX = 6
     """Maximum ring mode index."""
-    DEFAULT_DEFOCUS_INDEX = 0
-    """Default defocus index (only applicable for dynamic defocus heat source)."""
-    MIN_DEFOCUS_INDEX = 0
-    """Minimum defocus index."""
-    MAX_DEFOCUS_INDEX = 10
-    """Maximum defocus index."""
+    DEFAULT_DEFOCUS = 0.0
+    """Default defocus (m) (only applicable for dynamic defocus heat source)."""
+    MIN_DEFOCUS = 0.0
+    """Minimum defocus (m)."""
+    MAX_DEFOCUS = 0.01
+    """Maximum defocus (m)."""
 
 
 class AdditiveMachine:
@@ -141,7 +141,7 @@ class AdditiveMachine:
         slicing_stripe_width: float = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH,
         heat_source_model: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
         ring_mode_index: int = MachineConstants.DEFAULT_RING_MODE_INDEX,
-        defocus_index: int = MachineConstants.DEFAULT_DEFOCUS_INDEX,
+        defocus: float = MachineConstants.DEFAULT_DEFOCUS,
     ):
         """Initialize an ``AdditiveMachine`` object."""
         self.laser_power = laser_power
@@ -155,7 +155,7 @@ class AdditiveMachine:
         self.slicing_stripe_width = slicing_stripe_width
         self.heat_source_model = heat_source_model
         self.ring_mode_index = ring_mode_index
-        self.defocus_index = defocus_index
+        self.defocus = defocus
 
     def __repr__(self):
         repr = type(self).__name__ + "\n"
@@ -170,7 +170,7 @@ class AdditiveMachine:
         repr += "slicing_stripe_width: {} m\n".format(self._slicing_stripe_width)
         repr += "heat_source_model: {}\n".format(self._heat_source_model)
         repr += "ring_mode_index: {}\n".format(self._ring_mode_index)
-        repr += "defocus_index: {}\n".format(self._defocus_index)
+        repr += "defocus: {} m\n".format(self._defocus)
         return repr
 
     def __eq__(self, __o: object) -> bool:
@@ -462,22 +462,22 @@ class AdditiveMachine:
         self._ring_mode_index = value
 
     @property
-    def defocus_index(self) -> int:
-        """Defocus index (Currently inactive).
+    def defocus(self) -> float:
+        """Defocus (m).
 
-        Valid values are from :const:`MachineConstants.MIN_DEFOCUS_INDEX` to :const:`MachineConstants.MAX_DEFOCUS_INDEX`.
+        Valid values are from :const:`MachineConstants.MIN_DEFOCUS` to :const:`MachineConstants.MAX_DEFOCUS`.
         """
-        return self._defocus_index
+        return self._defocus
 
-    @defocus_index.setter
-    def defocus_index(self, value: int):
+    @defocus.setter
+    def defocus(self, value: float):
         self.__validate_range(
             value,
-            MachineConstants.MIN_DEFOCUS_INDEX,
-            MachineConstants.MAX_DEFOCUS_INDEX,
-            "defocus_index",
+            MachineConstants.MIN_DEFOCUS,
+            MachineConstants.MAX_DEFOCUS,
+            "defocus",
         )
-        self._defocus_index = value
+        self._defocus = value
 
     @staticmethod
     def _from_machine_message(msg: MachineMessage):
@@ -501,7 +501,7 @@ class AdditiveMachine:
                 ring_mode_index=AdditiveMachine.__convert_ring_mode_enum_to_index(
                     coefficients=msg.ring_mode_index  # type: ignore
                 ),
-                defocus_index=msg.defocus_index,
+                defocus=msg.defocus_distance,
             )
         else:
             raise ValueError("Invalid message type passed to _from_machine_message()")
@@ -522,5 +522,5 @@ class AdditiveMachine:
             slicing_stripe_width=self.slicing_stripe_width,
             heat_source_model=self.__convert_heat_source_model_str(self.heat_source_model),
             ring_mode_index=self.__convert_ring_mode_index_to_enum(self.ring_mode_index),
-            defocus_index=self.defocus_index,
+            defocus_distance=self.defocus,
         )

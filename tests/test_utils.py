@@ -164,7 +164,7 @@ def get_default_machine_repr() -> str:
         + "slicing_stripe_width: 0.01 m\n"
         + "heat_source_model: gaussian\n"
         + "ring_mode_index: 0\n"
-        + "defocus_index: 0\n")
+        + "defocus: 0.0 m\n")
 
 def get_default_material_repr() -> str:
      return ("material: AdditiveMaterial\n"
