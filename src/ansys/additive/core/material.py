@@ -577,7 +577,7 @@ class AdditiveMaterial:
 
     @property
     def laser_distribution_parameter(self) -> float:
-        """Laser distribution parameter for dynamic defocus heat source model."""
+        """Laser distribution parameter for dynamic defocus heat source model. Typically tuned on a per-material basis even though it is related to the machine heat source."""  # noqa: E501
         return self._laser_distribution_parameter
 
     @laser_distribution_parameter.setter
@@ -587,12 +587,12 @@ class AdditiveMaterial:
 
     @property
     def laser_shape_parameter(self) -> float:
-        """Laser shape parameter."""
+        """Laser shape parameter for dynamic defocus heat source model. Typically tuned on a per-material basis even though it is related to the machine heat source."""  # noqa: E501
         return self._laser_shape_parameter
 
     @laser_shape_parameter.setter
     def laser_shape_parameter(self, value: float):
-        """Set laser shape parameter for dynamic defocus heat source model."""
+        """Set laser shape parameter."""
         self._laser_shape_parameter = value
 
     @property

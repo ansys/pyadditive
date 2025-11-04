@@ -463,7 +463,7 @@ class AdditiveMachine:
 
     @property
     def defocus(self) -> float:
-        """Defocus (m).
+        """The measure of how far the laser is defocused from its focal plane (m).
 
         Valid values are from :const:`MachineConstants.MIN_DEFOCUS` to :const:`MachineConstants.MAX_DEFOCUS`.
         """
