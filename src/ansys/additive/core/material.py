@@ -301,6 +301,7 @@ class AdditiveMaterial:
     def __init__(
         self,
         *,
+        absorption_in_conduction_mode: float = 0,
         absorptivity_maximum: float = 0,
         absorptivity_minimum: float = 0,
         absorptivity_powder_coefficient_a: float = 0,
@@ -314,7 +315,10 @@ class AdditiveMaterial:
         cooling_rate_sim_coeff_b: float = 0,
         description: str = "",
         elastic_modulus: float = 0,
+        fresnal_absorption_coefficient: float = 0,
         hardening_factor: float = 0,
+        laser_distribution_parameter: float = 0,
+        laser_shape_parameter: float = 0,
         liquidus_temperature: float = 0,
         material_yield_strength: float = 0,
         name: str = "",
@@ -337,10 +341,11 @@ class AdditiveMaterial:
         support_yield_strength_ratio: float = 0,
         thermal_expansion_coefficient: float = 0,
         vaporization_temperature: float = 0,
-        characteristic_width_data: list[CharacteristicWidthDataPoint] = None,
-        thermal_properties_data: list[ThermalPropertiesDataPoint] = None,
+        characteristic_width_data: list[CharacteristicWidthDataPoint] | None = None,
+        thermal_properties_data: list[ThermalPropertiesDataPoint] | None = None,
     ):
         """Create an additive material."""
+        self._absorption_conduction_mode = absorption_in_conduction_mode
         self._absorptivity_maximum = absorptivity_maximum
         self._absorptivity_minimum = absorptivity_minimum
         self._absorptivity_powder_coefficient_a = absorptivity_powder_coefficient_a
@@ -356,7 +361,10 @@ class AdditiveMaterial:
         self._cooling_rate_sim_coeff_b = cooling_rate_sim_coeff_b
         self._description = description
         self._elastic_modulus = elastic_modulus
+        self._fresnal_absorption_coefficient = fresnal_absorption_coefficient
         self._hardening_factor = hardening_factor
+        self._laser_distribution_parameter = laser_distribution_parameter
+        self._laser_shape_parameter = laser_shape_parameter
         self._liquidus_temperature = liquidus_temperature
         self._material_yield_strength = material_yield_strength
         self._name = name
@@ -406,6 +414,16 @@ class AdditiveMaterial:
         if not isinstance(__o, AdditiveMaterial):
             return False
         return all(getattr(self, k) == getattr(__o, k) for k in self.__dict__)
+
+    @property
+    def absorption_in_conduction_mode(self) -> float:
+        """Absorption in conduction mode. Applicable to the dynamic defocus heat source model."""
+        return self._absorption_conduction_mode
+
+    @absorption_in_conduction_mode.setter
+    def absorption_in_conduction_mode(self, value: float):
+        """Set absorption in conduction mode."""
+        self._absorption_conduction_mode = value
 
     @property
     def absorptivity_maximum(self) -> float:
@@ -538,6 +556,16 @@ class AdditiveMaterial:
         self._elastic_modulus = value
 
     @property
+    def fresnal_absorption_coefficient(self) -> float:
+        """Fresnal absorption coefficient for the dynamic defocus heat source model."""
+        return self._fresnal_absorption_coefficient
+
+    @fresnal_absorption_coefficient.setter
+    def fresnal_absorption_coefficient(self, value: float):
+        """Set fresnal absorption coefficient."""
+        self._fresnal_absorption_coefficient = value
+
+    @property
     def hardening_factor(self) -> float:
         """Factor relating the elastic modulus to the tangent modulus for plasticity simulations (tangent modulus = elastic modulus * hardening factor)."""  # noqa: E501
         return self._hardening_factor
@@ -546,6 +574,26 @@ class AdditiveMaterial:
     def hardening_factor(self, value: float):
         """Set hardening factor."""
         self._hardening_factor = value
+
+    @property
+    def laser_distribution_parameter(self) -> float:
+        """Laser distribution parameter for dynamic defocus heat source model. Typically tuned on a per-material basis even though it is related to the machine heat source."""  # noqa: E501
+        return self._laser_distribution_parameter
+
+    @laser_distribution_parameter.setter
+    def laser_distribution_parameter(self, value: float):
+        """Set laser distribution parameter."""
+        self._laser_distribution_parameter = value
+
+    @property
+    def laser_shape_parameter(self) -> float:
+        """Laser shape parameter for dynamic defocus heat source model. Typically tuned on a per-material basis even though it is related to the machine heat source."""  # noqa: E501
+        return self._laser_shape_parameter
+
+    @laser_shape_parameter.setter
+    def laser_shape_parameter(self, value: float):
+        """Set laser shape parameter."""
+        self._laser_shape_parameter = value
 
     @property
     def liquidus_temperature(self) -> float:
