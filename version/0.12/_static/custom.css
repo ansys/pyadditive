@@ -1,0 +1,19 @@
+@import "../ansys-sphinx-theme.css";
+
+.sphx-glr-thumbcontainer {
+  min-height: 270px !important;
+  margin: 10px !important;
+}
+
+.sphx-glr-thumbcontainer .figure {
+  width: 160px !important;
+}
+
+.sphx-glr-thumbcontainer img {
+  max-height: 160px !important;
+  max-width: 160px !important;
+}
+
+.sphx-glr-thumbcontainer a.internal {
+  padding: 180px 10px 0 !important;
+}
