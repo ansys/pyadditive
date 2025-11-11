@@ -66,6 +66,8 @@ class ColumnNames:
     """Type of heat source used in the simulation."""
     RING_MODE_INDEX = "Ring Mode Index"
     """Set of prescribed coefficients used for ring mode simulations."""
+    DEFOCUS = "Defocus (m)"
+    """Defocus distance of the laser beam (m)."""
     ENERGY_DENSITY = "Energy Density (J/m^3)"
     """Laser power divided by build rate (J/m^3)."""
     SINGLE_BEAD_LENGTH = "Single Bead Length (m)"
@@ -136,5 +138,5 @@ DEFAULT_ITERATION = 0
 """Default iteration assigned to new simulations."""
 DEFAULT_PRIORITY = 1
 """Default priority assigned to new simulations."""
-FORMAT_VERSION = 4
+FORMAT_VERSION = 5
 """Parametric study file format version. See :meth:`ParametricStudy.update_format` for details."""

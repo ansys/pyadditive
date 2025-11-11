@@ -444,6 +444,7 @@ class ParametricStudy:
             ColumnNames.STRIPE_WIDTH: summary.input.machine.slicing_stripe_width,
             ColumnNames.HEAT_SOURCE: summary.input.machine.heat_source_model,
             ColumnNames.RING_MODE_INDEX: summary.input.machine.ring_mode_index,
+            ColumnNames.DEFOCUS: summary.input.machine.defocus,
         }
 
     @save_on_return
@@ -463,6 +464,7 @@ class ParametricStudy:
         output_thermal_history: bool = SingleBeadInput.DEFAULT_OUTPUT_THERMAL_HISTORY,
         heat_source: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
         ring_mode_index: int = MachineConstants.DEFAULT_RING_MODE_INDEX,
+        defocus: float = MachineConstants.DEFAULT_DEFOCUS,
     ) -> int:
         """Add single bead permutations to the parametric study.
 
@@ -519,6 +521,10 @@ class ParametricStudy:
             This parameter is only applicable if the ``heat_source`` parameter is set to :obj:`HEAT_SOURCE_MODEL_NAME_RING <MachineConstants.HEAT_SOURCE_MODEL_NAME_RING>`.
             Valid values are from :obj:`MIN_RING_MODE_INDEX <MachineConstants.MIN_RING_MODE_INDEX>`
             to :obj:`MAX_RING_MODE_INDEX <MachineConstants.MAX_RING_MODE_INDEX>`.
+        defocus : float, default: :obj:`DEFAULT_DEFOCUS <MachineConstants.DEFAULT_DEFOCUS>`
+            Defocus (m) to use for the dynamic defocus heat source model.
+            Valid values are from :obj:`MIN_DEFOCUS <MachineConstants.MIN_DEFOCUS>`
+            to :obj:`MAX_DEFOCUS <MachineConstants.MAX_DEFOCUS>`.
 
         Returns
         -------
@@ -571,6 +577,7 @@ class ParametricStudy:
                                     beam_diameter=d,
                                     heat_source_model=heat_source,
                                     ring_mode_index=ring_mode_index,
+                                    defocus=defocus,
                                 )
                                 SingleBeadInput(
                                     bead_length=bead_length,
@@ -607,6 +614,7 @@ class ParametricStudy:
                                     ColumnNames.SB_THERMAL_HISTORY_INTERVAL: interval,
                                     ColumnNames.HEAT_SOURCE: heat_source,
                                     ColumnNames.RING_MODE_INDEX: ring_mode_index,
+                                    ColumnNames.DEFOCUS: defocus,
                                 }
                             )
                             self._data_frame = pd.concat(
@@ -638,6 +646,7 @@ class ParametricStudy:
         priority: int = DEFAULT_PRIORITY,
         heat_source: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
         ring_mode_index: int = MachineConstants.DEFAULT_RING_MODE_INDEX,
+        defocus: float = MachineConstants.DEFAULT_DEFOCUS,
     ) -> int:
         """Add porosity permutations to the parametric study.
 
@@ -729,6 +738,10 @@ class ParametricStudy:
             This parameter is only applicable if the ``heat_source`` parameter is set to :obj:`HEAT_SOURCE_MODEL_NAME_RING <MachineConstants.HEAT_SOURCE_MODEL_NAME_RING>`.
             Valid values are from :obj:`MIN_RING_MODE_INDEX <MachineConstants.MIN_RING_MODE_INDEX>`
             to :obj:`MAX_RING_MODE_INDEX <MachineConstants.MAX_RING_MODE_INDEX>`.
+        defocus : float, default: :obj:`DEFAULT_DEFOCUS <MachineConstants.DEFAULT_DEFOCUS>`
+            Defocus (m) to use for the dynamic defocus heat source model.
+            Valid values are from :obj:`MIN_DEFOCUS <MachineConstants.MIN_DEFOCUS>`
+            to :obj:`MAX_DEFOCUS <MachineConstants.MAX_DEFOCUS>`.
 
         Returns
         -------
@@ -804,6 +817,7 @@ class ParametricStudy:
                                                     slicing_stripe_width=w,
                                                     heat_source_model=heat_source,
                                                     ring_mode_index=ring_mode_index,
+                                                    defocus=defocus,
                                                 )
                                                 PorosityInput(
                                                     size_x=size_x,
@@ -844,6 +858,7 @@ class ParametricStudy:
                                                     ColumnNames.POROSITY_SIZE_Z: size_z,
                                                     ColumnNames.HEAT_SOURCE: heat_source,
                                                     ColumnNames.RING_MODE_INDEX: ring_mode_index,
+                                                    ColumnNames.DEFOCUS: defocus,
                                                 }
                                             )
                                             self._data_frame = pd.concat(
@@ -885,6 +900,7 @@ class ParametricStudy:
         priority: int = DEFAULT_PRIORITY,
         heat_source: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
         ring_mode_index: int = MachineConstants.DEFAULT_RING_MODE_INDEX,
+        defocus: float = MachineConstants.DEFAULT_DEFOCUS,
     ) -> int:
         """Add microstructure permutations to the parametric study.
 
@@ -1030,6 +1046,10 @@ class ParametricStudy:
             This parameter is only applicable if the ``heat_source`` parameter is set to :obj:`HEAT_SOURCE_MODEL_NAME_RING <MachineConstants.HEAT_SOURCE_MODEL_NAME_RING>`.
             Valid values are from :obj:`MIN_RING_MODE_INDEX <MachineConstants.MIN_RING_MODE_INDEX>`
             to :obj:`MAX_RING_MODE_INDEX <MachineConstants.MAX_RING_MODE_INDEX>`.
+        defocus : float, default: :obj:`DEFAULT_DEFOCUS <MachineConstants.DEFAULT_DEFOCUS>`
+            Defocus (m) to use for the dynamic defocus heat source model.
+            Valid values are from :obj:`MIN_DEFOCUS <MachineConstants.MIN_DEFOCUS>`
+            to :obj:`MAX_DEFOCUS <MachineConstants.MAX_DEFOCUS>`.
 
         Returns
         -------
@@ -1118,6 +1138,7 @@ class ParametricStudy:
                                                     slicing_stripe_width=w,
                                                     heat_source_model=heat_source,
                                                     ring_mode_index=ring_mode_index,
+                                                    defocus=defocus,
                                                 )
                                                 MicrostructureInput(
                                                     sample_min_x=min_x,
@@ -1223,6 +1244,7 @@ class ParametricStudy:
                                                     ),
                                                     ColumnNames.HEAT_SOURCE: heat_source,
                                                     ColumnNames.RING_MODE_INDEX: ring_mode_index,
+                                                    ColumnNames.DEFOCUS: defocus,
                                                 }
                                             )
                                             self._data_frame = pd.concat(
@@ -1411,6 +1433,7 @@ class ParametricStudy:
             dict[ColumnNames.STRIPE_WIDTH] = input.machine.slicing_stripe_width
             dict[ColumnNames.HEAT_SOURCE] = input.machine.heat_source_model
             dict[ColumnNames.RING_MODE_INDEX] = input.machine.ring_mode_index
+            dict[ColumnNames.DEFOCUS] = input.machine.defocus
 
             self._data_frame = pd.concat(
                 [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
@@ -1473,6 +1496,7 @@ class ParametricStudy:
             ColumnNames.TYPE,
             ColumnNames.HEAT_SOURCE,
             ColumnNames.RING_MODE_INDEX,
+            ColumnNames.DEFOCUS,
         ]
 
         # Additional columns to check for duplicates as per simulation type
@@ -1673,6 +1697,7 @@ class ParametricStudy:
         - Version 2: Rename columns to use consistent units and naming conventions.
         - Version 3: Add material name and PV ratio columns.
         - Version 4: Add heat source, ring mode index and two single-bead thermal history columns.
+        - Version 5: Add defocus column.
 
         Note: The _add_simulations_from_csv method will need to be updated with new versions.
 
@@ -1707,6 +1732,16 @@ class ParametricStudy:
         new_study = ParametricStudy._new(pathlib.Path(study.file_name))
         df = study.data_frame()
 
+        def add_missing_column(col_name, default_value, insert_after_col_name):
+            if col_name not in df.columns:
+                insert_index = df.columns.get_loc(insert_after_col_name)
+                if isinstance(insert_index, int):
+                    insert_index += 1
+                else:
+                    raise TypeError(f"insert_index must be of type int, got {type(insert_index)}")
+                # insert column
+                df.insert(insert_index, col_name, default_value)
+
         if version < 2:
             df = df.rename(
                 columns={
@@ -1738,19 +1773,6 @@ class ParametricStudy:
             df = ParametricStudy._add_pv_ratio(df)
 
         if version < 4:
-
-            def add_missing_column(col_name, default_value, insert_after_col_name):
-                if col_name not in df.columns:
-                    insert_index = df.columns.get_loc(insert_after_col_name)
-                    if isinstance(insert_index, int):
-                        insert_index += 1
-                    else:
-                        raise TypeError(
-                            f"insert_index must be of type int, got {type(insert_index)}"
-                        )
-                    # insert column
-                    df.insert(insert_index, col_name, default_value)
-
             # Add missing columns with default values
             add_missing_column(
                 ColumnNames.HEAT_SOURCE,
@@ -1774,6 +1796,16 @@ class ParametricStudy:
             )
 
             version = 4
+
+        if version < 5:
+            # Add missing columns with default values
+            add_missing_column(
+                ColumnNames.DEFOCUS,
+                MachineConstants.DEFAULT_DEFOCUS,
+                ColumnNames.RING_MODE_INDEX,
+            )
+
+            version = 5
 
         # Update the dataframe in the new study
         new_study._data_frame = df
@@ -1859,6 +1891,7 @@ class ParametricStudy:
             ColumnNames.PV_RATIO,
             ColumnNames.HEAT_SOURCE,
             ColumnNames.RING_MODE_INDEX,
+            ColumnNames.DEFOCUS,
             ColumnNames.SB_THERMAL_HISTORY_FLAG,
             ColumnNames.SB_THERMAL_HISTORY_INTERVAL,
         }
@@ -1885,6 +1918,12 @@ class ParametricStudy:
             ColumnNames.RING_MODE_INDEX,
             MachineConstants.DEFAULT_RING_MODE_INDEX,
             ColumnNames.HEAT_SOURCE,
+        )
+        ParametricStudy._insert_column(
+            df,
+            ColumnNames.DEFOCUS,
+            MachineConstants.DEFAULT_DEFOCUS,
+            ColumnNames.RING_MODE_INDEX,
         )
         ParametricStudy._insert_column(
             df,
@@ -2008,6 +2047,7 @@ class ParametricStudy:
                 slicing_stripe_width=input[ColumnNames.STRIPE_WIDTH],
                 heat_source_model=input[ColumnNames.HEAT_SOURCE],
                 ring_mode_index=input[ColumnNames.RING_MODE_INDEX],
+                defocus=input[ColumnNames.DEFOCUS],
             )
 
             material = AdditiveMaterial(name=str(input[ColumnNames.MATERIAL]))
@@ -2276,6 +2316,11 @@ class ParametricStudy:
                 row[ColumnNames.RING_MODE_INDEX]
                 if not np.isnan(row[ColumnNames.RING_MODE_INDEX])
                 else MachineConstants.DEFAULT_RING_MODE_INDEX
+            ),
+            defocus=(
+                row[ColumnNames.DEFOCUS]
+                if not np.isnan(row[ColumnNames.DEFOCUS])
+                else MachineConstants.DEFAULT_DEFOCUS
             ),
         )
 
