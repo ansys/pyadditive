@@ -24,6 +24,7 @@
 import collections
 import csv
 import json
+import math
 import re
 
 from ansys.api.additive.v0.additive_domain_pb2 import (
@@ -46,6 +47,35 @@ RESERVED_MATERIAL_NAMES = [
     "IN718",
     "Ti64",
 ]
+
+
+class MaterialConstants:
+    """Provides constants related to additive materials."""
+
+    DEFAULT_LASER_SHAPE_PARAMETER = 2.0
+    """Default laser shape parameter for dynamic defocus heat source."""
+    MIN_LASER_SHAPE_PARAMETER = 1.0
+    """Minimum laser shape parameter for dynamic defocus heat source."""
+    MAX_LASER_SHAPE_PARAMETER = 10.0
+    """Maximum laser shape parameter for dynamic defocus heat source."""
+    DEFAULT_LASER_DISTRIBUTION_PARAMETER = 2.0
+    """Default laser distribution parameter for dynamic defocus heat source."""
+    MIN_LASER_DISTRIBUTION_PARAMETER = 1.0
+    """Minimum laser distribution parameter for dynamic defocus heat source."""
+    MAX_LASER_DISTRIBUTION_PARAMETER = 10.0
+    """Maximum laser distribution parameter for dynamic defocus heat source."""
+    DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT = 0.28
+    """Default Fresnal absorption coefficient for dynamic defocus heat source."""
+    MIN_FRESNAL_ABSORPTION_COEFFICIENT = 0.0
+    """Minimum Fresnal absorption coefficient for dynamic defocus heat source."""
+    MAX_FRESNAL_ABSORPTION_COEFFICIENT = 1.0
+    """Maximum Fresnal absorption coefficient for dynamic defocus heat source."""
+    DEFAULT_ABSORPTION_CONDUCTION_MODE = 0.35
+    """Default absorption in conduction mode for dynamic defocus heat source."""
+    MIN_ABSORPTION_CONDUCTION_MODE = 0.0
+    """Minimum absorption in conduction mode for dynamic defocus heat source."""
+    MAX_ABSORPTION_CONDUCTION_MODE = 1.0
+    """Maximum absorption in conduction mode for dynamic defocus heat source."""
 
 
 class CharacteristicWidthDataPoint:
@@ -415,6 +445,12 @@ class AdditiveMaterial:
             return False
         return all(getattr(self, k) == getattr(__o, k) for k in self.__dict__)
 
+    def __validate_range(self, value, min, max, name):
+        if math.isnan(value):
+            raise ValueError("{} must be a number.".format(name))
+        if value < min or value > max:
+            raise ValueError("{} must be between {} and {}.".format(name, min, max))
+
     @property
     def absorption_in_conduction_mode(self) -> float:
         """Absorption in conduction mode. Applicable to the dynamic defocus heat source model."""
@@ -423,6 +459,12 @@ class AdditiveMaterial:
     @absorption_in_conduction_mode.setter
     def absorption_in_conduction_mode(self, value: float):
         """Set absorption in conduction mode."""
+        self.__validate_range(
+            value,
+            MaterialConstants.MIN_ABSORPTION_CONDUCTION_MODE,
+            MaterialConstants.MAX_ABSORPTION_CONDUCTION_MODE,
+            "absorption_in_conduction_mode",
+        )
         self._absorption_conduction_mode = value
 
     @property
@@ -563,6 +605,12 @@ class AdditiveMaterial:
     @fresnal_absorption_coefficient.setter
     def fresnal_absorption_coefficient(self, value: float):
         """Set fresnal absorption coefficient."""
+        self.__validate_range(
+            value,
+            MaterialConstants.MIN_FRESNAL_ABSORPTION_COEFFICIENT,
+            MaterialConstants.MAX_FRESNAL_ABSORPTION_COEFFICIENT,
+            "fresnal_absorption_coefficient",
+        )
         self._fresnal_absorption_coefficient = value
 
     @property
@@ -583,6 +631,12 @@ class AdditiveMaterial:
     @laser_distribution_parameter.setter
     def laser_distribution_parameter(self, value: float):
         """Set laser distribution parameter."""
+        self.__validate_range(
+            value,
+            MaterialConstants.MIN_LASER_DISTRIBUTION_PARAMETER,
+            MaterialConstants.MAX_LASER_DISTRIBUTION_PARAMETER,
+            "Laser_distribution_parameter",
+        )
         self._laser_distribution_parameter = value
 
     @property
@@ -593,6 +647,12 @@ class AdditiveMaterial:
     @laser_shape_parameter.setter
     def laser_shape_parameter(self, value: float):
         """Set laser shape parameter."""
+        self.__validate_range(
+            value,
+            MaterialConstants.MIN_LASER_SHAPE_PARAMETER,
+            MaterialConstants.MAX_LASER_SHAPE_PARAMETER,
+            "Laser_shape_parameter",
+        )
         self._laser_shape_parameter = value
 
     @property
