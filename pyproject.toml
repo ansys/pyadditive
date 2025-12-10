@@ -63,7 +63,7 @@ tests = [
 ]
 
 doc = [
-  "ansys-sphinx-theme[autoapi]==1.6.3",
+  "ansys-sphinx-theme[autoapi]==1.6.4",
   "enum-tools==0.13.0",
   "joblib==1.5.2",
   "jupyter_sphinx==0.5.3",
