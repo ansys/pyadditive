@@ -1,0 +1,6 @@
+penetration\_depth\_powder\_coefficient\_b
+==========================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.penetration_depth_powder_coefficient_b

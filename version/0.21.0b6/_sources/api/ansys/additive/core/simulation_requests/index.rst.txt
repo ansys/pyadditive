@@ -1,0 +1,113 @@
+
+
+
+
+
+
+The ``simulation_requests.py`` module
+=====================================
+
+.. py:module:: ansys.additive.core.simulation_requests
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: simulation_requests
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~create_request`
+            - Create a simulation request and set up any pre-requisites on a server, such as an STL file for a
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Set up methods for grpc simulation requests.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: create_request(simulation_input: ansys.additive.core.single_bead.SingleBeadInput | ansys.additive.core.porosity.PorosityInput | ansys.additive.core.microstructure.MicrostructureInput | ansys.additive.core.thermal_history.ThermalHistoryInput | ansys.additive.core.microstructure_3d.Microstructure3DInput, server: ansys.additive.core.server_connection.ServerConnection, progress_handler: ansys.additive.core.progress_handler.IProgressHandler | None = None) -> ansys.api.additive.v0.additive_simulation_pb2.SimulationRequest
+
+   
+   Create a simulation request and set up any pre-requisites on a server, such as an STL file for a
+   thermal history simulation.
+
+
+   :Parameters:
+
+       **simulation_input: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput, Microstructure3DInput**
+           Parameters to use for simulation.
+
+       **server: ServerConnection**
+           Server to use for the simulation.
+
+       **progress_handler: IProgressHandler, None, default: None**
+           Handler for progress updates. If ``None``, no progress updates are provided.
+
+
+
+   :Returns:
+
+       :obj:`A` :obj:`SimulationRequest`
+           ..
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
