@@ -51,7 +51,7 @@ tests = [
   "googleapis-common-protos==1.72.0",
   "grpcio==1.73.1",
   "grpcio-health-checking==1.73.1",
-  "numpy==2.2.6",
+  "numpy==2.4.0",
   "pandas==2.3.3",
   "platformdirs==4.5.1",
   "protobuf==6.33.2",
