@@ -25,9 +25,10 @@ import ipaddress
 import socket
 from pathlib import Path
 
+from ansys.tools.common.cyberchannel import create_channel as create_cyber_channel
+from ansys.tools.common.cyberchannel import verify_uds_socket
+
 from .constants import UNIX_DOMAIN_SOCKET_SERVICE_NAME, TransportMode
-from .cyberchannel import create_channel as create_cyber_channel
-from .cyberchannel import verify_uds_socket
 
 MAX_RCV_MSG_LEN = 256 * 1024**2
 
