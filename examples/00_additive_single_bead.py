@@ -47,7 +47,7 @@ from ansys.additive.core import (
     SingleBeadInput,
 )
 
-additive = Additive()
+additive = Additive(transport_mode="insecure", allow_remote_host=True)
 
 ###############################################################################
 # Get server connection information
