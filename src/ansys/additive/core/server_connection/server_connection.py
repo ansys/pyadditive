@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -23,9 +23,11 @@
 
 import logging
 import os
+import signal
 import time
 import weakref
 from dataclasses import dataclass
+from pathlib import Path
 
 import grpc
 from google.longrunning.operations_pb2_grpc import OperationsStub
@@ -36,6 +38,7 @@ from ansys.additive.core.server_connection.constants import (
     DEFAULT_PRODUCT_VERSION,
     LOCALHOST,
     PYPIM_PRODUCT_NAME,
+    TransportMode,
 )
 from ansys.additive.core.server_connection.local_server import LocalServer
 from ansys.additive.core.server_connection.network_utils import create_channel
@@ -62,9 +65,9 @@ class ServerConnectionStatus:
 
     connected: bool
     """True if server is connected."""
-    channel_str: str = None
+    channel_str: str | None = None
     """Hostname and port of server connection in the form ``host:port``."""
-    metadata: dict = None
+    metadata: dict | None = None
     """Server metadata."""
 
     def __str__(self) -> str:
@@ -89,6 +92,17 @@ class ServerConnection:
 
     Parameters
     ----------
+    transport_mode : TransportMode | str
+        The transport mode to use for the connection. Can be a member of the :class:`TransportMode <.constants.TransportMode>` enum or a string
+        ('insecure', 'mtls', or 'uds').
+    certs_dir : Path | str | None
+        Directory containing certificates for mTLS connections. Required if `transport_mode` is 'mtls'.
+    uds_dir : Path | str | None
+        Directory containing Unix Domain Socket files. Required if `transport_mode` is 'uds'.
+    uds_id : str | None
+        Identifier for the Unix Domain Socket. Required if `transport_mode` is 'uds'.
+    allow_remote_host: bool
+        Whether to allow connections to remote hosts when using 'insecure' or 'mtls' transport modes.
     channel: grpc.Channel, None
         gRPC channel connected to server.
     addr: str, None
@@ -111,10 +125,15 @@ class ServerConnection:
 
     def __init__(
         self,
+        transport_mode: TransportMode | str | None = None,
+        certs_dir: Path | str | None = None,
+        uds_dir: Path | str | None = None,
+        uds_id: str | None = None,
+        allow_remote_host: bool = False,
         channel: grpc.Channel | None = None,
         addr: str | None = None,
         product_version: str = DEFAULT_PRODUCT_VERSION,
-        log: logging.Logger = None,
+        log: logging.Logger | None = None,
         linux_install_path: os.PathLike | None = None,
     ) -> None:
         """Initialize a server connection."""
@@ -129,6 +148,8 @@ class ServerConnection:
         if channel:
             self._channel = channel
         else:
+            if transport_mode is None:
+                raise ValueError("'transport_mode' must be specified if 'channel' is not provided.")
             if addr:
                 target = addr
             elif pypim.is_configured():
@@ -147,7 +168,11 @@ class ServerConnection:
                     linux_install_path=linux_install_path,
                 )
                 target = f"{LOCALHOST}:{port}"
-            self._channel = create_channel(target)
+            # Save UDS parameters for disconnecting
+            channel_result, self._uds_file = create_channel(
+                target, transport_mode, certs_dir, uds_dir, uds_id, allow_remote_host
+            )
+            self._channel = channel_result
 
         # assign service stubs
         self._materials_stub = MaterialsServiceStub(self._channel)
@@ -171,7 +196,24 @@ class ServerConnection:
             self._server_instance.delete()
             self._server_instance = None
         if hasattr(self, "_server_process") and self._server_process:
-            self._server_process.kill()
+            if os.name == "nt":
+                # On Windows, sending CTRL_C_EVENT kills everything, including this python process.
+                # If the signal were contained, that may work, but would add complexity.
+                # Also, signal.SIGINT is not supported on Windows.
+                # So we use kill() instead, but this does not allow the server to clean up.
+                self._server_process.kill()
+
+                # The cleanup on the server cleans up a UDS file when finished. Since no cleanup,
+                # attempt to remove the file here. This does not cover all cases. Also, the files are
+                # defined in cyberchannel.py, so if that changes, this may break. cyberchannel.py is
+                # provided to us and may need updating in the future, so we don't want to modify it.
+                if hasattr(self, "_uds_file") and self._uds_file and self._uds_file.exists():
+                    try:
+                        self._uds_file.unlink()
+                    except Exception as e:
+                        self._log.warning(f"Could not remove UDS file {self._uds_file}: {e}")
+            else:
+                self._server_process.send_signal(signal.SIGINT)
             self._server_process = None
 
     @property
@@ -179,9 +221,13 @@ class ServerConnection:
         """GRPC channel target.
 
         The form is generally ``"ip:port"``. For example, ``"127.0.0.1:50052"``.
+        In the case of UDS channels, the form is the path to the UDS socket file.
         """
         if self._channel is not None:
-            return self._channel._channel.target().decode().removeprefix("dns:///")
+            full_channel_str = self._channel._channel.target().decode()
+            if full_channel_str.startswith("unix:"):
+                return full_channel_str.removeprefix("unix:")
+            return full_channel_str.removeprefix("dns:///")
         return ""
 
     @property
@@ -203,6 +249,13 @@ class ServerConnection:
     def settings_stub(self) -> SettingsServiceStub:
         """Settings service stub."""
         return self._settings_stub
+
+    @property
+    def uds_file(self) -> Path | None:
+        """Path to the Unix Domain Socket file if using 'uds' transport mode, otherwise None."""
+        if hasattr(self, "_uds_file"):
+            return self._uds_file
+        return None
 
     def status(self) -> ServerConnectionStatus:
         """Return the server connection status."""

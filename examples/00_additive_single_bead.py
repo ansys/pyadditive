@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -47,7 +47,7 @@ from ansys.additive.core import (
     SingleBeadInput,
 )
 
-additive = Additive()
+additive = Additive(transport_mode="insecure", host="localhost", port=50052, allow_remote_host=True)
 
 ###############################################################################
 # Get server connection information
