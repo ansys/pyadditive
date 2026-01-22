@@ -111,7 +111,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de
         if: (matrix.python-version == env.MAIN_PYTHON_VERSION) && (runner.os == 'Linux')
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -157,7 +157,7 @@ jobs:
         uses: pyvista/setup-headless-display-action@7d84ae825e6d9297a8e99bdbbae20d1b919a0b19
 
       - name: "Checkout code"
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
         with:
           persist-credentials: false
 
@@ -172,6 +172,7 @@ jobs:
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
+          BUILD_EXAMPLES: false
           BUILD_EXAMPLES_LONG: false
 
       - name: "Build documentation with long examples"
@@ -185,6 +186,8 @@ jobs:
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
+          BUILD_EXAMPLES: false
+          BUILD_EXAMPLES_LONG: false
 
       - name: "Collect logs and shutdown server"
         if: ${{ always() }}

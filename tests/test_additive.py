@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -38,6 +38,7 @@ import pytest
 from google.longrunning.operations_pb2 import Operation
 
 import ansys.additive.core.additive
+from ansys.additive.core.server_connection.constants import TransportMode
 from ansys.additive.core import (
     USER_DATA_PATH,
     Additive,
@@ -115,7 +116,7 @@ def test_Additive_init_calls_connect_to_server_correctly(
     monkeypatch: pytest.MonkeyPatch, in_prod_version, expected_prod_version
 ):
     # arrange
-    server_connections = ["connection1", "connection2"]
+    mock_channel = grpc.insecure_channel("target")
     host = "hostname"
     port = 12345
 
@@ -130,7 +131,7 @@ def test_Additive_init_calls_connect_to_server_correctly(
 
     # act
     additive = Additive(
-        server_connections,
+        mock_channel,
         host,
         port,
         product_version=in_prod_version,
@@ -139,7 +140,7 @@ def test_Additive_init_calls_connect_to_server_correctly(
 
     # assert
     mock_connect.assert_called_with(
-        server_connections, host, port, expected_prod_version, ANY, None
+        mock_channel, host, port, expected_prod_version, ANY, None, TransportMode.UDS, None, None, None, False
     )
     assert additive._server == mock_server_connection
     assert additive._user_data_path == USER_DATA_PATH
@@ -251,7 +252,7 @@ def test_connect_to_server_with_channel_creates_server_connection(
 
     # assert
     assert server is not None
-    mock_connection.assert_called_once_with(channel=channel, log=log)
+    mock_connection.assert_called_once_with(channel=channel, log=log, allow_remote_host=False)
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
@@ -267,7 +268,7 @@ def test_connect_to_server_with_host_creates_server_connection(mock_connection):
 
     # assert
     assert server is not None
-    mock_connection.assert_called_once_with(addr=f"{host}:{port}", log=log)
+    mock_connection.assert_called_once_with(addr=f"{host}:{port}", log=log, transport_mode=None, certs_dir=None, uds_dir=None, uds_id=None, allow_remote_host=False)
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
@@ -285,7 +286,7 @@ def test_connect_to_server_with_env_var_creates_server_connection(
 
     # assert
     assert server is not None
-    mock_connection.assert_called_once_with(addr=addr, log=log)
+    mock_connection.assert_called_once_with(addr=addr, log=log, transport_mode=None, certs_dir=None, uds_dir=None, uds_id=None, allow_remote_host=False)
 
 
 def test_about_prints_not_connected_message():
@@ -1488,3 +1489,44 @@ def test_connected_returns_false_when_server_is_none(mock_connection):
 
     # assert
     assert result is False
+
+def test_uds_file_returns_value_when_server_has_uds_file(monkeypatch):
+    # arrange
+    uds_file = "/tmp/additive.sock"
+    mock_server_connection = Mock(ServerConnection)
+    mock_server_connection.uds_file = uds_file
+    mock_connect = create_autospec(
+        ansys.additive.core.additive.Additive._connect_to_server,
+        return_value=mock_server_connection,
+    )
+    monkeypatch.setattr(
+        ansys.additive.core.additive.Additive, "_connect_to_server", mock_connect
+    )
+
+    additive = Additive()
+
+    # act
+    result = additive.uds_file
+
+    # assert
+    assert result == uds_file
+
+def test_uds_file_returns_None_when_server_has_no_uds_file(monkeypatch):
+    # arrange
+    mock_server_connection = Mock(ServerConnection)
+    mock_server_connection.uds_file = None
+    mock_connect = create_autospec(
+        ansys.additive.core.additive.Additive._connect_to_server,
+        return_value=mock_server_connection,
+    )
+    monkeypatch.setattr(
+        ansys.additive.core.additive.Additive, "_connect_to_server", mock_connect
+    )
+
+    additive = Additive()
+
+    # act
+    result = additive.uds_file
+
+    # assert
+    assert result is None

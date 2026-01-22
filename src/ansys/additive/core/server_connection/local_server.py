@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -119,6 +119,19 @@ class LocalServer:
                 stderr=subprocess.STDOUT,
             )
             time.sleep(2)  # wait for server to start
+
+            log_file.flush()
+            with open(log_file.name, "r") as lf:
+                lines = lf.readlines()
+                for i, line in enumerate(lines):
+                    if "[FTL]" in line:
+                        next_line = lines[i + 1] if i + 1 < len(lines) else ""
+                        msg = (
+                            f"Additive server failed to start. Last log lines:\n\n"
+                            f"{line.strip()}\n{next_line.strip()}\n\n"
+                            f"Further details can be found in {log_file.name}"
+                        )
+                        raise Exception(msg)
             if server_process.poll():
                 raise Exception(f"Server exited with code {server_process.returncode}")
 
