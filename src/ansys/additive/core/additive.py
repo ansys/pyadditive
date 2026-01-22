@@ -24,6 +24,7 @@
 import logging
 import os
 import time
+from pathlib import Path
 
 import grpc
 from google.longrunning.operations_pb2 import Operation
@@ -60,6 +61,7 @@ from ansys.additive.core.server_connection import (
     DEFAULT_PRODUCT_VERSION,
     ServerConnection,
 )
+from ansys.additive.core.server_connection.constants import TransportMode
 from ansys.additive.core.simulation import (
     SimulationStatus,
     SimulationType,
@@ -119,6 +121,23 @@ class Additive:
         required when Ansys has not been installed in the default location. Example:
         ``/usr/shared/ansys_inc``. Note that the path should not include the product
         version.
+    transport_mode : TransportMode | str, default: TransportMode.UDS
+        The transport mode to use for the connection. Can be a member of the :class:`TransportMode <.constants.TransportMode>` enum or a string
+        ('insecure', 'mtls', or 'uds').
+    certs_dir : Path | str | None
+        Directory to use for TLS certificates. Applicable if `transport_mode` is 'mtls'.
+        By default `None` and will search for the "ANSYS_GRPC_CERTIFICATES" environment variable.
+        If not found, it will use the "certs" folder assuming it is in the current working
+        directory.
+    uds_dir : Path | str | None
+        Optional directory containing Unix Domain Socket files. Applicable if `transport_mode` is 'uds'.
+        By default `None` and it will use the "~/.conn" folder.
+    uds_id : str | None
+        Optional identifier for the Unix Domain Socket. Applicable if `transport_mode` is 'uds'.
+        By default `None` and it will use "additive.sock".
+        Otherwise, the socket filename will be "additive-<uds_id>.sock".
+    allow_remote_host: bool, default: False
+        Whether to allow connections to remote hosts when using 'insecure' or 'mtls' transport modes.
 
     Examples
     --------
@@ -158,6 +177,11 @@ class Additive:
         log_file: str = "",
         enable_beta_features: bool = False,
         linux_install_path: os.PathLike | None = None,
+        transport_mode: TransportMode | str = TransportMode.UDS,
+        certs_dir: Path | str | None = None,
+        uds_dir: Path | str | None = None,
+        uds_id: str | None = None,
+        allow_remote_host: bool = False,
     ) -> None:
         """Initialize server connections."""
         if not product_version:
@@ -175,6 +199,11 @@ class Additive:
             product_version,
             LOG,
             linux_install_path,
+            transport_mode,
+            certs_dir,
+            uds_dir,
+            uds_id,
+            allow_remote_host,
         )
 
         # HACK: Set the number of concurrent simulations per server
@@ -198,8 +227,13 @@ class Additive:
         host: str | None = None,
         port: int = DEFAULT_ADDITIVE_SERVICE_PORT,
         product_version: str = DEFAULT_PRODUCT_VERSION,
-        log: logging.Logger = None,
+        log: logging.Logger | None = None,
         linux_install_path: os.PathLike | None = None,
+        transport_mode: TransportMode | str | None = None,
+        certs_dir: Path | str | None = None,
+        uds_dir: Path | str | None = None,
+        uds_id: str | None = None,
+        allow_remote_host: bool = False,
     ) -> ServerConnection:
         """Connect to an Additive server, starting it if necessary.
 
@@ -225,6 +259,17 @@ class Additive:
             required when Ansys has not been installed in the default location. Example:
             ``/usr/shared/ansys_inc``. Note that the path should not include the product
             version.
+        transport_mode : TransportMode | str
+            The transport mode to use for the connection. Can be a member of the :class:`TransportMode <.constants.TransportMode>` enum or a string
+            ('insecure', 'mtls', or 'uds').
+        certs_dir : Path | str | None
+            Directory containing certificates for mTLS connections. Required if `transport_mode` is 'mtls'.
+        uds_dir : Path | str | None
+            Directory containing Unix Domain Socket files. Required if `transport_mode` is 'uds'.
+        uds_id : str | None
+            Identifier for the Unix Domain Socket. Required if `transport_mode` is 'uds'.
+        allow_remote_host: bool
+            Whether to allow connections to remote hosts when using 'insecure' or 'mtls' transport modes.
 
         Returns
         -------
@@ -240,16 +285,37 @@ class Additive:
         if channel:
             if not isinstance(channel, grpc.Channel):
                 raise ValueError("channel must be a grpc.Channel object")
-            return ServerConnection(channel=channel, log=log)
+            return ServerConnection(channel=channel, log=log, allow_remote_host=allow_remote_host)
         elif host:
-            return ServerConnection(addr=f"{host}:{port}", log=log)
+            return ServerConnection(
+                addr=f"{host}:{port}",
+                log=log,
+                transport_mode=transport_mode,
+                certs_dir=certs_dir,
+                uds_dir=uds_dir,
+                uds_id=uds_id,
+                allow_remote_host=allow_remote_host,
+            )
         elif os.getenv("ANSYS_ADDITIVE_ADDRESS"):
-            return ServerConnection(addr=os.getenv("ANSYS_ADDITIVE_ADDRESS"), log=log)
+            return ServerConnection(
+                addr=os.getenv("ANSYS_ADDITIVE_ADDRESS"),
+                log=log,
+                transport_mode=transport_mode,
+                certs_dir=certs_dir,
+                uds_dir=uds_dir,
+                uds_id=uds_id,
+                allow_remote_host=allow_remote_host,
+            )
         else:
             return ServerConnection(
                 product_version=product_version,
                 log=log,
                 linux_install_path=linux_install_path,
+                transport_mode=transport_mode,
+                certs_dir=certs_dir,
+                uds_dir=uds_dir,
+                uds_id=uds_id,
+                allow_remote_host=allow_remote_host,
             )
 
     @property
@@ -268,6 +334,11 @@ class Additive:
         if self._server is None:
             return False
         return self._server.status().connected
+
+    @property
+    def uds_file(self) -> Path | None:
+        """Path to the Unix Domain Socket file if using 'uds' transport mode, otherwise None."""
+        return self._server.uds_file
 
     def about(self) -> str:
         """Return information about the client and server.
