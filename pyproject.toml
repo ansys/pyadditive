@@ -21,11 +21,12 @@ maintainers = [{name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"}]
 name = "ansys-additive-core"
 readme = "README.rst"
 requires-python = ">=3.10,<4"
-version = "0.19.1"
+version = "0.19.2"
 
 dependencies = [
   "ansys-api-additive==2.2.1",
   "ansys-platform-instancemanagement>=1.1.1",
+  "ansys-tools-common>=0.4.0",
   "dill>=0.3.7",
   "google-api-python-client>=1.7.11",
   "googleapis-common-protos>=1.52.0",

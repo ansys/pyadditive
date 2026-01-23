@@ -20,11 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from unittest.mock import ANY, Mock, create_autospec
-
 import grpc
-import pytest
 from google.protobuf.empty_pb2 import Empty
+from pathlib import Path
+import platform
+import pytest
+import signal
+from subprocess import Popen
+from unittest.mock import ANY, Mock, create_autospec, patch
 
 import ansys.additive.core.server_connection.local_server
 import ansys.additive.core.server_connection.server_connection
@@ -33,6 +36,7 @@ import ansys.platform.instancemanagement as pypim
 from ansys.additive.core.server_connection.constants import (
     LOCALHOST,
     PYPIM_PRODUCT_NAME,
+    TransportMode,
 )
 from ansys.additive.core.server_connection.server_connection import (
     ServerConnection,
@@ -51,7 +55,7 @@ def test_init_raises_exception_if_channel_and_addr_provided():
 
     # act, assert
     with pytest.raises(ValueError) as exc:
-        ServerConnection(channel, addr)
+        ServerConnection(channel=channel, addr=addr)
     assert "Both 'channel' and 'addr' cannot both be specified" in str(exc.value)
 
 
@@ -95,7 +99,7 @@ def test_init_connects_with_addr(monkeypatch):
     )
 
     # act
-    server = ServerConnection(addr=addr)
+    server = ServerConnection(transport_mode=TransportMode.INSECURE, addr=addr, allow_remote_host=True)
 
     # assert
     assert server.channel_str == addr
@@ -137,8 +141,7 @@ def test_init_connects_with_pypim(monkeypatch):
     monkeypatch.setattr(pypim, "is_configured", mock_is_configured)
 
     # act
-    server = ServerConnection(product_version="123")
-
+    server = ServerConnection(product_version="123", transport_mode=TransportMode.INSECURE, allow_remote_host=True)
     # assert
     assert server.channel_str == target
     assert hasattr(server, "_server_instance") == True
@@ -172,7 +175,7 @@ def test_init_starts_local_server(monkeypatch):
     )
 
     # act
-    server = ServerConnection(product_version="123")
+    server = ServerConnection(product_version="123", transport_mode="insecure")
 
     # assert
     assert LOCALHOST in server.channel_str
@@ -347,3 +350,106 @@ def test_server_connection_status_str_connected_with_metadata():
     # assert
     expected_str = "Server localhost:50051 is connected.\n  version: 1.0\n  status: running"
     assert status_str == expected_str
+
+
+@pytest.mark.skipif(
+    platform.system() != "Windows", reason="Test only valid on Windows."
+)
+def test_disconnect_with_server_process(monkeypatch):
+    # arrange
+    mock_ready = create_autospec(
+        ansys.additive.core.server_connection.server_connection.ServerConnection.ready,
+        return_value=True,
+    )
+    monkeypatch.setattr(
+        ansys.additive.core.server_connection.server_connection.ServerConnection,
+        "ready",
+        mock_ready,
+    )
+    mock_server_process = Mock(Popen)
+    server = ServerConnection(channel=grpc.insecure_channel("target"))
+    server._server_process = mock_server_process
+    # act
+    server.disconnect()
+    # assert
+    mock_server_process.kill.assert_called_once()
+
+
+@pytest.mark.skipif(
+    platform.system() != "Linux", reason="Test only valid on Linux."
+)
+def test_disconnect_with_server_process(monkeypatch):
+    # arrange
+    mock_ready = create_autospec(
+        ansys.additive.core.server_connection.server_connection.ServerConnection.ready,
+        return_value=True,
+    )
+    monkeypatch.setattr(
+        ansys.additive.core.server_connection.server_connection.ServerConnection,
+        "ready",
+        mock_ready,
+    )
+    mock_server_process = Mock(Popen)
+    server = ServerConnection(channel=grpc.insecure_channel("target"))
+    server._server_process = mock_server_process
+
+    # act
+    server.disconnect()
+
+    # assert
+    mock_server_process.send_signal.assert_called_once_with(signal.SIGINT)
+
+
+def test_uds_file_property(monkeypatch):
+    # arrange
+    mock_ready = create_autospec(
+        ansys.additive.core.server_connection.server_connection.ServerConnection.ready,
+        return_value=True,
+    )
+    monkeypatch.setattr(
+        ansys.additive.core.server_connection.server_connection.ServerConnection,
+        "ready",
+        mock_ready,
+    )
+    mock_channel = grpc.insecure_channel("target")
+    mock_path = "/path/to/uds/file"
+
+    mock_launch = create_autospec(
+        ansys.additive.core.server_connection.local_server.LocalServer.launch,
+        return_value=None,
+    )
+    monkeypatch.setattr(
+        ansys.additive.core.server_connection.local_server.LocalServer,
+        "launch",
+        mock_launch,
+    )
+    with patch("ansys.additive.core.server_connection.server_connection.create_channel") as mock_create_channel:
+        mock_create_channel.return_value = (mock_channel, mock_path)
+
+        # act
+        server = ServerConnection(transport_mode="uds")
+
+        # assert
+        assert server.uds_file == "/path/to/uds/file"
+
+
+def test_channel_str_with_uds(monkeypatch):
+    # arrange
+    mock_ready = create_autospec(
+        ansys.additive.core.server_connection.server_connection.ServerConnection.ready,
+        return_value=True,
+    )
+    monkeypatch.setattr(
+        ansys.additive.core.server_connection.server_connection.ServerConnection,
+        "ready",
+        mock_ready,
+    )
+
+    with patch("ansys.additive.core.server_connection.network_utils.verify_uds_socket", return_value=True):
+        server = ServerConnection(addr="localhost:1234", transport_mode="uds", uds_dir="test_channel_str_with_uds")
+
+    # act
+    result = server.channel_str
+
+    # assert
+    assert result == str(Path("test_channel_str_with_uds") / "additive.sock")

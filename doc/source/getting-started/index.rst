@@ -73,7 +73,7 @@ Run simulations
 ===============
 
 For examples of the types of simulations possible with PyAdditive, see
-`Examples <https://additive.docs.pyansys.com/version/dev/examples/gallery_examples/index.html>`_.
+`Examples <https://additive.docs.pyansys.com/version/0.19/examples/gallery_examples/index.html>`_.
 
 
 

@@ -19,12 +19,16 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from unittest.mock import create_autospec
+from pathlib import Path
+from unittest.mock import create_autospec, patch
 
 import grpc
 import pytest
+import shutil
 
+from ansys.additive.core.server_connection.constants import TransportMode
 from ansys.additive.core.server_connection.network_utils import (
+    MAX_RCV_MSG_LEN,
     check_valid_ip,
     check_valid_port,
     create_channel,
@@ -70,16 +74,101 @@ def test_check_valid_port_raises_error_for_invalid_values():
             check_valid_port(port)
 
 
-def test_create_channel_returns_expected_channel():
+def test_create_channel_returns_expected_insecure_channel():
     # arrange
     target = "1.2.3.4:1234"
 
     # act
-    channel = create_channel(target=target)
+    channel, _ = create_channel(target=target, transport_mode="insecure", certs_dir=None, uds_dir=None, uds_id=None, allow_remote_host=True)
 
     # assert
     assert channel is not None
     assert channel._channel.target().decode().removeprefix("dns:///") == target
+
+
+def test_create_channel_requires_allow_remote_host_for_non_loopback_insecure_channel():
+    # arrange
+    target = "1.2.3.4:1234"
+
+    # act
+    with pytest.raises(ValueError) as exc_info:
+        create_channel(target=target, transport_mode="insecure", certs_dir=None, uds_dir=None, uds_id=None)
+
+    # assert
+    assert "Connections to remote hosts are not allowed" in str(exc_info.value)
+
+def test_create_channel_returns_expected_uds_channel():
+    # arrange
+    target = "127.0.0.1:1234"
+    uds_dir = Path("test_uds_channel")
+
+    # act
+    with patch("ansys.additive.core.server_connection.network_utils.verify_uds_socket", return_value=True):
+        channel, uds_file = create_channel(target=target, transport_mode="uds", certs_dir=None, uds_dir=uds_dir, uds_id="111111")
+
+    # assert
+    assert channel is not None
+    assert isinstance(channel, grpc.Channel)
+    assert uds_file == Path(uds_dir) / "additive-111111.sock"
+
+    # cleanup
+    shutil.rmtree(uds_dir, ignore_errors=True)
+
+
+def test_create_channel_raises_exception_for_missing_uds_dir(monkeypatch):
+    # arrange
+    mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=None)
+    monkeypatch.setattr(grpc, "insecure_channel", mock_insecure_channel)
+    target = "127.0.0.1:1234"
+    uds_dir = "test_uds_channel_missing"
+
+    # act and assert
+    with pytest.raises(ConnectionError):
+        create_channel(target=target, transport_mode="uds", certs_dir=None, uds_dir=uds_dir, uds_id="111111")
+
+    # cleanup
+    shutil.rmtree(uds_dir, ignore_errors=True)
+
+
+def test_create_channel_returns_expected_secure_channel(monkeypatch):
+    # arrange
+    mock_channel_credentials = create_autospec(grpc.ChannelCredentials, return_value=None)
+    monkeypatch.setattr(grpc, "ChannelCredentials", mock_channel_credentials)
+    mock_secure_channel = create_autospec(grpc.secure_channel, return_value=None)
+    monkeypatch.setattr(grpc, "secure_channel", mock_secure_channel)
+    target = "127.0.0.1:1234"
+    certs_dir = Path("test_secure_channel")
+    certs_dir.mkdir(parents=True, exist_ok=True)
+    (certs_dir / "client.crt").write_text("test")
+    (certs_dir / "client.key").write_text("test")
+    (certs_dir / "ca.crt").write_text("test")
+
+    # act
+    create_channel(target=target, transport_mode=TransportMode.MTLS, certs_dir=certs_dir, uds_dir=None, uds_id=None)
+
+    # assert
+    mock_secure_channel.assert_called_with(target, None, options=[("grpc.max_receive_message_length", MAX_RCV_MSG_LEN)])
+
+    # cleanup
+    shutil.rmtree(certs_dir, ignore_errors=True)
+
+
+def test_create_channel_raises_exception_for_missing_certs():
+    # arrange
+    target = "1.2.3.4:1234"
+
+    # act, assert
+    with pytest.raises(FileNotFoundError):
+        create_channel(target=target, transport_mode=TransportMode.MTLS, certs_dir=None, uds_dir=None, uds_id=None)
+
+
+def test_create_channel_raises_exception_for_invalid_transport_mode():
+    # arrange
+    target = "1.2.3.4:1234"
+
+    # act, assert
+    with pytest.raises(ValueError):
+        create_channel(target=target, transport_mode="invalid", certs_dir=None, uds_dir=None, uds_id=None)
 
 
 def test_create_channel_raises_exception_for_missing_ip():
@@ -88,7 +177,7 @@ def test_create_channel_raises_exception_for_missing_ip():
 
     # act, assert
     with pytest.raises(ValueError):
-        create_channel(target)
+        create_channel(target, transport_mode="insecure", certs_dir=None, uds_dir=None, uds_id=None)
 
 
 def test_create_channel_raises_exception_for_bad_port():
@@ -97,7 +186,7 @@ def test_create_channel_raises_exception_for_bad_port():
 
     # act, assert
     with pytest.raises(ValueError):
-        create_channel(target)
+        create_channel(target, transport_mode="insecure", certs_dir=None, uds_dir=None, uds_id=None)
 
 
 def test_create_channel_sets_max_rcv_msg_len(monkeypatch):
@@ -108,7 +197,7 @@ def test_create_channel_sets_max_rcv_msg_len(monkeypatch):
     target = "1.2.3.4:1234"
 
     # act
-    create_channel(target, msg_len)
+    create_channel(target, transport_mode="insecure", certs_dir=None, uds_dir=None, uds_id=None, allow_remote_host=True, max_rcv_msg_len=msg_len)
 
     # assert
     mock_insecure_channel.assert_called_with(
