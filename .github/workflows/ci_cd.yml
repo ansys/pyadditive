@@ -58,7 +58,7 @@ jobs:
             os: macos-latest
     steps:
       - name: "Build a wheelhouse of the Python library"
-        uses: ansys/actions/build-wheelhouse@v9
+        uses: ansys/actions/build-wheelhouse@v10
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           operating-system: ${{ matrix.os }}
