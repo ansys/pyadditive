@@ -33,8 +33,7 @@ def short_uuid(nchars: int = 12) -> str:
     nchars : int, default 12
         Number of characters in the UUID. Only applies if ``nchars`` is greater
         than 6. Using the default, the probability
-        of a collision is 1.23e-17 for 1 billion rounds. See
-        https://shortunique.id/classes/ShortUniqueId.html#collisionProbability.
+        of a collision is 1.23e-17 for 1 billion rounds.
 
     """
     alphabet = string.ascii_letters + string.digits
