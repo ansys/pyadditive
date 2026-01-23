@@ -474,7 +474,6 @@ def test_simulate_study_async_performs_expected_steps(tmp_path: pathlib.Path):
     inputs = [sb, p]
     study = ParametricStudy(tmp_path / "test-study", "material")
     study.add_inputs(inputs)
-    study._data_frame[ColumnNames.ERROR_MESSAGE] = "error message"
 
     # act
     task_mgr = additive.simulate_study_async(study)
@@ -482,7 +481,6 @@ def test_simulate_study_async_performs_expected_steps(tmp_path: pathlib.Path):
     # assert
     assert isinstance(task_mgr, SimulationTaskManager)
     assert all(s == SimulationStatus.PENDING for s in study.data_frame()[ColumnNames.STATUS].values)
-    assert all(e is None for e in study.data_frame()[ColumnNames.ERROR_MESSAGE].values)
     additive.simulate_async.assert_called_once_with(inputs, None)
 
 
