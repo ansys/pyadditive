@@ -115,14 +115,10 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
-    "sphinxcontrib.svg2pdfconverter",  # Convert SVG to PDF for LaTeX
     "sphinxemoji.sphinxemoji",
     "sphinx_jinja",
     "sphinx_design",
 ]
-
-# SVG to PDF converter configuration for LaTeX builds
-svg2pdf_converter = ("rsvg-convert",)
 
 # Intersphinx mapping
 intersphinx_mapping = {
