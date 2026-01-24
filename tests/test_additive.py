@@ -74,7 +74,6 @@ from ansys.additive.core.material import AdditiveMaterial
 from ansys.additive.core.material_tuning import MaterialTuningInput
 from ansys.additive.core.progress_handler import DefaultSingleSimulationProgressHandler
 from ansys.additive.core.server_connection import DEFAULT_PRODUCT_VERSION, ServerConnection
-import ansys.additive.core.server_connection.server_connection
 
 from . import test_utils
 
@@ -105,9 +104,9 @@ def test_Additive_init_calls_connect_to_servers_correctly(
 
     # act
     additive = Additive(
-        server_connections,
-        host,
-        port,
+        server_connections=server_connections,
+        host=host,
+        port=port,
         nservers=nservers,
         product_version=in_prod_version,
         linux_install_path=None,
@@ -115,7 +114,18 @@ def test_Additive_init_calls_connect_to_servers_correctly(
 
     # assert
     mock_connect.assert_called_with(
-        server_connections, host, port, nservers, expected_prod_version, ANY, None
+        server_connections=server_connections,
+        host=host,
+        port=port,
+        nservers=nservers,
+        product_version=expected_prod_version,
+        log=ANY,
+        linux_install_path=None,
+        transport_mode=ANY,
+        certs_dir=ANY,
+        uds_dir=ANY,
+        uds_id=ANY,
+        allow_remote_host=ANY,
     )
     assert additive._servers == mock_server_connections
     assert isinstance(additive._log, logging.Logger)
@@ -183,7 +193,11 @@ def test_connect_to_servers_with_server_connections_creates_server_connections(m
     assert len(servers) == len(connections)
     assert len(mock_connection.mock_calls) == 3
     mock_connection.assert_has_calls(
-        [call(addr=host1, log=log), call(channel=channel, log=log), call(addr=host2, log=log)]
+        [
+            call(addr=host1, log=log, allow_remote_host=False),
+            call(channel=channel, log=log, allow_remote_host=False),
+            call(addr=host2, log=log, allow_remote_host=False),
+        ]
     )
 
 
@@ -202,7 +216,15 @@ def test_connect_to_servers_with_host_creates_server_connection(mock_connection)
 
     # assert
     assert len(servers) == 1
-    mock_connection.assert_called_once_with(addr=f"{host}:{port}", log=log)
+    mock_connection.assert_called_once_with(
+        addr=f"{host}:{port}",
+        log=log,
+        transport_mode=None,
+        certs_dir=None,
+        uds_dir=None,
+        uds_id=None,
+        allow_remote_host=False,
+    )
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
@@ -220,7 +242,15 @@ def test_connect_to_servers_with_env_var_creates_server_connection(
 
     # assert
     assert len(servers) == 1
-    mock_connection.assert_called_once_with(addr=addr, log=log)
+    mock_connection.assert_called_once_with(
+        addr=addr,
+        log=log,
+        transport_mode=None,
+        certs_dir=None,
+        uds_dir=None,
+        uds_id=None,
+        allow_remote_host=False,
+    )
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
@@ -243,7 +273,14 @@ def test_connect_to_servers_with_nservers_creates_server_connections(mock_connec
     # assert
     assert len(servers) == nservers
     mock_connection.assert_called_with(
-        product_version=product_version, log=log, linux_install_path=None
+        product_version=product_version,
+        log=log,
+        linux_install_path=None,
+        transport_mode=None,
+        certs_dir=None,
+        uds_dir=None,
+        uds_id=None,
+        allow_remote_host=False,
     )
 
 
@@ -1033,3 +1070,42 @@ def test_3d_microstructure_without_beta_enabled_raises_exception(_):
     # act, assert
     with pytest.raises(BetaFeatureNotEnabledError):
         additive.simulate(input)
+
+
+def test_uds_file_returns_value_when_server_has_uds_file(monkeypatch):
+    # arrange
+    uds_file = "/tmp/additive.sock"
+    mock_server_connection = Mock(ServerConnection)
+    mock_server_connection.uds_file = uds_file
+    mock_connect = create_autospec(
+        ansys.additive.core.additive.Additive._connect_to_servers,
+        return_value=[mock_server_connection],
+    )
+    monkeypatch.setattr(ansys.additive.core.additive.Additive, "_connect_to_servers", mock_connect)
+
+    additive = Additive()
+
+    # act
+    result = additive.uds_files
+
+    # assert
+    assert result == [uds_file]
+
+
+def test_uds_file_returns_None_when_server_has_no_uds_file(monkeypatch):
+    # arrange
+    mock_server_connection = Mock(ServerConnection)
+    mock_server_connection.uds_file = None
+    mock_connect = create_autospec(
+        ansys.additive.core.additive.Additive._connect_to_servers,
+        return_value=[mock_server_connection],
+    )
+    monkeypatch.setattr(ansys.additive.core.additive.Additive, "_connect_to_servers", mock_connect)
+
+    additive = Additive()
+
+    # act
+    result = additive.uds_files
+
+    # assert
+    assert result == []
