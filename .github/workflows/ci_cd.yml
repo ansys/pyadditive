@@ -135,7 +135,7 @@ jobs:
 
       - name: "Build documentation with short examples"
         if: github.event_name != 'push'
-        uses: ansys/actions/doc-build@v10
+        uses: ansys/actions/doc-build@v6
         with:
           checkout: false
           sphinxopts: "-j auto"
@@ -148,7 +148,7 @@ jobs:
 
       - name: "Build documentation with long examples"
         if: github.event_name == 'push'
-        uses: ansys/actions/doc-build@v10
+        uses: ansys/actions/doc-build@v6
         with:
           checkout: false
           sphinxopts: "-j auto"
