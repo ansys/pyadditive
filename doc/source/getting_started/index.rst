@@ -68,7 +68,7 @@ Package dependencies
 --------------------
 
 PyAdditive is supported on Python version 3.9 and later. Previous versions of Python are
-no longer supported as outlined in this `Moving to require Python 3 <https://python3statement.org/>`_
+no longer supported as outlined in this `Moving to require Python 3 <https://python3statement.github.io>`_
 statement.
 
 PyAdditive dependencies are automatically checked when packages are installed. Included
@@ -257,11 +257,11 @@ To test with a notebook, you need to install and run
 
 .. code:: bash
 
-   python -m venv jupyter_venv​
+   python -m venv jupyter_venv
 
-   jupyter_venv\Scripts\activate.bat​
+   jupyter_venv\Scripts\activate.bat
 
-   pip install jupyterlab​
+   pip install jupyterlab
 
    pip install jupyterlab
 
@@ -320,4 +320,4 @@ the building requirements and then executing the build module:
 .. _PyAnsys Developer's guide: https://dev.docs.pyansys.com/
 .. _pytest: https://docs.pytest.org/en/stable/
 .. _Sphinx: https://www.sphinx-doc.org/en/master/
-.. _tox: https://tox.wiki/
+.. _tox: https://tox.wiki/en/stable/

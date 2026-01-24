@@ -23,6 +23,7 @@
 from pathlib import Path
 import platform
 import signal
+from subprocess import Popen
 from unittest.mock import ANY, Mock, create_autospec, patch
 
 from ansys.api.additive.v0.about_pb2 import AboutResponse
