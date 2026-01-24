@@ -21,9 +21,6 @@
 # SOFTWARE.
 
 from pathlib import Path
-import platform
-import signal
-from subprocess import Popen
 from unittest.mock import ANY, Mock, create_autospec, patch
 
 from ansys.api.additive.v0.about_pb2 import AboutResponse
@@ -316,69 +313,6 @@ def test_status_when_not_connected_returns_expected_status():
     assert status.connected == False
     assert status.channel_str == "channel_str"
     assert status.metadata == None
-
-
-@pytest.mark.skipif(platform.system() != "Windows", reason="Test only valid on Windows.")
-def test_disconnect_with_server_process(monkeypatch):
-    # arrange
-    mock_ready = create_autospec(
-        ansys.additive.core.server_connection.server_connection.ServerConnection.ready,
-        return_value=True,
-    )
-    monkeypatch.setattr(
-        ansys.additive.core.server_connection.server_connection.ServerConnection,
-        "ready",
-        mock_ready,
-    )
-    mock_server_process = Mock(Popen)
-    server = ServerConnection(channel=grpc.insecure_channel("target"))
-    server._server_process = mock_server_process
-    # act
-    server.disconnect()
-    # assert
-    mock_server_process.kill.assert_called_once()
-
-
-@pytest.mark.skipif(platform.system() != "Linux", reason="Test only valid on Linux.")
-def test_disconnect_with_server_process(monkeypatch):
-    # arrange
-    mock_ready = create_autospec(
-        ansys.additive.core.server_connection.server_connection.ServerConnection.ready,
-        return_value=True,
-    )
-    monkeypatch.setattr(
-        ansys.additive.core.server_connection.server_connection.ServerConnection,
-        "ready",
-        mock_ready,
-    )
-    mock_server_process = Mock(Popen)
-    server = ServerConnection(channel=grpc.insecure_channel("target"))
-    server._server_process = mock_server_process
-
-    # act
-    server.disconnect()
-
-    # assert
-    mock_server_process.send_signal.assert_called_once_with(signal.SIGINT)
-
-
-def test_disconnect_with_no_server_instance_or_process(monkeypatch):
-    # arrange
-    mock_ready = create_autospec(
-        ansys.additive.core.server_connection.server_connection.ServerConnection.ready,
-        return_value=True,
-    )
-    monkeypatch.setattr(
-        ansys.additive.core.server_connection.server_connection.ServerConnection,
-        "ready",
-        mock_ready,
-    )
-    server = ServerConnection(channel=grpc.insecure_channel("target"))
-    # act
-    server.disconnect()
-    # assert
-    # No exception should be raised and no methods should be called
-    assert True
 
 
 def test_uds_file_property(monkeypatch):

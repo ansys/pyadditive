@@ -122,7 +122,6 @@ extensions = [
 ]
 
 # SVG to PDF converter configuration for LaTeX builds
-extensions.append("sphinxcontrib.svg2pdfconverter")
 svg2pdf_converter = ("rsvg-convert",)
 
 # Intersphinx mapping
