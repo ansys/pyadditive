@@ -285,6 +285,8 @@ linkcheck_ignore = [
     r"https://ansyshelp.ansys.com/.*",
     r"https://ansysproducthelpqa.win.ansys.com/.*",
     r"https://www.ansys.com/.*",
+    r"https://additive.docs.pyansys.com/version/stable/.*",
+    r"https://additive.docs.pyansys.com/version/dev/.*",
 ]
 
 linkcheck_retries = 3
