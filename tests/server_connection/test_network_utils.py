@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from pathlib import Path
+import platform
 import shutil
 from unittest.mock import create_autospec, patch
 
@@ -107,6 +108,7 @@ def test_create_channel_requires_allow_remote_host_for_non_loopback_insecure_cha
     assert "Connections to remote hosts are not allowed" in str(exc_info.value)
 
 
+@pytest.mark.skipif(platform.system() == "Windows", reason="Test only valid on Linux.")
 def test_create_channel_returns_expected_uds_channel():
     # arrange
     target = "127.0.0.1:1234"
@@ -129,6 +131,7 @@ def test_create_channel_returns_expected_uds_channel():
     shutil.rmtree(uds_dir, ignore_errors=True)
 
 
+@pytest.mark.skipif(platform.system() == "Windows", reason="Test only valid on Linux.")
 def test_create_channel_raises_exception_for_missing_uds_dir(monkeypatch):
     # arrange
     mock_insecure_channel = create_autospec(grpc.insecure_channel, return_value=None)

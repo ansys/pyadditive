@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 from pathlib import Path
+import platform
 from unittest.mock import ANY, Mock, create_autospec, patch
 
 from ansys.api.additive.v0.about_pb2 import AboutResponse
@@ -350,6 +351,7 @@ def test_uds_file_property(monkeypatch):
         assert server.uds_file == "/path/to/uds/file"
 
 
+@pytest.mark.skipif(platform.system() == "Windows", reason="Test only valid on Linux.")
 def test_channel_str_with_uds(monkeypatch):
     # arrange
     mock_ready = create_autospec(
