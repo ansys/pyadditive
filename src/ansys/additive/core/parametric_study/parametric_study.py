@@ -40,7 +40,7 @@ import numpy as np
 import ansys.additive.core.misc as misc
 from ansys.additive.core.logger import LOG
 from ansys.additive.core.machine import AdditiveMachine, MachineConstants
-from ansys.additive.core.material import AdditiveMaterial
+from ansys.additive.core.material import AdditiveMaterial, MaterialConstants
 from ansys.additive.core.microstructure import (
     MicrostructureInput,
     MicrostructureSummary,
@@ -444,6 +444,11 @@ class ParametricStudy:
             ColumnNames.STRIPE_WIDTH: summary.input.machine.slicing_stripe_width,
             ColumnNames.HEAT_SOURCE: summary.input.machine.heat_source_model,
             ColumnNames.RING_MODE_INDEX: summary.input.machine.ring_mode_index,
+            ColumnNames.DEFOCUS: summary.input.machine.defocus,
+            ColumnNames.LASER_SHAPE_PARAMETER: summary.input.material.laser_shape_parameter,
+            ColumnNames.LASER_DISTRIBUTION_PARAMETER: summary.input.material.laser_distribution_parameter,
+            ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT: summary.input.material.fresnal_absorption_coefficient,
+            ColumnNames.ABSORPTION_IN_CONDUCTION_MODE: summary.input.material.absorption_in_conduction_mode,
         }
 
     @save_on_return
@@ -463,6 +468,11 @@ class ParametricStudy:
         output_thermal_history: bool = SingleBeadInput.DEFAULT_OUTPUT_THERMAL_HISTORY,
         heat_source: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
         ring_mode_index: int = MachineConstants.DEFAULT_RING_MODE_INDEX,
+        defocus: float = MachineConstants.DEFAULT_DEFOCUS,
+        laser_shape_parameter: float = MaterialConstants.DEFAULT_LASER_SHAPE_PARAMETER,
+        laser_distribution_parameter: float = MaterialConstants.DEFAULT_LASER_DISTRIBUTION_PARAMETER,
+        fresnal_absorption_coefficient: float = MaterialConstants.DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT,
+        absorption_conduction_mode: float = MaterialConstants.DEFAULT_ABSORPTION_CONDUCTION_MODE,
     ) -> int:
         """Add single bead permutations to the parametric study.
 
@@ -519,6 +529,26 @@ class ParametricStudy:
             This parameter is only applicable if the ``heat_source`` parameter is set to :obj:`HEAT_SOURCE_MODEL_NAME_RING <MachineConstants.HEAT_SOURCE_MODEL_NAME_RING>`.
             Valid values are from :obj:`MIN_RING_MODE_INDEX <MachineConstants.MIN_RING_MODE_INDEX>`
             to :obj:`MAX_RING_MODE_INDEX <MachineConstants.MAX_RING_MODE_INDEX>`.
+        defocus : float, default: :obj:`DEFAULT_DEFOCUS <MachineConstants.DEFAULT_DEFOCUS>`
+            Defocus (m) to use for the dynamic defocus heat source model.
+            Valid values are from :obj:`MIN_DEFOCUS <MachineConstants.MIN_DEFOCUS>`
+            to :obj:`MAX_DEFOCUS <MachineConstants.MAX_DEFOCUS>`.
+        laser_shape_parameter : float, default: :obj:`DEFAULT_LASER_SHAPE_PARAMETER <MaterialConstants.DEFAULT_LASER_SHAPE_PARAMETER>`
+            Laser shape parameter for the dynamic defocus heat source.
+            Valid values are from :obj:`MIN_LASER_SHAPE_PARAMETER <MaterialConstants.MIN_LASER_SHAPE_PARAMETER>`
+            to :obj:`MAX_LASER_SHAPE_PARAMETER <MaterialConstants.MAX_LASER_SHAPE_PARAMETER>`.
+        laser_distribution_parameter : float, default: :obj:`DEFAULT_LASER_DISTRIBUTION_PARAMETER <MaterialConstants.DEFAULT_LASER_DISTRIBUTION_PARAMETER>`
+            Laser distribution parameter for the dynamic defocus heat source.
+            Valid values are from :obj:`MIN_LASER_DISTRIBUTION_PARAMETER <MaterialConstants.MIN_LASER_DISTRIBUTION_PARAMETER>`
+            to :obj:`MAX_LASER_DISTRIBUTION_PARAMETER <MaterialConstants.MAX_LASER_DISTRIBUTION_PARAMETER>`.
+        fresnal_absorption_coefficient : float, default: :obj:`DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT <MaterialConstants.DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT>`
+            Fresnal absorption coefficient for the dynamic defocus heat source.
+            Valid values are from :obj:`MIN_FRESNAL_ABSORPTION_COEFFICIENT <MaterialConstants.MIN_FRESNAL_ABSORPTION_COEFFICIENT>`
+            to :obj:`MAX_FRESNAL_ABSORPTION_COEFFICIENT <MaterialConstants.MAX_FRESNAL_ABSORPTION_COEFFICIENT>`.
+        absorption_conduction_mode : float, default: :obj:`DEFAULT_ABSORPTION_CONDUCTION_MODE <MaterialConstants.DEFAULT_ABSORPTION_CONDUCTION_MODE>`
+            Absorption conduction mode for the dynamic defocus heat source.
+            Valid values are from :obj:`MIN_ABSORPTION_CONDUCTION_MODE <MaterialConstants.MIN_ABSORPTION_CONDUCTION_MODE>`
+            to :obj:`MAX_ABSORPTION_CONDUCTION_MODE <MaterialConstants.MAX_ABSORPTION_CONDUCTION_MODE>`.
 
         Returns
         -------
@@ -571,11 +601,18 @@ class ParametricStudy:
                                     beam_diameter=d,
                                     heat_source_model=heat_source,
                                     ring_mode_index=ring_mode_index,
+                                    defocus=defocus,
+                                )
+                                material = AdditiveMaterial(
+                                    laser_shape_parameter=laser_shape_parameter,
+                                    laser_distribution_parameter=laser_distribution_parameter,
+                                    fresnal_absorption_coefficient=fresnal_absorption_coefficient,
+                                    absorption_in_conduction_mode=absorption_conduction_mode,
                                 )
                                 SingleBeadInput(
                                     bead_length=bead_length,
                                     machine=machine,
-                                    material=AdditiveMaterial(),
+                                    material=material,
                                     thermal_history_interval=interval,
                                     output_thermal_history=thermal_history,
                                 )
@@ -607,6 +644,11 @@ class ParametricStudy:
                                     ColumnNames.SB_THERMAL_HISTORY_INTERVAL: interval,
                                     ColumnNames.HEAT_SOURCE: heat_source,
                                     ColumnNames.RING_MODE_INDEX: ring_mode_index,
+                                    ColumnNames.DEFOCUS: defocus,
+                                    ColumnNames.LASER_SHAPE_PARAMETER: laser_shape_parameter,
+                                    ColumnNames.LASER_DISTRIBUTION_PARAMETER: laser_distribution_parameter,
+                                    ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT: fresnal_absorption_coefficient,
+                                    ColumnNames.ABSORPTION_IN_CONDUCTION_MODE: absorption_conduction_mode,
                                 }
                             )
                             self._data_frame = pd.concat(
@@ -638,6 +680,11 @@ class ParametricStudy:
         priority: int = DEFAULT_PRIORITY,
         heat_source: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
         ring_mode_index: int = MachineConstants.DEFAULT_RING_MODE_INDEX,
+        defocus: float = MachineConstants.DEFAULT_DEFOCUS,
+        laser_shape_parameter: float = MaterialConstants.DEFAULT_LASER_SHAPE_PARAMETER,
+        laser_distribution_parameter: float = MaterialConstants.DEFAULT_LASER_DISTRIBUTION_PARAMETER,
+        fresnal_absorption_coefficient: float = MaterialConstants.DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT,
+        absorption_conduction_mode: float = MaterialConstants.DEFAULT_ABSORPTION_CONDUCTION_MODE,
     ) -> int:
         """Add porosity permutations to the parametric study.
 
@@ -729,6 +776,26 @@ class ParametricStudy:
             This parameter is only applicable if the ``heat_source`` parameter is set to :obj:`HEAT_SOURCE_MODEL_NAME_RING <MachineConstants.HEAT_SOURCE_MODEL_NAME_RING>`.
             Valid values are from :obj:`MIN_RING_MODE_INDEX <MachineConstants.MIN_RING_MODE_INDEX>`
             to :obj:`MAX_RING_MODE_INDEX <MachineConstants.MAX_RING_MODE_INDEX>`.
+        defocus : float, default: :obj:`DEFAULT_DEFOCUS <MachineConstants.DEFAULT_DEFOCUS>`
+            Defocus (m) to use for the dynamic defocus heat source model.
+            Valid values are from :obj:`MIN_DEFOCUS <MachineConstants.MIN_DEFOCUS>`
+            to :obj:`MAX_DEFOCUS <MachineConstants.MAX_DEFOCUS>`.
+        laser_shape_parameter : float, default: :obj:`DEFAULT_LASER_SHAPE_PARAMETER <MaterialConstants.DEFAULT_LASER_SHAPE_PARAMETER>`
+            Laser shape parameter for the dynamic defocus heat source.
+            Valid values are from :obj:`MIN_LASER_SHAPE_PARAMETER <MaterialConstants.MIN_LASER_SHAPE_PARAMETER>`
+            to :obj:`MAX_LASER_SHAPE_PARAMETER <MaterialConstants.MAX_LASER_SHAPE_PARAMETER>`.
+        laser_distribution_parameter : float, default: :obj:`DEFAULT_LASER_DISTRIBUTION_PARAMETER <MaterialConstants.DEFAULT_LASER_DISTRIBUTION_PARAMETER>`
+            Laser distribution parameter for the dynamic defocus heat source.
+            Valid values are from :obj:`MIN_LASER_DISTRIBUTION_PARAMETER <MaterialConstants.MIN_LASER_DISTRIBUTION_PARAMETER>`
+            to :obj:`MAX_LASER_DISTRIBUTION_PARAMETER <MaterialConstants.MAX_LASER_DISTRIBUTION_PARAMETER>`.
+        fresnal_absorption_coefficient : float, default: :obj:`DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT <MaterialConstants.DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT>`
+            Fresnal absorption coefficient for the dynamic defocus heat source.
+            Valid values are from :obj:`MIN_FRESNAL_ABSORPTION_COEFFICIENT <MaterialConstants.MIN_FRESNAL_ABSORPTION_COEFFICIENT>`
+            to :obj:`MAX_FRESNAL_ABSORPTION_COEFFICIENT <MaterialConstants.MAX_FRESNAL_ABSORPTION_COEFFICIENT>`.
+        absorption_conduction_mode : float, default: :obj:`DEFAULT_ABSORPTION_CONDUCTION_MODE <MaterialConstants.DEFAULT_ABSORPTION_CONDUCTION_MODE>`
+            Absorption conduction mode for the dynamic defocus heat source.
+            Valid values are from :obj:`MIN_ABSORPTION_CONDUCTION_MODE <MaterialConstants.MIN_ABSORPTION_CONDUCTION_MODE>`
+            to :obj:`MAX_ABSORPTION_CONDUCTION_MODE <MaterialConstants.MAX_ABSORPTION_CONDUCTION_MODE>`.
 
         Returns
         -------
@@ -804,13 +871,20 @@ class ParametricStudy:
                                                     slicing_stripe_width=w,
                                                     heat_source_model=heat_source,
                                                     ring_mode_index=ring_mode_index,
+                                                    defocus=defocus,
+                                                )
+                                                material = AdditiveMaterial(
+                                                    laser_shape_parameter=laser_shape_parameter,
+                                                    laser_distribution_parameter=laser_distribution_parameter,
+                                                    fresnal_absorption_coefficient=fresnal_absorption_coefficient,
+                                                    absorption_in_conduction_mode=absorption_conduction_mode,
                                                 )
                                                 PorosityInput(
                                                     size_x=size_x,
                                                     size_y=size_y,
                                                     size_z=size_z,
                                                     machine=machine,
-                                                    material=AdditiveMaterial(),
+                                                    material=material,
                                                 )
                                             except ValueError as e:
                                                 LOG.error(f"Invalid parameter combination: {e}")
@@ -844,6 +918,11 @@ class ParametricStudy:
                                                     ColumnNames.POROSITY_SIZE_Z: size_z,
                                                     ColumnNames.HEAT_SOURCE: heat_source,
                                                     ColumnNames.RING_MODE_INDEX: ring_mode_index,
+                                                    ColumnNames.DEFOCUS: defocus,
+                                                    ColumnNames.LASER_SHAPE_PARAMETER: laser_shape_parameter,
+                                                    ColumnNames.LASER_DISTRIBUTION_PARAMETER: laser_distribution_parameter,
+                                                    ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT: fresnal_absorption_coefficient,
+                                                    ColumnNames.ABSORPTION_IN_CONDUCTION_MODE: absorption_conduction_mode,
                                                 }
                                             )
                                             self._data_frame = pd.concat(
@@ -885,6 +964,11 @@ class ParametricStudy:
         priority: int = DEFAULT_PRIORITY,
         heat_source: str = MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
         ring_mode_index: int = MachineConstants.DEFAULT_RING_MODE_INDEX,
+        defocus: float = MachineConstants.DEFAULT_DEFOCUS,
+        laser_shape_parameter: float = MaterialConstants.DEFAULT_LASER_SHAPE_PARAMETER,
+        laser_distribution_parameter: float = MaterialConstants.DEFAULT_LASER_DISTRIBUTION_PARAMETER,
+        fresnal_absorption_coefficient: float = MaterialConstants.DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT,
+        absorption_conduction_mode: float = MaterialConstants.DEFAULT_ABSORPTION_CONDUCTION_MODE,
     ) -> int:
         """Add microstructure permutations to the parametric study.
 
@@ -1030,6 +1114,26 @@ class ParametricStudy:
             This parameter is only applicable if the ``heat_source`` parameter is set to :obj:`HEAT_SOURCE_MODEL_NAME_RING <MachineConstants.HEAT_SOURCE_MODEL_NAME_RING>`.
             Valid values are from :obj:`MIN_RING_MODE_INDEX <MachineConstants.MIN_RING_MODE_INDEX>`
             to :obj:`MAX_RING_MODE_INDEX <MachineConstants.MAX_RING_MODE_INDEX>`.
+        defocus : float, default: :obj:`DEFAULT_DEFOCUS <MachineConstants.DEFAULT_DEFOCUS>`
+            Defocus (m) to use for the dynamic defocus heat source model.
+            Valid values are from :obj:`MIN_DEFOCUS <MachineConstants.MIN_DEFOCUS>`
+            to :obj:`MAX_DEFOCUS <MachineConstants.MAX_DEFOCUS>`.
+        laser_shape_parameter : float, default: :obj:`DEFAULT_LASER_SHAPE_PARAMETER <MaterialConstants.DEFAULT_LASER_SHAPE_PARAMETER>`
+            Laser shape parameter for the dynamic defocus heat source.
+            Valid values are from :obj:`MIN_LASER_SHAPE_PARAMETER <MaterialConstants.MIN_LASER_SHAPE_PARAMETER>`
+            to :obj:`MAX_LASER_SHAPE_PARAMETER <MaterialConstants.MAX_LASER_SHAPE_PARAMETER>`.
+        laser_distribution_parameter : float, default: :obj:`DEFAULT_LASER_DISTRIBUTION_PARAMETER <MaterialConstants.DEFAULT_LASER_DISTRIBUTION_PARAMETER>`
+            Laser distribution parameter for the dynamic defocus heat source.
+            Valid values are from :obj:`MIN_LASER_DISTRIBUTION_PARAMETER <MaterialConstants.MIN_LASER_DISTRIBUTION_PARAMETER>`
+            to :obj:`MAX_LASER_DISTRIBUTION_PARAMETER <MaterialConstants.MAX_LASER_DISTRIBUTION_PARAMETER>`.
+        fresnal_absorption_coefficient : float, default: :obj:`DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT <MaterialConstants.DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT>`
+            Fresnal absorption coefficient for the dynamic defocus heat source.
+            Valid values are from :obj:`MIN_FRESNAL_ABSORPTION_COEFFICIENT <MaterialConstants.MIN_FRESNAL_ABSORPTION_COEFFICIENT>`
+            to :obj:`MAX_FRESNAL_ABSORPTION_COEFFICIENT <MaterialConstants.MAX_FRESNAL_ABSORPTION_COEFFICIENT>`.
+        absorption_conduction_mode : float, default: :obj:`DEFAULT_ABSORPTION_CONDUCTION_MODE <MaterialConstants.DEFAULT_ABSORPTION_CONDUCTION_MODE>`
+            Absorption conduction mode for the dynamic defocus heat source.
+            Valid values are from :obj:`MIN_ABSORPTION_CONDUCTION_MODE <MaterialConstants.MIN_ABSORPTION_CONDUCTION_MODE>`
+            to :obj:`MAX_ABSORPTION_CONDUCTION_MODE <MaterialConstants.MAX_ABSORPTION_CONDUCTION_MODE>`.
 
         Returns
         -------
@@ -1118,6 +1222,13 @@ class ParametricStudy:
                                                     slicing_stripe_width=w,
                                                     heat_source_model=heat_source,
                                                     ring_mode_index=ring_mode_index,
+                                                    defocus=defocus,
+                                                )
+                                                material = AdditiveMaterial(
+                                                    laser_shape_parameter=laser_shape_parameter,
+                                                    laser_distribution_parameter=laser_distribution_parameter,
+                                                    fresnal_absorption_coefficient=fresnal_absorption_coefficient,
+                                                    absorption_in_conduction_mode=absorption_conduction_mode,
                                                 )
                                                 MicrostructureInput(
                                                     sample_min_x=min_x,
@@ -1159,7 +1270,7 @@ class ParametricStudy:
                                                         else random_seed
                                                     ),
                                                     machine=machine,
-                                                    material=AdditiveMaterial(),
+                                                    material=material,
                                                 )
                                             except ValueError as e:
                                                 LOG.error(f"Invalid parameter combination: {e}")
@@ -1223,6 +1334,11 @@ class ParametricStudy:
                                                     ),
                                                     ColumnNames.HEAT_SOURCE: heat_source,
                                                     ColumnNames.RING_MODE_INDEX: ring_mode_index,
+                                                    ColumnNames.DEFOCUS: defocus,
+                                                    ColumnNames.LASER_SHAPE_PARAMETER: laser_shape_parameter,
+                                                    ColumnNames.LASER_DISTRIBUTION_PARAMETER: laser_distribution_parameter,
+                                                    ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT: fresnal_absorption_coefficient,
+                                                    ColumnNames.ABSORPTION_IN_CONDUCTION_MODE: absorption_conduction_mode,
                                                 }
                                             )
                                             self._data_frame = pd.concat(
@@ -1411,6 +1527,17 @@ class ParametricStudy:
             dict[ColumnNames.STRIPE_WIDTH] = input.machine.slicing_stripe_width
             dict[ColumnNames.HEAT_SOURCE] = input.machine.heat_source_model
             dict[ColumnNames.RING_MODE_INDEX] = input.machine.ring_mode_index
+            dict[ColumnNames.DEFOCUS] = input.machine.defocus
+            dict[ColumnNames.LASER_DISTRIBUTION_PARAMETER] = (
+                input.material.laser_distribution_parameter
+            )
+            dict[ColumnNames.LASER_SHAPE_PARAMETER] = input.material.laser_shape_parameter
+            dict[ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT] = (
+                input.material.fresnal_absorption_coefficient
+            )
+            dict[ColumnNames.ABSORPTION_IN_CONDUCTION_MODE] = (
+                input.material.absorption_in_conduction_mode
+            )
 
             self._data_frame = pd.concat(
                 [self._data_frame, pd.Series(dict).to_frame().T], ignore_index=True
@@ -1473,6 +1600,11 @@ class ParametricStudy:
             ColumnNames.TYPE,
             ColumnNames.HEAT_SOURCE,
             ColumnNames.RING_MODE_INDEX,
+            ColumnNames.DEFOCUS,
+            ColumnNames.LASER_SHAPE_PARAMETER,
+            ColumnNames.LASER_DISTRIBUTION_PARAMETER,
+            ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT,
+            ColumnNames.ABSORPTION_IN_CONDUCTION_MODE,
         ]
 
         # Additional columns to check for duplicates as per simulation type
@@ -1673,6 +1805,7 @@ class ParametricStudy:
         - Version 2: Rename columns to use consistent units and naming conventions.
         - Version 3: Add material name and PV ratio columns.
         - Version 4: Add heat source, ring mode index and two single-bead thermal history columns.
+        - Version 5: Add defocus, laser shape parameter, laser distribution parameter, fresnal absorption coefficient, and absorption in conduction mode columns.
 
         Note: The _add_simulations_from_csv method will need to be updated with new versions.
 
@@ -1707,6 +1840,16 @@ class ParametricStudy:
         new_study = ParametricStudy._new(pathlib.Path(study.file_name))
         df = study.data_frame()
 
+        def add_missing_column(col_name, default_value, insert_after_col_name):
+            if col_name not in df.columns:
+                insert_index = df.columns.get_loc(insert_after_col_name)
+                if isinstance(insert_index, int):
+                    insert_index += 1
+                else:
+                    raise TypeError(f"insert_index must be of type int, got {type(insert_index)}")
+                # insert column
+                df.insert(insert_index, col_name, default_value)
+
         if version < 2:
             df = df.rename(
                 columns={
@@ -1738,19 +1881,6 @@ class ParametricStudy:
             df = ParametricStudy._add_pv_ratio(df)
 
         if version < 4:
-
-            def add_missing_column(col_name, default_value, insert_after_col_name):
-                if col_name not in df.columns:
-                    insert_index = df.columns.get_loc(insert_after_col_name)
-                    if isinstance(insert_index, int):
-                        insert_index += 1
-                    else:
-                        raise TypeError(
-                            f"insert_index must be of type int, got {type(insert_index)}"
-                        )
-                    # insert column
-                    df.insert(insert_index, col_name, default_value)
-
             # Add missing columns with default values
             add_missing_column(
                 ColumnNames.HEAT_SOURCE,
@@ -1774,6 +1904,36 @@ class ParametricStudy:
             )
 
             version = 4
+
+        if version < 5:
+            # Add missing columns with default values
+            add_missing_column(
+                ColumnNames.DEFOCUS,
+                MachineConstants.DEFAULT_DEFOCUS,
+                ColumnNames.RING_MODE_INDEX,
+            )
+            add_missing_column(
+                ColumnNames.LASER_SHAPE_PARAMETER,
+                MaterialConstants.DEFAULT_LASER_SHAPE_PARAMETER,
+                ColumnNames.DEFOCUS,
+            )
+            add_missing_column(
+                ColumnNames.LASER_DISTRIBUTION_PARAMETER,
+                MaterialConstants.DEFAULT_LASER_DISTRIBUTION_PARAMETER,
+                ColumnNames.LASER_SHAPE_PARAMETER,
+            )
+            add_missing_column(
+                ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT,
+                MaterialConstants.DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT,
+                ColumnNames.LASER_DISTRIBUTION_PARAMETER,
+            )
+            add_missing_column(
+                ColumnNames.ABSORPTION_IN_CONDUCTION_MODE,
+                MaterialConstants.DEFAULT_ABSORPTION_CONDUCTION_MODE,
+                ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT,
+            )
+
+            version = 5
 
         # Update the dataframe in the new study
         new_study._data_frame = df
@@ -1859,6 +2019,11 @@ class ParametricStudy:
             ColumnNames.PV_RATIO,
             ColumnNames.HEAT_SOURCE,
             ColumnNames.RING_MODE_INDEX,
+            ColumnNames.DEFOCUS,
+            ColumnNames.LASER_SHAPE_PARAMETER,
+            ColumnNames.LASER_DISTRIBUTION_PARAMETER,
+            ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT,
+            ColumnNames.ABSORPTION_IN_CONDUCTION_MODE,
             ColumnNames.SB_THERMAL_HISTORY_FLAG,
             ColumnNames.SB_THERMAL_HISTORY_INTERVAL,
         }
@@ -1885,6 +2050,36 @@ class ParametricStudy:
             ColumnNames.RING_MODE_INDEX,
             MachineConstants.DEFAULT_RING_MODE_INDEX,
             ColumnNames.HEAT_SOURCE,
+        )
+        ParametricStudy._insert_column(
+            df,
+            ColumnNames.DEFOCUS,
+            MachineConstants.DEFAULT_DEFOCUS,
+            ColumnNames.RING_MODE_INDEX,
+        )
+        ParametricStudy._insert_column(
+            df,
+            ColumnNames.LASER_SHAPE_PARAMETER,
+            MaterialConstants.DEFAULT_LASER_SHAPE_PARAMETER,
+            ColumnNames.DEFOCUS,
+        )
+        ParametricStudy._insert_column(
+            df,
+            ColumnNames.LASER_DISTRIBUTION_PARAMETER,
+            MaterialConstants.DEFAULT_LASER_DISTRIBUTION_PARAMETER,
+            ColumnNames.LASER_SHAPE_PARAMETER,
+        )
+        ParametricStudy._insert_column(
+            df,
+            ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT,
+            MaterialConstants.DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT,
+            ColumnNames.LASER_DISTRIBUTION_PARAMETER,
+        )
+        ParametricStudy._insert_column(
+            df,
+            ColumnNames.ABSORPTION_IN_CONDUCTION_MODE,
+            MaterialConstants.DEFAULT_ABSORPTION_CONDUCTION_MODE,
+            ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT,
         )
         ParametricStudy._insert_column(
             df,
@@ -2008,6 +2203,7 @@ class ParametricStudy:
                 slicing_stripe_width=input[ColumnNames.STRIPE_WIDTH],
                 heat_source_model=input[ColumnNames.HEAT_SOURCE],
                 ring_mode_index=input[ColumnNames.RING_MODE_INDEX],
+                defocus=input[ColumnNames.DEFOCUS],
             )
 
             material = AdditiveMaterial(name=str(input[ColumnNames.MATERIAL]))
@@ -2276,6 +2472,11 @@ class ParametricStudy:
                 row[ColumnNames.RING_MODE_INDEX]
                 if not np.isnan(row[ColumnNames.RING_MODE_INDEX])
                 else MachineConstants.DEFAULT_RING_MODE_INDEX
+            ),
+            defocus=(
+                row[ColumnNames.DEFOCUS]
+                if not np.isnan(row[ColumnNames.DEFOCUS])
+                else MachineConstants.DEFAULT_DEFOCUS
             ),
         )
 

@@ -64,7 +64,7 @@ from ansys.api.additive.v0.additive_domain_pb2 import (
 )
 from tests import test_utils
 
-EXPECTED_NUM_COLUMNS = 50
+EXPECTED_NUM_COLUMNS = 55
 
 
 def test_init_correctly_initializes_object(tmp_path: pathlib.Path):
@@ -2313,6 +2313,7 @@ def test_import_csv_study_reads_pv_column_for_csv_file_containing_the_column(
     assert not errors
     assert len(study.data_frame()[ColumnNames.PV_RATIO].unique()) == 6
 
+
 def test_import_csv_study_reads_single_bead_and_heat_source_columns(
     tmp_path: pathlib.Path,
 ):
@@ -2915,6 +2916,7 @@ def test_create_machine_assigns_all_values():
     stripe_width = 5e-3
     heat_source_model = 'gaussian'
     ring_mode_index = 2
+    defocus = 0.5e-3
     series = pd.Series(
         {
             ColumnNames.LASER_POWER: power,
@@ -2928,6 +2930,7 @@ def test_create_machine_assigns_all_values():
             ColumnNames.STRIPE_WIDTH: stripe_width,
             ColumnNames.HEAT_SOURCE: heat_source_model,
             ColumnNames.RING_MODE_INDEX: ring_mode_index,
+            ColumnNames.DEFOCUS: defocus,
         }
     )
 
@@ -2947,6 +2950,7 @@ def test_create_machine_assigns_all_values():
     assert machine.slicing_stripe_width == stripe_width
     assert machine.heat_source_model == heat_source_model
     assert machine.ring_mode_index == ring_mode_index
+    assert machine.defocus == defocus
 
 
 @pytest.mark.parametrize("heat_source_value", [float("nan"), ""])
@@ -2970,6 +2974,7 @@ def test_create_machine_assigns_default_values(heat_source_value):
             ColumnNames.STRIPE_WIDTH: float("nan"),
             ColumnNames.HEAT_SOURCE: heat_source_value,
             ColumnNames.RING_MODE_INDEX: float("nan"),
+            ColumnNames.DEFOCUS: float("nan"),
         }
     )
 
@@ -2989,6 +2994,7 @@ def test_create_machine_assigns_default_values(heat_source_value):
     assert machine.slicing_stripe_width == MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH
     assert machine.heat_source_model == MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME
     assert machine.ring_mode_index == MachineConstants.DEFAULT_RING_MODE_INDEX
+    assert machine.defocus == MachineConstants.DEFAULT_DEFOCUS
 
 
 def test_create_single_bead_input():
