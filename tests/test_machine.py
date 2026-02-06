@@ -250,6 +250,7 @@ def test_setters_set_correct_values():
     assert machine.slicing_stripe_width == 0.001
     assert machine.defocus == 0.003
 
+
 def test_default_heat_source_is_gaussian():
     # Other heat source models are marked as beta, the default should not be a beta feature
 
@@ -258,3 +259,40 @@ def test_default_heat_source_is_gaussian():
 
     # assert
     assert machine.heat_source_model == "gaussian"
+
+
+def test_validate_range_accepts_valid_values():
+    # arrange
+    machine = AdditiveMachine()
+
+    # act, assert - no exception should be raised
+    machine._AdditiveMachine__validate_range(50, 0, 100, "test_value")
+    machine._AdditiveMachine__validate_range(0, 0, 100, "test_value")
+    machine._AdditiveMachine__validate_range(100, 0, 100, "test_value")
+
+
+def test_validate_range_raises_exception_for_nan():
+    # arrange
+    machine = AdditiveMachine()
+
+    # act, assert
+    with pytest.raises(ValueError, match="test_value must be a number"):
+        machine._AdditiveMachine__validate_range(float("nan"), 0, 100, "test_value")
+
+
+def test_validate_range_raises_exception_for_value_below_min():
+    # arrange
+    machine = AdditiveMachine()
+
+    # act, assert
+    with pytest.raises(ValueError, match="test_value must be between 0 and 100"):
+        machine._AdditiveMachine__validate_range(-1, 0, 100, "test_value")
+
+
+def test_validate_range_raises_exception_for_value_above_max():
+    # arrange
+    machine = AdditiveMachine()
+
+    # act, assert
+    with pytest.raises(ValueError, match="test_value must be between 0 and 100"):
+        machine._AdditiveMachine__validate_range(101, 0, 100, "test_value")
