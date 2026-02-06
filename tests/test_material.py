@@ -736,7 +736,6 @@ def test_load_parameters_parses_parameter_file():
 
 def test_MaterialConstants_has_expected_default_values():
     # arrange, act, assert
-    
     assert MaterialConstants.DEFAULT_LASER_SHAPE_PARAMETER == 2.0
     assert MaterialConstants.MIN_LASER_SHAPE_PARAMETER == 1.0
     assert MaterialConstants.MAX_LASER_SHAPE_PARAMETER == 10.0

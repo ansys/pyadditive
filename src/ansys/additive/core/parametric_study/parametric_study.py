@@ -1840,15 +1840,15 @@ class ParametricStudy:
         new_study = ParametricStudy._new(pathlib.Path(study.file_name))
         df = study.data_frame()
 
-        def add_missing_column(col_name, default_value, insert_after_col_name):
-            if col_name not in df.columns:
-                insert_index = df.columns.get_loc(insert_after_col_name)
+        def add_missing_column(col_name, default_value, insert_after_col_name, data_frame=df):
+            if col_name not in data_frame.columns:
+                insert_index = data_frame.columns.get_loc(insert_after_col_name)
                 if isinstance(insert_index, int):
                     insert_index += 1
                 else:
                     raise TypeError(f"insert_index must be of type int, got {type(insert_index)}")
                 # insert column
-                df.insert(insert_index, col_name, default_value)
+                data_frame.insert(insert_index, col_name, default_value)
 
         if version < 2:
             df = df.rename(
@@ -1866,6 +1866,7 @@ class ParametricStudy:
                 }
             )
             version = 2
+
         if version < 3:
             materials = df[ColumnNames.MATERIAL].array
             if not materials:
