@@ -1,0 +1,1097 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>MachineConstants &#8212; PyAdditive 0.21.0b8 documentation</title>
+  
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/ansys-sphinx-theme.css?v=9e79609d" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/ansys-sphinx-theme.css?v=9e79609d" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://www.nerdfonts.com/assets/css/webfont.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=f23d505c" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+
+  <!-- Include desired assets -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  
+
+  
+    <link href="../../../../../_static/css/breadcrumbs.css" rel="stylesheet" />
+  
+    <script src="../../../../../_static/documentation_options.js?v=9cb2bc93"></script>
+    <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/thebelab-helper.js"></script>
+    <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../../_static/copybutton.js?v=49e1bf35"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/ansys/additive/core/machine/MachineConstants';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://additive.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.21';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="icon" href="../../../../../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="AdditiveMachine" href="AdditiveMachine.html" />
+    <link rel="prev" title="The machine.py module" href="index.html" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.21.0b8" />
+  <meta property="og:site_name" content="PyAnsys" />
+  <meta name="physics" content="Structures" />
+  <link rel="canonical" href="https://additive.docs.pyansys.com/version/stable/api/ansys/additive/core/machine/MachineConstants.html" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="https://docs.pyansys.com/">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/pyansys_logo_transparent_black.png" class="logo__image only-light" alt="PyAdditive 0.21.0b8 documentation - Home"/>
+    <img src="../../../../../_static/pyansys_logo_transparent_white.png" class="logo__image only-dark pst-js-only" alt="PyAdditive 0.21.0b8 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../index.html" title="PyAdditive 0.21.0b8 documentation home">Home</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../getting-started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../contributing.html">
+    Contribute
+  </a>
+</li>
+
+  </ul>
+</nav>
+</div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../../../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+</div></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+  
+    <div id="announcement_msg"></div>
+<script>
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(
+      (text) => (document.getElementById("announcement_msg").innerHTML = text),
+    )
+    .catch((error) => console.error(`Fetch problem: ${error.message}`));
+</script>
+  
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../index.html" title="PyAdditive 0.21.0b8 documentation home">Home</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../getting-started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../contributing.html">
+    Contribute
+  </a>
+</li>
+
+  </ul>
+</nav>
+</div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../../../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+</div></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html"><span class="nf nf-md-package"></span> ansys.additive.core</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../examples/index.html"> <span class="nf nf-md-package"></span> examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parametric_study/index.html"> <span class="nf nf-md-package"></span> parametric_study</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../server_connection/index.html"> <span class="nf nf-md-package"></span> server_connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../additive/index.html"> <span class="nf nf-fa-file"></span> additive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conversions/index.html"> <span class="nf nf-fa-file"></span> conversions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../download/index.html"> <span class="nf nf-fa-file"></span> download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exceptions/index.html"> <span class="nf nf-fa-file"></span> exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geometry_file/index.html"> <span class="nf nf-fa-file"></span> geometry_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logger/index.html"> <span class="nf nf-fa-file"></span> logger</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html"> <span class="nf nf-fa-file"></span> machine</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active"><a class="current reference internal" href="#"> <span class="nf nf-cod-symbol_class"></span> MachineConstants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="AdditiveMachine.html"> <span class="nf nf-cod-symbol_class"></span> AdditiveMachine</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../material/index.html"> <span class="nf nf-fa-file"></span> material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../material_tuning/index.html"> <span class="nf nf-fa-file"></span> material_tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../microstructure/index.html"> <span class="nf nf-fa-file"></span> microstructure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../microstructure_3d/index.html"> <span class="nf nf-fa-file"></span> microstructure_3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../misc/index.html"> <span class="nf nf-fa-file"></span> misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../porosity/index.html"> <span class="nf nf-fa-file"></span> porosity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../progress_handler/index.html"> <span class="nf nf-fa-file"></span> progress_handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation/index.html"> <span class="nf nf-fa-file"></span> simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation_error/index.html"> <span class="nf nf-fa-file"></span> simulation_error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation_requests/index.html"> <span class="nf nf-fa-file"></span> simulation_requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation_task/index.html"> <span class="nf nf-fa-file"></span> simulation_task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation_task_manager/index.html"> <span class="nf nf-fa-file"></span> simulation_task_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../single_bead/index.html"> <span class="nf nf-fa-file"></span> single_bead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../thermal_history/index.html"> <span class="nf nf-fa-file"></span> thermal_history</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+         
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="https://docs.pyansys.com/" class="nav-link">PyAnsys</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a
+        href="../../../../../index.html"
+        class="nav-link"
+        aria-label="Home"
+      >
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="../../../../index.html" class="nav-link">API reference</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="../index.html" class="nav-link">The <code class="docutils literal notranslate"><span class="pre">ansys.additive.core</span></code> library</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="index.html" class="nav-link">The <code class="docutils literal notranslate"><span class="pre">machine.py</span></code> module</a>
+    </li>
+      
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="xref py py-class docutils literal notranslate"><span class="pre">MachineConstants</span></code></span></li>
+    
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="machineconstants">
+<h1><code class="xref py py-class docutils literal notranslate"><span class="pre">MachineConstants</span></code><a class="headerlink" href="#machineconstants" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ansys.additive.core.machine.MachineConstants">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ansys.additive.core.machine.</span></span><span class="sig-name descname"><span class="pre">MachineConstants</span></span><a class="headerlink" href="#ansys.additive.core.machine.MachineConstants" title="Link to this definition">#</a></dt>
+<dd><p>Provides constants for additive manufacturing machine settings.</p>
+</dd></dl>
+
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+Attributes</label><div class="sd-tab-content docutils">
+<div class="pst-scrollable-table-container"><table class="table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.DEFAULT_LASER_POWER" title="MachineConstants.DEFAULT_LASER_POWER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_LASER_POWER</span></code></a></p></td>
+<td><p>Default laser power (W).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.MIN_LASER_POWER" title="MachineConstants.MIN_LASER_POWER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_LASER_POWER</span></code></a></p></td>
+<td><p>Minimum laser power (W).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.MAX_LASER_POWER" title="MachineConstants.MAX_LASER_POWER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_LASER_POWER</span></code></a></p></td>
+<td><p>Maximum laser power (W).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.DEFAULT_SCAN_SPEED" title="MachineConstants.DEFAULT_SCAN_SPEED"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SCAN_SPEED</span></code></a></p></td>
+<td><p>Default scan speed (m/s).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.MIN_SCAN_SPEED" title="MachineConstants.MIN_SCAN_SPEED"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_SCAN_SPEED</span></code></a></p></td>
+<td><p>Minimum scan speed (m/s).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.MAX_SCAN_SPEED" title="MachineConstants.MAX_SCAN_SPEED"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_SCAN_SPEED</span></code></a></p></td>
+<td><p>Maximum scan speed (m/s).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.DEFAULT_HEATER_TEMP" title="MachineConstants.DEFAULT_HEATER_TEMP"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_HEATER_TEMP</span></code></a></p></td>
+<td><p>Default heater temperature (C).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.MIN_HEATER_TEMP" title="MachineConstants.MIN_HEATER_TEMP"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_HEATER_TEMP</span></code></a></p></td>
+<td><p>Minimum heater temperature (C).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.MAX_HEATER_TEMP" title="MachineConstants.MAX_HEATER_TEMP"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_HEATER_TEMP</span></code></a></p></td>
+<td><p>Maximum heater temperature (C).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.DEFAULT_LAYER_THICKNESS" title="MachineConstants.DEFAULT_LAYER_THICKNESS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_LAYER_THICKNESS</span></code></a></p></td>
+<td><p>Default layer thickness (m).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.MIN_LAYER_THICKNESS" title="MachineConstants.MIN_LAYER_THICKNESS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_LAYER_THICKNESS</span></code></a></p></td>
+<td><p>Minimum layer thickness (m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.MAX_LAYER_THICKNESS" title="MachineConstants.MAX_LAYER_THICKNESS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_LAYER_THICKNESS</span></code></a></p></td>
+<td><p>Maximum layer thickness (m).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.DEFAULT_BEAM_DIAMETER" title="MachineConstants.DEFAULT_BEAM_DIAMETER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_BEAM_DIAMETER</span></code></a></p></td>
+<td><p>Default beam diameter (m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.MIN_BEAM_DIAMETER" title="MachineConstants.MIN_BEAM_DIAMETER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_BEAM_DIAMETER</span></code></a></p></td>
+<td><p>Minimum beam diameter (m).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.MAX_BEAM_DIAMETER" title="MachineConstants.MAX_BEAM_DIAMETER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_BEAM_DIAMETER</span></code></a></p></td>
+<td><p>Maximum beam diameter (m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.DEFAULT_STARTING_LAYER_ANGLE" title="MachineConstants.DEFAULT_STARTING_LAYER_ANGLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_STARTING_LAYER_ANGLE</span></code></a></p></td>
+<td><p>Default starting layer angle (degrees).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.MIN_STARTING_LAYER_ANGLE" title="MachineConstants.MIN_STARTING_LAYER_ANGLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_STARTING_LAYER_ANGLE</span></code></a></p></td>
+<td><p>Minimum starting layer angle (degrees).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.MAX_STARTING_LAYER_ANGLE" title="MachineConstants.MAX_STARTING_LAYER_ANGLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_STARTING_LAYER_ANGLE</span></code></a></p></td>
+<td><p>Maximum starting layer angle (degrees).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE" title="MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_LAYER_ROTATION_ANGLE</span></code></a></p></td>
+<td><p>Default layer rotation angle (degrees).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.MIN_LAYER_ROTATION_ANGLE" title="MachineConstants.MIN_LAYER_ROTATION_ANGLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_LAYER_ROTATION_ANGLE</span></code></a></p></td>
+<td><p>Minimum layer rotation angle (degrees).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.MAX_LAYER_ROTATION_ANGLE" title="MachineConstants.MAX_LAYER_ROTATION_ANGLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_LAYER_ROTATION_ANGLE</span></code></a></p></td>
+<td><p>Maximum layer rotation angle (degrees).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.DEFAULT_HATCH_SPACING" title="MachineConstants.DEFAULT_HATCH_SPACING"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_HATCH_SPACING</span></code></a></p></td>
+<td><p>Default hatch spacing (m).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.MIN_HATCH_SPACING" title="MachineConstants.MIN_HATCH_SPACING"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_HATCH_SPACING</span></code></a></p></td>
+<td><p>Minimum hatch spacing (m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.MAX_HATCH_SPACING" title="MachineConstants.MAX_HATCH_SPACING"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_HATCH_SPACING</span></code></a></p></td>
+<td><p>Maximum hatch spacing (m).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH" title="MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SLICING_STRIPE_WIDTH</span></code></a></p></td>
+<td><p>Default slicing stripe width (m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.MIN_SLICING_STRIPE_WIDTH" title="MachineConstants.MIN_SLICING_STRIPE_WIDTH"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_SLICING_STRIPE_WIDTH</span></code></a></p></td>
+<td><p>Minimum slicing stripe width (m).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.MAX_SLICING_STRIPE_WIDTH" title="MachineConstants.MAX_SLICING_STRIPE_WIDTH"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_SLICING_STRIPE_WIDTH</span></code></a></p></td>
+<td><p>Maximum slicing stripe width (m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.HEAT_SOURCE_MODEL_NAME_GAUSSIAN" title="MachineConstants.HEAT_SOURCE_MODEL_NAME_GAUSSIAN"><code class="xref py py-attr docutils literal notranslate"><span class="pre">HEAT_SOURCE_MODEL_NAME_GAUSSIAN</span></code></a></p></td>
+<td><p>Heat source model name for a Gaussian heat source.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.HEAT_SOURCE_MODEL_NAME_RING" title="MachineConstants.HEAT_SOURCE_MODEL_NAME_RING"><code class="xref py py-attr docutils literal notranslate"><span class="pre">HEAT_SOURCE_MODEL_NAME_RING</span></code></a></p></td>
+<td><p>Heat source model name for a Ring Mode heat source.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS" title="MachineConstants.HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS</span></code></a></p></td>
+<td><p>Heat source model name for a Dynamic Defocus heat source.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME" title="MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_HEAT_SOURCE_MODEL_NAME</span></code></a></p></td>
+<td><p>Default heat source model type used in simulations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.AVAILABLE_HEAT_SOURCE_MODELS" title="MachineConstants.AVAILABLE_HEAT_SOURCE_MODELS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">AVAILABLE_HEAT_SOURCE_MODELS</span></code></a></p></td>
+<td><p>List of available heat source model types: [<a class="reference internal" href="#MachineConstants.HEAT_SOURCE_MODEL_NAME_GAUSSIAN" title="MachineConstants.HEAT_SOURCE_MODEL_NAME_GAUSSIAN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HEAT_SOURCE_MODEL_NAME_GAUSSIAN</span></code></a>, <a class="reference internal" href="#MachineConstants.HEAT_SOURCE_MODEL_NAME_RING" title="MachineConstants.HEAT_SOURCE_MODEL_NAME_RING"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HEAT_SOURCE_MODEL_NAME_RING</span></code></a>]</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.DEFAULT_RING_MODE_INDEX" title="MachineConstants.DEFAULT_RING_MODE_INDEX"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_RING_MODE_INDEX</span></code></a></p></td>
+<td><p>Default ring mode index (only applicable for ring heat source).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.MIN_RING_MODE_INDEX" title="MachineConstants.MIN_RING_MODE_INDEX"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_RING_MODE_INDEX</span></code></a></p></td>
+<td><p>Minimum ring mode index.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.MAX_RING_MODE_INDEX" title="MachineConstants.MAX_RING_MODE_INDEX"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_RING_MODE_INDEX</span></code></a></p></td>
+<td><p>Maximum ring mode index.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.DEFAULT_DEFOCUS" title="MachineConstants.DEFAULT_DEFOCUS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_DEFOCUS</span></code></a></p></td>
+<td><p>Default defocus (m) (only applicable for dynamic defocus heat source).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#MachineConstants.MIN_DEFOCUS" title="MachineConstants.MIN_DEFOCUS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_DEFOCUS</span></code></a></p></td>
+<td><p>Minimum defocus (m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#MachineConstants.MAX_DEFOCUS" title="MachineConstants.MAX_DEFOCUS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_DEFOCUS</span></code></a></p></td>
+<td><p>Maximum defocus (m).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="import-detail">
+<h2>Import detail<a class="headerlink" href="#import-detail" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.additive.core.machine</span><span class="w"> </span><span class="kn">import</span> <span class="n">MachineConstants</span>
+</pre></div>
+</div>
+</section>
+<section id="attribute-detail">
+<h2>Attribute detail<a class="headerlink" href="#attribute-detail" title="Link to this heading">#</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.DEFAULT_LASER_POWER">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_LASER_POWER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">195.0</span></em><a class="headerlink" href="#MachineConstants.DEFAULT_LASER_POWER" title="Link to this definition">#</a></dt>
+<dd><p>Default laser power (W).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MIN_LASER_POWER">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MIN_LASER_POWER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">50.0</span></em><a class="headerlink" href="#MachineConstants.MIN_LASER_POWER" title="Link to this definition">#</a></dt>
+<dd><p>Minimum laser power (W).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MAX_LASER_POWER">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MAX_LASER_POWER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">700.0</span></em><a class="headerlink" href="#MachineConstants.MAX_LASER_POWER" title="Link to this definition">#</a></dt>
+<dd><p>Maximum laser power (W).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.DEFAULT_SCAN_SPEED">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_SCAN_SPEED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0</span></em><a class="headerlink" href="#MachineConstants.DEFAULT_SCAN_SPEED" title="Link to this definition">#</a></dt>
+<dd><p>Default scan speed (m/s).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MIN_SCAN_SPEED">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MIN_SCAN_SPEED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.35</span></em><a class="headerlink" href="#MachineConstants.MIN_SCAN_SPEED" title="Link to this definition">#</a></dt>
+<dd><p>Minimum scan speed (m/s).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MAX_SCAN_SPEED">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MAX_SCAN_SPEED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2.5</span></em><a class="headerlink" href="#MachineConstants.MAX_SCAN_SPEED" title="Link to this definition">#</a></dt>
+<dd><p>Maximum scan speed (m/s).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.DEFAULT_HEATER_TEMP">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_HEATER_TEMP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">80.0</span></em><a class="headerlink" href="#MachineConstants.DEFAULT_HEATER_TEMP" title="Link to this definition">#</a></dt>
+<dd><p>Default heater temperature (C).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MIN_HEATER_TEMP">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MIN_HEATER_TEMP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">20.0</span></em><a class="headerlink" href="#MachineConstants.MIN_HEATER_TEMP" title="Link to this definition">#</a></dt>
+<dd><p>Minimum heater temperature (C).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MAX_HEATER_TEMP">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MAX_HEATER_TEMP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">500.0</span></em><a class="headerlink" href="#MachineConstants.MAX_HEATER_TEMP" title="Link to this definition">#</a></dt>
+<dd><p>Maximum heater temperature (C).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.DEFAULT_LAYER_THICKNESS">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_LAYER_THICKNESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5e-05</span></em><a class="headerlink" href="#MachineConstants.DEFAULT_LAYER_THICKNESS" title="Link to this definition">#</a></dt>
+<dd><p>Default layer thickness (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MIN_LAYER_THICKNESS">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MIN_LAYER_THICKNESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1e-05</span></em><a class="headerlink" href="#MachineConstants.MIN_LAYER_THICKNESS" title="Link to this definition">#</a></dt>
+<dd><p>Minimum layer thickness (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MAX_LAYER_THICKNESS">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MAX_LAYER_THICKNESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0001</span></em><a class="headerlink" href="#MachineConstants.MAX_LAYER_THICKNESS" title="Link to this definition">#</a></dt>
+<dd><p>Maximum layer thickness (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.DEFAULT_BEAM_DIAMETER">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_BEAM_DIAMETER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0001</span></em><a class="headerlink" href="#MachineConstants.DEFAULT_BEAM_DIAMETER" title="Link to this definition">#</a></dt>
+<dd><p>Default beam diameter (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MIN_BEAM_DIAMETER">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MIN_BEAM_DIAMETER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2e-05</span></em><a class="headerlink" href="#MachineConstants.MIN_BEAM_DIAMETER" title="Link to this definition">#</a></dt>
+<dd><p>Minimum beam diameter (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MAX_BEAM_DIAMETER">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MAX_BEAM_DIAMETER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.00014</span></em><a class="headerlink" href="#MachineConstants.MAX_BEAM_DIAMETER" title="Link to this definition">#</a></dt>
+<dd><p>Maximum beam diameter (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.DEFAULT_STARTING_LAYER_ANGLE">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_STARTING_LAYER_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">57</span></em><a class="headerlink" href="#MachineConstants.DEFAULT_STARTING_LAYER_ANGLE" title="Link to this definition">#</a></dt>
+<dd><p>Default starting layer angle (degrees).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MIN_STARTING_LAYER_ANGLE">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MIN_STARTING_LAYER_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#MachineConstants.MIN_STARTING_LAYER_ANGLE" title="Link to this definition">#</a></dt>
+<dd><p>Minimum starting layer angle (degrees).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MAX_STARTING_LAYER_ANGLE">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MAX_STARTING_LAYER_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">180</span></em><a class="headerlink" href="#MachineConstants.MAX_STARTING_LAYER_ANGLE" title="Link to this definition">#</a></dt>
+<dd><p>Maximum starting layer angle (degrees).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_LAYER_ROTATION_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">67</span></em><a class="headerlink" href="#MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE" title="Link to this definition">#</a></dt>
+<dd><p>Default layer rotation angle (degrees).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MIN_LAYER_ROTATION_ANGLE">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MIN_LAYER_ROTATION_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#MachineConstants.MIN_LAYER_ROTATION_ANGLE" title="Link to this definition">#</a></dt>
+<dd><p>Minimum layer rotation angle (degrees).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MAX_LAYER_ROTATION_ANGLE">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MAX_LAYER_ROTATION_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">180</span></em><a class="headerlink" href="#MachineConstants.MAX_LAYER_ROTATION_ANGLE" title="Link to this definition">#</a></dt>
+<dd><p>Maximum layer rotation angle (degrees).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.DEFAULT_HATCH_SPACING">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_HATCH_SPACING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0001</span></em><a class="headerlink" href="#MachineConstants.DEFAULT_HATCH_SPACING" title="Link to this definition">#</a></dt>
+<dd><p>Default hatch spacing (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MIN_HATCH_SPACING">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MIN_HATCH_SPACING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6e-05</span></em><a class="headerlink" href="#MachineConstants.MIN_HATCH_SPACING" title="Link to this definition">#</a></dt>
+<dd><p>Minimum hatch spacing (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MAX_HATCH_SPACING">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MAX_HATCH_SPACING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0002</span></em><a class="headerlink" href="#MachineConstants.MAX_HATCH_SPACING" title="Link to this definition">#</a></dt>
+<dd><p>Maximum hatch spacing (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_SLICING_STRIPE_WIDTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.01</span></em><a class="headerlink" href="#MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH" title="Link to this definition">#</a></dt>
+<dd><p>Default slicing stripe width (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MIN_SLICING_STRIPE_WIDTH">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MIN_SLICING_STRIPE_WIDTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.001</span></em><a class="headerlink" href="#MachineConstants.MIN_SLICING_STRIPE_WIDTH" title="Link to this definition">#</a></dt>
+<dd><p>Minimum slicing stripe width (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MAX_SLICING_STRIPE_WIDTH">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MAX_SLICING_STRIPE_WIDTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#MachineConstants.MAX_SLICING_STRIPE_WIDTH" title="Link to this definition">#</a></dt>
+<dd><p>Maximum slicing stripe width (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.HEAT_SOURCE_MODEL_NAME_GAUSSIAN">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">HEAT_SOURCE_MODEL_NAME_GAUSSIAN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'gaussian'</span></em><a class="headerlink" href="#MachineConstants.HEAT_SOURCE_MODEL_NAME_GAUSSIAN" title="Link to this definition">#</a></dt>
+<dd><p>Heat source model name for a Gaussian heat source.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.HEAT_SOURCE_MODEL_NAME_RING">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">HEAT_SOURCE_MODEL_NAME_RING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ring'</span></em><a class="headerlink" href="#MachineConstants.HEAT_SOURCE_MODEL_NAME_RING" title="Link to this definition">#</a></dt>
+<dd><p>Heat source model name for a Ring Mode heat source.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dynamic_defocus'</span></em><a class="headerlink" href="#MachineConstants.HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS" title="Link to this definition">#</a></dt>
+<dd><p>Heat source model name for a Dynamic Defocus heat source.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_HEAT_SOURCE_MODEL_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'gaussian'</span></em><a class="headerlink" href="#MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME" title="Link to this definition">#</a></dt>
+<dd><p>Default heat source model type used in simulations.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.AVAILABLE_HEAT_SOURCE_MODELS">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">AVAILABLE_HEAT_SOURCE_MODELS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#MachineConstants.AVAILABLE_HEAT_SOURCE_MODELS" title="Link to this definition">#</a></dt>
+<dd><p>List of available heat source model types: [<a class="reference internal" href="#MachineConstants.HEAT_SOURCE_MODEL_NAME_GAUSSIAN" title="MachineConstants.HEAT_SOURCE_MODEL_NAME_GAUSSIAN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HEAT_SOURCE_MODEL_NAME_GAUSSIAN</span></code></a>, <a class="reference internal" href="#MachineConstants.HEAT_SOURCE_MODEL_NAME_RING" title="MachineConstants.HEAT_SOURCE_MODEL_NAME_RING"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HEAT_SOURCE_MODEL_NAME_RING</span></code></a>]</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.DEFAULT_RING_MODE_INDEX">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_RING_MODE_INDEX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#MachineConstants.DEFAULT_RING_MODE_INDEX" title="Link to this definition">#</a></dt>
+<dd><p>Default ring mode index (only applicable for ring heat source).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MIN_RING_MODE_INDEX">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MIN_RING_MODE_INDEX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#MachineConstants.MIN_RING_MODE_INDEX" title="Link to this definition">#</a></dt>
+<dd><p>Minimum ring mode index.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MAX_RING_MODE_INDEX">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MAX_RING_MODE_INDEX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#MachineConstants.MAX_RING_MODE_INDEX" title="Link to this definition">#</a></dt>
+<dd><p>Maximum ring mode index.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.DEFAULT_DEFOCUS">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_DEFOCUS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#MachineConstants.DEFAULT_DEFOCUS" title="Link to this definition">#</a></dt>
+<dd><p>Default defocus (m) (only applicable for dynamic defocus heat source).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MIN_DEFOCUS">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MIN_DEFOCUS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#MachineConstants.MIN_DEFOCUS" title="Link to this definition">#</a></dt>
+<dd><p>Minimum defocus (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MachineConstants.MAX_DEFOCUS">
+<span class="sig-prename descclassname"><span class="pre">MachineConstants.</span></span><span class="sig-name descname"><span class="pre">MAX_DEFOCUS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.01</span></em><a class="headerlink" href="#MachineConstants.MAX_DEFOCUS" title="Link to this definition">#</a></dt>
+<dd><p>Maximum defocus (m).</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ansys.additive.core.machine.MachineConstants"><code class="docutils literal notranslate"><span class="pre">ansys.additive.core.machine.MachineConstants</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-detail">Import detail</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attribute-detail">Attribute detail</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.DEFAULT_LASER_POWER"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LASER_POWER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MIN_LASER_POWER"><code class="docutils literal notranslate"><span class="pre">MIN_LASER_POWER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MAX_LASER_POWER"><code class="docutils literal notranslate"><span class="pre">MAX_LASER_POWER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.DEFAULT_SCAN_SPEED"><code class="docutils literal notranslate"><span class="pre">DEFAULT_SCAN_SPEED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MIN_SCAN_SPEED"><code class="docutils literal notranslate"><span class="pre">MIN_SCAN_SPEED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MAX_SCAN_SPEED"><code class="docutils literal notranslate"><span class="pre">MAX_SCAN_SPEED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.DEFAULT_HEATER_TEMP"><code class="docutils literal notranslate"><span class="pre">DEFAULT_HEATER_TEMP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MIN_HEATER_TEMP"><code class="docutils literal notranslate"><span class="pre">MIN_HEATER_TEMP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MAX_HEATER_TEMP"><code class="docutils literal notranslate"><span class="pre">MAX_HEATER_TEMP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.DEFAULT_LAYER_THICKNESS"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LAYER_THICKNESS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MIN_LAYER_THICKNESS"><code class="docutils literal notranslate"><span class="pre">MIN_LAYER_THICKNESS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MAX_LAYER_THICKNESS"><code class="docutils literal notranslate"><span class="pre">MAX_LAYER_THICKNESS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.DEFAULT_BEAM_DIAMETER"><code class="docutils literal notranslate"><span class="pre">DEFAULT_BEAM_DIAMETER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MIN_BEAM_DIAMETER"><code class="docutils literal notranslate"><span class="pre">MIN_BEAM_DIAMETER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MAX_BEAM_DIAMETER"><code class="docutils literal notranslate"><span class="pre">MAX_BEAM_DIAMETER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.DEFAULT_STARTING_LAYER_ANGLE"><code class="docutils literal notranslate"><span class="pre">DEFAULT_STARTING_LAYER_ANGLE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MIN_STARTING_LAYER_ANGLE"><code class="docutils literal notranslate"><span class="pre">MIN_STARTING_LAYER_ANGLE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MAX_STARTING_LAYER_ANGLE"><code class="docutils literal notranslate"><span class="pre">MAX_STARTING_LAYER_ANGLE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LAYER_ROTATION_ANGLE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MIN_LAYER_ROTATION_ANGLE"><code class="docutils literal notranslate"><span class="pre">MIN_LAYER_ROTATION_ANGLE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MAX_LAYER_ROTATION_ANGLE"><code class="docutils literal notranslate"><span class="pre">MAX_LAYER_ROTATION_ANGLE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.DEFAULT_HATCH_SPACING"><code class="docutils literal notranslate"><span class="pre">DEFAULT_HATCH_SPACING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MIN_HATCH_SPACING"><code class="docutils literal notranslate"><span class="pre">MIN_HATCH_SPACING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MAX_HATCH_SPACING"><code class="docutils literal notranslate"><span class="pre">MAX_HATCH_SPACING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH"><code class="docutils literal notranslate"><span class="pre">DEFAULT_SLICING_STRIPE_WIDTH</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MIN_SLICING_STRIPE_WIDTH"><code class="docutils literal notranslate"><span class="pre">MIN_SLICING_STRIPE_WIDTH</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MAX_SLICING_STRIPE_WIDTH"><code class="docutils literal notranslate"><span class="pre">MAX_SLICING_STRIPE_WIDTH</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.HEAT_SOURCE_MODEL_NAME_GAUSSIAN"><code class="docutils literal notranslate"><span class="pre">HEAT_SOURCE_MODEL_NAME_GAUSSIAN</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.HEAT_SOURCE_MODEL_NAME_RING"><code class="docutils literal notranslate"><span class="pre">HEAT_SOURCE_MODEL_NAME_RING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS"><code class="docutils literal notranslate"><span class="pre">HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME"><code class="docutils literal notranslate"><span class="pre">DEFAULT_HEAT_SOURCE_MODEL_NAME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.AVAILABLE_HEAT_SOURCE_MODELS"><code class="docutils literal notranslate"><span class="pre">AVAILABLE_HEAT_SOURCE_MODELS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.DEFAULT_RING_MODE_INDEX"><code class="docutils literal notranslate"><span class="pre">DEFAULT_RING_MODE_INDEX</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MIN_RING_MODE_INDEX"><code class="docutils literal notranslate"><span class="pre">MIN_RING_MODE_INDEX</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MAX_RING_MODE_INDEX"><code class="docutils literal notranslate"><span class="pre">MAX_RING_MODE_INDEX</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.DEFAULT_DEFOCUS"><code class="docutils literal notranslate"><span class="pre">DEFAULT_DEFOCUS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MIN_DEFOCUS"><code class="docutils literal notranslate"><span class="pre">MIN_DEFOCUS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#MachineConstants.MAX_DEFOCUS"><code class="docutils literal notranslate"><span class="pre">MAX_DEFOCUS</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item"> 
+<div class="tocsection editthispage">
+  <a href="http://github.com/ansys/pyadditive/edit/main/ansys/additive/core/machine/MachineConstants.py">
+    <i class="fa-solid fa-pencil"></i>
+       Edit
+    on GitHub  
+  </a>
+</div>
+
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+
+  <!-- Include desired assets -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.7/require.min.js"></script>
+
+<script>
+// Passing the search options to the search.js file
+const SEARCH_OPTIONS = JSON.parse('{"keys": ["title", "text", "objectID"], "limit": 10, "threshold": 0.2}');
+const SEARCH_FILE = "../../../../../_static/search.json";
+const ADVANCE_SEARCH_PATH = "../../../../../search.html";
+const EXTRA_SOURCES = JSON.parse('""');
+</script>
+
+
+<script src="../../../../../_static/js/search.js"></script>
+
+  
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright (c) 2026 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the
+  <a href="https://sphinxdocs.ansys.com/version/stable/index.html"
+    >Ansys Sphinx Theme</a
+  >
+  1.6.4. <br />Last updated on
+  <span id="ast_build_date"></span>
+</p>
+<script>
+  var options = { day: "numeric", month: "long", year: "numeric" };
+  var ast_lastModifiedDate = new Date(document.lastModified);
+  var ast_build_date = ast_lastModifiedDate.toLocaleDateString("en-US", options);
+  document.getElementById("ast_build_date").innerHTML = ast_build_date;
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
