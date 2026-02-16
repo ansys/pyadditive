@@ -1,0 +1,204 @@
+
+
+
+
+
+
+:class:`ThermalHistoryInput`
+============================
+
+
+.. py:class:: ansys.additive.core.thermal_history.ThermalHistoryInput(*, machine: ansys.additive.core.machine.AdditiveMachine = None, material: ansys.additive.core.material.AdditiveMaterial = None, geometry: ansys.additive.core.geometry_file.StlFile | ansys.additive.core.geometry_file.BuildFile = None, coax_ave_sensor_inputs: CoaxialAverageSensorInputs = None)
+
+   Bases: :py:obj:`ansys.additive.core.simulation.SimulationInputBase`
+
+
+   
+   Provides input parameters for microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. py:currentmodule:: ThermalHistoryInput
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~machine`
+            - Machine parameters.
+          * - :py:attr:`~material`
+            - Material parameters.
+          * - :py:attr:`~geometry`
+            - Part geometry.
+          * - :py:attr:`~coax_ave_sensor_inputs`
+            - Coaxial average sensor inputs.
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+          * - :py:attr:`~__eq__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.thermal_history import ThermalHistoryInput
+
+Property detail
+---------------
+
+.. py:property:: machine
+   :type: ansys.additive.core.machine.AdditiveMachine
+
+
+   
+   Machine parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material
+   :type: ansys.additive.core.material.AdditiveMaterial
+
+
+   
+   Material parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: geometry
+   :type: ansys.additive.core.geometry_file.StlFile | ansys.additive.core.geometry_file.BuildFile
+
+
+   
+   Part geometry.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: coax_ave_sensor_inputs
+   :type: CoaxialAverageSensorInputs
+
+
+   
+   Coaxial average sensor inputs.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+.. py:method:: __eq__(other: object) -> bool
+
+
+
+

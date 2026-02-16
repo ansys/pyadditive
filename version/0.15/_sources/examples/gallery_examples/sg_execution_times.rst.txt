@@ -1,0 +1,25 @@
+
+:orphan:
+
+.. _sphx_glr_examples_gallery_examples_sg_execution_times:
+
+
+Computation times
+=================
+**48:45.721** total execution time for **examples_gallery_examples** files:
+
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_11_advanced_parametric_study.py` (``11_advanced_parametric_study.py``)             | 46:47.096 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_10_advanced_custom_material_tuning.py` (``10_advanced_custom_material_tuning.py``) | 01:58.625 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_00_additive_single_bead.py` (``00_additive_single_bead.py``)                       | 00:00.000 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_01_additive_porosity.py` (``01_additive_porosity.py``)                             | 00:00.000 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_02_additive_microstructure.py` (``02_additive_microstructure.py``)                 | 00:00.000 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_03_additive_thermal_history.py` (``03_additive_thermal_history.py``)               | 00:00.000 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_04_using_a_custom_material.py` (``04_using_a_custom_material.py``)                 | 00:00.000 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
