@@ -1,0 +1,274 @@
+
+
+
+
+
+The ``material_tuning.py`` module
+=================================
+
+.. py:module:: ansys.additive.core.material_tuning
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: material_tuning
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~MaterialTuningInput`
+            - Provides input parameters for tuning a custom material.
+
+
+          * - :py:attr:`~MaterialTuningSummary`
+            - Provides a summary of material tuning simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+
+
+
+.. py:class:: MaterialTuningInput(*, id: str, experiment_data_file: str, material_parameters_file: str, thermal_properties_lookup_file: str, characteristic_width_lookup_file: str = None, allowable_error: float = 0.05, max_iterations: int = 15, base_plate_temperature: float = 353.15)
+
+
+
+
+Provides input parameters for tuning a custom material.
+
+
+
+
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.material_tuning import MaterialTuningInput
+
+
+
+
+
+
+
+
+
+
+
+.. py:class:: MaterialTuningSummary(input: MaterialTuningInput, msg: ansys.api.additive.v0.additive_domain_pb2.MaterialTuningResult, out_dir: str)
+
+
+
+
+Provides a summary of material tuning simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Material tuning input.
+          * - :py:attr:`~optimized_parameters_file`
+            - Path to the optimization parameters file.
+          * - :py:attr:`~characteristic_width_file`
+            - Path to the characteristic width file or ``None``.
+          * - :py:attr:`~log_file`
+            - Path to the tuning log file or ``None``.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.material_tuning import MaterialTuningSummary
+
+
+Property detail
+---------------
+.. py:property:: input
+   :canonical: ansys.additive.core.material_tuning.MaterialTuningSummary.input
+   :type: MaterialTuningInput
+
+
+   
+   Material tuning input.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: optimized_parameters_file
+   :canonical: ansys.additive.core.material_tuning.MaterialTuningSummary.optimized_parameters_file
+   :type: str
+
+
+   
+   Path to the optimization parameters file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: characteristic_width_file
+   :canonical: ansys.additive.core.material_tuning.MaterialTuningSummary.characteristic_width_file
+   :type: str
+
+
+   
+   Path to the characteristic width file or ``None``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: log_file
+   :canonical: ansys.additive.core.material_tuning.MaterialTuningSummary.log_file
+   :type: str
+
+
+   
+   Path to the tuning log file or ``None``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+

@@ -1,0 +1,340 @@
+
+
+
+
+
+
+:class:`ServerConnection`
+=========================
+
+.. py:class:: ansys.additive.core.server_connection.server_connection.ServerConnection(channel: grpc.Channel | None = None, addr: str | None = None, product_version: str = DEFAULT_PRODUCT_VERSION, log: logging.Logger = None, linux_install_path: os.PathLike | None = None)
+
+   
+   Provides connection to Additive server.
+
+   If neither ``channel`` nor ``addr`` are provided, an attempt is
+   made to start an Additive server and connect to it. Starting a server
+   in a cloud environment requires
+   `PyPIM <https://pypim.docs.pyansys.com/version/stable/index.html>`_ to be available.
+   To start a server when running on localhost, the Additive option of the
+   Structures package of the Ansys unified installation must be installed.
+
+   :Parameters:
+
+       **channel: grpc.Channel, None**
+           gRPC channel connected to server.
+
+       **addr: str, None**
+           IPv4 address of server of the form ``host:port``.
+
+       **product_version: str**
+           Version of the Ansys product installation in the form ``"YYR"``, where ``YY``
+           is the two-digit year and ``R`` is the release number. For example, the release
+           2024 R1 would be specified as ``241``. This parameter is only applicable in
+           `PyPIM <https://pypim.docs.pyansys.com/version/stable/index.html>`_-enabled
+           cloud environments and on localhost.
+
+       **log: logging.Logger, None**
+           Log to write connection messages to.
+
+       **linux_install_path: os.PathLike, None default: None**
+           Path to the Ansys installation directory on Linux. This parameter is only
+           required when Ansys has not been installed in the default location. Example:
+           ``/usr/shared/ansys_inc``. Note that the path should not include the product
+           version.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: ServerConnection
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~status`
+            - Return the server connection status.
+          * - :py:attr:`~ready`
+            - Return whether the server is ready.
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~channel_str`
+            - GRPC channel target.
+          * - :py:attr:`~materials_stub`
+            - Materials service stub.
+          * - :py:attr:`~simulation_stub`
+            - Simulation service stub.
+          * - :py:attr:`~operations_stub`
+            - Operations service stub.
+          * - :py:attr:`~settings_stub`
+            - Settings service stub.
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__del__`
+            - Destructor for cleaning up server connection.
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.server_connection.server_connection import ServerConnection
+
+Property detail
+---------------
+
+.. py:property:: channel_str
+   :type: str
+
+
+   
+   GRPC channel target.
+
+   The form is generally ``"ip:port"``. For example, ``"127.0.0.1:50052"``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: materials_stub
+   :type: ansys.api.additive.v0.additive_materials_pb2_grpc.MaterialsServiceStub
+
+
+   
+   Materials service stub.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: simulation_stub
+   :type: ansys.api.additive.v0.additive_simulation_pb2_grpc.SimulationServiceStub
+
+
+   
+   Simulation service stub.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: operations_stub
+   :type: google.longrunning.operations_pb2_grpc.OperationsStub
+
+
+   
+   Operations service stub.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: settings_stub
+   :type: ansys.api.additive.v0.additive_settings_pb2_grpc.SettingsServiceStub
+
+
+   
+   Settings service stub.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: __del__()
+
+   
+   Destructor for cleaning up server connection.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: status() -> ServerConnectionStatus
+
+   
+   Return the server connection status.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: ready(retries: int = 5) -> bool
+
+   
+   Return whether the server is ready.
+
+
+   :Parameters:
+
+       **retries: int**
+           Number of times to retry before giving up. An linearly increasing delay
+           is used between each retry.
+
+
+
+   :Returns:
+
+       bool:
+           True means server is ready. False means the number of retries was exceeded
+           without receiving a response from the server.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

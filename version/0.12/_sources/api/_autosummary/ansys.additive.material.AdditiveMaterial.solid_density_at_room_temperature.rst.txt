@@ -1,0 +1,6 @@
+solid\_density\_at\_room\_temperature
+=====================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.solid_density_at_room_temperature

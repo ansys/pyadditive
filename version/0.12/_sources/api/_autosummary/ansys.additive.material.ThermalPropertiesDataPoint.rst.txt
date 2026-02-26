@@ -1,0 +1,35 @@
+﻿ansys.additive.material.ThermalPropertiesDataPoint
+==================================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoclass:: ThermalPropertiesDataPoint
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      ThermalPropertiesDataPoint.density
+      ThermalPropertiesDataPoint.density_ratio
+      ThermalPropertiesDataPoint.specific_heat
+      ThermalPropertiesDataPoint.specific_heat_ratio
+      ThermalPropertiesDataPoint.temperature
+      ThermalPropertiesDataPoint.thermal_conductivity
+      ThermalPropertiesDataPoint.thermal_conductivity_ratio
+   
+   

@@ -1,0 +1,86 @@
+
+
+
+
+
+The ``server_connection.py`` module
+===================================
+
+.. py:module:: ansys.additive.core.server_connection.server_connection
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: server_connection
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ServerConnectionStatus`
+            - Provides status information about a server.
+
+
+          * - :py:attr:`~ServerConnection`
+            - Provides connection to Additive server.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 ServerConnectionStatus<ServerConnectionStatus>
+    🝆 ServerConnection<ServerConnection>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides definitions and untilities for connecting to the Additive server.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

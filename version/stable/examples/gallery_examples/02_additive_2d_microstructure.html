@@ -1,0 +1,1210 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:site_name" content="PyAnsys" />
+    <title>2D Microstructure analysis &#8212; PyAdditive 0.20.0 documentation</title>
+  
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/ansys-sphinx-theme.css?v=0bf55e46" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/ansys-sphinx-theme.css?v=0bf55e46" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://www.nerdfonts.com/assets/css/webfont.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=f23d505c" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+
+  <!-- Include desired assets -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  
+
+  
+    <link href="../../_static/css/breadcrumbs.css" rel="stylesheet" />
+  
+    <script src="../../_static/documentation_options.js?v=ec2b1084"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/thebelab-helper.js"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=49e1bf35"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/gallery_examples/02_additive_2d_microstructure';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://additive.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.20';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="icon" href="../../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Using a custom material" href="03_using_a_custom_material.html" />
+    <link rel="prev" title="Porosity analysis" href="01_additive_porosity.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.20.0" />
+  <link rel="canonical" href="https://additive.docs.pyansys.com/version/stable/examples/gallery_examples/02_additive_2d_microstructure.html" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="https://docs.pyansys.com/">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/pyansys_logo_transparent_black.png" class="logo__image only-light" alt="PyAdditive 0.20.0 documentation - Home"/>
+    <img src="../../_static/pyansys_logo_transparent_white.png" class="logo__image only-dark pst-js-only" alt="PyAdditive 0.20.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting-started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing.html">
+    Contribute
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+</div></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+  
+    <div id="announcement_msg"></div>
+<script>
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(
+      (text) => (document.getElementById("announcement_msg").innerHTML = text),
+    )
+    .catch((error) => console.error(`Fetch problem: ${error.message}`));
+</script>
+  
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting-started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing.html">
+    Contribute
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+</div></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="00_additive_single_bead.html">Single bead analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_additive_porosity.html">Porosity analysis</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">2D Microstructure analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_using_a_custom_material.html">Using a custom material</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_custom_material_tuning.html">Custom material tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_advanced_parametric_study.html">Parametric study</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_additive_3d_microstructure.html">3D Microstructure analysis (BETA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_additive_thermal_history.html">Thermal history analysis (BETA)</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+         
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="https://docs.pyansys.com/" class="nav-link">PyAnsys</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a
+        href="../../index.html"
+        class="nav-link"
+        aria-label="Home"
+      >
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="index.html" class="nav-link">Examples</a>
+    </li>
+      
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">2D Microstructure analysis</span></li>
+    
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-examples-gallery-examples-02-additive-2d-microstructure-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="d-microstructure-analysis">
+<span id="sphx-glr-examples-gallery-examples-02-additive-2d-microstructure-py"></span><h1>2D Microstructure analysis<a class="headerlink" href="#d-microstructure-analysis" title="Link to this heading">#</a></h1>
+<p>This example shows how to use PyAdditive to determine
+the two-dimensional microstructure in the XY, XZ, and YZ
+planes for a sample coupon with given material and
+machine parameters.</p>
+<p>Units are SI (m, kg, s, K) unless otherwise noted.</p>
+<section id="perform-required-import-and-connect">
+<h2>Perform required import and connect<a class="headerlink" href="#perform-required-import-and-connect" title="Link to this heading">#</a></h2>
+<p>Perform the required import and connect to the Additive service.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.additive.core</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Additive</span><span class="p">,</span>
+    <span class="n">AdditiveMachine</span><span class="p">,</span>
+    <span class="n">MicrostructureInput</span><span class="p">,</span>
+    <span class="n">SimulationError</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">additive</span> <span class="o">=</span> <span class="n">Additive</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="select-material">
+<h2>Select material<a class="headerlink" href="#select-material" title="Link to this heading">#</a></h2>
+<p>Select a material. You can use the <a class="reference internal" href="../../api/ansys/additive/core/additive/Additive.html#Additive.materials_list" title="Additive.materials_list"><code class="xref py py-meth docutils literal notranslate"><span class="pre">materials_list()</span></code></a> method to
+obtain a list of available materials.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available material names: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">additive</span><span class="o">.</span><span class="n">materials_list</span><span class="p">()))</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Available material names: [&#39;IN718&#39;, &#39;17-4PH&#39;, &#39;Al357&#39;, &#39;Ti64&#39;, &#39;CoCr&#39;, &#39;316L&#39;, &#39;IN625&#39;, &#39;AlSi10Mg&#39;]
+</pre></div>
+</div>
+<p>You can obtain the parameters for a single material by passing a name
+from the materials list to the <a class="reference internal" href="../../api/ansys/additive/core/additive/Additive.html#Additive.material" title="Additive.material"><code class="xref py py-meth docutils literal notranslate"><span class="pre">material()</span></code></a> method.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">material</span> <span class="o">=</span> <span class="n">additive</span><span class="o">.</span><span class="n">material</span><span class="p">(</span><span class="s2">&quot;17-4PH&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="specify-machine-parameters">
+<h2>Specify machine parameters<a class="headerlink" href="#specify-machine-parameters" title="Link to this heading">#</a></h2>
+<p>Specify machine parameters by first creating an <code class="xref py py-class docutils literal notranslate"><span class="pre">AdditiveMachine</span></code> object
+and then assigning the desired values. All values are in SI units (m, kg, s, K)
+unless otherwise noted.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">machine</span> <span class="o">=</span> <span class="n">AdditiveMachine</span><span class="p">()</span>
+
+<span class="c1"># Show available parameters</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">machine</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>AdditiveMachine
+laser_power: 195 W
+scan_speed: 1.0 m/s
+heater_temperature: 80 °C
+layer_thickness: 5e-05 m
+beam_diameter: 0.0001 m
+starting_layer_angle: 57 °
+layer_rotation_angle: 67 °
+hatch_spacing: 0.0001 m
+slicing_stripe_width: 0.01 m
+</pre></div>
+</div>
+</section>
+<section id="set-laser-power-and-scan-speed">
+<h2>Set laser power and scan speed<a class="headerlink" href="#set-laser-power-and-scan-speed" title="Link to this heading">#</a></h2>
+<p>Set the laser power and scan speed.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">machine</span><span class="o">.</span><span class="n">scan_speed</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># m/s</span>
+<span class="n">machine</span><span class="o">.</span><span class="n">laser_power</span> <span class="o">=</span> <span class="mi">500</span>  <span class="c1"># W</span>
+</pre></div>
+</div>
+</section>
+<section id="specify-inputs-for-microstructure-simulation">
+<h2>Specify inputs for microstructure simulation<a class="headerlink" href="#specify-inputs-for-microstructure-simulation" title="Link to this heading">#</a></h2>
+<p>Microstructure simulation inputs can include thermal parameters.
+Thermal parameters consist of <code class="docutils literal notranslate"><span class="pre">cooling_rate</span></code>, <code class="docutils literal notranslate"><span class="pre">thermal_gradient</span></code>,
+<code class="docutils literal notranslate"><span class="pre">melt_pool_width</span></code>, and <code class="docutils literal notranslate"><span class="pre">melt_pool_depth</span></code>. If thermal parameters are not
+specified, the thermal solver is used to obtain the parameters prior
+to running the microstructure solver.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Specify microstructure inputs with thermal parameters</span>
+<span class="n">input_with_thermal</span> <span class="o">=</span> <span class="n">MicrostructureInput</span><span class="p">(</span>
+    <span class="n">machine</span><span class="o">=</span><span class="n">machine</span><span class="p">,</span>
+    <span class="n">material</span><span class="o">=</span><span class="n">material</span><span class="p">,</span>
+    <span class="n">sensor_dimension</span><span class="o">=</span><span class="mf">0.0005</span><span class="p">,</span>
+    <span class="n">sample_size_x</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>  <span class="c1"># in meters (1 mm), must be &gt;= sensor_dimension + 0.0005</span>
+    <span class="n">sample_size_y</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>  <span class="c1"># in meters (1 mm), must be &gt;= sensor_dimension + 0.0005</span>
+    <span class="n">sample_size_z</span><span class="o">=</span><span class="mf">0.0015</span><span class="p">,</span>  <span class="c1"># in meters (1 mm), must be &gt;= sensor_dimension + 0.001</span>
+    <span class="n">use_provided_thermal_parameters</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">cooling_rate</span><span class="o">=</span><span class="mf">1.1e6</span><span class="p">,</span>  <span class="c1"># °K/s</span>
+    <span class="n">thermal_gradient</span><span class="o">=</span><span class="mf">1.2e7</span><span class="p">,</span>  <span class="c1"># °K/m</span>
+    <span class="n">melt_pool_width</span><span class="o">=</span><span class="mf">1.5e-4</span><span class="p">,</span>  <span class="c1"># meters (150 microns)</span>
+    <span class="n">melt_pool_depth</span><span class="o">=</span><span class="mf">1.1e-4</span><span class="p">,</span>  <span class="c1"># meters (110 microns)</span>
+<span class="p">)</span>
+
+<span class="c1"># Specify microstructure inputs without thermal parameters</span>
+<span class="n">input_without_thermal</span> <span class="o">=</span> <span class="n">MicrostructureInput</span><span class="p">(</span>
+    <span class="n">machine</span><span class="o">=</span><span class="n">machine</span><span class="p">,</span>
+    <span class="n">material</span><span class="o">=</span><span class="n">material</span><span class="p">,</span>
+    <span class="n">sensor_dimension</span><span class="o">=</span><span class="mf">0.0005</span><span class="p">,</span>
+    <span class="n">sample_size_x</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>  <span class="c1"># in meters (1 mm), must be &gt;= sensor_dimension + 0.0005</span>
+    <span class="n">sample_size_y</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>  <span class="c1"># in meters (1 mm), must be &gt;= sensor_dimension + 0.0005</span>
+    <span class="n">sample_size_z</span><span class="o">=</span><span class="mf">0.0015</span><span class="p">,</span>  <span class="c1"># in meters (1 mm), must be &gt;= sensor_dimension + 0.001</span>
+    <span class="c1"># use_provided_thermal_parameters defaults to False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="run-simulation">
+<h2>Run simulation<a class="headerlink" href="#run-simulation" title="Link to this heading">#</a></h2>
+<p>Use the <a class="reference internal" href="../../api/ansys/additive/core/additive/Additive.html#Additive.simulate" title="Additive.simulate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">simulate()</span></code></a> method of the <code class="docutils literal notranslate"><span class="pre">additive</span></code> object to run the simulation.
+The returned object is either a <code class="xref py py-class docutils literal notranslate"><span class="pre">MicrostructureSummary</span></code> object or a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationError</span></code> object.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="n">additive</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">input_with_thermal</span><span class="p">)</span>
+<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">summary</span><span class="p">,</span> <span class="n">SimulationError</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="plot-results">
+<h2>Plot results<a class="headerlink" href="#plot-results" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">summary`</span></code> object includes three VTK files, one for each of the
+XY, XZ, and YZ planes. Each VTK file contains data sets for grain orientation,
+boundaries, and number. In addition, the <code class="docutils literal notranslate"><span class="pre">summary</span></code> object
+includes circle equivalence data and average grain size for each plane.
+See <code class="xref py py-class docutils literal notranslate"><span class="pre">MicrostructureSummary</span></code> for details.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyvista</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">colors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.colors</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearSegmentedColormap</span> <span class="k">as</span> <span class="n">colorMap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.ticker</span><span class="w"> </span><span class="kn">import</span> <a href="https://matplotlib.org/stable/api/ticker_api.html#matplotlib.ticker.PercentFormatter" title="matplotlib.ticker.PercentFormatter" class="sphx-glr-backref-module-matplotlib-ticker sphx-glr-backref-type-py-class"><span class="n">PercentFormatter</span></a>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ansys.additive.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleEquivalenceColumnNames</span>
+</pre></div>
+</div>
+<section id="plot-2d-grain-visualizations">
+<h3>Plot 2D grain visualizations<a class="headerlink" href="#plot-2d-grain-visualizations" title="Link to this heading">#</a></h3>
+<p>Plot the planar data, read VTK data in data set objects, and create a color
+map to use with the boundary map.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Function to plot the planar data</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_microstructure</span><span class="p">(</span>
+    <span class="n">xy_data</span><span class="p">:</span> <span class="nb">any</span><span class="p">,</span>
+    <span class="n">xz_data</span><span class="p">:</span> <span class="nb">any</span><span class="p">,</span>
+    <span class="n">yz_data</span><span class="p">:</span> <span class="nb">any</span><span class="p">,</span>
+    <span class="n">scalars</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="p">:</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.LinearSegmentedColormap.html#matplotlib.colors.LinearSegmentedColormap" title="matplotlib.colors.LinearSegmentedColormap" class="sphx-glr-backref-module-matplotlib-colors sphx-glr-backref-type-py-class"><span class="n">colors</span><span class="o">.</span><span class="n">LinearSegmentedColormap</span></a><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convenience function to plot microstructure VTK data.&quot;&quot;&quot;</span>
+    <span class="n">font_size</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">plotter</span> <span class="o">=</span> <a href="https://docs.pyvista.org/api/plotting/_autosummary/pyvista.Plotter.html#pyvista.Plotter" title="pyvista.Plotter" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-class"><span class="n">pv</span><span class="o">.</span><span class="n">Plotter</span></a><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">lighting</span><span class="o">=</span><span class="s2">&quot;three lights&quot;</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">show_axes_all</span><span class="p">()</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">add_mesh</span><span class="p">(</span><span class="n">xy_data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">scalars</span><span class="o">=</span><span class="n">scalars</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">add_title</span><span class="p">(</span><span class="s2">&quot;XY Plane&quot;</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+
+    <span class="n">plotter</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">add_mesh</span><span class="p">(</span><span class="n">xz_data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">scalars</span><span class="o">=</span><span class="n">scalars</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">add_title</span><span class="p">(</span><span class="s2">&quot;XZ Plane&quot;</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+
+    <span class="n">plotter</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">add_mesh</span><span class="p">(</span><span class="n">yz_data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">scalars</span><span class="o">=</span><span class="n">scalars</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">add_title</span><span class="p">(</span><span class="s2">&quot;YZ Plane&quot;</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+
+    <span class="n">plotter</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">add_mesh</span><span class="p">(</span><span class="n">xy_data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">scalars</span><span class="o">=</span><span class="n">scalars</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">add_mesh</span><span class="p">(</span><span class="n">xz_data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">scalars</span><span class="o">=</span><span class="n">scalars</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">add_mesh</span><span class="p">(</span><span class="n">yz_data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">scalars</span><span class="o">=</span><span class="n">scalars</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">add_title</span><span class="p">(</span><span class="s2">&quot;Combined&quot;</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">plotter</span>
+
+
+<span class="c1"># Read VTK data into pyvista.DataSet objects</span>
+<a href="https://docs.pyvista.org/api/core/_autosummary/pyvista.UnstructuredGrid.html#pyvista.UnstructuredGrid" title="pyvista.UnstructuredGrid" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">xy</span></a> <span class="o">=</span> <a href="https://docs.pyvista.org/api/utilities/_autosummary/pyvista.read.html#pyvista.read" title="pyvista.read" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-function"><span class="n">pv</span><span class="o">.</span><span class="n">read</span></a><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">xy_vtk</span><span class="p">)</span>
+<a href="https://docs.pyvista.org/api/core/_autosummary/pyvista.UnstructuredGrid.html#pyvista.UnstructuredGrid" title="pyvista.UnstructuredGrid" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">xz</span></a> <span class="o">=</span> <a href="https://docs.pyvista.org/api/utilities/_autosummary/pyvista.read.html#pyvista.read" title="pyvista.read" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-function"><span class="n">pv</span><span class="o">.</span><span class="n">read</span></a><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">xz_vtk</span><span class="p">)</span>
+<a href="https://docs.pyvista.org/api/core/_autosummary/pyvista.UnstructuredGrid.html#pyvista.UnstructuredGrid" title="pyvista.UnstructuredGrid" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">yz</span></a> <span class="o">=</span> <a href="https://docs.pyvista.org/api/utilities/_autosummary/pyvista.read.html#pyvista.read" title="pyvista.read" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-function"><span class="n">pv</span><span class="o">.</span><span class="n">read</span></a><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">yz_vtk</span><span class="p">)</span>
+
+<span class="c1"># Create a color map to use with the boundary plot</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.LinearSegmentedColormap.html#matplotlib.colors.LinearSegmentedColormap" title="matplotlib.colors.LinearSegmentedColormap" class="sphx-glr-backref-module-matplotlib-colors sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">white_black_cmap</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.LinearSegmentedColormap.html#matplotlib.colors.LinearSegmentedColormap.from_list" title="matplotlib.colors.LinearSegmentedColormap.from_list" class="sphx-glr-backref-module-matplotlib-colors-LinearSegmentedColormap sphx-glr-backref-type-py-method"><span class="n">colorMap</span><span class="o">.</span><span class="n">from_list</span></a><span class="p">(</span><span class="s2">&quot;whiteblack&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">])</span>
+
+<span class="n">plot_microstructure</span><span class="p">(</span><a href="https://docs.pyvista.org/api/core/_autosummary/pyvista.UnstructuredGrid.html#pyvista.UnstructuredGrid" title="pyvista.UnstructuredGrid" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">xy</span></a><span class="p">,</span> <a href="https://docs.pyvista.org/api/core/_autosummary/pyvista.UnstructuredGrid.html#pyvista.UnstructuredGrid" title="pyvista.UnstructuredGrid" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">xz</span></a><span class="p">,</span> <a href="https://docs.pyvista.org/api/core/_autosummary/pyvista.UnstructuredGrid.html#pyvista.UnstructuredGrid" title="pyvista.UnstructuredGrid" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">yz</span></a><span class="p">,</span> <span class="s2">&quot;GrainBoundaries&quot;</span><span class="p">,</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.LinearSegmentedColormap.html#matplotlib.colors.LinearSegmentedColormap" title="matplotlib.colors.LinearSegmentedColormap" class="sphx-glr-backref-module-matplotlib-colors sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">white_black_cmap</span></a><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Grain Boundaries&quot;</span>
+<span class="p">)</span>
+<span class="n">plot_microstructure</span><span class="p">(</span><a href="https://docs.pyvista.org/api/core/_autosummary/pyvista.UnstructuredGrid.html#pyvista.UnstructuredGrid" title="pyvista.UnstructuredGrid" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">xy</span></a><span class="p">,</span> <a href="https://docs.pyvista.org/api/core/_autosummary/pyvista.UnstructuredGrid.html#pyvista.UnstructuredGrid" title="pyvista.UnstructuredGrid" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">xz</span></a><span class="p">,</span> <a href="https://docs.pyvista.org/api/core/_autosummary/pyvista.UnstructuredGrid.html#pyvista.UnstructuredGrid" title="pyvista.UnstructuredGrid" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">yz</span></a><span class="p">,</span> <span class="s2">&quot;Orientation_(deg)&quot;</span><span class="p">,</span> <span class="s2">&quot;spectral&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Orientation °&quot;</span>
+<span class="p">)</span>
+<span class="n">plot_microstructure</span><span class="p">(</span><a href="https://docs.pyvista.org/api/core/_autosummary/pyvista.UnstructuredGrid.html#pyvista.UnstructuredGrid" title="pyvista.UnstructuredGrid" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">xy</span></a><span class="p">,</span> <a href="https://docs.pyvista.org/api/core/_autosummary/pyvista.UnstructuredGrid.html#pyvista.UnstructuredGrid" title="pyvista.UnstructuredGrid" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">xz</span></a><span class="p">,</span> <a href="https://docs.pyvista.org/api/core/_autosummary/pyvista.UnstructuredGrid.html#pyvista.UnstructuredGrid" title="pyvista.UnstructuredGrid" class="sphx-glr-backref-module-pyvista sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">yz</span></a><span class="p">,</span> <span class="s2">&quot;GrainNumber&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Grain Number&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><img src="../../_images/sphx_glr_02_additive_2d_microstructure_001.png" srcset="../../_images/sphx_glr_02_additive_2d_microstructure_001.png" alt="02 additive 2d microstructure" class = "sphx-glr-multi-img"/></li>
+<li><img src="../../_images/sphx_glr_02_additive_2d_microstructure_002.png" srcset="../../_images/sphx_glr_02_additive_2d_microstructure_002.png" alt="02 additive 2d microstructure" class = "sphx-glr-multi-img"/></li>
+<li><img src="../../_images/sphx_glr_02_additive_2d_microstructure_003.png" srcset="../../_images/sphx_glr_02_additive_2d_microstructure_003.png" alt="02 additive 2d microstructure" class = "sphx-glr-multi-img"/></li>
+</ul>
+</section>
+<section id="plot-grain-statistics">
+<h3>Plot grain statistics<a class="headerlink" href="#plot-grain-statistics" title="Link to this heading">#</a></h3>
+<p>Add grain statistic plots to a figure, create a figure for grain statistics,
+and then plot the figure.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Function to simplify plotting grain statistics</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_grain_statistics_to_figure</span><span class="p">(</span>
+    <span class="n">plane_data</span><span class="p">:</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">,</span>
+    <span class="n">plane_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">plane_ave_grain_size</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">diameter_axes</span><span class="p">:</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class"><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span></a><span class="p">,</span>
+    <span class="n">orientation_axes</span><span class="p">:</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class"><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span></a><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convenience function to add grain statistic plots to a figure.&quot;&quot;&quot;</span>
+    <span class="n">xmax</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">plane_data</span><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">CircleEquivalenceColumnNames</span><span class="o">.</span><span class="n">DIAMETER</span></a><span class="p">])</span>
+    <span class="n">diameter_axes</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span>
+        <span class="n">plane_data</span><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">CircleEquivalenceColumnNames</span><span class="o">.</span><span class="n">DIAMETER</span></a><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">rwidth</span><span class="o">=</span><span class="mf">0.75</span>
+    <span class="p">)</span>
+    <span class="n">diameter_axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Grain Diameter (µm)&quot;</span><span class="p">)</span>
+    <span class="n">diameter_axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Area Fraction&quot;</span><span class="p">)</span>
+    <span class="n">diameter_axes</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+        <span class="n">plane_str</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; Grain Size Distribution, ave: </span><span class="si">{</span><span class="n">plane_ave_grain_size</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> µm&quot;</span>
+    <span class="p">)</span>
+    <span class="n">diameter_axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><a href="https://matplotlib.org/stable/api/ticker_api.html#matplotlib.ticker.PercentFormatter" title="matplotlib.ticker.PercentFormatter" class="sphx-glr-backref-module-matplotlib-ticker sphx-glr-backref-type-py-class"><span class="n">PercentFormatter</span></a><span class="p">(</span><span class="n">xmax</span><span class="o">=</span><span class="n">xmax</span><span class="p">))</span>
+    <span class="n">orientation_axes</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span>
+        <span class="n">plane_data</span><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">CircleEquivalenceColumnNames</span><span class="o">.</span><span class="n">ORIENTATION_ANGLE</span></a><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">rwidth</span><span class="o">=</span><span class="mf">0.75</span>
+    <span class="p">)</span>
+    <span class="n">orientation_axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><a href="https://matplotlib.org/stable/api/ticker_api.html#matplotlib.ticker.PercentFormatter" title="matplotlib.ticker.PercentFormatter" class="sphx-glr-backref-module-matplotlib-ticker sphx-glr-backref-type-py-class"><span class="n">PercentFormatter</span></a><span class="p">(</span><span class="n">xmax</span><span class="o">=</span><span class="n">xmax</span><span class="p">))</span>
+    <span class="n">orientation_axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Orientation Angle (°)&quot;</span><span class="p">)</span>
+    <span class="n">orientation_axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Number Fraction&quot;</span><span class="p">)</span>
+    <span class="n">orientation_axes</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">plane_str</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; Orientation Angle&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Create figure for grain statistics</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="matplotlib.figure.Figure" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">fig</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">tight_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.suptitle.html#matplotlib.figure.Figure.suptitle" title="matplotlib.figure.Figure.suptitle" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-method"><span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span></a><span class="p">(</span><span class="s2">&quot;Circle Equivalence Grain Data&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">add_grain_statistics_to_figure</span><span class="p">(</span>
+    <span class="n">summary</span><span class="o">.</span><span class="n">xy_circle_equivalence</span><span class="p">,</span>
+    <span class="s2">&quot;xy&quot;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">.</span><span class="n">xy_average_grain_size</span><span class="p">,</span>
+    <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+    <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">add_grain_statistics_to_figure</span><span class="p">(</span>
+    <span class="n">summary</span><span class="o">.</span><span class="n">xz_circle_equivalence</span><span class="p">,</span>
+    <span class="s2">&quot;xz&quot;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">.</span><span class="n">xz_average_grain_size</span><span class="p">,</span>
+    <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+    <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">add_grain_statistics_to_figure</span><span class="p">(</span>
+    <span class="n">summary</span><span class="o">.</span><span class="n">yz_circle_equivalence</span><span class="p">,</span>
+    <span class="s2">&quot;yz&quot;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">.</span><span class="n">yz_average_grain_size</span><span class="p">,</span>
+    <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+    <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+<span class="p">)</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_02_additive_2d_microstructure_004.png" srcset="../../_images/sphx_glr_02_additive_2d_microstructure_004.png" alt="Circle Equivalence Grain Data, XY Grain Size Distribution, ave: 28.85 µm, XY Orientation Angle, XZ Grain Size Distribution, ave: 35.42 µm, XZ Orientation Angle, YZ Grain Size Distribution, ave: 33.83 µm, YZ Orientation Angle" class = "sphx-glr-single-img"/></section>
+</section>
+<section id="print-the-simulation-logs">
+<h2>Print the simulation logs<a class="headerlink" href="#print-the-simulation-logs" title="Link to this heading">#</a></h2>
+<p>To print the simulation logs, use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">logs()</span></code> property.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">logs</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>File: microstructure-log.log
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: MeshSpacing: 1.000000e-06
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: LaserSpeed: 1.000000e+00
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: DepositLayerThickness: 5.000000e-05
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: BoundaryMultiplier: 1.000000e+00
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: BorderGrainBoundaries: 10
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: KineticAnisotropy: 7.000000e-01
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: InterfaceKinematicCoefficient: 2.000000e-03
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: GibbsThomsonCoefficient: 1.700000e-07
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: NucleationConstantInterface: 2.377834e+00
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: NucleationConstantBulk: 2.844440e+04
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: b0: 0.800000
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: XYPlaneRotationAngleInfluence: 1
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: ScanFilePath: /tmp/additive/610ac0d1ccf41/hatch-files/LaserPosition
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: OutputPath:
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: sensorid: 1
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO:         x: 5.000000e-04
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO:         y: 5.000000e-04
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO:         z: 5.000000e-04
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO:         length: 5.000000e-04
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO:         meltpoolwidth: 1.500000e-04
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO:         meltpooldepth: 1.100000e-04
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO:         thermalgradient: 1.200000e+07
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO:         coolingrate: 1.100000e+06
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO:         SensorOutputPrefix: /tmp/additive/610ac0d1ccf41/microstructure/Microstructure
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: OracleType: uniform-parallel
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: OracleNumberFile: ./randnum.csv
+Thu May 29 21:41:40 2025 -&gt; SOLVERINFO: RNGSeed: 1498906651
+Thu May 29 21:41:42 2025 -&gt; DESKTOPINFO: License successfully obtained.
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO: Skipping HPC license checkout as 4 are being requested.
+Thu May 29 21:41:42 2025 -&gt; USERINFO: Starting MicrostructureSolver v15.1.4, SolverCommon v14.108.0
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO: Begin Run
+Thu May 29 21:41:42 2025 -&gt; DESKTOPINFO: Using 4 threads for solver
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO: Total Number of Sensors: 1
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO: Run Sensor 1
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO: Layers to read:
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO:    Bottom of sensor layer index = 0
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO:    Top of sensor layer index = 9
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO:    Layer index for remelting sensor = 11
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO: Oracle for plane id 0 received seed of 1498910084
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO: Thread 0 gets seed: 1498910084
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO: Thread 1 gets seed: 1498910163
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO: Thread 2 gets seed: 1498910242
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO: Thread 3 gets seed: 1498910321
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO: Longitude Line Solver took 240 steps out of 5656 max allowed.
+Thu May 29 21:41:42 2025 -&gt; SOLVERINFO: Longitude Line Solver took 340 steps out of 6268 max allowed.
+Thu May 29 21:41:43 2025 -&gt; SOLVERINFO: Longitude Line Solver took 260 steps out of 6268 max allowed.
+Thu May 29 21:41:43 2025 -&gt; SOLVERINFO: Longitude Line Solver took 280 steps out of 6268 max allowed.
+Thu May 29 21:41:43 2025 -&gt; SOLVERINFO: Longitude Line Solver took 280 steps out of 6268 max allowed.
+Thu May 29 21:41:43 2025 -&gt; SOLVERINFO: Longitude Line Solver took 260 steps out of 6268 max allowed.
+Thu May 29 21:41:44 2025 -&gt; SOLVERINFO: Longitude Line Solver took 280 steps out of 6268 max allowed.
+Thu May 29 21:41:44 2025 -&gt; SOLVERINFO: Longitude Line Solver took 260 steps out of 6268 max allowed.
+Thu May 29 21:41:44 2025 -&gt; SOLVERINFO: Longitude Line Solver took 240 steps out of 6156 max allowed.
+Thu May 29 21:41:44 2025 -&gt; SOLVERINFO: PercentComplete: 33.3
+Thu May 29 21:41:44 2025 -&gt; SOLVERINFO: Oracle for plane id 1 received seed of 1498910085
+Thu May 29 21:41:44 2025 -&gt; SOLVERINFO: Thread 0 gets seed: 1498910085
+Thu May 29 21:41:44 2025 -&gt; SOLVERINFO: Thread 1 gets seed: 1498910164
+Thu May 29 21:41:44 2025 -&gt; SOLVERINFO: Thread 2 gets seed: 1498910243
+Thu May 29 21:41:44 2025 -&gt; SOLVERINFO: Thread 3 gets seed: 1498910322
+Thu May 29 21:41:44 2025 -&gt; SOLVERINFO: Starting layer (relative index): 0
+Thu May 29 21:41:44 2025 -&gt; SOLVERINFO: Latitude Line Solver took 276 steps out of 1408 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 280 steps out of 1408 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 266 steps out of 1408 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 265 steps out of 1408 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 283 steps out of 1408 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: PercentComplete: 36
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Starting layer (relative index): 1
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 245 steps out of 1420 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 250 steps out of 1420 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 262 steps out of 1420 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 256 steps out of 1420 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 264 steps out of 1420 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: PercentComplete: 38.8
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Starting layer (relative index): 2
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 460 steps out of 5298 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: PercentComplete: 41.6
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Starting layer (relative index): 3
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 218 steps out of 1264 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 230 steps out of 1264 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 220 steps out of 1264 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 249 steps out of 1264 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 217 steps out of 1264 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Latitude Line Solver took 272 steps out of 1264 max allowed.
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: PercentComplete: 44.4
+Thu May 29 21:41:45 2025 -&gt; SOLVERINFO: Starting layer (relative index): 4
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 327 steps out of 1902 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 360 steps out of 1902 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 326 steps out of 1902 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 320 steps out of 1902 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 320 steps out of 1902 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: PercentComplete: 47.1
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Starting layer (relative index): 5
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 328 steps out of 2032 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 346 steps out of 2032 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 340 steps out of 2032 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 367 steps out of 2032 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: PercentComplete: 49.9
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Starting layer (relative index): 6
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 220 steps out of 1260 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 220 steps out of 1260 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 253 steps out of 1260 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 200 steps out of 1260 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 229 steps out of 1260 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Latitude Line Solver took 238 steps out of 1260 max allowed.
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: PercentComplete: 52.7
+Thu May 29 21:41:46 2025 -&gt; SOLVERINFO: Starting layer (relative index): 7
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Latitude Line Solver took 424 steps out of 4204 max allowed.
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Latitude Line Solver took 420 steps out of 4204 max allowed.
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Latitude Line Solver took 480 steps out of 4204 max allowed.
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: PercentComplete: 55.5
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Starting layer (relative index): 8
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Latitude Line Solver took 284 steps out of 1460 max allowed.
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Latitude Line Solver took 300 steps out of 1460 max allowed.
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Latitude Line Solver took 265 steps out of 1460 max allowed.
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Latitude Line Solver took 260 steps out of 1460 max allowed.
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Latitude Line Solver took 242 steps out of 1460 max allowed.
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Latitude Line Solver took 289 steps out of 1460 max allowed.
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: PercentComplete: 58.2
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Starting layer (relative index): 9
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Latitude Line Solver took 244 steps out of 1374 max allowed.
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Latitude Line Solver took 238 steps out of 1374 max allowed.
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Latitude Line Solver took 244 steps out of 1374 max allowed.
+Thu May 29 21:41:47 2025 -&gt; SOLVERINFO: Latitude Line Solver took 231 steps out of 1374 max allowed.
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Latitude Line Solver took 249 steps out of 1374 max allowed.
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Latitude Line Solver took 257 steps out of 1374 max allowed.
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: PercentComplete: 61
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Starting layer (relative index): 10
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Longitude Line Solver took 460 steps out of 4388 max allowed.
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: PercentComplete: 63.8
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Starting layer (relative index): 11
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Latitude Line Solver took 224 steps out of 1280 max allowed.
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Latitude Line Solver took 227 steps out of 1280 max allowed.
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Latitude Line Solver took 231 steps out of 1280 max allowed.
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Latitude Line Solver took 233 steps out of 1280 max allowed.
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Latitude Line Solver took 220 steps out of 1280 max allowed.
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Latitude Line Solver took 224 steps out of 1280 max allowed.
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: PercentComplete: 66.6
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Oracle for plane id 2 received seed of 1498910086
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Thread 0 gets seed: 1498910086
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Thread 1 gets seed: 1498910165
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Thread 2 gets seed: 1498910244
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Thread 3 gets seed: 1498910323
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Starting layer (relative index): 0
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Latitude Line Solver took 340 steps out of 1982 max allowed.
+Thu May 29 21:41:48 2025 -&gt; SOLVERINFO: Latitude Line Solver took 369 steps out of 1982 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 312 steps out of 1982 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 350 steps out of 1982 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 339 steps out of 1982 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: PercentComplete: 69.3
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Starting layer (relative index): 1
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 331 steps out of 1940 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 340 steps out of 1940 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 351 steps out of 1940 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 343 steps out of 1940 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 328 steps out of 1940 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: PercentComplete: 72.1
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Starting layer (relative index): 2
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 228 steps out of 1264 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 239 steps out of 1264 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 231 steps out of 1264 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 223 steps out of 1264 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 256 steps out of 1264 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 224 steps out of 1264 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Latitude Line Solver took 226 steps out of 1264 max allowed.
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: PercentComplete: 74.9
+Thu May 29 21:41:49 2025 -&gt; SOLVERINFO: Starting layer (relative index): 3
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Latitude Line Solver took 432 steps out of 4868 max allowed.
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Latitude Line Solver took 460 steps out of 4868 max allowed.
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: PercentComplete: 77.7
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Starting layer (relative index): 4
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Latitude Line Solver took 283 steps out of 1432 max allowed.
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Latitude Line Solver took 272 steps out of 1432 max allowed.
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Latitude Line Solver took 280 steps out of 1432 max allowed.
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Latitude Line Solver took 264 steps out of 1432 max allowed.
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Latitude Line Solver took 279 steps out of 1432 max allowed.
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: PercentComplete: 80.5
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Starting layer (relative index): 5
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Latitude Line Solver took 280 steps out of 1398 max allowed.
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Latitude Line Solver took 253 steps out of 1398 max allowed.
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Latitude Line Solver took 245 steps out of 1398 max allowed.
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Latitude Line Solver took 280 steps out of 1398 max allowed.
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Latitude Line Solver took 265 steps out of 1398 max allowed.
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Latitude Line Solver took 264 steps out of 1398 max allowed.
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: PercentComplete: 83.3
+Thu May 29 21:41:50 2025 -&gt; SOLVERINFO: Starting layer (relative index): 6
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Longitude Line Solver took 420 steps out of 4376 max allowed.
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Longitude Line Solver took 440 steps out of 4388 max allowed.
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: PercentComplete: 86
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Starting layer (relative index): 7
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Latitude Line Solver took 217 steps out of 1276 max allowed.
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Latitude Line Solver took 260 steps out of 1276 max allowed.
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Latitude Line Solver took 247 steps out of 1276 max allowed.
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Latitude Line Solver took 214 steps out of 1276 max allowed.
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Latitude Line Solver took 219 steps out of 1276 max allowed.
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Latitude Line Solver took 260 steps out of 1276 max allowed.
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Latitude Line Solver took 225 steps out of 1276 max allowed.
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: PercentComplete: 88.8
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Starting layer (relative index): 8
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Latitude Line Solver took 351 steps out of 1822 max allowed.
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Latitude Line Solver took 311 steps out of 1822 max allowed.
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Latitude Line Solver took 325 steps out of 1822 max allowed.
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Latitude Line Solver took 320 steps out of 1822 max allowed.
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: PercentComplete: 91.6
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Starting layer (relative index): 9
+Thu May 29 21:41:51 2025 -&gt; SOLVERINFO: Latitude Line Solver took 354 steps out of 2138 max allowed.
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Latitude Line Solver took 324 steps out of 2138 max allowed.
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Latitude Line Solver took 336 steps out of 2138 max allowed.
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Latitude Line Solver took 352 steps out of 2138 max allowed.
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: PercentComplete: 94.4
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Starting layer (relative index): 10
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Latitude Line Solver took 228 steps out of 1254 max allowed.
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Latitude Line Solver took 246 steps out of 1254 max allowed.
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Latitude Line Solver took 222 steps out of 1254 max allowed.
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Latitude Line Solver took 226 steps out of 1254 max allowed.
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Latitude Line Solver took 225 steps out of 1254 max allowed.
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Latitude Line Solver took 220 steps out of 1254 max allowed.
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Latitude Line Solver took 226 steps out of 1254 max allowed.
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: PercentComplete: 97.2
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Starting layer (relative index): 11
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Latitude Line Solver took 440 steps out of 3706 max allowed.
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: Latitude Line Solver took 416 steps out of 3706 max allowed.
+Thu May 29 21:41:52 2025 -&gt; SOLVERINFO: PercentComplete: 100
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME: SolverManager:  = 10.672 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:   XYPlaneMSSolver:  = 2.535 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:           I/O:  = 0.197 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:           MicroStructureLineSolver:  = 2.306 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                   Init Latitude:  = 0.000 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                   Init Longitude:  = 0.004 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                   Line Terminator:  = 0.028 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                   Prep Latitude Step Solver:  = 0.000 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                   Prep Longitude Step Solver:  = 0.017 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                   SolidificationSolver:  = 2.233 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Grain Boundary Identification:  = 0.825 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Nucleation:  = 0.800 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Variable Update:  = 0.383 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Velocity:  = 0.221 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:   XZPlaneMSSolver:  = 3.826 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:           I/O:  = 0.242 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:           VerticalPlaneSolutionGenerator:  = 3.584 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                   MicroStructureLineSolver:  = 3.526 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Init Latitude:  = 0.007 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Init Longitude:  = 0.000 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Line Terminator:  = 0.071 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Prep Latitude Step Solver:  = 0.039 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Prep Longitude Step Solver:  = 0.003 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           SolidificationSolver:  = 3.391 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                                   Grain Boundary Identification:  = 1.118 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                                   Nucleation:  = 1.370 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                                   Variable Update:  = 0.599 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                                   Velocity:  = 0.284 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:   YZPlaneMSSolver:  = 4.290 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:           I/O:  = 0.232 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:           VerticalPlaneSolutionGenerator:  = 4.059 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                   MicroStructureLineSolver:  = 4.008 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Init Latitude:  = 0.007 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Init Longitude:  = 0.000 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Line Terminator:  = 0.082 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Prep Latitude Step Solver:  = 0.041 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           Prep Longitude Step Solver:  = 0.005 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                           SolidificationSolver:  = 3.858 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                                   Grain Boundary Identification:  = 1.271 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                                   Nucleation:  = 1.570 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                                   Variable Update:  = 0.676 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: TIME:                                   Velocity:  = 0.319 s
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: End Run
+Thu May 29 21:41:53 2025 -&gt; USERINFO: Microstructure Solver run completed
+Thu May 29 21:41:53 2025 -&gt; SOLVERINFO: License successfully returned.
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 43.738 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-examples-gallery-examples-02-additive-2d-microstructure-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/d493c936befcffca4d0905bab6af348d/02_additive_2d_microstructure.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">02_additive_2d_microstructure.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/f75fa99660abc4e1578978cde7b96299/02_additive_2d_microstructure.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">02_additive_2d_microstructure.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/469687da1d62cc696b64ee2aef875f3a/02_additive_2d_microstructure.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">02_additive_2d_microstructure.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#perform-required-import-and-connect">Perform required import and connect</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#select-material">Select material</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-machine-parameters">Specify machine parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-laser-power-and-scan-speed">Set laser power and scan speed</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-inputs-for-microstructure-simulation">Specify inputs for microstructure simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-simulation">Run simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-results">Plot results</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-2d-grain-visualizations">Plot 2D grain visualizations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-grain-statistics">Plot grain statistics</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#print-the-simulation-logs">Print the simulation logs</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item"> 
+<div class="tocsection editthispage">
+  <a href="https://github.com/ansys/pyadditive/edit/main/doc/source/examples/gallery_examples/02_additive_2d_microstructure.rst">
+    <i class="fa-solid fa-pencil"></i>
+       Edit
+    on GitHub  
+  </a>
+</div>
+
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+
+  <!-- Include desired assets -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.7/require.min.js"></script>
+
+<script>
+// Passing the search options to the search.js file
+const SEARCH_OPTIONS = JSON.parse('{"keys": ["title", "text", "objectID"], "limit": 10, "threshold": 0.2}');
+const SEARCH_FILE = "../../_static/search.json";
+const ADVANCE_SEARCH_PATH = "../../search.html";
+const EXTRA_SOURCES = JSON.parse('""');
+</script>
+
+
+<script src="../../_static/js/search.js"></script>
+
+  
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright (c) 2025 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the
+  <a href="https://sphinxdocs.ansys.com/version/stable/index.html"
+    >Ansys Sphinx Theme</a
+  >
+  1.5.0. <br />Last updated on
+  <span id="ast_build_date"></span>
+</p>
+<script>
+  var options = { day: "numeric", month: "long", year: "numeric" };
+  var ast_lastModifiedDate = new Date(document.lastModified);
+  var ast_build_date = ast_lastModifiedDate.toLocaleDateString("en-US", options);
+  document.getElementById("ast_build_date").innerHTML = ast_build_date;
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

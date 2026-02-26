@@ -1,0 +1,6 @@
+solid\_ratio
+============
+
+.. currentmodule:: ansys.additive.porosity
+
+.. autoproperty:: PorositySummary.solid_ratio

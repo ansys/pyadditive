@@ -1,0 +1,93 @@
+
+
+
+
+
+The ``thermal_history.py`` module
+=================================
+
+.. py:module:: ansys.additive.core.thermal_history
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: thermal_history
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~Range`
+            - Defines a parameter that spans a range of values.
+
+
+          * - :py:attr:`~CoaxialAverageSensorInputs`
+            - Provides descriptions for coaxial average sensors.
+
+
+          * - :py:attr:`~ThermalHistoryInput`
+            - Provides input parameters for microstructure simulation.
+
+
+          * - :py:attr:`~ThermalHistorySummary`
+            - Summary of a thermal history simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 Range<Range>
+    🝆 CoaxialAverageSensorInputs<CoaxialAverageSensorInputs>
+    🝆 ThermalHistoryInput<ThermalHistoryInput>
+    🝆 ThermalHistorySummary<ThermalHistorySummary>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,6 @@
+poisson\_ratio
+==============
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.poisson_ratio

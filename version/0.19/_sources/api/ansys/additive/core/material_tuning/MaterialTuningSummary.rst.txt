@@ -1,0 +1,251 @@
+
+
+
+
+
+
+:class:`MaterialTuningSummary`
+==============================
+
+.. py:class:: ansys.additive.core.material_tuning.MaterialTuningSummary(input: MaterialTuningInput, msg: ansys.api.additive.v0.additive_domain_pb2.MaterialTuningResult, out_dir: str)
+
+   
+   Provides a summary of material tuning simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: MaterialTuningSummary
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Material tuning input.
+          * - :py:attr:`~optimized_parameters_file`
+            - Path to the optimization parameters file.
+          * - :py:attr:`~coefficients_file`
+            - Path to the calculated coefficients file.
+          * - :py:attr:`~material_configuration_file`
+            - Path to the updated material properties file.
+          * - :py:attr:`~characteristic_width_file`
+            - Path to the characteristic width file or ``None``.
+          * - :py:attr:`~log_file`
+            - Path to the tuning log file or ``None``.
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.material_tuning import MaterialTuningSummary
+
+Property detail
+---------------
+
+.. py:property:: input
+   :type: MaterialTuningInput
+
+
+   
+   Material tuning input.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: optimized_parameters_file
+   :type: str
+
+
+   
+   Path to the optimization parameters file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: coefficients_file
+   :type: str | None
+
+
+   
+   Path to the calculated coefficients file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material_configuration_file
+   :type: str | None
+
+
+   
+   Path to the updated material properties file.
+
+   Penetration depth and absorptivity coefficients are updated based on the tuning
+   results.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: characteristic_width_file
+   :type: str | None
+
+
+   
+   Path to the characteristic width file or ``None``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: log_file
+   :type: str
+
+
+   
+   Path to the tuning log file or ``None``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+
+
+

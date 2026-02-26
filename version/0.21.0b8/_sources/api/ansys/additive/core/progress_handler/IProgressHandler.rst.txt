@@ -1,0 +1,107 @@
+
+
+
+
+
+
+:class:`IProgressHandler`
+=========================
+
+
+.. py:class:: ansys.additive.core.progress_handler.IProgressHandler
+
+   Bases: :py:obj:`abc.ABC`
+
+
+   
+   Interface for simulation progress updates.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: IProgressHandler
+
+Overview
+--------
+
+.. tab-set::
+
+   .. tab-item:: Abstract methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~update`
+            - Update progress.
+
+
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.progress_handler import IProgressHandler
+
+
+
+Method detail
+-------------
+
+.. py:method:: update(progress: Progress)
+   :abstractmethod:
+
+
+   
+   Update progress.
+
+
+   :Parameters:
+
+       **progress** : :obj:`Progress`
+           Progress information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

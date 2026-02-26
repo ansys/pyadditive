@@ -1,0 +1,32 @@
+﻿SingleBeadInput
+===============
+
+.. currentmodule:: ansys.additive.single_bead
+
+.. autoclass:: SingleBeadInput
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      SingleBeadInput.bead_length
+      SingleBeadInput.id
+      SingleBeadInput.machine
+      SingleBeadInput.material
+   
+   

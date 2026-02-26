@@ -1,0 +1,340 @@
+
+
+
+
+PorosityInput
+=============
+
+.. py:class:: PorosityInput(id: str = '', *, size_x: float = DEFAULT_SAMPLE_SIZE, size_y: float = DEFAULT_SAMPLE_SIZE, size_z: float = DEFAULT_SAMPLE_SIZE, machine: ansys.additive.core.machine.AdditiveMachine = AdditiveMachine(), material: ansys.additive.core.material.AdditiveMaterial = AdditiveMaterial())
+   :canonical: ansys.additive.core.porosity.PorosityInput
+
+
+
+
+
+   Provides input parameters for porosity simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: PorosityInput
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~id`
+            - User-provided ID for the simulation.
+          * - :py:attr:`~machine`
+            - Machine-related parameters.
+          * - :py:attr:`~material`
+            - Material used during the simulation.
+          * - :py:attr:`~size_x`
+            - Size (m) of the simulated sample in the x dimension.
+          * - :py:attr:`~size_y`
+            - Size (m) of the simulated sample in the y dimension.
+          * - :py:attr:`~size_z`
+            - Size (m) of the simulated sample in the z dimension.
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_SAMPLE_SIZE`
+            - Default sample size in each dimension (m).
+          * - :py:attr:`~MIN_SAMPLE_SIZE`
+            - Minimum sample size in each dimension (m).
+          * - :py:attr:`~MAX_SAMPLE_SIZE`
+            - Maximum sample size in each dimension (m).
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.porosity import PorosityInput
+
+
+Property detail
+---------------
+.. py:property:: id
+   :canonical: ansys.additive.core.porosity.PorosityInput.id
+   :type: str
+
+
+   
+   User-provided ID for the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: machine
+   :canonical: ansys.additive.core.porosity.PorosityInput.machine
+   :type: AdditiveMachine
+
+
+   
+   Machine-related parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material
+   :canonical: ansys.additive.core.porosity.PorosityInput.material
+   :type: AdditiveMaterial
+
+
+   
+   Material used during the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: size_x
+   :canonical: ansys.additive.core.porosity.PorosityInput.size_x
+   :type: float
+
+
+   
+   Size (m) of the simulated sample in the x dimension.
+
+   Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+   :obj:`MAX_SAMPLE_SIZE` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: size_y
+   :canonical: ansys.additive.core.porosity.PorosityInput.size_y
+   :type: float
+
+
+   
+   Size (m) of the simulated sample in the y dimension.
+
+   Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+   :obj:`MAX_SAMPLE_SIZE` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: size_z
+   :canonical: ansys.additive.core.porosity.PorosityInput.size_z
+   :type: float
+
+
+   
+   Size (m) of the simulated sample in the z dimension.
+
+   Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+   :obj:`MAX_SAMPLE_SIZE` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: DEFAULT_SAMPLE_SIZE
+   :value: 0.003
+
+   
+   Default sample size in each dimension (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_SAMPLE_SIZE
+   :value: 0.001
+
+   
+   Minimum sample size in each dimension (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_SAMPLE_SIZE
+   :value: 0.01
+
+   
+   Maximum sample size in each dimension (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

@@ -1,0 +1,6 @@
+penetration\_depth\_maximum
+===========================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.penetration_depth_maximum

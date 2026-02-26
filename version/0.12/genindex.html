@@ -1,0 +1,816 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index &#8212; PyAdditive 0.12.1 documentation</title>
+    
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/ansys_sphinx_theme.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    
+        <link href="_static/css/breadcrumbs.css" rel="stylesheet">
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/thebelab-helper.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    <link rel="shortcut icon" href="_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  <link rel="canonical" href="https://additive.docs.pyansys.com/version/stable/genindex.html" />
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+    <img src="_static/pyansys-logo-black-cropped.png" class="logo__image only-light" alt="Logo image">
+    <img src="_static/pyansys-logo-black-cropped.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="getting_started/index.html">
+  Getting started
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="api/index.html">
+  API reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="examples/index.html">
+  Examples
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="contributing.html">
+  Contributing
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <div class="dropdown" id="version_switcher">
+    <button type="button" class="btn btn-sm navbar-btn dropdown-toggle" id="version_switcher_button" data-toggle="dropdown">
+        0.12  <!-- this text may get changed later by javascript -->
+        <span class="caret"></span>
+    </button>
+    <div id="version_switcher_menu" class="dropdown-menu list-group-flush py-0" aria-labelledby="version_switcher_button">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
+</div>
+
+<!-- NOTE: this JS must live here (not in our global JS file) because it relies
+     on being processed by Jinja before it is run (specifically for replacing
+     variables genindex and {'json_url': 'https://additive.docs.pyansys.com/versions.json', 'version_match': '0.12'}.
+-->
+
+<script type="text/javascript">
+// Check if corresponding page path exists in other version of docs
+// and, if so, go there instead of the homepage of the other docs version
+function checkPageExistsAndRedirect(event) {
+    const currentFilePath = "genindex.html",
+          tryUrl = event.target.getAttribute("href");
+    let otherDocsHomepage = tryUrl.replace(currentFilePath, "");
+    $.ajax({
+        type: 'HEAD',
+        url: tryUrl,
+        // if the page exists, go there
+        success: function() {
+            location.href = tryUrl;
+        }
+    }).fail(function() {
+        location.href = otherDocsHomepage;
+    });
+    // this prevents the browser from following the href of the clicked node
+    // (which is fine because this function takes care of redirecting)
+    return false;
+}
+
+// Populate the version switcher from the JSON config file
+(function () {
+    $.getJSON("https://additive.docs.pyansys.com/versions.json", function(data, textStatus, jqXHR) {
+        const currentFilePath = "genindex.html";
+        let btn = document.getElementById("version_switcher_button");
+        // Set empty strings by default so that these attributes exist and can be used in CSS selectors
+        btn.dataset["activeVersionName"] = "";
+        btn.dataset["activeVersion"] = "";
+        // create links to the corresponding page in the other docs versions
+        $.each(data, function(index, entry) {
+            // if no custom name specified (e.g., "latest"), use version string
+            if (!("name" in entry)) {
+                entry.name = entry.version;
+            }
+            // create the node
+            const node = document.createElement("a");
+            node.setAttribute("class", "list-group-item list-group-item-action py-1");
+            node.textContent = `${entry.name}`;
+            node.setAttribute("href", `${entry.url}${currentFilePath}`);
+            // on click, AJAX calls will check if the linked page exists before
+            // trying to redirect, and if not, will redirect to the homepage
+            // for that version of the docs.
+            node.onclick = checkPageExistsAndRedirect;
+            // Add dataset values for the version and name in case people want
+            // to apply CSS styling based on this information.
+            node.dataset["versionName"] = entry.name;
+            node.dataset["version"] = entry.version;
+
+            $("#version_switcher_menu").append(node);
+            // replace dropdown button text with the preferred display name of
+            // this version, rather than using sphinx's 0.12.1 variable.
+            // also highlight the dropdown entry for the currently-viewed
+            // version's entry
+            if (entry.version == "0.12") {
+                node.classList.add("active");
+                btn.innerText = btn.dataset["activeVersionName"] = entry.name;
+                btn.dataset["activeVersion"] = entry.version;
+            }
+        });
+    });
+})();
+</script>
+      </div>
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/ansys-internal/pyadditive" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+     
+<div id="announcement_msg"></div>
+<script>
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(text => document.getElementById("announcement_msg").innerHTML = text)
+    .catch((error) => console.error(`Fetch problem: ${error.message}`));
+</script>
+
+    
+        <div class="container-xl">
+    <div class="row">
+        <div class="col-12 col-md-3" id="breadcrumbs-spacer"></div>
+        <div class="col-12 col-md-11 col-xl-9" id="breadcrumbs">
+          
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+    
+    
+        <li class="nav-item nav-item-0"><a href="index.html">PyAdditive 0.12.1 documentation</a> » </li>
+    
+
+        <li class="nav-item nav-item-this"><a href="">Index</a></li> 
+      </ul>
+    </div>
+        </div>
+  </div>
+</div>
+    
+
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+    
+    
+    
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ | <a href="#X"><strong>X</strong></a>
+ | <a href="#Y"><strong>Y</strong></a>
+ 
+</div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.absorptivity_maximum.html#ansys.additive.material.AdditiveMaterial.absorptivity_maximum">absorptivity_maximum (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.absorptivity_minimum.html#ansys.additive.material.AdditiveMaterial.absorptivity_minimum">absorptivity_minimum (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.absorptivity_powder_coefficient_a.html#ansys.additive.material.AdditiveMaterial.absorptivity_powder_coefficient_a">absorptivity_powder_coefficient_a (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.absorptivity_powder_coefficient_b.html#ansys.additive.material.AdditiveMaterial.absorptivity_powder_coefficient_b">absorptivity_powder_coefficient_b (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.absorptivity_solid_coefficient_a.html#ansys.additive.material.AdditiveMaterial.absorptivity_solid_coefficient_a">absorptivity_solid_coefficient_a (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.absorptivity_solid_coefficient_b.html#ansys.additive.material.AdditiveMaterial.absorptivity_solid_coefficient_b">absorptivity_solid_coefficient_b (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.additive.Additive.html#ansys.additive.additive.Additive">Additive (class in ansys.additive.additive)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.geometry_file.MachineType.html#ansys.additive.geometry_file.MachineType.ADDITIVE_INDUSTRIES">ADDITIVE_INDUSTRIES (ansys.additive.geometry_file.MachineType attribute)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.machine.AdditiveMachine.html#ansys.additive.machine.AdditiveMachine">AdditiveMachine (class in ansys.additive.machine)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.html#ansys.additive.material.AdditiveMaterial">AdditiveMaterial (class in ansys.additive.material)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.anisotropic_strain_coefficient_parallel.html#ansys.additive.material.AdditiveMaterial.anisotropic_strain_coefficient_parallel">anisotropic_strain_coefficient_parallel (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.anisotropic_strain_coefficient_perpendicular.html#ansys.additive.material.AdditiveMaterial.anisotropic_strain_coefficient_perpendicular">anisotropic_strain_coefficient_perpendicular (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.anisotropic_strain_coefficient_z.html#ansys.additive.material.AdditiveMaterial.anisotropic_strain_coefficient_z">anisotropic_strain_coefficient_z (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.single_bead.SingleBeadInput.bead_length.html#ansys.additive.single_bead.SingleBeadInput.bead_length">bead_length (ansys.additive.single_bead.SingleBeadInput property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.machine.AdditiveMachine.beam_diameter.html#ansys.additive.machine.AdditiveMachine.beam_diameter">beam_diameter (ansys.additive.machine.AdditiveMachine property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.geometry_file.BuildFile.html#ansys.additive.geometry_file.BuildFile">BuildFile (class in ansys.additive.geometry_file)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.material.CharacteristicWidthDataPoint.characteristic_width.html#ansys.additive.material.CharacteristicWidthDataPoint.characteristic_width">characteristic_width (ansys.additive.material.CharacteristicWidthDataPoint property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.characteristic_width_data.html#ansys.additive.material.AdditiveMaterial.characteristic_width_data">characteristic_width_data (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.CharacteristicWidthDataPoint.html#ansys.additive.material.CharacteristicWidthDataPoint">CharacteristicWidthDataPoint (class in ansys.additive.material)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.thermal_history.ThermalHistorySummary.coax_ave_output_folder.html#ansys.additive.thermal_history.ThermalHistorySummary.coax_ave_output_folder">coax_ave_output_folder (ansys.additive.thermal_history.ThermalHistorySummary property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.thermal_history.CoaxialAverageSensorInputs.html#ansys.additive.thermal_history.CoaxialAverageSensorInputs">CoaxialAverageSensorInputs (class in ansys.additive.thermal_history)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.cooling_rate.html#ansys.additive.microstructure.MicrostructureInput.cooling_rate">cooling_rate (ansys.additive.microstructure.MicrostructureInput property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.material.ThermalPropertiesDataPoint.density.html#ansys.additive.material.ThermalPropertiesDataPoint.density">density (ansys.additive.material.ThermalPropertiesDataPoint property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.material.ThermalPropertiesDataPoint.density_ratio.html#ansys.additive.material.ThermalPropertiesDataPoint.density_ratio">density_ratio (ansys.additive.material.ThermalPropertiesDataPoint property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.single_bead.MeltPool.depth.html#ansys.additive.single_bead.MeltPool.depth">depth (ansys.additive.single_bead.MeltPool property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.elastic_modulus.html#ansys.additive.material.AdditiveMaterial.elastic_modulus">elastic_modulus (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.geometry_file.MachineType.html#ansys.additive.geometry_file.MachineType.EOS">EOS (ansys.additive.geometry_file.MachineType attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.thermal_history.ThermalHistoryInput.geometry.html#ansys.additive.thermal_history.ThermalHistoryInput.geometry">geometry (ansys.additive.thermal_history.ThermalHistoryInput property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.additive.Additive.get_material.html#ansys.additive.additive.Additive.get_material">get_material() (ansys.additive.additive.Additive method)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.additive.Additive.get_materials_list.html#ansys.additive.additive.Additive.get_materials_list">get_materials_list() (ansys.additive.additive.Additive method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.hardening_factor.html#ansys.additive.material.AdditiveMaterial.hardening_factor">hardening_factor (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.machine.AdditiveMachine.hatch_spacing.html#ansys.additive.machine.AdditiveMachine.hatch_spacing">hatch_spacing (ansys.additive.machine.AdditiveMachine property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.geometry_file.MachineType.html#ansys.additive.geometry_file.MachineType.HB3D">HB3D (ansys.additive.geometry_file.MachineType attribute)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.machine.AdditiveMachine.heater_temperature.html#ansys.additive.machine.AdditiveMachine.heater_temperature">heater_temperature (ansys.additive.machine.AdditiveMachine property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.id.html#ansys.additive.microstructure.MicrostructureInput.id">id (ansys.additive.microstructure.MicrostructureInput property)</a>
+
+      <ul>
+        <li><a href="api/_autosummary/ansys.additive.porosity.PorosityInput.id.html#ansys.additive.porosity.PorosityInput.id">(ansys.additive.porosity.PorosityInput property)</a>
+</li>
+        <li><a href="api/_autosummary/ansys.additive.single_bead.SingleBeadInput.id.html#ansys.additive.single_bead.SingleBeadInput.id">(ansys.additive.single_bead.SingleBeadInput property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureSummary.input.html#ansys.additive.microstructure.MicrostructureSummary.input">input (ansys.additive.microstructure.MicrostructureSummary property)</a>
+
+      <ul>
+        <li><a href="api/_autosummary/ansys.additive.porosity.PorositySummary.input.html#ansys.additive.porosity.PorositySummary.input">(ansys.additive.porosity.PorositySummary property)</a>
+</li>
+        <li><a href="api/_autosummary/ansys.additive.single_bead.SingleBeadSummary.input.html#ansys.additive.single_bead.SingleBeadSummary.input">(ansys.additive.single_bead.SingleBeadSummary property)</a>
+</li>
+        <li><a href="api/_autosummary/ansys.additive.thermal_history.ThermalHistorySummary.input.html#ansys.additive.thermal_history.ThermalHistorySummary.input">(ansys.additive.thermal_history.ThermalHistorySummary property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.machine.AdditiveMachine.laser_power.html#ansys.additive.machine.AdditiveMachine.laser_power">laser_power (ansys.additive.machine.AdditiveMachine property)</a>
+
+      <ul>
+        <li><a href="api/_autosummary/ansys.additive.material.CharacteristicWidthDataPoint.laser_power.html#ansys.additive.material.CharacteristicWidthDataPoint.laser_power">(ansys.additive.material.CharacteristicWidthDataPoint property)</a>
+</li>
+      </ul></li>
+      <li><a href="api/_autosummary/ansys.additive.single_bead.MeltPool.laser_x.html#ansys.additive.single_bead.MeltPool.laser_x">laser_x (ansys.additive.single_bead.MeltPool property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.single_bead.MeltPool.laser_y.html#ansys.additive.single_bead.MeltPool.laser_y">laser_y (ansys.additive.single_bead.MeltPool property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.machine.AdditiveMachine.layer_rotation_angle.html#ansys.additive.machine.AdditiveMachine.layer_rotation_angle">layer_rotation_angle (ansys.additive.machine.AdditiveMachine property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.machine.AdditiveMachine.layer_thickness.html#ansys.additive.machine.AdditiveMachine.layer_thickness">layer_thickness (ansys.additive.machine.AdditiveMachine property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.single_bead.MeltPool.length.html#ansys.additive.single_bead.MeltPool.length">length (ansys.additive.single_bead.MeltPool property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.liquidus_temperature.html#ansys.additive.material.AdditiveMaterial.liquidus_temperature">liquidus_temperature (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.additive.Additive.load_material.html#ansys.additive.additive.Additive.load_material">load_material() (ansys.additive.additive.Additive static method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.machine.html#ansys.additive.microstructure.MicrostructureInput.machine">machine (ansys.additive.microstructure.MicrostructureInput property)</a>
+
+      <ul>
+        <li><a href="api/_autosummary/ansys.additive.porosity.PorosityInput.machine.html#ansys.additive.porosity.PorosityInput.machine">(ansys.additive.porosity.PorosityInput property)</a>
+</li>
+        <li><a href="api/_autosummary/ansys.additive.single_bead.SingleBeadInput.machine.html#ansys.additive.single_bead.SingleBeadInput.machine">(ansys.additive.single_bead.SingleBeadInput property)</a>
+</li>
+      </ul></li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.material.html#ansys.additive.microstructure.MicrostructureInput.material">material (ansys.additive.microstructure.MicrostructureInput property)</a>
+
+      <ul>
+        <li><a href="api/_autosummary/ansys.additive.porosity.PorosityInput.material.html#ansys.additive.porosity.PorosityInput.material">(ansys.additive.porosity.PorosityInput property)</a>
+</li>
+        <li><a href="api/_autosummary/ansys.additive.single_bead.SingleBeadInput.material.html#ansys.additive.single_bead.SingleBeadInput.material">(ansys.additive.single_bead.SingleBeadInput property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.material_yield_strength.html#ansys.additive.material.AdditiveMaterial.material_yield_strength">material_yield_strength (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.single_bead.SingleBeadSummary.melt_pool.html#ansys.additive.single_bead.SingleBeadSummary.melt_pool">melt_pool (ansys.additive.single_bead.SingleBeadSummary property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.melt_pool_depth.html#ansys.additive.microstructure.MicrostructureInput.melt_pool_depth">melt_pool_depth (ansys.additive.microstructure.MicrostructureInput property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.melt_pool_width.html#ansys.additive.microstructure.MicrostructureInput.melt_pool_width">melt_pool_width (ansys.additive.microstructure.MicrostructureInput property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.single_bead.MeltPool.html#ansys.additive.single_bead.MeltPool">MeltPool (class in ansys.additive.single_bead)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.html#ansys.additive.microstructure.MicrostructureInput">MicrostructureInput (class in ansys.additive.microstructure)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureSummary.html#ansys.additive.microstructure.MicrostructureSummary">MicrostructureSummary (class in ansys.additive.microstructure)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.name.html#ansys.additive.material.AdditiveMaterial.name">name (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.geometry_file.MachineType.html#ansys.additive.geometry_file.MachineType.NONE">NONE (ansys.additive.geometry_file.MachineType attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.nucleation_constant_bulk.html#ansys.additive.material.AdditiveMaterial.nucleation_constant_bulk">nucleation_constant_bulk (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.nucleation_constant_interface.html#ansys.additive.material.AdditiveMaterial.nucleation_constant_interface">nucleation_constant_interface (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.geometry_file.BuildFile.path.html#ansys.additive.geometry_file.BuildFile.path">path (ansys.additive.geometry_file.BuildFile property)</a>
+
+      <ul>
+        <li><a href="api/_autosummary/ansys.additive.geometry_file.StlFile.path.html#ansys.additive.geometry_file.StlFile.path">(ansys.additive.geometry_file.StlFile property)</a>
+</li>
+      </ul></li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.penetration_depth_maximum.html#ansys.additive.material.AdditiveMaterial.penetration_depth_maximum">penetration_depth_maximum (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.penetration_depth_minimum.html#ansys.additive.material.AdditiveMaterial.penetration_depth_minimum">penetration_depth_minimum (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.penetration_depth_powder_coefficient_a.html#ansys.additive.material.AdditiveMaterial.penetration_depth_powder_coefficient_a">penetration_depth_powder_coefficient_a (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.penetration_depth_powder_coefficient_b.html#ansys.additive.material.AdditiveMaterial.penetration_depth_powder_coefficient_b">penetration_depth_powder_coefficient_b (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.penetration_depth_solid_coefficient_a.html#ansys.additive.material.AdditiveMaterial.penetration_depth_solid_coefficient_a">penetration_depth_solid_coefficient_a (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.penetration_depth_solid_coefficient_b.html#ansys.additive.material.AdditiveMaterial.penetration_depth_solid_coefficient_b">penetration_depth_solid_coefficient_b (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.poisson_ratio.html#ansys.additive.material.AdditiveMaterial.poisson_ratio">poisson_ratio (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.porosity.PorosityInput.html#ansys.additive.porosity.PorosityInput">PorosityInput (class in ansys.additive.porosity)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.porosity.PorositySummary.html#ansys.additive.porosity.PorositySummary">PorositySummary (class in ansys.additive.porosity)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.powder_packing_density.html#ansys.additive.material.AdditiveMaterial.powder_packing_density">powder_packing_density (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.porosity.PorositySummary.powder_ratio.html#ansys.additive.porosity.PorositySummary.powder_ratio">powder_ratio (ansys.additive.porosity.PorositySummary property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.purging_gas_convection_coefficient.html#ansys.additive.material.AdditiveMaterial.purging_gas_convection_coefficient">purging_gas_convection_coefficient (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.random_seed.html#ansys.additive.microstructure.MicrostructureInput.random_seed">random_seed (ansys.additive.microstructure.MicrostructureInput property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.thermal_history.Range.html#ansys.additive.thermal_history.Range">Range (class in ansys.additive.thermal_history)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.single_bead.MeltPool.reference_depth.html#ansys.additive.single_bead.MeltPool.reference_depth">reference_depth (ansys.additive.single_bead.MeltPool property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.single_bead.MeltPool.reference_width.html#ansys.additive.single_bead.MeltPool.reference_width">reference_width (ansys.additive.single_bead.MeltPool property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.geometry_file.MachineType.html#ansys.additive.geometry_file.MachineType.RENISHAW">RENISHAW (ansys.additive.geometry_file.MachineType attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.sample_min_x.html#ansys.additive.microstructure.MicrostructureInput.sample_min_x">sample_min_x (ansys.additive.microstructure.MicrostructureInput property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.sample_min_y.html#ansys.additive.microstructure.MicrostructureInput.sample_min_y">sample_min_y (ansys.additive.microstructure.MicrostructureInput property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.sample_min_z.html#ansys.additive.microstructure.MicrostructureInput.sample_min_z">sample_min_z (ansys.additive.microstructure.MicrostructureInput property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.sample_size_x.html#ansys.additive.microstructure.MicrostructureInput.sample_size_x">sample_size_x (ansys.additive.microstructure.MicrostructureInput property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.sample_size_y.html#ansys.additive.microstructure.MicrostructureInput.sample_size_y">sample_size_y (ansys.additive.microstructure.MicrostructureInput property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.sample_size_z.html#ansys.additive.microstructure.MicrostructureInput.sample_size_z">sample_size_z (ansys.additive.microstructure.MicrostructureInput property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.machine.AdditiveMachine.scan_speed.html#ansys.additive.machine.AdditiveMachine.scan_speed">scan_speed (ansys.additive.machine.AdditiveMachine property)</a>
+
+      <ul>
+        <li><a href="api/_autosummary/ansys.additive.material.CharacteristicWidthDataPoint.scan_speed.html#ansys.additive.material.CharacteristicWidthDataPoint.scan_speed">(ansys.additive.material.CharacteristicWidthDataPoint property)</a>
+</li>
+      </ul></li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.sensor_dimension.html#ansys.additive.microstructure.MicrostructureInput.sensor_dimension">sensor_dimension (ansys.additive.microstructure.MicrostructureInput property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.additive.Additive.simulate.html#ansys.additive.additive.Additive.simulate">simulate() (ansys.additive.additive.Additive method)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.single_bead.SingleBeadInput.html#ansys.additive.single_bead.SingleBeadInput">SingleBeadInput (class in ansys.additive.single_bead)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.single_bead.SingleBeadSummary.html#ansys.additive.single_bead.SingleBeadSummary">SingleBeadSummary (class in ansys.additive.single_bead)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.geometry_file.MachineType.html#ansys.additive.geometry_file.MachineType.SISMA">SISMA (ansys.additive.geometry_file.MachineType attribute)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.porosity.PorosityInput.size_x.html#ansys.additive.porosity.PorosityInput.size_x">size_x (ansys.additive.porosity.PorosityInput property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.porosity.PorosityInput.size_y.html#ansys.additive.porosity.PorosityInput.size_y">size_y (ansys.additive.porosity.PorosityInput property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.porosity.PorosityInput.size_z.html#ansys.additive.porosity.PorosityInput.size_z">size_z (ansys.additive.porosity.PorosityInput property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.machine.AdditiveMachine.slicing_stripe_width.html#ansys.additive.machine.AdditiveMachine.slicing_stripe_width">slicing_stripe_width (ansys.additive.machine.AdditiveMachine property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.geometry_file.MachineType.html#ansys.additive.geometry_file.MachineType.SLM">SLM (ansys.additive.geometry_file.MachineType attribute)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.solid_density_at_room_temperature.html#ansys.additive.material.AdditiveMaterial.solid_density_at_room_temperature">solid_density_at_room_temperature (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.porosity.PorositySummary.solid_ratio.html#ansys.additive.porosity.PorositySummary.solid_ratio">solid_ratio (ansys.additive.porosity.PorositySummary property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.solid_specific_heat_at_room_temperature.html#ansys.additive.material.AdditiveMaterial.solid_specific_heat_at_room_temperature">solid_specific_heat_at_room_temperature (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.solid_thermal_conductivity_at_room_temperature.html#ansys.additive.material.AdditiveMaterial.solid_thermal_conductivity_at_room_temperature">solid_thermal_conductivity_at_room_temperature (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.solidus_temperature.html#ansys.additive.material.AdditiveMaterial.solidus_temperature">solidus_temperature (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.ThermalPropertiesDataPoint.specific_heat.html#ansys.additive.material.ThermalPropertiesDataPoint.specific_heat">specific_heat (ansys.additive.material.ThermalPropertiesDataPoint property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.ThermalPropertiesDataPoint.specific_heat_ratio.html#ansys.additive.material.ThermalPropertiesDataPoint.specific_heat_ratio">specific_heat_ratio (ansys.additive.material.ThermalPropertiesDataPoint property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.machine.AdditiveMachine.starting_layer_angle.html#ansys.additive.machine.AdditiveMachine.starting_layer_angle">starting_layer_angle (ansys.additive.machine.AdditiveMachine property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.geometry_file.StlFile.html#ansys.additive.geometry_file.StlFile">StlFile (class in ansys.additive.geometry_file)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.strain_scaling_factor.html#ansys.additive.material.AdditiveMaterial.strain_scaling_factor">strain_scaling_factor (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.support_yield_strength_ratio.html#ansys.additive.material.AdditiveMaterial.support_yield_strength_ratio">support_yield_strength_ratio (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.material.ThermalPropertiesDataPoint.temperature.html#ansys.additive.material.ThermalPropertiesDataPoint.temperature">temperature (ansys.additive.material.ThermalPropertiesDataPoint property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.ThermalPropertiesDataPoint.thermal_conductivity.html#ansys.additive.material.ThermalPropertiesDataPoint.thermal_conductivity">thermal_conductivity (ansys.additive.material.ThermalPropertiesDataPoint property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.ThermalPropertiesDataPoint.thermal_conductivity_ratio.html#ansys.additive.material.ThermalPropertiesDataPoint.thermal_conductivity_ratio">thermal_conductivity_ratio (ansys.additive.material.ThermalPropertiesDataPoint property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.thermal_expansion_coefficient.html#ansys.additive.material.AdditiveMaterial.thermal_expansion_coefficient">thermal_expansion_coefficient (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.thermal_gradient.html#ansys.additive.microstructure.MicrostructureInput.thermal_gradient">thermal_gradient (ansys.additive.microstructure.MicrostructureInput property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.thermal_properties_data.html#ansys.additive.material.AdditiveMaterial.thermal_properties_data">thermal_properties_data (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.thermal_history.ThermalHistoryInput.html#ansys.additive.thermal_history.ThermalHistoryInput">ThermalHistoryInput (class in ansys.additive.thermal_history)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.thermal_history.ThermalHistorySummary.html#ansys.additive.thermal_history.ThermalHistorySummary">ThermalHistorySummary (class in ansys.additive.thermal_history)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.material.ThermalPropertiesDataPoint.html#ansys.additive.material.ThermalPropertiesDataPoint">ThermalPropertiesDataPoint (class in ansys.additive.material)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.geometry_file.MachineType.html#ansys.additive.geometry_file.MachineType.TRUMPF">TRUMPF (ansys.additive.geometry_file.MachineType attribute)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.additive.Additive.tune_material.html#ansys.additive.additive.Additive.tune_material">tune_material() (ansys.additive.additive.Additive method)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.geometry_file.BuildFile.type.html#ansys.additive.geometry_file.BuildFile.type">type (ansys.additive.geometry_file.BuildFile property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureInput.use_provided_thermal_parameters.html#ansys.additive.microstructure.MicrostructureInput.use_provided_thermal_parameters">use_provided_thermal_parameters (ansys.additive.microstructure.MicrostructureInput property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.material.AdditiveMaterial.vaporization_temperature.html#ansys.additive.material.AdditiveMaterial.vaporization_temperature">vaporization_temperature (ansys.additive.material.AdditiveMaterial property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.porosity.PorositySummary.void_ratio.html#ansys.additive.porosity.PorositySummary.void_ratio">void_ratio (ansys.additive.porosity.PorositySummary property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.single_bead.MeltPool.width.html#ansys.additive.single_bead.MeltPool.width">width (ansys.additive.single_bead.MeltPool property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="X">X</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureSummary.xy_circle_equivalence.html#ansys.additive.microstructure.MicrostructureSummary.xy_circle_equivalence">xy_circle_equivalence (ansys.additive.microstructure.MicrostructureSummary property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureSummary.xy_vtk.html#ansys.additive.microstructure.MicrostructureSummary.xy_vtk">xy_vtk (ansys.additive.microstructure.MicrostructureSummary property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureSummary.xz_circle_equivalence.html#ansys.additive.microstructure.MicrostructureSummary.xz_circle_equivalence">xz_circle_equivalence (ansys.additive.microstructure.MicrostructureSummary property)</a>
+</li>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureSummary.xz_vtk.html#ansys.additive.microstructure.MicrostructureSummary.xz_vtk">xz_vtk (ansys.additive.microstructure.MicrostructureSummary property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Y">Y</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureSummary.yz_circle_equivalence.html#ansys.additive.microstructure.MicrostructureSummary.yz_circle_equivalence">yz_circle_equivalence (ansys.additive.microstructure.MicrostructureSummary property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/_autosummary/ansys.additive.microstructure.MicrostructureSummary.yz_vtk.html#ansys.additive.microstructure.MicrostructureSummary.yz_vtk">yz_vtk (ansys.additive.microstructure.MicrostructureSummary property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+              </article>
+              
+
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright (c) 2023 ANSYS, Inc. All rights reserved.<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>

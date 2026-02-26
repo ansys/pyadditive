@@ -1,0 +1,6 @@
+size\_y
+=======
+
+.. currentmodule:: ansys.additive.porosity
+
+.. autoproperty:: PorosityInput.size_y

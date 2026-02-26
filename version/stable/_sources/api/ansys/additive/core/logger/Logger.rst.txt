@@ -1,0 +1,260 @@
+
+
+
+
+
+
+:class:`Logger`
+===============
+
+
+.. py:class:: ansys.additive.core.logger.Logger(level=logging.DEBUG, to_file=False, to_stdout=True, filename=FILE_NAME)
+
+   
+   Provides the logger used for each PyAdditive session.
+
+   This class allows you to add handlers to the logger to output messages
+   to a file or to the standard output (stdout).
+
+   :Parameters:
+
+       **level** : :obj:`default` : :obj:`DEBUG`
+           Logging level to filter the message severity allowed in the logger.
+
+       **to_file** : :ref:`bool <python:bltin-boolean-values>`, default: :data:`python:False`
+           Whether to write log messages to a file.
+
+       **to_stdout** : :ref:`bool <python:bltin-boolean-values>`, default: :data:`python:True`
+           Whether to write log messages to the standard output.
+
+       **filename** : str, default: obj:`FILE_NAME`
+           Name of the file to write log log messages to.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: Logger
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~log_to_file`
+            - Add a file handler to the logger.
+          * - :py:attr:`~log_to_stdout`
+            - Add the standard output handler to the logger.
+          * - :py:attr:`~add_handling_uncaught_expections`
+            - Redirect the output of an exception to a logger.
+          * - :py:attr:`~setLevel`
+            - Set the logging level for the logger.
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~file_handler`
+            - 
+          * - :py:attr:`~stdout_handler`
+            - 
+          * - :py:attr:`~logger`
+            - 
+          * - :py:attr:`~debug`
+            - 
+          * - :py:attr:`~info`
+            - 
+          * - :py:attr:`~warning`
+            - 
+          * - :py:attr:`~error`
+            - 
+          * - :py:attr:`~critical`
+            - 
+          * - :py:attr:`~log`
+            - 
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.logger import Logger
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: file_handler
+   :value: None
+
+
+.. py:attribute:: stdout_handler
+   :value: None
+
+
+.. py:attribute:: logger
+
+.. py:attribute:: debug
+
+.. py:attribute:: info
+
+.. py:attribute:: warning
+
+.. py:attribute:: error
+
+.. py:attribute:: critical
+
+.. py:attribute:: log
+
+
+
+Method detail
+-------------
+
+.. py:method:: log_to_file(filename=FILE_NAME, level=LOG_LEVEL)
+
+   
+   Add a file handler to the logger.
+
+
+   :Parameters:
+
+       **filename** : str, default: obj:`FILE_NAME`
+           Name of the file to write log messages to.
+
+       **level** : :obj:`default` : :obj:`DEBUG`
+           Logging level to filter the message severity allowed in the logger.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: log_to_stdout(level=LOG_LEVEL)
+
+   
+   Add the standard output handler to the logger.
+
+
+   :Parameters:
+
+       **level** : :obj:`default` : :obj:`DEBUG`
+           Logging level to filter the message severity allowed in the logger.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: add_handling_uncaught_expections(logger)
+
+   
+   Redirect the output of an exception to a logger.
+
+
+   :Parameters:
+
+       **logger** : :class:`python:str`
+           Name of the logger.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: setLevel(level: str | int) -> None
+
+   
+   Set the logging level for the logger.
+
+
+   :Parameters:
+
+       **level** : :class:`python:str` or :class:`python:int`
+           Logging level to filter the message severity allowed in the logger.
+           If int, it must be one of the levels defined in the :obj:`~logging` module.
+           Valid string values are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``, ``"ERROR"``,
+           and ``"CRITICAL"``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

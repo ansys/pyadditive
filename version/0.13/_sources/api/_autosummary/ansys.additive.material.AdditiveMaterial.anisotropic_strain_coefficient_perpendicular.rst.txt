@@ -1,0 +1,6 @@
+anisotropic\_strain\_coefficient\_perpendicular
+===============================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.anisotropic_strain_coefficient_perpendicular

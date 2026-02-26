@@ -1,0 +1,896 @@
+
+
+
+
+ParametricStudy
+===============
+
+.. py:class:: ParametricStudy(study_name: str, study_dir: str | os.PathLike = '.')
+   :canonical: ansys.additive.core.parametric_study.parametric_study.ParametricStudy
+
+
+
+
+Provides data storage and utility methods for a parametric study.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: ParametricStudy
+.. tab-set::
+
+
+
+    .. tab-item:: Methods
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~data_frame`
+            - Return a :class:`DataFrame <pandas.DataFrame>` representing the
+          * - :py:attr:`~run_simulations`
+            - Run the simulations in the parametric study with
+          * - :py:attr:`~save`
+            - Save the parametric study to a file.
+          * - :py:attr:`~add_summaries`
+            - Add summaries of previously executed simulations to the parametric
+          * - :py:attr:`~generate_single_bead_permutations`
+            - Add single bead permutations to the parametric study.
+          * - :py:attr:`~generate_porosity_permutations`
+            - Add porosity permutations to the parametric study.
+          * - :py:attr:`~generate_microstructure_permutations`
+            - Add microstructure permutations to the parametric study.
+          * - :py:attr:`~update`
+            - Update the results of simulations in the parametric study.
+          * - :py:attr:`~add_inputs`
+            - Add new simulations to the parametric study.
+          * - :py:attr:`~remove`
+            - Remove simulations from the parametric study.
+          * - :py:attr:`~set_status`
+            - Set the status of simulations in the parametric study.
+          * - :py:attr:`~set_priority`
+            - Set the priority of simulations in the parametric study.
+          * - :py:attr:`~set_iteration`
+            - Set the iteration of simulations in the parametric study.
+          * - :py:attr:`~clear`
+            - Remove all permutations from the parametric study.
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~file_name`
+            - Name of the file where the parametric study is stored.
+
+
+
+    .. tab-item:: Static methods
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~load`
+            - Load a parametric study from a file.
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.parametric_study.parametric_study import ParametricStudy
+
+
+Property detail
+---------------
+.. py:property:: file_name
+   :canonical: ansys.additive.core.parametric_study.parametric_study.ParametricStudy.file_name
+   :type: os.PathLike
+
+
+   
+   Name of the file where the parametric study is stored.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+
+.. py:method:: data_frame() -> pandas.DataFrame
+
+   
+   Return a :class:`DataFrame <pandas.DataFrame>` representing the
+   parametric study.
+
+   For the column names used in the returned data frame, see the `:class:`ColumnNames` class.
+
+   .. note::
+      Updating the returned data frame does not update this parametric study.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: run_simulations(additive: ansys.additive.core.Additive, type: list[ansys.additive.core.SimulationType] | None = None, priority: int | None = None)
+
+   
+   Run the simulations in the parametric study with
+   ``SimulationStatus.PENDING`` in the ``ColumnNames.STATUS`` column.
+   Execution order is determined by the values in the
+   ``ColumnNames.PRIORITY`` column. Lower values are interpreted as having
+   higher priority and are run first.
+
+
+   :Parameters:
+
+       **additive: :class:`Additive <ansys.additive.core.additive.Additive>`**
+           Additive service connection to use for running simulations.
+
+       **type** : :class:`python:list`\[:obj:`SimulationType`], :data:`python:None`
+           Type of simulations to run. The default is ``None``, in which case
+           all simulation types are run.
+
+       **priority** : :class:`python:int`, :data:`python:None`
+           Priority of simulations to run. The default is ``None``, in which
+           case all priorities are run.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: save(file_name: str | os.PathLike)
+
+   
+   Save the parametric study to a file.
+
+
+   :Parameters:
+
+       **file_name** : :class:`python:str` | :obj:`os.PathLike`
+           Name of the file to save the parametric study to.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: load(file_name) -> ParametricStudy | None
+   :staticmethod:
+
+   
+   Load a parametric study from a file.
+
+
+   :Parameters:
+
+       **file_name** : :class:`python:str` | :obj:`os.PathLike`
+           Name of file to load the parametric study from.
+
+   :Returns:
+
+       :obj:`ParametricStudy` | :data:`python:None`
+           Loaded parametric study or None if ``file_name`` does not
+           refer to a parametric study.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: add_summaries(summaries: list[ansys.additive.core.SingleBeadSummary | ansys.additive.core.PorositySummary | ansys.additive.core.MicrostructureSummary], iteration: int = DEFAULT_ITERATION)
+
+   
+   Add summaries of previously executed simulations to the parametric
+   study.
+
+   This method adds new simulations to the parametric study. To update existing
+   simulations, use the :meth:`update` method.
+
+   :Parameters:
+
+       **summaries** : :class:`python:list`\[:obj:`SingleBeadSummary` | :obj:`PorositySummary` | :obj:`MicrostructureSummary`]
+           List of simulation result summaries to add to the parametric study.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: generate_single_bead_permutations(material_name: str, laser_powers: list[float], scan_speeds: list[float], bead_length: float = SingleBeadInput.DEFAULT_BEAD_LENGTH, layer_thicknesses: list[float] | None = None, heater_temperatures: list[float] | None = None, beam_diameters: list[float] | None = None, min_area_energy_density: float | None = None, max_area_energy_density: float | None = None, iteration: int = DEFAULT_ITERATION, priority: int = DEFAULT_PRIORITY)
+
+   
+   Add single bead permutations to the parametric study.
+
+
+   :Parameters:
+
+       **material_name** : :class:`python:str`
+           Material name.
+
+       **laser_powers** : :class:`python:list`\[:class:`python:float`]
+           Laser powers (W) to use for single bead simulations.
+
+       **scan_speeds** : :class:`python:list`\[:class:`python:float`]
+           Scan speeds (m/s) to use for single bead simulations.
+
+       **bead_length** : :class:`python:float`, :obj:`DEFAULT_BEAD_LENGTH`
+           Length of the bead (m).
+
+       **layer_thicknesses** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Layer thicknesses (m) to use for single bead simulations.
+           The default is ``None``, in which case ``MachineConstants.DEFAULT_LAYER_THICKNESS``
+           is used. For more information, see the
+           :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+           class.
+
+       **heater_temperatures** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Heater temperatures (C) to use for single bead simulations.
+           The default is ``None``, in which case ``MachineConstants.DEFAULT_HEATER_TEMP``
+           is used. For more information, see the
+           :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+           class.
+
+       **beam_diameters** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Beam diameters (m) to use for single bead simulations.
+           The default is ``None``, in which case``MachineConstants.DEFAULT_BEAM_DIAMETER``
+           is used. For more information, see the
+           :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+           class.
+
+       **min_area_energy_density** : :class:`python:float`, :data:`python:None`
+           Minimum area energy density (J/m^2) to use for single bead simulations.
+           Parameter combinations with an area energy density below this value are
+           not included. Area energy density is defined as laser power / (layer thickness * scan speed).
+
+       **max_area_energy_density** : :class:`python:float`, :data:`python:None`
+           Maximum area energy density (J/m^2) to use for single bead simulations.
+           Parameter combinations with an area energy density above this value are
+           not included. Area energy density is defined as laser power / (layer thickness * scan speed).
+
+       **iteration** : :class:`python:int`, :obj:`DEFAULT_ITERATION`
+           Iteration number for this set of simulations.
+
+       **priority** : :class:`python:int`, :obj:`DEFAULT_PRIORITY`
+           Priority for this set of simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: generate_porosity_permutations(material_name: str, laser_powers: list[float], scan_speeds: list[float], size_x: float = PorosityInput.DEFAULT_SAMPLE_SIZE, size_y: float = PorosityInput.DEFAULT_SAMPLE_SIZE, size_z: float = PorosityInput.DEFAULT_SAMPLE_SIZE, layer_thicknesses: list[float] | None = None, heater_temperatures: list[float] | None = None, beam_diameters: list[float] | None = None, start_angles: list[float] | None = None, rotation_angles: list[float] | None = None, hatch_spacings: list[float] | None = None, stripe_widths: list[float] | None = None, min_energy_density: float | None = None, max_energy_density: float | None = None, min_build_rate: float | None = None, max_build_rate: float | None = None, iteration: int = DEFAULT_ITERATION, priority: int = DEFAULT_PRIORITY)
+
+   
+   Add porosity permutations to the parametric study.
+
+
+   :Parameters:
+
+       **material_name** : :class:`python:str`
+           Material name.
+
+       **laser_powers** : :class:`python:list`\[:class:`python:float`]
+           Laser powers (W) to use for porosity simulations.
+
+       **scan_speeds** : :class:`python:list`\[:class:`python:float`]
+           Scan speeds (m/s) to use for porosity simulations.
+
+       **size_x** : :class:`python:float`, :obj:`DEFAULT_SAMPLE_SIZE`
+           Size (m) of the porosity sample in the x direction.
+           Valid values are between 0.001 and 0.01.
+
+       **size_y** : :class:`python:float`, :obj:`DEFAULT_SAMPLE_SIZE`
+           Size (m) of the porosity sample in the y direction.
+           Valid values are between 0.001 and 0.01.
+
+       **size_z** : :class:`python:float`, :obj:`DEFAULT_SAMPLE_SIZE`
+           Size (m) of the porosity sample in the z direction.
+           Valid values are between 0.001 and 0.01.
+
+       **layer_thicknesses** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Layer thicknesses (m) to use for porosity simulations.
+           The default is ``None``, in which case ``MachineConstants.DEFAULT_LAYER_THICKNESS``
+           is used. For more information, see the
+           :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+           class.
+
+       **heater_temperatures** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Heater temperatures (C) to use for porosity simulations.
+           The default is ``None``, in which case ``MachineConstants.DEFAULT_HEATER_TEMP``
+           is used. For more information, see the
+           :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+           class.
+
+       **beam_diameters** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Beam diameters (m) to use for porosity simulations.
+           The default is ``None``, in which case ``MachineConstants.DEFAULT_BEAM_DIAMETER``
+           is used. For more information, see the
+           :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+           class.
+
+       **start_angles** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Scan angles (deg) for the first layer to use for porosity simulations.
+           The default is ``None``, in which case ``MachineConstants.DEFAULT_STARTING_LAYER_ANGLE``
+           is used. For more information, see the
+           :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
+
+       **rotation_angles** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Angles (deg) by which the scan direction is rotated with each layer
+           to use for porosity simulations. The default is ``None``, in which
+           case ``MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE`` is used. For more
+           information, see the :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
+           class.
+
+       **hatch_spacings** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Hatch spacings (m) to use for porosity simulations. The default is ``None``,
+           in which case ``MachineConstants.DEFAULT_HATCH_SPACING`` is used. For more
+           information, see the :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
+           class.
+
+       **stripe_widths** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Stripe widths (m) to use for porosity simulations. The default is ``None``, in
+           which case ``MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH`` is used. For more
+           information, see the :class:`MachineConstants <ansys.additive.machine.MachineConstants>`
+           class.
+
+       **min_energy_density** : :class:`python:float`, :data:`python:None`
+           Minimum energy density (J/m^3) to use for porosity simulations. Parameter combinations
+           with an area energy density below this value are not included. Area energy density is
+           defined as laser power / (layer thickness * scan speed * hatch spacing).
+
+       **max_energy_density** : :class:`python:float`, :data:`python:None`
+           Maximum energy density (J/m^3) to use for porosity simulations. Parameter combinations
+           with an area energy density above this value are not included. Energy density is defined
+           as laser power / (layer thickness * scan speed * hatch spacing).
+
+       **min_build_rate** : :class:`python:float`, :data:`python:None`
+           Minimum build rate (m^3/s) to use for porosity simulations. Parameter combinations
+           with a build rate below this value are not included. Build rate is defined as
+           layer thickness * scan speed * hatch spacing.
+
+       **max_build_rate** : :class:`python:float`, :data:`python:None`
+           Maximum build rate (m^3/s) to use for porosity simulations. Parameter combinations
+           with a build rate above this value are not included. Build rate is defined as
+           layer thickness * scan speed * hatch spacing.
+
+       **iteration** : :class:`python:int`, :obj:`DEFAULT_ITERATION`
+           Iteration number for this set of simulations.
+
+       **priority** : :class:`python:int`, :obj:`DEFAULT_PRIORITY`
+           Priority for this set of simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: generate_microstructure_permutations(material_name: str, laser_powers: list[float], scan_speeds: list[float], min_x: float = MicrostructureInput.DEFAULT_POSITION_COORDINATE, min_y: float = MicrostructureInput.DEFAULT_POSITION_COORDINATE, min_z: float = MicrostructureInput.DEFAULT_POSITION_COORDINATE, size_x: float = MicrostructureInput.DEFAULT_SAMPLE_SIZE, size_y: float = MicrostructureInput.DEFAULT_SAMPLE_SIZE, size_z: float = MicrostructureInput.DEFAULT_SAMPLE_SIZE, sensor_dimension: float = MicrostructureInput.DEFAULT_SENSOR_DIMENSION, layer_thicknesses: list[float] | None = None, heater_temperatures: list[float] | None = None, beam_diameters: list[float] | None = None, start_angles: list[float] | None = None, rotation_angles: list[float] | None = None, hatch_spacings: list[float] | None = None, stripe_widths: list[float] | None = None, min_energy_density: float | None = None, max_energy_density: float | None = None, min_build_rate: float | None = None, max_build_rate: float | None = None, cooling_rate: float | None = None, thermal_gradient: float | None = None, melt_pool_width: float | None = None, melt_pool_depth: float | None = None, random_seed: int | None = None, iteration: int = DEFAULT_ITERATION, priority: int = DEFAULT_PRIORITY)
+
+   
+   Add microstructure permutations to the parametric study.
+
+
+   :Parameters:
+
+       **material_name** : :class:`python:str`
+           Material name.
+
+       **laser_powers** : :class:`python:list`\[:class:`python:float`]
+           Laser powers (W) to use for microstructure simulations.
+
+       **scan_speeds** : :class:`python:list`\[:class:`python:float`]
+           Scan speeds (m/s) to use for microstructure simulations.
+
+       **min_x** : :class:`python:float`, :obj:`DEFAULT_POSITION_COORDINATE`
+           Minimum x coordinate (m) of the microstructure sample.
+
+       **min_y** : :class:`python:float`, :obj:`DEFAULT_POSITION_COORDINATE`
+           Minimum y coordinate (m) of the microstructure sample.
+
+       **min_z** : :class:`python:float`, :obj:`DEFAULT_POSITION_COORDINATE`
+           Minimum z coordinate (m) of the microstructure sample.
+
+       **size_x** : :class:`python:float`, :obj:`DEFAULT_SAMPLE_SIZE`
+           Size (m) of the microstructure sample in the x direction.
+           Valid values are between 0.001 and 0.01.
+
+       **size_y** : :class:`python:float`, :obj:`DEFAULT_SAMPLE_SIZE`
+           Size (m) of the microstructure sample in the y direction.
+           Valid values are between 0.001 and 0.01.
+
+       **size_z** : :class:`python:float`, :obj:`DEFAULT_SAMPLE_SIZE`
+           Size (m) of the microstructure sample in the z direction.
+           Valid values are between 0.001 and 0.01.
+
+       **sensor_dimension** : :class:`python:float`, :obj:`DEFAULT_SENSOR_DIMENSION`
+           Sensor dimension (m) to use for microstructure simulations.
+           Valid values are between 0.0001 and 0.001. The values for the
+           ``size_x`` and ``size_y`` parameters must be greater than the
+           ``sensor_dimension`` parameter by 0.0005. The value for the
+           ``size_z`` parameter must be greater than ``sensor_dimension``
+           parameter by 0.001.
+
+       **layer_thicknesses** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Layer thicknesses (m) to use for microstructure simulations.
+           The default is ``None``, in which case
+           ``MachineConstants.DEFAULT_LAYER_THICKNESS`` is used.
+           For more information, see the
+           :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`
+           class.
+
+       **heater_temperatures** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Heater temperatures (C) to use for microstructure simulations.
+           The default is ``None``, in which case
+           ``MachineConstants.DEFAULT_HEATER_TEMP`` is used.
+           For more information, see the
+           :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
+
+       **beam_diameters** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Beam diameters (m) to use for microstructure simulations. The default is
+           ``None``, in which case ``MachineConstants.DEFAULT_BEAM_DIAMETER`` is used.
+           For more information, see the
+           :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
+
+       **start_angles** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Scan angles (deg) for the first layer to use for microstructure simulations.
+           The default is ``None``, in which case ``MachineConstants.DEFAULT_STARTING_LAYER_ANGLE``
+           is used. For more information, see the
+           :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>` class.
+
+       **rotation_angles** : :class:`python:list`\[:class:`python:float`], :data:`python:None`
+           Angles (deg) by which the scan direction is rotated with each layer
+           to use for microstructure simulations.
+           If None, ``MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE`` is used.
+           See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
+
+       **hatch_spacings** : :class:`python:list`\[:class:`python:float`] | :data:`python:None`
+           Hatch spacings (m) to use for microstructure simulations.
+           If None, ``MachineConstants.DEFAULT_HATCH_SPACING`` is used.
+           See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
+
+       **stripe_widths** : :class:`python:list`\[:class:`python:float`] | :data:`python:None`
+           Stripe widths (m) to use for microstructure simulations.
+           If None, ``MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH`` is used.
+           See :class:`MachineConstants <from ansys.additive.core.machine.MachineConstants>`.
+
+       **min_energy_density** : :class:`python:float` | :data:`python:None`
+           The minimum energy density (J/m^3) to use for microstructure simulations.
+           Parameter combinations with an area energy density below this value will
+           not be included.
+           Area energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
+
+       **max_energy_density** : :class:`python:float` | :data:`python:None`
+           The maximum energy density (J/m^3) to use for microstructure simulations.
+           Parameter combinations with an area energy density above this value will
+           not be included.
+           Energy density is defined as laser power / (layer thickness * scan speed * hatch spacing).
+
+       **min_build_rate** : :class:`python:float` | :data:`python:None`
+           The minimum build rate (m^3/s) to use for microstructure simulations.
+           Parameter combinations with a build rate below this value will
+           not be included.
+           Build rate is defined as layer thickness * scan speed * hatch spacing.
+
+       **max_build_rate** : :class:`python:float` | :data:`python:None`
+           The maximum build rate (m^3/s) to use for microstructure simulations.
+           Parameter combinations with a build rate above this value will
+           not be included.
+           Build rate is defined as layer thickness * scan speed * hatch spacing.
+
+       **cooling_rate** : :class:`python:float` | :data:`python:None`
+           The cooling rate (K/s) to use for microstructure simulations.
+           If None, and ``thermal_gradient``, ``melt_pool_width``, and ``melt_pool_depth``
+           are None, it will be calculated. If None and any of the other three parameters
+           are not None, it will be set to ``MicrostructureInput.DEFAULT_COOLING_RATE``.
+           See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
+
+       **thermal_gradient** : :class:`python:float` | :data:`python:None`
+           The thermal gradient (K/m) to use for microstructure simulations.
+           If None, and ``cooling_rate``, ``melt_pool_width``, and ``melt_pool_depth``
+           are None, it will be calculated. If None and any of the other three parameters
+           are not None, it will be set to ``MicrostructureInput.DEFAULT_THERMAL_GRADIENT``.
+           See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
+
+       **melt_pool_width** : :class:`python:float` | :data:`python:None`
+           The melt pool width (m) to use for microstructure simulations.
+           If None, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_depth``
+           are None, it will be calculated. If None and any of the other three parameters
+           are not None, it will be set to ``MicrostructureInput.DEFAULT_MELT_POOL_WIDTH``.
+           See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
+
+       **melt_pool_depth** : :class:`python:float` | :data:`python:None`
+           The melt pool depth (m) to use for microstructure simulations.
+           If None, and ``cooling_rate``, ``thermal_gradient``, and ``melt_pool_width``
+           are None, it will be calculated. If None and any of the other three parameters
+           are not None, it will be set to ``MicrostructureInput.DEFAULT_MELT_POOL_DEPTH``.
+           See :class:`MicrostructureInput <from ansys.additive.core.machine.MicrostructureInput>`.
+
+       **random_seed** : :class:`python:int` | :data:`python:None`
+           The random seed to use for microstructure simulations. If None,
+           an automatically generated random seed will be used.
+           Valid values are between 1 and 2^31 - 1.
+
+       **iteration** : :class:`python:int`, :obj:`optional`
+           The iteration number for this set of simulations.
+
+       **priority** : :class:`python:int`, :obj:`optional`
+           The priority for this set of simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: update(summaries: list[ansys.additive.core.SingleBeadSummary | ansys.additive.core.PorositySummary | ansys.additive.core.MicrostructureSummary])
+
+   
+   Update the results of simulations in the parametric study.
+
+   This method updates values for existing simulations in the parametric study. To add
+   completed simulations, use the :meth:`add_summaries` method instead.
+
+   :Parameters:
+
+       **summaries** : :class:`python:list`\[:obj:`SingleBeadSummary` | :obj:`PorositySummary` | :obj:`MicrostructureSummary` | :obj:`SimulationError`]
+           List of simulation summaries to use for updating the parametric study.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: add_inputs(inputs: list[ansys.additive.core.SingleBeadInput | ansys.additive.core.PorosityInput | ansys.additive.core.MicrostructureInput], iteration: int = DEFAULT_ITERATION, priority: int = DEFAULT_PRIORITY, status: ansys.additive.core.SimulationStatus = SimulationStatus.PENDING)
+
+   
+   Add new simulations to the parametric study.
+
+
+   :Parameters:
+
+       **inputs** : :class:`python:list`\[:obj:`SingleBeadInput` | :obj:`PorosityInput` | :obj:`MicrostructureInput`]
+           List of simulation inputs to add to the parametric study.
+
+       **iteration** : :class:`python:int`, :obj:`DEFAULT_ITERATION`
+           Iteration number for the simulation inputs.
+
+       **priority** : :class:`python:int`, :obj:`DEFAULT_PRIORITY`
+           Priority for the simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: remove(ids: str | list[str])
+
+   
+   Remove simulations from the parametric study.
+
+
+   :Parameters:
+
+       **ids** : :class:`python:str` | :class:`python:list`\[:class:`python:str`]
+           One or more ID field values for the rows to remove.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: set_status(ids: str | list[str], status: ansys.additive.core.SimulationStatus)
+
+   
+   Set the status of simulations in the parametric study.
+
+
+   :Parameters:
+
+       **ids** : :class:`python:str` | :class:`python:list`\[:class:`python:str`]
+           One or more IDs of the simulations to update.
+
+       **status** : :obj:`SimulationStatus`
+           Status for the simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: set_priority(ids: str | list[str], priority: int)
+
+   
+   Set the priority of simulations in the parametric study.
+
+
+   :Parameters:
+
+       **ids** : :class:`python:str` | :class:`python:list`\[:class:`python:str`]
+           One or more IDs of the simulations to update.
+
+       **priority** : :class:`python:int`
+           Priority for the simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: set_iteration(ids: str | list[str], iteration: int)
+
+   
+   Set the iteration of simulations in the parametric study.
+
+
+   :Parameters:
+
+       **ids** : :class:`python:str` | :class:`python:list`\[:class:`python:str`]
+           One or more IDs of the simulations to update.
+
+       **iteration** : :class:`python:int`
+           Iteration for the simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: clear()
+
+   
+   Remove all permutations from the parametric study.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+

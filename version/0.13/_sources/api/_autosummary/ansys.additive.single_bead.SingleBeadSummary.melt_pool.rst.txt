@@ -1,0 +1,6 @@
+melt\_pool
+==========
+
+.. currentmodule:: ansys.additive.single_bead
+
+.. autoproperty:: SingleBeadSummary.melt_pool

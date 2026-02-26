@@ -1,0 +1,810 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Single Bead Analysis &#8212; PyAdditive 0.13.0 documentation</title>
+    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/ansys_sphinx_theme.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    
+        <link href="../../_static/css/breadcrumbs.css" rel="stylesheet">
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/thebelab-helper.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/table.js"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/gallery_examples/00_additive_single_bead';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://additive.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.13';
+        </script>
+    <link rel="icon" href="../../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Porosity Analysis" href="01_additive_porosity.html" />
+    <link rel="prev" title="Examples" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <link rel="canonical" href="https://additive.docs.pyansys.com/version/stable/examples/gallery_examples/00_additive_single_bead.html" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container"><!-- Debugging: html_theme_options =  -->
+
+  <!-- If there is no MiliSearch enabled, use the PyData search -->
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</div>
+  </div>
+  
+    
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/pyansys-logo-black-cropped.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../_static/pyansys-logo-black-cropped.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button type="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown">
+      0.13  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div class="version-switcher__menu dropdown-menu list-group-flush py-0">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys-internal/pyadditive" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys-internal/pyadditive/discussions" title="Support" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa fa-comment fa-fw"></i></span>
+            <label class="sr-only">Support</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+
+    
+    <div id="announcement_msg"></div>
+<script>
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(text => document.getElementById("announcement_msg").innerHTML = text)
+    .catch((error) => console.error(`Fetch problem: ${error.message}`));
+</script>
+    
+
+    
+    <div class="container-xl">
+    <div class="row">
+        <div class="col-12 col-md-3" id="breadcrumbs-spacer"></div>
+        <div class="col-12 col-md-11 col-xl-9" id="breadcrumbs">
+          
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+    
+        <li class="nav-item nav-item-additional-breadcrumb"><a href="https://docs.pyansys.com/">PyAnsys</a> » </li>
+    
+    
+        <li class="nav-item nav-item-0"><a href="../../index.html">PyAdditive 0.13.0 documentation</a> » </li>
+    
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> » </li>
+        <li class="nav-item nav-item-this"><a href="">Single Bead Analysis</a></li> 
+      </ul>
+    </div>
+        </div>
+  </div>
+</div>
+    
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button type="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown">
+      0.13  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div class="version-switcher__menu dropdown-menu list-group-flush py-0">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys-internal/pyadditive" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys-internal/pyadditive/discussions" title="Support" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa fa-comment fa-fw"></i></span>
+            <label class="sr-only">Support</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Single Bead Analysis</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01_additive_porosity.html">Porosity Analysis</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="02_additive_microstructure.html">Microstructure Analysis</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03_additive_thermal_history.html">Thermal History Analysis</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="04_additive_doe.html">Design Of Experiments</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="05_advanced_optimization_workflow.html">Optimization Workflow Analysis</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="06_advanced_custom_material_tuning.html">Custom Material Tuning</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07_using_a_custom_material.html">Using A Custom Material</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-examples-gallery-examples-00-additive-single-bead-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="single-bead-analysis">
+<span id="sphx-glr-examples-gallery-examples-00-additive-single-bead-py"></span><h1>Single Bead Analysis<a class="headerlink" href="#single-bead-analysis" title="Permalink to this heading">#</a></h1>
+<p>This tutorial shows how you can use PyAdditive to determine
+meltpool characteristics for given material and machine
+parameter combinations.</p>
+<p>Units are SI (m, kg, s, K) unless otherwise noted.</p>
+<p>First, connect to the Additive service.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ansys.additive</span> <span class="k">as</span> <span class="nn">pyadditive</span>
+
+<span class="n">additive</span> <span class="o">=</span> <span class="n">pyadditive</span><span class="o">.</span><span class="n">Additive</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2023-07-17 20:39:09 Connected to localhost:50052
+user data path: /home/runner/.local/share/ansys-pyadditive
+</pre></div>
+</div>
+<section id="select-material">
+<h2>Select Material<a class="headerlink" href="#select-material" title="Permalink to this heading">#</a></h2>
+<p>The next step is a to choose a material. A list of available materials can
+be obtained using the
+<a class="reference internal" href="../../api/_autosummary/ansys.additive.additive.Additive.get_materials_list.html#ansys.additive.additive.Additive.get_materials_list" title="ansys.additive.additive.Additive.get_materials_list"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_materials_list()</span></code></a>
+command.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">additive</span><span class="o">.</span><span class="n">get_materials_list</span><span class="p">())</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>names: &quot;Ti64&quot;
+names: &quot;IN625&quot;
+names: &quot;CoCr&quot;
+names: &quot;Al357&quot;
+names: &quot;AlSi10Mg&quot;
+names: &quot;IN718&quot;
+names: &quot;316L&quot;
+names: &quot;17-4PH&quot;
+</pre></div>
+</div>
+<p>Obtain the parameters for a single material by passing one of the names
+from the materials list to
+<a class="reference internal" href="../../api/_autosummary/ansys.additive.additive.Additive.get_material.html#ansys.additive.additive.Additive.get_material" title="ansys.additive.additive.Additive.get_material"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_material()</span></code></a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">material</span> <span class="o">=</span> <span class="n">additive</span><span class="o">.</span><span class="n">get_material</span><span class="p">(</span><span class="s2">&quot;17-4PH&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="set-machine-parameters">
+<h2>Set Machine Parameters<a class="headerlink" href="#set-machine-parameters" title="Permalink to this heading">#</a></h2>
+<p>Specify machine parameters by first creating an
+<a class="reference internal" href="../../api/_autosummary/ansys.additive.machine.AdditiveMachine.html#ansys.additive.machine.AdditiveMachine" title="ansys.additive.machine.AdditiveMachine"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdditiveMachine</span></code></a> object
+then assigning the desired values. All values are in SI units (m, kg, s, K)
+unless otherwise noted.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">machine</span> <span class="o">=</span> <span class="n">pyadditive</span><span class="o">.</span><span class="n">AdditiveMachine</span><span class="p">()</span>
+
+<span class="c1"># Show available parameters</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">machine</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>AdditiveMachine
+laser_power: 195 W
+scan_speed: 1.0 m/s
+heater_temperature: 80 °C
+layer_thickness: 5e-05 m
+beam_diameter: 0.0001 m
+starting_layer_angle: 57 °
+layer_rotation_angle: 67 °
+hatch_spacing: 0.0001 m
+slicing_stripe_width: 0.01 m
+</pre></div>
+</div>
+<p>Set laser power and scan speed</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">machine</span><span class="o">.</span><span class="n">scan_speed</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># m/s</span>
+<span class="n">machine</span><span class="o">.</span><span class="n">laser_power</span> <span class="o">=</span> <span class="mi">300</span>  <span class="c1"># W</span>
+</pre></div>
+</div>
+</section>
+<section id="specify-single-bead-simulation-inputs">
+<h2>Specify Single Bead Simulation Inputs<a class="headerlink" href="#specify-single-bead-simulation-inputs" title="Permalink to this heading">#</a></h2>
+<p>Create a <a class="reference internal" href="../../api/_autosummary/ansys.additive.single_bead.SingleBeadInput.html#ansys.additive.single_bead.SingleBeadInput" title="ansys.additive.single_bead.SingleBeadInput"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleBeadInput</span></code></a>
+object containing the desired simulation parameters.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">input</span> <span class="o">=</span> <span class="n">pyadditive</span><span class="o">.</span><span class="n">SingleBeadInput</span><span class="p">(</span>
+    <span class="n">machine</span><span class="o">=</span><span class="n">machine</span><span class="p">,</span> <span class="n">material</span><span class="o">=</span><span class="n">material</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;single-bead-example&quot;</span><span class="p">,</span> <span class="n">bead_length</span><span class="o">=</span><span class="mf">0.0012</span>  <span class="c1"># meters</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="run-simulation">
+<h2>Run Simulation<a class="headerlink" href="#run-simulation" title="Permalink to this heading">#</a></h2>
+<p>Use the <a class="reference internal" href="../../api/_autosummary/ansys.additive.additive.Additive.simulate.html#ansys.additive.additive.Additive.simulate" title="ansys.additive.additive.Additive.simulate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">simulate()</span></code></a>
+method of the <code class="docutils literal notranslate"><span class="pre">additive</span></code> object to run the simulation. The returned object is a
+<a class="reference internal" href="../../api/_autosummary/ansys.additive.single_bead.SingleBeadSummary.html#ansys.additive.single_bead.SingleBeadSummary" title="ansys.additive.single_bead.SingleBeadSummary"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleBeadSummary</span></code></a>
+containing the input and a
+<a class="reference internal" href="../../api/_autosummary/ansys.additive.single_bead.MeltPool.html#ansys.additive.single_bead.MeltPool" title="ansys.additive.single_bead.MeltPool"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeltPool</span></code></a> object.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="n">additive</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="plot-melt-pool-statistics">
+<h2>Plot Melt Pool Statistics<a class="headerlink" href="#plot-melt-pool-statistics" title="Permalink to this heading">#</a></h2>
+<p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">DataFrame</span></code></a> containing the melt pool
+statistics can be obtained using the
+<a class="reference internal" href="../../api/_autosummary/ansys.additive.single_bead.MeltPool.data_frame.html#ansys.additive.single_bead.MeltPool.data_frame" title="ansys.additive.single_bead.MeltPool.data_frame"><code class="xref py py-meth docutils literal notranslate"><span class="pre">data_frame()</span></code></a> property
+of the <code class="docutils literal notranslate"><span class="pre">melt_pool</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">summary</span></code> object. The
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.plot.html#pandas.DataFrame.plot" title="(in pandas v2.0.3)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code></a> method can be used to plot the melt
+pool dimensions as a function of bead length.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a> <span class="o">=</span> <span class="n">summary</span><span class="o">.</span><span class="n">melt_pool</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="mf">1e6</span><span class="p">)</span>  <span class="c1"># convert from meters to microns</span>
+<a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="pandas.core.indexes.base.Index" class="sphx-glr-backref-module-pandas-core-indexes-base sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span><span class="o">.</span><span class="n">index</span></a> <span class="o">*=</span> <span class="mf">1e3</span>  <span class="c1"># convert bead length from meters to millimeters</span>
+
+<a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="s2">&quot;depth&quot;</span><span class="p">,</span> <span class="s2">&quot;reference_width&quot;</span><span class="p">,</span> <span class="s2">&quot;reference_depth&quot;</span><span class="p">],</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Melt Pool Dimensions (µm)&quot;</span><span class="p">,</span>
+    <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Bead Length (mm)&quot;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Melt Pool Dimensions vs Bead Length&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_00_additive_single_bead_001.png" srcset="../../_images/sphx_glr_00_additive_single_bead_001.png" alt="Melt Pool Dimensions vs Bead Length" class = "sphx-glr-single-img"/><p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot: title={&#39;center&#39;: &#39;Melt Pool Dimensions vs Bead Length&#39;}, xlabel=&#39;Bead Length (mm)&#39;, ylabel=&#39;Melt Pool Dimensions (µm)&#39;&gt;
+</pre></div>
+</div>
+</section>
+<section id="list-melt-pool-statistics">
+<h2>List Melt Pool Statistics<a class="headerlink" href="#list-melt-pool-statistics" title="Permalink to this heading">#</a></h2>
+<p>A table of the melt pool statistics can be obtained using a
+<a class="reference external" href="https://pandas.pydata.org/docs/user_guide/style.html">Pandas Styler</a>.
+Here we show only the first few rows using <code class="docutils literal notranslate"><span class="pre">head()</span></code> for brevity.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.head.html#pandas.DataFrame.head" title="pandas.DataFrame.head" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-method"><span class="n">df</span><span class="o">.</span><span class="n">head</span></a><span class="p">()</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:.2f}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format_index</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:.2f}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="output_subarea output_html rendered_html output_result">
+<style type="text/css">
+</style>
+<table id="T_73b65">
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_73b65_level0_col0" class="col_heading level0 col0" >length</th>
+      <th id="T_73b65_level0_col1" class="col_heading level0 col1" >width</th>
+      <th id="T_73b65_level0_col2" class="col_heading level0 col2" >depth</th>
+      <th id="T_73b65_level0_col3" class="col_heading level0 col3" >reference_width</th>
+      <th id="T_73b65_level0_col4" class="col_heading level0 col4" >reference_depth</th>
+    </tr>
+    <tr>
+      <th class="index_name level0" >bead_length</th>
+      <th class="blank col0" >&nbsp;</th>
+      <th class="blank col1" >&nbsp;</th>
+      <th class="blank col2" >&nbsp;</th>
+      <th class="blank col3" >&nbsp;</th>
+      <th class="blank col4" >&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_73b65_level0_row0" class="row_heading level0 row0" >0.00</th>
+      <td id="T_73b65_row0_col0" class="data row0 col0" >87.65</td>
+      <td id="T_73b65_row0_col1" class="data row0 col1" >89.03</td>
+      <td id="T_73b65_row0_col2" class="data row0 col2" >28.72</td>
+      <td id="T_73b65_row0_col3" class="data row0 col3" >0.00</td>
+      <td id="T_73b65_row0_col4" class="data row0 col4" >0.00</td>
+    </tr>
+    <tr>
+      <th id="T_73b65_level0_row1" class="row_heading level0 row1" >0.02</th>
+      <td id="T_73b65_row1_col0" class="data row1 col0" >118.64</td>
+      <td id="T_73b65_row1_col1" class="data row1 col1" >110.63</td>
+      <td id="T_73b65_row1_col2" class="data row1 col2" >54.16</td>
+      <td id="T_73b65_row1_col3" class="data row1 col3" >20.38</td>
+      <td id="T_73b65_row1_col4" class="data row1 col4" >4.16</td>
+    </tr>
+    <tr>
+      <th id="T_73b65_level0_row2" class="row_heading level0 row2" >0.04</th>
+      <td id="T_73b65_row2_col0" class="data row2 col0" >137.63</td>
+      <td id="T_73b65_row2_col1" class="data row2 col1" >121.14</td>
+      <td id="T_73b65_row2_col2" class="data row2 col2" >82.13</td>
+      <td id="T_73b65_row2_col3" class="data row2 col3" >56.82</td>
+      <td id="T_73b65_row2_col4" class="data row2 col4" >32.13</td>
+    </tr>
+    <tr>
+      <th id="T_73b65_level0_row3" class="row_heading level0 row3" >0.06</th>
+      <td id="T_73b65_row3_col0" class="data row3 col0" >158.90</td>
+      <td id="T_73b65_row3_col1" class="data row3 col1" >127.86</td>
+      <td id="T_73b65_row3_col2" class="data row3 col2" >105.45</td>
+      <td id="T_73b65_row3_col3" class="data row3 col3" >72.04</td>
+      <td id="T_73b65_row3_col4" class="data row3 col4" >55.45</td>
+    </tr>
+    <tr>
+      <th id="T_73b65_level0_row4" class="row_heading level0 row4" >0.08</th>
+      <td id="T_73b65_row4_col0" class="data row4 col0" >178.04</td>
+      <td id="T_73b65_row4_col1" class="data row4 col1" >132.89</td>
+      <td id="T_73b65_row4_col2" class="data row4 col2" >118.87</td>
+      <td id="T_73b65_row4_col3" class="data row4 col3" >80.92</td>
+      <td id="T_73b65_row4_col4" class="data row4 col4" >68.87</td>
+    </tr>
+  </tbody>
+</table>
+
+</div>
+<br />
+<br /></section>
+<section id="save-melt-pool-statistics">
+<h2>Save Melt Pool Statistics<a class="headerlink" href="#save-melt-pool-statistics" title="Permalink to this heading">#</a></h2>
+<p>The melt pool statistics can be saved to a CSV file using the
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_csv.html#pandas.DataFrame.to_csv" title="(in pandas v2.0.3)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_csv()</span></code></a> method.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_csv.html#pandas.DataFrame.to_csv" title="pandas.DataFrame.to_csv" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-method"><span class="n">df</span><span class="o">.</span><span class="n">to_csv</span></a><span class="p">(</span><span class="s2">&quot;melt_pool.csv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  44.374 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-examples-gallery-examples-00-additive-single-bead-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/d0acd0c48684661518846c922aef70d1/00_additive_single_bead.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">00_additive_single_bead.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/42cb3855375a8167a39f4e41d1498a64/00_additive_single_bead.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">00_additive_single_bead.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#select-material">Select Material</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-machine-parameters">Set Machine Parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-single-bead-simulation-inputs">Specify Single Bead Simulation Inputs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-simulation">Run Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-melt-pool-statistics">Plot Melt Pool Statistics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#list-melt-pool-statistics">List Melt Pool Statistics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#save-melt-pool-statistics">Save Melt Pool Statistics</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/ansys-internal/pyadditive/edit/main/doc/source/examples/gallery_examples/00_additive_single_bead.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright (c) 2023 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+    Built with the <a href="https://sphinxdocs.ansys.com/version/stable/index.html">Ansys Sphinx Theme</a> 0.9.9.
+    <br>Last updated on <span id="date"></span></br>
+</p>
+<script>
+  var options = { day: 'numeric', month: 'long', year: 'numeric' };
+  var lastModifiedDate = new Date(document.lastModified);
+  var date = lastModifiedDate.toLocaleDateString('en-US', options);
+  document.getElementById("date").innerHTML = date;
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

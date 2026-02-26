@@ -1,0 +1,216 @@
+
+
+
+
+
+
+:class:`CoaxialAverageSensorInputs`
+===================================
+
+
+.. py:class:: ansys.additive.core.thermal_history.CoaxialAverageSensorInputs(radius: float = MIN_SENSOR_RADIUS, z_heights: list[Range] = None)
+
+   
+   Provides descriptions for coaxial average sensors.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. py:currentmodule:: CoaxialAverageSensorInputs
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~radius`
+            - Radius of the circular field of the view of the sensor (m).
+          * - :py:attr:`~z_heights`
+            - Array of ranges along the z axis of the geometry (m).
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~MIN_SENSOR_RADIUS`
+            - Minimum radius for the circular field of view of the sensor (m).
+          * - :py:attr:`~MAX_SENSOR_RADIUS`
+            - Maximum radius for the circular field of view of the sensor (m).
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+          * - :py:attr:`~__eq__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.thermal_history import CoaxialAverageSensorInputs
+
+Property detail
+---------------
+
+.. py:property:: radius
+   :type: float
+
+
+   
+   Radius of the circular field of the view of the sensor (m).
+
+   Valid values are from the :obj:`MIN_SENSOR_RADIUS` value to the
+   :obj:`MAX_SENSOR_RADIUS` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: z_heights
+   :type: list[Range]
+
+
+   
+   Array of ranges along the z axis of the geometry (m).
+
+   The simulated sensor follows the scan path for each deposit layer within each
+   range.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: MIN_SENSOR_RADIUS
+   :value: 5e-05
+
+
+   
+   Minimum radius for the circular field of view of the sensor (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_SENSOR_RADIUS
+   :value: 0.015
+
+
+   
+   Maximum radius for the circular field of view of the sensor (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+.. py:method:: __eq__(other: object) -> bool
+
+
+
+

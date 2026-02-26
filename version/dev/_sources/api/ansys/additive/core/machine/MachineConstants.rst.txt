@@ -1,0 +1,1097 @@
+
+
+
+
+
+
+:class:`MachineConstants`
+=========================
+
+
+.. py:class:: ansys.additive.core.machine.MachineConstants
+
+   
+   Provides constants for additive manufacturing machine settings.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: MachineConstants
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_LASER_POWER`
+            - Default laser power (W).
+          * - :py:attr:`~MIN_LASER_POWER`
+            - Minimum laser power (W).
+          * - :py:attr:`~MAX_LASER_POWER`
+            - Maximum laser power (W).
+          * - :py:attr:`~DEFAULT_SCAN_SPEED`
+            - Default scan speed (m/s).
+          * - :py:attr:`~MIN_SCAN_SPEED`
+            - Minimum scan speed (m/s).
+          * - :py:attr:`~MAX_SCAN_SPEED`
+            - Maximum scan speed (m/s).
+          * - :py:attr:`~DEFAULT_HEATER_TEMP`
+            - Default heater temperature (C).
+          * - :py:attr:`~MIN_HEATER_TEMP`
+            - Minimum heater temperature (C).
+          * - :py:attr:`~MAX_HEATER_TEMP`
+            - Maximum heater temperature (C).
+          * - :py:attr:`~DEFAULT_LAYER_THICKNESS`
+            - Default layer thickness (m).
+          * - :py:attr:`~MIN_LAYER_THICKNESS`
+            - Minimum layer thickness (m).
+          * - :py:attr:`~MAX_LAYER_THICKNESS`
+            - Maximum layer thickness (m).
+          * - :py:attr:`~DEFAULT_BEAM_DIAMETER`
+            - Default beam diameter (m).
+          * - :py:attr:`~MIN_BEAM_DIAMETER`
+            - Minimum beam diameter (m).
+          * - :py:attr:`~MAX_BEAM_DIAMETER`
+            - Maximum beam diameter (m).
+          * - :py:attr:`~DEFAULT_STARTING_LAYER_ANGLE`
+            - Default starting layer angle (degrees).
+          * - :py:attr:`~MIN_STARTING_LAYER_ANGLE`
+            - Minimum starting layer angle (degrees).
+          * - :py:attr:`~MAX_STARTING_LAYER_ANGLE`
+            - Maximum starting layer angle (degrees).
+          * - :py:attr:`~DEFAULT_LAYER_ROTATION_ANGLE`
+            - Default layer rotation angle (degrees).
+          * - :py:attr:`~MIN_LAYER_ROTATION_ANGLE`
+            - Minimum layer rotation angle (degrees).
+          * - :py:attr:`~MAX_LAYER_ROTATION_ANGLE`
+            - Maximum layer rotation angle (degrees).
+          * - :py:attr:`~DEFAULT_HATCH_SPACING`
+            - Default hatch spacing (m).
+          * - :py:attr:`~MIN_HATCH_SPACING`
+            - Minimum hatch spacing (m).
+          * - :py:attr:`~MAX_HATCH_SPACING`
+            - Maximum hatch spacing (m).
+          * - :py:attr:`~DEFAULT_SLICING_STRIPE_WIDTH`
+            - Default slicing stripe width (m).
+          * - :py:attr:`~MIN_SLICING_STRIPE_WIDTH`
+            - Minimum slicing stripe width (m).
+          * - :py:attr:`~MAX_SLICING_STRIPE_WIDTH`
+            - Maximum slicing stripe width (m).
+          * - :py:attr:`~HEAT_SOURCE_MODEL_NAME_GAUSSIAN`
+            - Heat source model name for a Gaussian heat source.
+          * - :py:attr:`~HEAT_SOURCE_MODEL_NAME_RING`
+            - Heat source model name for a Ring Mode heat source.
+          * - :py:attr:`~HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS`
+            - Heat source model name for a Dynamic Defocus heat source.
+          * - :py:attr:`~DEFAULT_HEAT_SOURCE_MODEL_NAME`
+            - Default heat source model type used in simulations.
+          * - :py:attr:`~AVAILABLE_HEAT_SOURCE_MODELS`
+            - List of available heat source model types: [:obj:`HEAT_SOURCE_MODEL_NAME_GAUSSIAN <HEAT_SOURCE_MODEL_NAME_GAUSSIAN>`, :obj:`HEAT_SOURCE_MODEL_NAME_RING <HEAT_SOURCE_MODEL_NAME_RING>`]
+          * - :py:attr:`~DEFAULT_RING_MODE_INDEX`
+            - Default ring mode index (only applicable for ring heat source).
+          * - :py:attr:`~MIN_RING_MODE_INDEX`
+            - Minimum ring mode index.
+          * - :py:attr:`~MAX_RING_MODE_INDEX`
+            - Maximum ring mode index.
+          * - :py:attr:`~DEFAULT_DEFOCUS`
+            - Default defocus (m) (only applicable for dynamic defocus heat source).
+          * - :py:attr:`~MIN_DEFOCUS`
+            - Minimum defocus (m).
+          * - :py:attr:`~MAX_DEFOCUS`
+            - Maximum defocus (m).
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.machine import MachineConstants
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: DEFAULT_LASER_POWER
+   :value: 195.0
+
+
+   
+   Default laser power (W).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_LASER_POWER
+   :value: 50.0
+
+
+   
+   Minimum laser power (W).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_LASER_POWER
+   :value: 700.0
+
+
+   
+   Maximum laser power (W).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_SCAN_SPEED
+   :value: 1.0
+
+
+   
+   Default scan speed (m/s).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_SCAN_SPEED
+   :value: 0.35
+
+
+   
+   Minimum scan speed (m/s).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_SCAN_SPEED
+   :value: 2.5
+
+
+   
+   Maximum scan speed (m/s).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_HEATER_TEMP
+   :value: 80.0
+
+
+   
+   Default heater temperature (C).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_HEATER_TEMP
+   :value: 20.0
+
+
+   
+   Minimum heater temperature (C).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_HEATER_TEMP
+   :value: 500.0
+
+
+   
+   Maximum heater temperature (C).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_LAYER_THICKNESS
+   :value: 5e-05
+
+
+   
+   Default layer thickness (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_LAYER_THICKNESS
+   :value: 1e-05
+
+
+   
+   Minimum layer thickness (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_LAYER_THICKNESS
+   :value: 0.0001
+
+
+   
+   Maximum layer thickness (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_BEAM_DIAMETER
+   :value: 0.0001
+
+
+   
+   Default beam diameter (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_BEAM_DIAMETER
+   :value: 2e-05
+
+
+   
+   Minimum beam diameter (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_BEAM_DIAMETER
+   :value: 0.00014
+
+
+   
+   Maximum beam diameter (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_STARTING_LAYER_ANGLE
+   :value: 57
+
+
+   
+   Default starting layer angle (degrees).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_STARTING_LAYER_ANGLE
+   :value: 0
+
+
+   
+   Minimum starting layer angle (degrees).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_STARTING_LAYER_ANGLE
+   :value: 180
+
+
+   
+   Maximum starting layer angle (degrees).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_LAYER_ROTATION_ANGLE
+   :value: 67
+
+
+   
+   Default layer rotation angle (degrees).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_LAYER_ROTATION_ANGLE
+   :value: 0
+
+
+   
+   Minimum layer rotation angle (degrees).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_LAYER_ROTATION_ANGLE
+   :value: 180
+
+
+   
+   Maximum layer rotation angle (degrees).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_HATCH_SPACING
+   :value: 0.0001
+
+
+   
+   Default hatch spacing (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_HATCH_SPACING
+   :value: 6e-05
+
+
+   
+   Minimum hatch spacing (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_HATCH_SPACING
+   :value: 0.0002
+
+
+   
+   Maximum hatch spacing (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_SLICING_STRIPE_WIDTH
+   :value: 0.01
+
+
+   
+   Default slicing stripe width (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_SLICING_STRIPE_WIDTH
+   :value: 0.001
+
+
+   
+   Minimum slicing stripe width (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_SLICING_STRIPE_WIDTH
+   :value: 0.1
+
+
+   
+   Maximum slicing stripe width (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: HEAT_SOURCE_MODEL_NAME_GAUSSIAN
+   :value: 'gaussian'
+
+
+   
+   Heat source model name for a Gaussian heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: HEAT_SOURCE_MODEL_NAME_RING
+   :value: 'ring'
+
+
+   
+   Heat source model name for a Ring Mode heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS
+   :value: 'dynamic_defocus'
+
+
+   
+   Heat source model name for a Dynamic Defocus heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_HEAT_SOURCE_MODEL_NAME
+   :value: 'gaussian'
+
+
+   
+   Default heat source model type used in simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: AVAILABLE_HEAT_SOURCE_MODELS
+   :type:  list[str]
+
+   
+   List of available heat source model types: [:obj:`HEAT_SOURCE_MODEL_NAME_GAUSSIAN <HEAT_SOURCE_MODEL_NAME_GAUSSIAN>`, :obj:`HEAT_SOURCE_MODEL_NAME_RING <HEAT_SOURCE_MODEL_NAME_RING>`]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_RING_MODE_INDEX
+   :value: 0
+
+
+   
+   Default ring mode index (only applicable for ring heat source).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_RING_MODE_INDEX
+   :value: 0
+
+
+   
+   Minimum ring mode index.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_RING_MODE_INDEX
+   :value: 6
+
+
+   
+   Maximum ring mode index.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_DEFOCUS
+   :value: 0.0
+
+
+   
+   Default defocus (m) (only applicable for dynamic defocus heat source).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_DEFOCUS
+   :value: 0.0
+
+
+   
+   Minimum defocus (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_DEFOCUS
+   :value: 0.01
+
+
+   
+   Maximum defocus (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

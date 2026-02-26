@@ -1,0 +1,6 @@
+solid\_specific\_heat\_at\_room\_temperature
+============================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.solid_specific_heat_at_room_temperature

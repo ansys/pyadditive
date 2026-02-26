@@ -1,0 +1,92 @@
+
+
+
+
+MaterialTuningExampleInputFiles
+===============================
+
+.. py:class:: MaterialTuningExampleInputFiles(experiment_data_file: str, material_parameters_file: str, thermal_properties_lookup_file: str, characteristic_width_lookup_file: str)
+   :canonical: ansys.additive.core.examples.downloads.MaterialTuningExampleInputFiles
+
+
+
+
+Holds the example inputs for the material tuning process.
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: MaterialTuningExampleInputFiles
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~experiment_data_file`
+            - 
+          * - :py:attr:`~material_parameters_file`
+            - 
+          * - :py:attr:`~thermal_properties_lookup_file`
+            - 
+          * - :py:attr:`~characteristic_width_lookup_file`
+            - 
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.examples.downloads import MaterialTuningExampleInputFiles
+
+
+Property detail
+---------------
+.. py:property:: experiment_data_file
+   :canonical: ansys.additive.core.examples.downloads.MaterialTuningExampleInputFiles.experiment_data_file
+   :type: None
+
+
+
+.. py:property:: material_parameters_file
+   :canonical: ansys.additive.core.examples.downloads.MaterialTuningExampleInputFiles.material_parameters_file
+   :type: None
+
+
+
+.. py:property:: thermal_properties_lookup_file
+   :canonical: ansys.additive.core.examples.downloads.MaterialTuningExampleInputFiles.thermal_properties_lookup_file
+   :type: None
+
+
+
+.. py:property:: characteristic_width_lookup_file
+   :canonical: ansys.additive.core.examples.downloads.MaterialTuningExampleInputFiles.characteristic_width_lookup_file
+   :type: None
+
+
+
+
+
+
+

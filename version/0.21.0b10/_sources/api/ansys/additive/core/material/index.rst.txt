@@ -1,0 +1,120 @@
+
+
+
+
+
+
+The ``material.py`` module
+==========================
+
+.. py:module:: ansys.additive.core.material
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: material
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.material.MaterialConstants`
+            - Provides constants related to additive materials.
+
+
+          * - :py:obj:`~ansys.additive.core.material.CharacteristicWidthDataPoint`
+            - Provides the container for a characteristic width data point.
+
+
+          * - :py:obj:`~ansys.additive.core.material.ThermalPropertiesDataPoint`
+            - Provides the container for temperature-dependent properties.
+
+
+          * - :py:obj:`~ansys.additive.core.material.AdditiveMaterial`
+            - Provides the container for material properties used during additive manufacturing simulations.
+
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~RESERVED_MATERIAL_NAMES`
+            - 
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> MaterialConstants</api/ansys/additive/core/material/MaterialConstants>
+    <span class="nf nf-cod-symbol_class"></span> CharacteristicWidthDataPoint</api/ansys/additive/core/material/CharacteristicWidthDataPoint>
+    <span class="nf nf-cod-symbol_class"></span> ThermalPropertiesDataPoint</api/ansys/additive/core/material/ThermalPropertiesDataPoint>
+    <span class="nf nf-cod-symbol_class"></span> AdditiveMaterial</api/ansys/additive/core/material/AdditiveMaterial>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides a container for material parameters.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: RESERVED_MATERIAL_NAMES
+   :value: ['17-4PH', '316L', 'Al357', 'AlSi10Mg', 'CoCr', 'IN625', 'IN718', 'Ti64']
+
+
+
+

@@ -1,0 +1,418 @@
+
+
+
+
+
+The ``downloads.py`` module
+===========================
+
+.. py:module:: ansys.additive.core.examples.downloads
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: downloads
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~MaterialTuningExampleInputFiles`
+            - Container for the example material tuning process inputs.
+
+
+          * - :py:attr:`~CustomMaterialExampleFiles`
+            - Holds the files associated with a custom material definition.
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~delete_downloads`
+            - Delete all downloaded examples to free space or update the files.
+
+
+          * - :py:attr:`~decompress`
+            - Decompress a ZIP file to the ``examples`` directory.
+
+
+          * - :py:attr:`~download_10mm_cube`
+            - Download an STL file describing a 10-millimeter cube.
+
+
+          * - :py:attr:`~download_small_wedge_slm_build_file`
+            - Download an SLM build file for a small wedge part.
+
+
+          * - :py:attr:`~download_material_tuning_input`
+            - Download the input files for the material tuning example.
+
+
+          * - :py:attr:`~download_custom_material`
+            - Download the files describing a custom material.
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~EXAMPLES_URI`
+            - URI for the example data repository.
+
+
+          * - :py:attr:`~PARTS_FOLDER`
+            - Folder containing example parts.
+
+
+          * - :py:attr:`~BUILD_FILES_FOLDER`
+            - Folder containing example build files.
+
+
+          * - :py:attr:`~MATERIAL_TUNING_FOLDER`
+            - Folder containing example material tuning input files.
+
+
+          * - :py:attr:`~CUSTOM_MATERIAL_FOLDER`
+            - Folder containing example custom material data files.
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 MaterialTuningExampleInputFiles<MaterialTuningExampleInputFiles>
+    🝆 CustomMaterialExampleFiles<CustomMaterialExampleFiles>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides functions for downloading sample datasets from the PyAdditive repository.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: delete_downloads()
+
+   
+   Delete all downloaded examples to free space or update the files.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: decompress(filename, subdir=None) -> str
+
+   
+   Decompress a ZIP file to the ``examples`` directory.
+
+
+   :Parameters:
+
+       **filename** : :class:`python:str`
+           Name of the file.
+
+       **subdir** : :class:`python:str`, :data:`python:None`
+           Name of the subdirectory of the ``examples`` directory
+           to extract the ZIP file contents to. The default is ``None``.
+
+   :Returns:
+
+       :class:`python:str`
+           Path to the decompressed contents of the ZIP file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: download_10mm_cube()
+
+   
+   Download an STL file describing a 10-millimeter cube.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: download_small_wedge_slm_build_file()
+
+   
+   Download an SLM build file for a small wedge part.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: download_material_tuning_input() -> MaterialTuningExampleInputFiles
+
+   
+   Download the input files for the material tuning example.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: download_custom_material() -> CustomMaterialExampleFiles
+
+   
+   Download the files describing a custom material.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: EXAMPLES_URI
+   :value: 'https://github.com/ansys/example-data/raw/master'
+
+   
+   URI for the example data repository.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: PARTS_FOLDER
+   :value: 'pyadditive/part-only'
+
+   
+   Folder containing example parts.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: BUILD_FILES_FOLDER
+   :value: 'pyadditive/buildfiles'
+
+   
+   Folder containing example build files.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: MATERIAL_TUNING_FOLDER
+   :value: 'pyadditive/material_tuning_input'
+
+   
+   Folder containing example material tuning input files.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: CUSTOM_MATERIAL_FOLDER
+   :value: 'pyadditive/custom_material_data'
+
+   
+   Folder containing example custom material data files.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

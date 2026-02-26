@@ -1,0 +1,97 @@
+
+
+
+
+
+The ``single_bead_eval_plot.py`` module
+=======================================
+
+.. py:module:: ansys.additive.core.parametric_study.display.single_bead_eval_plot
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: single_bead_eval_plot
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~single_bead_eval_plot`
+            - Generate a contour plot of single bead results to determine parametric
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+
+.. py:function:: single_bead_eval_plot(ps: ansys.additive.core.parametric_study.ParametricStudy)
+
+   
+   Generate a contour plot of single bead results to determine parametric
+   regions with desirable melt pool statistics.
+
+
+   :Parameters:
+
+       **ps** : :class:`ParametricStudy <ansys.additive.core.parametric_study.ParametricStudy>`
+           Parametric study to plot.
+
+   :Returns:
+
+       :class: `panel.Row <panel.Row>`
+           Interactive plot.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

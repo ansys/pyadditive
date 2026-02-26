@@ -1,0 +1,6 @@
+use\_provided\_thermal\_parameters
+==================================
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoproperty:: MicrostructureInput.use_provided_thermal_parameters

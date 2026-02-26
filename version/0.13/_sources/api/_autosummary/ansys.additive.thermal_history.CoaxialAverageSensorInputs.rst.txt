@@ -1,0 +1,22 @@
+﻿CoaxialAverageSensorInputs
+==========================
+
+.. currentmodule:: ansys.additive.thermal_history
+
+.. autoclass:: CoaxialAverageSensorInputs
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   

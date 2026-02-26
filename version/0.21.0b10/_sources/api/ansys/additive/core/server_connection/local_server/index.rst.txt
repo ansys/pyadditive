@@ -1,0 +1,80 @@
+
+
+
+
+
+
+The ``local_server.py`` module
+==============================
+
+.. py:module:: ansys.additive.core.server_connection.local_server
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: local_server
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.server_connection.local_server.LocalServer`
+            - Provides startup utilities for a local Additive server.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> LocalServer</api/ansys/additive/core/server_connection/local_server/LocalServer>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides startup utilities for a local Additive server.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

@@ -1,0 +1,6 @@
+machine
+=======
+
+.. currentmodule:: ansys.additive.porosity
+
+.. autoproperty:: PorosityInput.machine

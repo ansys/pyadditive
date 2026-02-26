@@ -1,0 +1,6 @@
+layer\_rotation\_angle
+======================
+
+.. currentmodule:: ansys.additive.machine
+
+.. autoproperty:: AdditiveMachine.layer_rotation_angle

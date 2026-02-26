@@ -1,0 +1,813 @@
+
+
+
+
+
+
+:class:`Additive`
+=================
+
+
+.. py:class:: ansys.additive.core.additive.Additive(channel: grpc.Channel | None = None, host: str | None = None, port: int = DEFAULT_ADDITIVE_SERVICE_PORT, nsims_per_server: int = 1, product_version: str = DEFAULT_PRODUCT_VERSION, log_level: str = '', log_file: str = '', enable_beta_features: bool = False, linux_install_path: os.PathLike | None = None)
+
+   
+   Provides the client interface to one or more Additive services.
+
+
+   :Parameters:
+
+       **channel: grpc.Channel, default: None**
+           Server connection. If provided, it is assumed that the
+           :class:`grpc.Channel <grpc.Channel>` object is connected to the server.
+           Also, if provided, the ``host`` and ``port`` parameters are ignored.
+
+       **host: str, default: None**
+           Host name or IPv4 address of the server. This parameter is ignored if the
+           ``server_channels`` or ``channel`` parameters is other than ``None``.
+
+       **port: int, default: 50052**
+           Port number to use when connecting to the server.
+
+       **nsims_per_server: int, default: 1**
+           Number of simultaneous simulations to run on the server. Each simulation
+           requires a license checkout. If a license is not available, the simulation
+           fails.
+
+       **product_version: str**
+           Version of the Ansys product installation in the form ``"YYR"``, where ``YY``
+           is the two-digit year and ``R`` is the release number. For example, the release
+           2024 R1 would be specified as ``241``. This parameter is only applicable in
+           `PyPIM`_-enabled cloud environments and on localhost. Using an empty string
+           or ``None`` uses the default product version.
+
+       **log_level: str, default: ""**
+           Minimum severity level of messages to log. Valid values are "DEBUG", "INFO",
+           "WARNING", "ERROR", and "CRITICAL". The default value equates to "WARNING".
+
+       **log_file: str, default: ""**
+           File name to write log messages to.
+
+       **enable_beta_features: bool, default: False**
+           Flag indicating if beta features are enabled.
+
+       **linux_install_path: os.PathLike, None, default: None**
+           Path to the Ansys installation directory on Linux. This parameter is only
+           required when Ansys has not been installed in the default location. Example:
+           ``/usr/shared/ansys_inc``. Note that the path should not include the product
+           version.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   Connect to a list of servers. Multiple connections to the same host are permitted.
+
+   >>> additive = Additive(server_connections=["localhost:50052", "localhost:50052", "myserver:50052"])
+
+   Connect to a single server using the host name and port number.
+
+   >>> additive = Additive(host="additive.ansys.com", port=12345)
+
+   Start and connect to a server on localhost or in a
+   `PyPIM`_-enabled cloud environment. Allow two simultaneous
+   simulations on the server.
+
+   >>> additive = Additive(nsims_per_server=2)
+
+   Start a single server on localhost or in a `PyPIM`_-enabled cloud environment.
+   Use version 2024 R1 of the Ansys product installation.
+
+   >>> additive = Additive(product_version="241")
+
+   .. _PyPIM: https://pypim.docs.pyansys.com/version/stable/index.html
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: Additive
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~about`
+            - Return information about the client and server.
+          * - :py:attr:`~apply_server_settings`
+            - Apply settings to each server.
+          * - :py:attr:`~list_server_settings`
+            - Get a dictionary of settings for the server.
+          * - :py:attr:`~simulate`
+            - Execute additive simulations.
+          * - :py:attr:`~simulate_async`
+            - Execute additive simulations asynchronously. This method does not block while the
+          * - :py:attr:`~materials_list`
+            - Get a list of material names used in additive simulations.
+          * - :py:attr:`~material`
+            - Get a material for use in an additive simulation.
+          * - :py:attr:`~add_material`
+            - Add a custom material to the library for use in additive simulations.
+          * - :py:attr:`~remove_material`
+            - Remove a material from the server.
+          * - :py:attr:`~tune_material`
+            - Tune a custom material for use with additive simulations.
+          * - :py:attr:`~tune_material_async`
+            - Tune a custom material for use with additive simulations asynchronously.
+          * - :py:attr:`~simulate_study`
+            - Run the simulations in a parametric study.
+          * - :py:attr:`~simulate_study_async`
+            - Run the simulations in a parametric study asynchronously.
+          * - :py:attr:`~download_server_logs`
+            - Download server logs to a specified directory.
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~enable_beta_features`
+            - Flag indicating if beta features are enabled.
+          * - :py:attr:`~connected`
+            - Return True if the client is connected to a server.
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_ADDITIVE_SERVICE_PORT`
+            - 
+
+
+   .. tab-item:: Static methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~load_material`
+            - Load a custom material definition for the current session. The resulting
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.additive import Additive
+
+Property detail
+---------------
+
+.. py:property:: enable_beta_features
+   :type: bool
+
+
+   
+   Flag indicating if beta features are enabled.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: connected
+   :type: bool
+
+
+   
+   Return True if the client is connected to a server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: DEFAULT_ADDITIVE_SERVICE_PORT
+   :value: 50052
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: about() -> str
+
+   
+   Return information about the client and server.
+
+
+
+
+
+   :Returns:
+
+       :class:`python:str`
+           Information about the client and server.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: apply_server_settings(settings: dict[str, str]) -> list[str]
+
+   
+   Apply settings to each server.
+
+   Current settings include:
+   - ``NumConcurrentSims``: number of concurrent simulations per server.
+
+   :Parameters:
+
+       **settings: dict[str, str]**
+           Dictionary of settings to apply to the server.
+
+
+
+   :Returns:
+
+       :class:`python:list`\[:class:`python:str`]
+           List of messages from the server.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: list_server_settings() -> dict[str, str]
+
+   
+   Get a dictionary of settings for the server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: simulate(inputs: ansys.additive.core.single_bead.SingleBeadInput | ansys.additive.core.porosity.PorosityInput | ansys.additive.core.microstructure.MicrostructureInput | ansys.additive.core.thermal_history.ThermalHistoryInput | ansys.additive.core.microstructure_3d.Microstructure3DInput | list, progress_handler: ansys.additive.core.progress_handler.IProgressHandler | None = None) -> ansys.additive.core.single_bead.SingleBeadSummary | ansys.additive.core.porosity.PorositySummary | ansys.additive.core.microstructure.MicrostructureSummary | ansys.additive.core.thermal_history.ThermalHistorySummary | ansys.additive.core.microstructure_3d.Microstructure3DSummary | ansys.additive.core.simulation_error.SimulationError | list
+
+   
+   Execute additive simulations.
+
+
+   :Parameters:
+
+       **inputs: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput, Microstructure3DInput, list**
+           Parameters to use for simulations. A list of inputs may be provided to run multiple
+           simulations.
+
+       **progress_handler: IProgressHandler, None, default: None**
+           Handler for progress updates. If ``None``, and ``inputs`` contains a single
+           simulation input, a default progress handler will be assigned.
+
+
+
+   :Returns:
+
+       :obj:`SingleBeadSummary`, :obj:`PorositySummary`, :obj:`MicrostructureSummary`, ThermalHistorySummary,
+           ..
+
+       :obj:`Microstructure3DSummary`, :obj:`SimulationError`, :class:`python:list`
+           One or more summaries of simulation results. If a list of inputs is provided, a
+           list is returned.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: simulate_async(inputs: ansys.additive.core.single_bead.SingleBeadInput | ansys.additive.core.porosity.PorosityInput | ansys.additive.core.microstructure.MicrostructureInput | ansys.additive.core.thermal_history.ThermalHistoryInput | ansys.additive.core.microstructure_3d.Microstructure3DInput | list, progress_handler: ansys.additive.core.progress_handler.IProgressHandler | None = None) -> ansys.additive.core.simulation_task_manager.SimulationTaskManager
+
+   
+   Execute additive simulations asynchronously. This method does not block while the
+   simulations are running on the server. This class stores handles of type
+   google.longrunning.Operation to the remote tasks that can be used to communicate with
+   the server for status updates.
+
+
+   :Parameters:
+
+       **inputs: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput, Microstructure3DInput, list**
+           Parameters to use for simulations. A list of inputs may be provided to run multiple
+           simulations.
+
+       **progress_handler: IProgressHandler, None, default: None**
+           Handler for progress updates. If ``None``, and ``inputs`` contains a single
+           simulation input, a default progress handler will be assigned.
+
+
+
+   :Returns:
+
+       :obj:`SimulationTaskManager`
+           A SimulationTaskManager to handle all tasks sent to the server by this function call.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: materials_list() -> list[str]
+
+   
+   Get a list of material names used in additive simulations.
+
+
+
+
+
+   :Returns:
+
+       :class:`python:list`\[:class:`python:str`]
+           Names of available additive materials.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: material(name: str) -> ansys.additive.core.material.AdditiveMaterial
+
+   
+   Get a material for use in an additive simulation.
+
+
+   :Parameters:
+
+       **name: str**
+           Name of material.
+
+
+
+   :Returns:
+
+       :obj:`AdditiveMaterial`
+           Requested material definition.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: load_material(parameters_file: str, thermal_lookup_file: str, characteristic_width_lookup_file: str) -> ansys.additive.core.material.AdditiveMaterial
+   :staticmethod:
+
+
+   
+   Load a custom material definition for the current session. The resulting
+   ``AdditiveMaterial`` object will not be saved to the library.
+
+
+   :Parameters:
+
+       **parameters_file: str**
+           Name of the JSON file containing material parameters. For more information, see
+           `Create Material Configuration File (.json)
+           <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_create_tables.html>`_
+           in the *Additive Manufacturing Beta Features* documentation.
+
+       **thermal_lookup_file: str**
+           Name of the CSV file containing the lookup table for thermal dependent properties.
+           For more information, see `Create Material Lookup File (.csv)
+           <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_create_mat_lookup.html>`_
+           in the *Additive Manufacturing Beta Features* documentation.
+
+       **characteristic_width_lookup_file: str**
+           Name of the CSV file containing the lookup table for characteristic melt pool width. For
+           more information, see
+           `Find Characteristic Width Values and Generate Characteristic Width File (.csv)
+           <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_find_cw.html>`_
+           in the *Additive Manufacturing Beta Features* documentation.
+
+
+
+   :Returns:
+
+       :obj:`AdditiveMaterial`
+           A material definition for use in additive simulations.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: add_material(parameters_file: str, thermal_lookup_file: str, characteristic_width_lookup_file: str) -> ansys.additive.core.material.AdditiveMaterial | None
+
+   
+   Add a custom material to the library for use in additive simulations.
+
+
+   :Parameters:
+
+       **parameters_file: str**
+           Name of the JSON file containing material parameters. For more information, see
+           `Create Material Configuration File (.json)
+           <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_create_tables.html>`_
+           in the *Additive Manufacturing Beta Features* documentation.
+
+       **thermal_lookup_file: str**
+           Name of the CSV file containing the lookup table for temperature-dependent properties.
+           For more information, see `Create Material Lookup File (.csv)
+           <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_create_mat_lookup.html>`_
+           in the *Additive Manufacturing Beta Features* documentation.
+
+       **characteristic_width_lookup_file: str**
+           Name of the CSV file containing the lookup table for characteristic melt pool width. For
+           more information, see
+           `Find Characteristic Width Values and Generate Characteristic Width File (.csv)
+           <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_find_cw.html>`_
+           in the *Additive Manufacturing Beta Features* documentation.
+
+
+
+   :Returns:
+
+       :obj:`AdditiveMaterial`
+           A definition of the material that was added to the library.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: remove_material(name: str)
+
+   
+   Remove a material from the server.
+
+
+   :Parameters:
+
+       **name: str**
+           Name of the material to remove.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: tune_material(input: ansys.additive.core.material_tuning.MaterialTuningInput, out_dir: str = USER_DATA_PATH, progress_handler: ansys.additive.core.progress_handler.IProgressHandler = None) -> ansys.additive.core.material_tuning.MaterialTuningSummary | None
+
+   
+   Tune a custom material for use with additive simulations.
+
+   This method performs the same function as the Material Tuning Tool
+   described in
+   `Find Simulation Parameters to Match Simulation to Experiments
+   <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_match_sim_to_exp.html>`_.
+   It is used for one step in the material tuning process. The other steps
+   are described in
+   `Chapter 2: Material Tuning Tool (Beta) to Create User Defined Materials
+   <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_science_BETA_material_tuning_tool.html>`_.
+
+   :Parameters:
+
+       **input: MaterialTuningInput**
+           Input parameters for material tuning.
+
+       **out_dir: str, default: USER_DATA_PATH**
+           Folder path for output files.
+
+       **progress_handler: IProgressHandler, None, default: None**
+           Handler for progress updates. If ``None``, no progress updates are provided.
+
+
+
+   :Returns:
+
+       :obj:`MaterialTuningSummary`, :data:`python:None`
+           Summary of material tuning or ``None`` if the tuning failed.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: tune_material_async(input: ansys.additive.core.material_tuning.MaterialTuningInput, out_dir: str = USER_DATA_PATH) -> ansys.additive.core.simulation_task.SimulationTask
+
+   
+   Tune a custom material for use with additive simulations asynchronously.
+
+   This method performs the same function as the Material Tuning Tool
+   described in
+   `Find Simulation Parameters to Match Simulation to Experiments
+   <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_match_sim_to_exp.html>`_.
+   It is used for one step in the material tuning process. The other steps
+   are described in
+   `Chapter 2: Material Tuning Tool (Beta) to Create User Defined Materials
+   <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_science_BETA_material_tuning_tool.html>`_.
+
+   :Parameters:
+
+       **input: MaterialTuningInput**
+           Input parameters for material tuning.
+
+       **out_dir: str, default: USER_DATA_PATH**
+           Folder path for output files.
+
+
+
+   :Returns:
+
+       :obj:`SimulationTask`
+           An asynchronous simulation task.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: simulate_study(study: ansys.additive.core.parametric_study.ParametricStudy, simulation_ids: list[str] | None = None, types: list[ansys.additive.core.simulation.SimulationType] | None = None, priority: int | None = None, iteration: int = None)
+
+   
+   Run the simulations in a parametric study.
+
+
+   :Parameters:
+
+       **study** : :obj:`ParametricStudy`
+           Parametric study to run.
+
+       **simulation_ids** : :class:`python:list`\[:class:`python:str`], default: :data:`python:None`
+           List of simulation IDs to run. If this value is ``None``,
+           all simulations with a status of ``Pending`` are run.
+
+       **types** : :class:`python:list`\[:obj:`SimulationType`], default: :data:`python:None`
+           Type of simulations to run. If this value is ``None``,
+           all simulation types are run.
+
+       **priority** : :class:`python:int`, default: :data:`python:None`
+           Priority of simulations to run. If this value is ``None``,
+           all priorities are run.
+
+       **iteration** : :class:`python:int`, default: :data:`python:None`
+           Iteration number of simulations to run. The default is ``None``,
+           all iterations are run.
+
+       **progress_handler** : :obj:`IProgressHandler`, :data:`python:None`, default: :data:`python:None`
+           Handler for progress updates. If ``None``, a :class:`ParametricStudyProcessHandler` will be used.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: simulate_study_async(study: ansys.additive.core.parametric_study.ParametricStudy, simulation_ids: list[str] | None = None, types: list[ansys.additive.core.simulation.SimulationType] | None = None, priority: int | None = None, iteration: int = None, progress_handler: ansys.additive.core.progress_handler.IProgressHandler = None) -> ansys.additive.core.simulation_task_manager.SimulationTaskManager
+
+   
+   Run the simulations in a parametric study asynchronously.
+
+
+   :Parameters:
+
+       **study** : :obj:`ParametricStudy`
+           Parametric study to run.
+
+       **simulation_ids** : :class:`python:list`\[:class:`python:str`], default: :data:`python:None`
+           List of simulation IDs to run. If this value is ``None``,
+           all simulations with a status of ``Pending`` are run.
+
+       **types** : :class:`python:list`\[:obj:`SimulationType`], default: :data:`python:None`
+           Type of simulations to run. If this value is ``None``,
+           all simulation types are run.
+
+       **priority** : :class:`python:int`, default: :data:`python:None`
+           Priority of simulations to run. If this value is ``None``,
+           all priorities are run.
+
+       **iteration** : :class:`python:int`, default: :data:`python:None`
+           Iteration number of simulations to run. The default is ``None``,
+           all iterations are run.
+
+       **progress_handler** : :obj:`IProgressHandler`, :data:`python:None`, default: :data:`python:None`
+           Handler for progress updates.
+
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Notes
+
+   The caller of this method is responsible for updating the study with the results of the simulations.
+   See :meth:`SimulationTaskManager.summaries` and :meth:`ParametricStudy.update`.
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: download_server_logs(log_dir: str | os.PathLike) -> str
+
+   
+   Download server logs to a specified directory.
+
+
+   :Parameters:
+
+       **log_dir** : :class:`python:str`
+           Directory to save the logs to.
+
+
+
+   :Returns:
+
+       :class:`python:str`
+           Path to the downloaded logs.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

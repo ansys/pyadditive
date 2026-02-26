@@ -1,0 +1,102 @@
+
+
+
+
+
+The ``download.py`` module
+==========================
+
+.. py:module:: ansys.additive.core.download
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: download
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~download_file`
+            - Download a file from the server to the localhost.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+.. py:function:: download_file(stub: ansys.api.additive.v0.additive_simulation_pb2_grpc.SimulationServiceStub, remote_file_name: str, local_folder: str, logger: ansys.additive.core.progress_logger.ProgressLogger = None)
+
+   
+   Download a file from the server to the localhost.
+
+
+   :Parameters:
+
+       **remote_file_name: str**
+           Path to file on the server.
+
+       **local_folder: str**
+           Folder on your localhost to write your file to.
+
+       **logger: ProgressLogger**
+           Log message handler.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

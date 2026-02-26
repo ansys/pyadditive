@@ -1,0 +1,6 @@
+material
+========
+
+.. currentmodule:: ansys.additive.single_bead
+
+.. autoproperty:: SingleBeadInput.material

@@ -1,0 +1,97 @@
+
+
+
+
+
+The ``misc.py`` module
+======================
+
+.. py:module:: ansys.additive.core.misc
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: misc
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~short_uuid`
+            - Generate a short UUID.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides miscellaneous utility functions.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: short_uuid() -> str
+
+   
+   Generate a short UUID.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
