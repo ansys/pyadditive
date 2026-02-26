@@ -22,7 +22,8 @@ maintainers = [{name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"}]
 name = "ansys-additive-core"
 readme = "README.rst"
 requires-python = ">=3.10,<4"
-version = "0.21.0b9"
+version = "0.21.0b10"
+
 dependencies = [
   "ansys-api-additive==5.1.6",
   "ansys-platform-instancemanagement>=1.1.1",
@@ -46,17 +47,17 @@ dependencies = [
 [project.optional-dependencies]
 tests = [
   "ansys-platform-instancemanagement==1.1.2",
-  "dill==0.4.0",
-  "google-api-python-client==2.187.0",
+  "dill==0.4.1",
+  "google-api-python-client==2.190.0",
   "googleapis-common-protos==1.72.0",
   "grpcio==1.73.1",
   "grpcio-health-checking==1.73.1",
   "numpy==2.2.6",
   "pandas==2.3.3",
-  "platformdirs==4.5.1",
-  "protobuf==6.33.2",
+  "platformdirs==4.9.2",
+  "protobuf==6.33.5",
   "six==1.17.0",
-  "tqdm==4.67.1",
+  "tqdm==4.67.3",
   "pydantic==2.12.5",
   "pytest==8.4.2",
   "pytest-cov==7.0.0",
@@ -71,12 +72,12 @@ doc = [
   "numpydoc==1.10.0",
   "phantomjs==1.4.1",
   "pypandoc==1.16.2",
-  "pyvista==0.46.4",
+  "pyvista==0.47.0",
   "ipywidgets==8.1.8",
   "trame==3.12.0",
-  "trame-vtk==2.10.1",
+  "trame-vtk==2.11.1",
   "trame-plotly==3.1.0",
-  "trame-vuetify==3.2.0",
+  "trame-vuetify==3.2.1",
   "imageio==2.37.2",
   "sphinx==8.2.3",
   "sphinx-autodoc-typehints==3.1.0",

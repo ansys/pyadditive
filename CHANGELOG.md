@@ -4,6 +4,8 @@
 
 ### New Features
 
+* Added two new heat source models as beta features: Ring Mode and Dynamic Defocus.
+
 ### Bug Fixes
 
 ### Doc Improvements

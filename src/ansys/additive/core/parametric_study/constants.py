@@ -66,6 +66,16 @@ class ColumnNames:
     """Type of heat source used in the simulation."""
     RING_MODE_INDEX = "Ring Mode Index"
     """Set of prescribed coefficients used for ring mode simulations."""
+    DEFOCUS = "Defocus (m)"
+    """Defocus distance of the laser beam (m)."""
+    LASER_SHAPE_PARAMETER = "Laser Shape Parameter"
+    """Parameter defining the laser shape used in the dynamic defocus heat source."""
+    LASER_DISTRIBUTION_PARAMETER = "Laser Distribution Parameter"
+    """Parameter defining the laser distribution used in the dynamic defocus heat source."""
+    FRESNAL_ABSORPTION_COEFFICIENT = "Fresnal Absorption Coefficient"
+    """Fresnal absorption coefficient used in the dynamic defocus heat source."""
+    ABSORPTION_IN_CONDUCTION_MODE = "Absorption in Conduction Mode"
+    """Absorption in conduction mode used in the dynamic defocus heat source."""
     ENERGY_DENSITY = "Energy Density (J/m^3)"
     """Laser power divided by build rate (J/m^3)."""
     SINGLE_BEAD_LENGTH = "Single Bead Length (m)"
@@ -136,5 +146,5 @@ DEFAULT_ITERATION = 0
 """Default iteration assigned to new simulations."""
 DEFAULT_PRIORITY = 1
 """Default priority assigned to new simulations."""
-FORMAT_VERSION = 4
+FORMAT_VERSION = 5
 """Parametric study file format version. See :meth:`ParametricStudy.update_format` for details."""

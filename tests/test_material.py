@@ -33,6 +33,7 @@ from ansys.additive.core.material import (
     ThermalPropertiesDataPointMessage,
 )
 from tests import test_utils
+from ansys.additive.core.material import MaterialConstants
 
 
 def test_CharacteristicWidthDataPoint_setters_raise_exception_for_invalid_value():
@@ -545,10 +546,10 @@ def test_to_material_message_returns_MaterialMessage():
     am.support_yield_strength_ratio = 30
     am.thermal_expansion_coefficient = 31
     am.vaporization_temperature = 32
-    am.fresnal_absorption_coefficient = 33
-    am.laser_distribution_parameter = 34
-    am.laser_shape_parameter = 35
-    am.absorption_in_conduction_mode = 36
+    am.fresnal_absorption_coefficient = 0.25
+    am.laser_distribution_parameter = 8
+    am.laser_shape_parameter = 2
+    am.absorption_in_conduction_mode = 0.35
     am.characteristic_width_data.append(
         CharacteristicWidthDataPoint(
             characteristic_width=1,
@@ -606,10 +607,10 @@ def test_to_material_message_returns_MaterialMessage():
     assert msg.support_yield_strength_ratio == 30
     assert msg.thermal_expansion_coefficient == 31
     assert msg.vaporization_temperature == 32
-    assert msg.fresnal_absorption_coefficient == 33
-    assert msg.laser_distribution_parameter == 34
-    assert msg.laser_shape_parameter == 35
-    assert msg.absorption_conduction_mode == 36
+    assert msg.fresnal_absorption_coefficient == 0.25
+    assert msg.laser_distribution_parameter == 8
+    assert msg.laser_shape_parameter == 2
+    assert msg.absorption_conduction_mode == 0.35
 
     assert len(msg.characteristic_width_data_points) == 1
     cw = msg.characteristic_width_data_points[0]
@@ -731,3 +732,67 @@ def test_load_parameters_parses_parameter_file():
     assert material.support_yield_strength_ratio == 31
     assert material.thermal_expansion_coefficient == 32
     assert material.vaporization_temperature == 33
+    
+
+def test_MaterialConstants_has_expected_default_values():
+    # arrange, act, assert
+    assert MaterialConstants.DEFAULT_LASER_SHAPE_PARAMETER == 2.0
+    assert MaterialConstants.MIN_LASER_SHAPE_PARAMETER == 1.0
+    assert MaterialConstants.MAX_LASER_SHAPE_PARAMETER == 10.0
+    assert MaterialConstants.DEFAULT_LASER_DISTRIBUTION_PARAMETER == 2.0
+    assert MaterialConstants.MIN_LASER_DISTRIBUTION_PARAMETER == 1.0
+    assert MaterialConstants.MAX_LASER_DISTRIBUTION_PARAMETER == 10.0
+    assert MaterialConstants.DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT == 0.28
+    assert MaterialConstants.MIN_FRESNAL_ABSORPTION_COEFFICIENT == 0.0
+    assert MaterialConstants.MAX_FRESNAL_ABSORPTION_COEFFICIENT == 1.0
+    assert MaterialConstants.DEFAULT_ABSORPTION_CONDUCTION_MODE == 0.35
+    assert MaterialConstants.MIN_ABSORPTION_CONDUCTION_MODE == 0.0
+    assert MaterialConstants.MAX_ABSORPTION_CONDUCTION_MODE == 1.0
+
+
+def test_AdditiveMaterial_throws_exception_when_setting_invalid_fresnal_absorption_coefficient():
+    # arrange
+    material = AdditiveMaterial()
+
+    # act, assert
+    with pytest.raises(ValueError, match="fresnal_absorption_coefficient must be between"):
+        material.fresnal_absorption_coefficient = -0.1
+
+    with pytest.raises(ValueError, match="fresnal_absorption_coefficient must be between"):
+        material.fresnal_absorption_coefficient = 1.1
+
+
+def test_AdditiveMaterial_throws_exception_when_setting_invalid_laser_shape_parameter():
+    # arrange
+    material = AdditiveMaterial()
+
+    # act, assert
+    with pytest.raises(ValueError, match="laser_shape_parameter must be between"):
+        material.laser_shape_parameter = 0.5
+
+    with pytest.raises(ValueError, match="laser_shape_parameter must be between"):
+        material.laser_shape_parameter = 11.0
+
+
+def test_AdditiveMaterial_throws_exception_when_setting_invalid_laser_distribution_parameter():
+    # arrange
+    material = AdditiveMaterial()
+
+    # act, assert
+    with pytest.raises(ValueError, match="laser_distribution_parameter must be between"):
+        material.laser_distribution_parameter = 0.5
+
+    with pytest.raises(ValueError, match="laser_distribution_parameter must be between"):
+        material.laser_distribution_parameter = 11.0
+
+
+def test_AdditiveMaterial_throws_exception_when_setting_invalid_absorption_in_conduction_mode():
+    # arrange
+    material = AdditiveMaterial()
+
+    # act, assert
+    with pytest.raises(ValueError, match="absorption_in_conduction_mode must be between"):
+        material.absorption_in_conduction_mode = -0.1
+
+    with pytest.raises(ValueError, match="absorption_in_conduction_mode must be between"):
+        material.absorption_in_conduction_mode = 1.1
