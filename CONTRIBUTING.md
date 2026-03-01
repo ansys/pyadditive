@@ -1,34 +1,22 @@
-# Contributing
+# Contribute
 
-Please, refer to the [PyAnsys Developer's Guide] for contributing to this project.
+Overall guidance on contributing to a PyAnsys library appears in the
+[Contributing] topic in the *PyAnsys developer's guide*. Ensure that you
+are thoroughly familiar with this guide before attempting to contribute to
+PyAdditive.
 
-[PyAnsys Developer's Guide]: https://dev.docs.pyansys.com/index.html
+[Contributing]: https://dev.docs.pyansys.com/how-to/contributing.html
 
-The following contribution information is specific to PyAdditive.
+<!-- Begin content specific to your library here. -->
+# Contribute
 
-## Cloning the repository
+Overall guidance on contributing to a PyAnsys library appears in the
+[Contributing] topic in the *PyAnsys developer's guide*. Ensure that you
+are thoroughly familiar with this guide before attempting to contribute to
+{project-name}.
 
-To clone PyAdditive and install the dependencies for development, run:
+The following contribution information is specific to {project-name}.
 
-```text
-    git clone https://github.com/ansys/pyadditive
-    cd pyadditive
-    python -m venv .venv
-    source .venv/bin/activate # or .venv\Scripts\activate.bat on Windows
-    python -m pip install --upgrade pip
-    pip install -e .
-```
+[Contributing]: https://dev.docs.pyansys.com/how-to/contributing.html
 
-## Posting issues
-
-Use the [PyAdditive Issues] page to submit questions, report bugs, and request new features.
-
-[PyAdditive Issues]: https://github.com/ansys/pyadditive/issues
-
-## Reading documentation
-
-Documentation for the latest stable release of PyAdditive is hosted at [PyAdditive Documentation](https://additive.docs.pyansys.com/version/stable/).
-
-## Getting help
-
-To reach the PyAnsys support team, email <pyansys.support@ansys.com>.
+<!-- Begin content specific to your library here. -->
