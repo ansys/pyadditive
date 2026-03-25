@@ -2412,12 +2412,13 @@ class ParametricStudy:
 
         df = self.filter_data_frame(simulation_ids, types, priority, iteration)
 
-        material = get_material_func(str(self.material_name))
-
         # NOTE: We use iterrows() instead of itertuples() here to
         # access values by column name
         for _, row in df.iterrows():
             machine = ParametricStudy._create_machine(row)
+            material = ParametricStudy._create_material(
+                row, get_material_func, str(self.material_name)
+            )
             sim_type = row[ColumnNames.TYPE]
             if sim_type == SimulationType.SINGLE_BEAD:
                 inputs.append(ParametricStudy._create_single_bead_input(row, material, machine))
@@ -2480,6 +2481,52 @@ class ParametricStudy:
                 else MachineConstants.DEFAULT_DEFOCUS
             ),
         )
+
+    @staticmethod
+    def _create_material(
+        row: pd.Series, get_material_func: Callable[[str], AdditiveMaterial], material_name: str
+    ) -> AdditiveMaterial:
+        """Create a material object from the parametric study data frame.
+
+        Parameters
+        ----------
+        row : pd.Series
+            Row from the parametric study data frame.
+        get_material_func : Callable[[str], AdditiveMaterial]
+            Function to get the material object from the material name.
+        material_name : str
+            Name of the material.
+
+        Returns
+        -------
+        AdditiveMaterial
+            Material object with parameters applied from the data frame.
+
+        """
+        material = get_material_func(material_name)
+
+        # Apply dynamic defocus heat source material parameters only if heat source is dynamic_defocus
+        if (
+            isinstance(row[ColumnNames.HEAT_SOURCE], str)
+            and row[ColumnNames.HEAT_SOURCE]
+            == MachineConstants.HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS
+        ):
+            if not np.isnan(row[ColumnNames.LASER_SHAPE_PARAMETER]):
+                material.laser_shape_parameter = row[ColumnNames.LASER_SHAPE_PARAMETER]
+            if not np.isnan(row[ColumnNames.LASER_DISTRIBUTION_PARAMETER]):
+                material.laser_distribution_parameter = row[
+                    ColumnNames.LASER_DISTRIBUTION_PARAMETER
+                ]
+            if not np.isnan(row[ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT]):
+                material.fresnal_absorption_coefficient = row[
+                    ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT
+                ]
+            if not np.isnan(row[ColumnNames.ABSORPTION_IN_CONDUCTION_MODE]):
+                material.absorption_in_conduction_mode = row[
+                    ColumnNames.ABSORPTION_IN_CONDUCTION_MODE
+                ]
+
+        return material
 
     @staticmethod
     def _create_single_bead_input(
