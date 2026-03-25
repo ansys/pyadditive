@@ -3263,3 +3263,109 @@ def test_add_missing_column_with_default_value_propagates_to_all_rows(tmp_path: 
     # assert
     assert len(df) == 3
     assert (df[new_col_name] == default_value).all()
+
+
+def test_create_material_calls_get_material_func():
+    # arrange
+    material_name = "IN718"
+    expected_material = AdditiveMaterial(name=material_name)
+    get_material_func = Mock(return_value=expected_material)
+    row = pd.Series({ColumnNames.HEAT_SOURCE: MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME})
+
+    # act
+    material = ParametricStudy._create_material(row, get_material_func, material_name)
+
+    # assert
+    get_material_func.assert_called_once_with(material_name)
+    assert material is expected_material
+
+
+def test_create_material_applies_dynamic_defocus_material_parameters():
+    # arrange
+    material_name = "IN718"
+    material = AdditiveMaterial(name=material_name)
+    get_material_func = Mock(return_value=material)
+
+    laser_shape = 2
+    laser_distribution = 3
+    fresnal_absorption = 0.33
+    absorption_conduction = 0.44
+
+    row = pd.Series(
+        {
+            ColumnNames.HEAT_SOURCE: MachineConstants.HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS,
+            ColumnNames.LASER_SHAPE_PARAMETER: laser_shape,
+            ColumnNames.LASER_DISTRIBUTION_PARAMETER: laser_distribution,
+            ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT: fresnal_absorption,
+            ColumnNames.ABSORPTION_IN_CONDUCTION_MODE: absorption_conduction,
+        }
+    )
+
+    # act
+    updated_material = ParametricStudy._create_material(row, get_material_func, material_name)
+
+    # assert
+    assert updated_material.laser_shape_parameter == laser_shape
+    assert updated_material.laser_distribution_parameter == laser_distribution
+    assert updated_material.fresnal_absorption_coefficient == fresnal_absorption
+    assert updated_material.absorption_in_conduction_mode == absorption_conduction
+
+
+def test_create_material_does_not_apply_dynamic_defocus_parameters_for_non_dynamic_heat_source():
+    # arrange
+    material_name = "IN718"
+    material = AdditiveMaterial(name=material_name)
+    material.laser_shape_parameter = 1.0
+    material.laser_distribution_parameter = 2.0
+    material.fresnal_absorption_coefficient = 0.35
+    material.absorption_in_conduction_mode = 0.65
+    get_material_func = Mock(return_value=material)
+
+    row = pd.Series(
+        {
+            ColumnNames.HEAT_SOURCE: MachineConstants.DEFAULT_HEAT_SOURCE_MODEL_NAME,
+            ColumnNames.LASER_SHAPE_PARAMETER: 2,
+            ColumnNames.LASER_DISTRIBUTION_PARAMETER: 3,
+            ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT: 0.33,
+            ColumnNames.ABSORPTION_IN_CONDUCTION_MODE: 0.44,
+        }
+    )
+
+    # act
+    updated_material = ParametricStudy._create_material(row, get_material_func, material_name)
+
+    # assert
+    assert updated_material.laser_shape_parameter == 1.0
+    assert updated_material.laser_distribution_parameter == 2.0
+    assert updated_material.fresnal_absorption_coefficient == 0.35
+    assert updated_material.absorption_in_conduction_mode == 0.65
+
+
+def test_create_material_skips_nan_dynamic_defocus_parameters():
+    # arrange
+    material_name = "IN718"
+    material = AdditiveMaterial(name=material_name)
+    material.laser_shape_parameter = 1.0
+    material.laser_distribution_parameter = 2.0
+    material.fresnal_absorption_coefficient = 0.35
+    material.absorption_in_conduction_mode = 0.65
+    get_material_func = Mock(return_value=material)
+
+    row = pd.Series(
+        {
+            ColumnNames.HEAT_SOURCE: MachineConstants.HEAT_SOURCE_MODEL_NAME_DYNAMIC_DEFOCUS,
+            ColumnNames.LASER_SHAPE_PARAMETER: np.nan,
+            ColumnNames.LASER_DISTRIBUTION_PARAMETER: 9.9,
+            ColumnNames.FRESNAL_ABSORPTION_COEFFICIENT: np.nan,
+            ColumnNames.ABSORPTION_IN_CONDUCTION_MODE: 0.24,
+        }
+    )
+
+    # act
+    updated_material = ParametricStudy._create_material(row, get_material_func, material_name)
+
+    # assert
+    assert updated_material.laser_shape_parameter == 1.0
+    assert updated_material.laser_distribution_parameter == 9.9
+    assert updated_material.fresnal_absorption_coefficient == 0.35
+    assert updated_material.absorption_in_conduction_mode == 0.24
