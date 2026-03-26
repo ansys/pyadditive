@@ -2486,7 +2486,8 @@ class ParametricStudy:
     def _create_material(
         row: pd.Series, get_material_func: Callable[[str], AdditiveMaterial], material_name: str
     ) -> AdditiveMaterial:
-        """Create a material object from the parametric study data frame.
+        """Create a material object from the parametric study data frame and apply material
+        parameters based on the heat source model.
 
         Parameters
         ----------
@@ -2526,6 +2527,17 @@ class ParametricStudy:
                     ColumnNames.ABSORPTION_IN_CONDUCTION_MODE
                 ]
 
+        else:
+            material.laser_shape_parameter = MaterialConstants.DEFAULT_LASER_SHAPE_PARAMETER
+            material.laser_distribution_parameter = (
+                MaterialConstants.DEFAULT_LASER_DISTRIBUTION_PARAMETER
+            )
+            material.fresnal_absorption_coefficient = (
+                MaterialConstants.DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT
+            )
+            material.absorption_in_conduction_mode = (
+                MaterialConstants.DEFAULT_ABSORPTION_CONDUCTION_MODE
+            )
         return material
 
     @staticmethod
