@@ -38,6 +38,7 @@ import pytest
 from ansys.additive.core import (
     AdditiveMachine,
     AdditiveMaterial,
+    MaterialConstants,
     MachineConstants,
     MeltPool,
     MeltPoolColumnNames,
@@ -3315,8 +3316,8 @@ def test_create_material_does_not_apply_dynamic_defocus_parameters_for_non_dynam
     # arrange
     material_name = "IN718"
     material = AdditiveMaterial(name=material_name)
-    material.laser_shape_parameter = 1.0
-    material.laser_distribution_parameter = 2.0
+    material.laser_shape_parameter = 2.5
+    material.laser_distribution_parameter = 3.5
     material.fresnal_absorption_coefficient = 0.35
     material.absorption_in_conduction_mode = 0.65
     get_material_func = Mock(return_value=material)
@@ -3335,10 +3336,22 @@ def test_create_material_does_not_apply_dynamic_defocus_parameters_for_non_dynam
     updated_material = ParametricStudy._create_material(row, get_material_func, material_name)
 
     # assert
-    assert updated_material.laser_shape_parameter == 1.0
-    assert updated_material.laser_distribution_parameter == 2.0
-    assert updated_material.fresnal_absorption_coefficient == 0.35
-    assert updated_material.absorption_in_conduction_mode == 0.65
+    assert (
+        updated_material.laser_shape_parameter
+        == MaterialConstants.DEFAULT_LASER_SHAPE_PARAMETER
+    )
+    assert (
+        updated_material.laser_distribution_parameter
+        == MaterialConstants.DEFAULT_LASER_DISTRIBUTION_PARAMETER
+    )
+    assert (
+        updated_material.fresnal_absorption_coefficient
+        == MaterialConstants.DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT
+    )
+    assert (
+        updated_material.absorption_in_conduction_mode
+        == MaterialConstants.DEFAULT_ABSORPTION_CONDUCTION_MODE
+    )
 
 
 def test_create_material_skips_nan_dynamic_defocus_parameters():
