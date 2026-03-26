@@ -38,7 +38,6 @@ import pytest
 from ansys.additive.core import (
     AdditiveMachine,
     AdditiveMaterial,
-    MaterialConstants,
     MachineConstants,
     MeltPool,
     MeltPoolColumnNames,
@@ -52,6 +51,7 @@ from ansys.additive.core import (
     SingleBeadInput,
     SingleBeadSummary,
 )
+from ansys.additive.core.material import MaterialConstants
 from ansys.additive.core.parametric_study.constants import ColumnNames
 from ansys.additive.core.parametric_study.parametric_study import (
     FORMAT_VERSION,
