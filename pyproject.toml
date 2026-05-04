@@ -72,7 +72,7 @@ doc = [
   "numpydoc==1.10.0",
   "phantomjs==1.4.1",
   "pypandoc==1.17",
-  "pyvista==0.47.3",
+  "pyvista==0.48.0",
   "ipywidgets==8.1.8",
   "trame==3.12.0",
   "trame-vtk==2.11.8",
