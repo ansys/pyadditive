@@ -1,0 +1,27 @@
+[
+  {
+    "name": "dev",
+    "version": "dev",
+    "url": "https://additive.docs.pyansys.com/version/dev/"
+  },
+  {
+    "name": "0.21.0b12",
+    "version": "0.21.0b12",
+    "url": "https://additive.docs.pyansys.com/version/0.21.0b12/"
+  },
+  {
+    "name": "0.21.0b11",
+    "version": "0.21.0b11",
+    "url": "https://additive.docs.pyansys.com/version/0.21.0b11/"
+  },
+  {
+    "name": "0.21.0b10",
+    "version": "0.21.0b10",
+    "url": "https://additive.docs.pyansys.com/version/0.21.0b10/"
+  },
+  {
+    "name": "Older version",
+    "version": "N/A",
+    "url": "https://additive.docs.pyansys.com/version/"
+  }
+]

@@ -1,0 +1,265 @@
+
+
+
+
+
+
+:class:`SimulationTask`
+=======================
+
+
+.. py:class:: ansys.additive.core.simulation_task.SimulationTask(server_connection: ansys.additive.core.server_connection.ServerConnection, long_running_operation: google.longrunning.operations_pb2.Operation, simulation_input: ansys.additive.core.single_bead.SingleBeadInput | ansys.additive.core.porosity.PorosityInput | ansys.additive.core.microstructure.MicrostructureInput | ansys.additive.core.thermal_history.ThermalHistoryInput | ansys.additive.core.microstructure_3d.Microstructure3DInput | ansys.additive.core.material_tuning.MaterialTuningInput, user_data_path: str)
+
+   
+   Provides a simulation task.
+
+
+   :Parameters:
+
+       **server_connection: ServerConnection**
+           The client connection to the Additive server.
+
+       **long_running_operation: Operation**
+           The long-running operation representing the simulation on the server.
+
+       **simulation_input: SingleBeadInput | PorosityInput | MicrostructureInput | ThermalHistoryInput | Microstructure3DInput | MaterialTuningInput**
+           The simulation input.
+
+       **user_data_path: str**
+           The path to the user data directory.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: SimulationTask
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~status`
+            - Fetch status from the server to update progress and results.
+          * - :py:attr:`~wait`
+            - Wait for simulation to finish while updating progress.
+          * - :py:attr:`~cancel`
+            - Cancel a running simulation.
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~simulation_id`
+            - Get the simulation id associated with this task.
+          * - :py:attr:`~summary`
+            - The summary of the completed simulation.
+          * - :py:attr:`~done`
+            - Check if the task is completed.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.simulation_task import SimulationTask
+
+Property detail
+---------------
+
+.. py:property:: simulation_id
+   :type: str
+
+
+   
+   Get the simulation id associated with this task.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: summary
+   :type: ansys.additive.core.single_bead.SingleBeadSummary | ansys.additive.core.porosity.PorositySummary | ansys.additive.core.microstructure.MicrostructureSummary | ansys.additive.core.microstructure_3d.Microstructure3DSummary | ansys.additive.core.thermal_history.ThermalHistorySummary | ansys.additive.core.material_tuning.MaterialTuningSummary | ansys.additive.core.simulation_error.SimulationError | None
+
+
+   
+   The summary of the completed simulation.
+
+   None if simulation is not completed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: done
+   :type: bool
+
+
+   
+   Check if the task is completed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: status() -> ansys.additive.core.progress_handler.Progress
+
+   
+   Fetch status from the server to update progress and results.
+
+
+   :Parameters:
+
+       **progress_handler: IProgressHandler, None, default: None**
+           Handler for progress updates. If ``None``, no progress updates are provided.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: wait(*, progress_update_interval: int = 5, progress_handler: ansys.additive.core.progress_handler.IProgressHandler | None = None) -> None
+
+   
+   Wait for simulation to finish while updating progress.
+
+
+   :Parameters:
+
+       **progress_update_interval: int, default: 5**
+           A timeout value (in seconds) to give to the looped WaitOperation() calls to return an
+           updated message for a progress update.
+
+       **progress_handler: IProgressHandler, None, default: None**
+           Handler for progress updates. If ``None``, no progress updates are provided.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: cancel() -> None
+
+   
+   Cancel a running simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
