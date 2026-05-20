@@ -1,0 +1,6 @@
+cooling\_rate
+=============
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoproperty:: MicrostructureInput.cooling_rate

@@ -1,0 +1,427 @@
+
+
+
+
+
+The ``porosity.py`` module
+==========================
+
+.. py:module:: ansys.additive.core.porosity
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: porosity
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~PorosityInput`
+            - Provides input parameters for porosity simulation.
+
+
+          * - :py:attr:`~PorositySummary`
+            - Provides a summary of a porosity simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+
+
+
+.. py:class:: PorosityInput(id='', *, size_x=DEFAULT_SAMPLE_SIZE, size_y=DEFAULT_SAMPLE_SIZE, size_z=DEFAULT_SAMPLE_SIZE, machine=AdditiveMachine(), material=AdditiveMaterial())
+
+
+
+
+Provides input parameters for porosity simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~id`
+            - User-provided ID for the simulation.
+          * - :py:attr:`~machine`
+            - Machine-related parameters.
+          * - :py:attr:`~material`
+            - Material used during the simulation.
+          * - :py:attr:`~size_x`
+            - Size (m) of the simulated sample in the x dimension.
+          * - :py:attr:`~size_y`
+            - Size (m) of the simulated sample in the y dimension.
+          * - :py:attr:`~size_z`
+            - Size (m) of the simulated sample in the z dimension.
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_SAMPLE_SIZE`
+            - 
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.porosity import PorosityInput
+
+
+Property detail
+---------------
+.. py:property:: id
+   :canonical: ansys.additive.core.porosity.PorosityInput.id
+   :type: None
+
+
+   
+   User-provided ID for the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: machine
+   :canonical: ansys.additive.core.porosity.PorosityInput.machine
+   :type: None
+
+
+   
+   Machine-related parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material
+   :canonical: ansys.additive.core.porosity.PorosityInput.material
+   :type: None
+
+
+   
+   Material used during the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: size_x
+   :canonical: ansys.additive.core.porosity.PorosityInput.size_x
+   :type: None
+
+
+   
+   Size (m) of the simulated sample in the x dimension.
+
+   Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: size_y
+   :canonical: ansys.additive.core.porosity.PorosityInput.size_y
+   :type: None
+
+
+   
+   Size (m) of the simulated sample in the y dimension.
+
+   Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: size_z
+   :canonical: ansys.additive.core.porosity.PorosityInput.size_z
+   :type: None
+
+
+   
+   Size (m) of the simulated sample in the z dimension.
+
+   Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: DEFAULT_SAMPLE_SIZE
+   :value: 0.003
+
+   
+
+
+
+
+
+
+
+
+
+.. py:class:: PorositySummary(input: PorosityInput, result: ansys.api.additive.v0.additive_domain_pb2.PorosityResult)
+
+
+
+
+Provides a summary of a porosity simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Simulation input.
+          * - :py:attr:`~relative_density`
+            - Ratio of the density of the simulated sample to a completely solid
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.porosity import PorositySummary
+
+
+Property detail
+---------------
+.. py:property:: input
+   :canonical: ansys.additive.core.porosity.PorositySummary.input
+   :type: PorosityInput
+
+
+   
+   Simulation input.
+
+   For more information, see the :class:`PorosityInput` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: relative_density
+   :canonical: ansys.additive.core.porosity.PorositySummary.relative_density
+   :type: float
+
+
+   
+   Ratio of the density of the simulated sample to a completely solid
+   sample.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+

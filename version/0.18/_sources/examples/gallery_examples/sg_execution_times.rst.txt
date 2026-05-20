@@ -1,0 +1,58 @@
+
+:orphan:
+
+.. _sphx_glr_examples_gallery_examples_sg_execution_times:
+
+
+Computation times
+=================
+**41:31.681** total execution time for 8 files **from examples/gallery_examples**:
+
+.. container::
+
+  .. raw:: html
+
+    <style scoped>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script type="text/javascript" class="init">
+    $(document).ready( function () {
+        $('table.sg-datatable').DataTable({order: [[1, 'desc']]});
+    } );
+    </script>
+
+  .. list-table::
+   :header-rows: 1
+   :class: table table-striped sg-datatable
+
+   * - Example
+     - Time
+     - Mem (MB)
+   * - :ref:`sphx_glr_examples_gallery_examples_11_advanced_parametric_study.py` (``11_advanced_parametric_study.py``)
+     - 34:18.298
+     - 0.0
+   * - :ref:`sphx_glr_examples_gallery_examples_03_additive_thermal_history.py` (``03_additive_thermal_history.py``)
+     - 03:01.230
+     - 0.0
+   * - :ref:`sphx_glr_examples_gallery_examples_10_advanced_custom_material_tuning.py` (``10_advanced_custom_material_tuning.py``)
+     - 02:00.289
+     - 0.0
+   * - :ref:`sphx_glr_examples_gallery_examples_01_additive_porosity.py` (``01_additive_porosity.py``)
+     - 01:09.933
+     - 0.0
+   * - :ref:`sphx_glr_examples_gallery_examples_00_additive_single_bead.py` (``00_additive_single_bead.py``)
+     - 00:26.212
+     - 0.0
+   * - :ref:`sphx_glr_examples_gallery_examples_02_additive_2d_microstructure.py` (``02_additive_2d_microstructure.py``)
+     - 00:25.531
+     - 0.0
+   * - :ref:`sphx_glr_examples_gallery_examples_12_additive_3d_microstructure_beta.py` (``12_additive_3d_microstructure_beta.py``)
+     - 00:10.054
+     - 0.0
+   * - :ref:`sphx_glr_examples_gallery_examples_04_using_a_custom_material.py` (``04_using_a_custom_material.py``)
+     - 00:00.134
+     - 0.0

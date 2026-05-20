@@ -1,0 +1,30 @@
+﻿PorositySummary
+===============
+
+.. currentmodule:: ansys.additive.porosity
+
+.. autoclass:: PorositySummary
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      PorositySummary.input
+      PorositySummary.relative_density
+   
+   

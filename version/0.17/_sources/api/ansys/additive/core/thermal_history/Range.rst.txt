@@ -1,0 +1,135 @@
+
+
+
+
+Range
+=====
+
+.. py:class:: Range(min: float, max: float)
+   :canonical: ansys.additive.core.thermal_history.Range
+
+
+
+
+
+   Defines a range of values.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: Range
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~min`
+            - Minimum value of range.
+          * - :py:attr:`~max`
+            - Maximum value of range.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.thermal_history import Range
+
+
+Property detail
+---------------
+.. py:property:: min
+   :canonical: ansys.additive.core.thermal_history.Range.min
+   :type: float
+
+
+   
+   Minimum value of range.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: max
+   :canonical: ansys.additive.core.thermal_history.Range.max
+   :type: float
+
+
+   
+   Maximum value of range.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

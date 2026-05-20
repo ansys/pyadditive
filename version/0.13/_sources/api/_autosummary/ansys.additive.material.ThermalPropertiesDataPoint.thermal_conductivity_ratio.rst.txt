@@ -1,0 +1,6 @@
+thermal\_conductivity\_ratio
+============================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: ThermalPropertiesDataPoint.thermal_conductivity_ratio

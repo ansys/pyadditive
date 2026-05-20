@@ -1,0 +1,6 @@
+thermal\_gradient
+=================
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoproperty:: MicrostructureInput.thermal_gradient
