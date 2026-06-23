@@ -1,0 +1,6 @@
+reference\_width
+================
+
+.. currentmodule:: ansys.additive.single_bead
+
+.. autoproperty:: MeltPool.reference_width

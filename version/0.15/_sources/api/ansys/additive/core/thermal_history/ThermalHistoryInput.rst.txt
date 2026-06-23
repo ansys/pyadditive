@@ -1,0 +1,90 @@
+
+
+
+
+ThermalHistoryInput
+===================
+
+.. py:class:: ThermalHistoryInput(**kwargs)
+   :canonical: ansys.additive.core.thermal_history.ThermalHistoryInput
+
+
+
+
+Provides input parameters for microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: ThermalHistoryInput
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~geometry`
+            - Part geometry.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.thermal_history import ThermalHistoryInput
+
+
+Property detail
+---------------
+.. py:property:: geometry
+   :canonical: ansys.additive.core.thermal_history.ThermalHistoryInput.geometry
+   :type: None
+
+
+   
+   Part geometry.
+
+   For more information, see the :class:`StlFile`
+   class or the :class:`BuildFile` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

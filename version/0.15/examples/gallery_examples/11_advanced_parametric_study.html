@@ -1,0 +1,926 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Parametric study &#8212; PyAdditive 0.15.0 documentation</title>
+
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css?v=572af1d6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/ansys_sphinx_theme.css?v=62c9ccaa" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=f23d505c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+ 
+<link href="../../_static/css/breadcrumbs.css" rel="stylesheet" />
+
+    <script src="../../_static/documentation_options.js?v=52d5597a"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/thebelab-helper.js"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=49e1bf35"></script>
+    <script src="../../_static/js/table.js?v=b64f5182"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/gallery_examples/11_advanced_parametric_study';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://additive.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.15';
+        </script>
+    <link rel="icon" href="../../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Custom material tuning" href="10_advanced_custom_material_tuning.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <link rel="canonical" href="https://additive.docs.pyansys.com/version/stable/examples/gallery_examples/11_advanced_parametric_study.html" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container"><!-- Debugging: html_theme_options =  -->
+
+<!-- If there is no MiliSearch enabled, use the PyData search -->
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+   
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/pyansys-logo-black-cropped.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../_static/pyansys-logo-black-cropped.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button type="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown">
+      0.15  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div class="version-switcher__menu dropdown-menu list-group-flush py-0">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa fa-comment fa-fw"></i></span>
+            <label class="sr-only">Support</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+    <div id="announcement_msg"></div>
+<script>
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(
+      (text) => (document.getElementById("announcement_msg").innerHTML = text),
+    )
+    .catch((error) => console.error(`Fetch problem: ${error.message}`));
+</script>   <div class="container-xl">
+  <div class="row">
+    <div class="col-12 col-md-3" id="breadcrumbs-spacer"></div>
+    <div class="col-12 col-md-11 col-xl-9" id="breadcrumbs">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul> 
+<li class="nav-item nav-item-additional-breadcrumb">
+  <a href="https://docs.pyansys.com/">PyAnsys</a> » 
+</li>
+ 
+<li class="nav-item nav-item-0">
+  <a href="../../index.html">PyAdditive 0.15.0 documentation</a> » 
+</li>
+ 
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> » </li>
+        <li class="nav-item nav-item-this"><a href="">Parametric study</a></li> 
+      </ul>
+    </div></div>
+  </div>
+</div>
+ 
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button type="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown">
+      0.15  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div class="version-switcher__menu dropdown-menu list-group-flush py-0">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa fa-comment fa-fw"></i></span>
+            <label class="sr-only">Support</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="00_additive_single_bead.html">Single bead analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_additive_porosity.html">Porosity analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_additive_microstructure.html">Microstructure analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_additive_thermal_history.html">Thermal history analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_using_a_custom_material.html">Using a custom material</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_advanced_custom_material_tuning.html">Custom material tuning</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Parametric study</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-examples-gallery-examples-11-advanced-parametric-study-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="parametric-study">
+<span id="sphx-glr-examples-gallery-examples-11-advanced-parametric-study-py"></span><h1>Parametric study<a class="headerlink" href="#parametric-study" title="Link to this heading">#</a></h1>
+<p>This example shows how you can use PyAdditive to perform a parametric study.
+The intended audience is a user who desires to optimize additive machine parameters
+to achieve a specific result. Here, the <code class="docutils literal notranslate"><span class="pre">ParametricStudy</span></code> class is used to
+conduct a parametric study. This is not required but <code class="docutils literal notranslate"><span class="pre">ParametricStudy</span></code>
+provides data management and visualization features which ease the task.</p>
+<p>Units are SI (m, kg, s, K) unless otherwise noted.</p>
+<section id="perform-required-imports-and-create-a-study">
+<h2>Perform required imports and create a study<a class="headerlink" href="#perform-required-imports-and-create-a-study" title="Link to this heading">#</a></h2>
+<p>Perform the required import and create a <code class="docutils literal notranslate"><span class="pre">ParametricStudy</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">ansys.additive.core</span> <span class="kn">import</span> <span class="n">Additive</span><span class="p">,</span> <span class="n">SimulationStatus</span><span class="p">,</span> <span class="n">SimulationType</span>
+<span class="kn">from</span> <span class="nn">ansys.additive.core.parametric_study</span> <span class="kn">import</span> <span class="n">ColumnNames</span><span class="p">,</span> <span class="n">ParametricStudy</span>
+<span class="kn">import</span> <span class="nn">ansys.additive.core.parametric_study.display</span> <span class="k">as</span> <span class="nn">display</span>
+
+<span class="n">study</span> <span class="o">=</span> <span class="n">ParametricStudy</span><span class="p">(</span><span class="s2">&quot;demo-study&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Saving parametric study to /home/runner/work/pyadditive/pyadditive/examples/demo-study.ps
+</pre></div>
+</div>
+</section>
+<section id="get-the-study-file-name">
+<h2>Get the study file name<a class="headerlink" href="#get-the-study-file-name" title="Link to this heading">#</a></h2>
+<p>The current state of the parametric study is saved to a file upon each
+update. You can retrieve the name of the file as shown below. This file
+uses a binary format and is not human readable.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">study</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/pyadditive/pyadditive/examples/demo-study.ps
+</pre></div>
+</div>
+</section>
+<section id="select-a-material-for-the-study">
+<h2>Select a material for the study<a class="headerlink" href="#select-a-material-for-the-study" title="Link to this heading">#</a></h2>
+<p>Select a material to use in the study. The material name must be known by
+the Additive service. You can connect to the Additive service
+and print a list of available materials prior to selecting one.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">additive</span> <span class="o">=</span> <span class="n">Additive</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">additive</span><span class="o">.</span><span class="n">get_materials_list</span><span class="p">())</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">material</span></a> <span class="o">=</span> <span class="s2">&quot;IN718&quot;</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>user data path: /home/runner/.local/share/ansys-pyadditive
+names: &quot;AlSi10Mg&quot;
+names: &quot;CoCr&quot;
+names: &quot;Ti64&quot;
+names: &quot;Al357&quot;
+names: &quot;IN625&quot;
+names: &quot;316L&quot;
+names: &quot;IN718&quot;
+names: &quot;17-4PH&quot;
+</pre></div>
+</div>
+</section>
+<section id="create-a-single-bead-evaluation">
+<h2>Create a single bead evaluation<a class="headerlink" href="#create-a-single-bead-evaluation" title="Link to this heading">#</a></h2>
+<p>Parametric studies often start with single bead simulations in order to
+determine melt pool statistics. Here, the <code class="docutils literal notranslate"><span class="pre">generate_single_bead_permutations()</span></code>
+method is used to generate single bead simulation permutations. The parameters
+for <code class="docutils literal notranslate"><span class="pre">generate_single_bead_permutations()</span></code> allow you to specify a range of
+machine parameters and filter them by energy density. Not all the parameters
+shown are required. Optional parameters that are not specified will use default
+values defined in the <code class="docutils literal notranslate"><span class="pre">MachineConstants</span></code> class.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Specify a range of laser powers. Valid values are 50 to 700 W.</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">initial_powers</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace" title="numpy.linspace" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">linspace</span></a><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">700</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="c1"># Specify a range of laser scan speeds. Valid values are 0.35 to 2.5 m/s.</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">initial_scan_speeds</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace" title="numpy.linspace" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">linspace</span></a><span class="p">(</span><span class="mf">0.35</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="c1"># Specify powder layer thicknesses. Valid values are 10e-6 to 100e-6 m.</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">initial_layer_thicknesses</span></a> <span class="o">=</span> <span class="p">[</span><span class="mf">40e-6</span><span class="p">,</span> <span class="mf">50e-6</span><span class="p">]</span>
+<span class="c1"># Specify laser beam diameters. Valid values are 20e-6 to 140e-6 m.</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">initial_beam_diameters</span></a> <span class="o">=</span> <span class="p">[</span><span class="mf">80e-6</span><span class="p">]</span>
+<span class="c1"># Specify heater temperatures. Valid values are 20 - 500 C.</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">initial_heater_temps</span></a> <span class="o">=</span> <span class="p">[</span><span class="mi">80</span><span class="p">]</span>
+<span class="c1"># Restrict the permutations within a range of energy densities</span>
+<span class="c1"># For single bead, the energy density is laser power / (laser scan speed * layer thickness).</span>
+<a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">min_energy_density</span></a> <span class="o">=</span> <span class="mf">2e6</span>
+<a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">max_energy_density</span></a> <span class="o">=</span> <span class="mf">8e6</span>
+<span class="c1"># Specify a bead length in meters.</span>
+<a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">bead_length</span></a> <span class="o">=</span> <span class="mf">0.001</span>
+
+<span class="n">study</span><span class="o">.</span><span class="n">generate_single_bead_permutations</span><span class="p">(</span>
+    <span class="n">material_name</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">material</span></a><span class="p">,</span>
+    <a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">bead_length</span></a><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">bead_length</span></a><span class="p">,</span>
+    <span class="n">laser_powers</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">initial_powers</span></a><span class="p">,</span>
+    <span class="n">scan_speeds</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">initial_scan_speeds</span></a><span class="p">,</span>
+    <span class="n">layer_thicknesses</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">initial_layer_thicknesses</span></a><span class="p">,</span>
+    <span class="n">beam_diameters</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">initial_beam_diameters</span></a><span class="p">,</span>
+    <span class="n">heater_temperatures</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">initial_heater_temps</span></a><span class="p">,</span>
+    <span class="n">min_area_energy_density</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">min_energy_density</span></a><span class="p">,</span>
+    <span class="n">max_area_energy_density</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">max_energy_density</span></a><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="show-the-simulations-as-a-table">
+<h2>Show the simulations as a table<a class="headerlink" href="#show-the-simulations-as-a-table" title="Link to this heading">#</a></h2>
+<p>You can use the <code class="docutils literal notranslate"><span class="pre">display</span></code> module of <code class="docutils literal notranslate"><span class="pre">ParametricStudy</span></code> to list the simulations
+as a table.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="o">.</span><span class="n">show_table</span><span class="p">(</span><span class="n">study</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_11_advanced_parametric_study_001.png" srcset="../../_images/sphx_glr_11_advanced_parametric_study_001.png" alt="11 advanced parametric study" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>show_table
+</pre></div>
+</div>
+</section>
+<section id="skip-some-simulations">
+<h2>Skip some simulations<a class="headerlink" href="#skip-some-simulations" title="Link to this heading">#</a></h2>
+<p>If you a working with a large parametric study, you may want to skip some
+simulations to reduce processing time. To do so, set the simulation status
+to <code class="docutils literal notranslate"><span class="pre">SimulationStatus.SKIP</span></code> which is defined in the <code class="docutils literal notranslate"><span class="pre">SimulationStatus</span></code>
+class. Here, a <code class="docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">DataFrame</span></code> is obtained, a filter is
+applied to get a list of simulation IDs, then the status is updated on the
+simulations with those IDs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">data_frame</span><span class="p">()</span>
+<span class="c1"># Get IDs for single bead simulations with laser power below 75 W.</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ids</span></a> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.loc.html#pandas.DataFrame.loc" title="pandas.DataFrame.loc" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-property"><span class="n">df</span><span class="o">.</span><span class="n">loc</span></a><span class="p">[</span>
+    <span class="p">(</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">LASER_POWER</span></a><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">75</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">TYPE</span></a><span class="p">]</span> <span class="o">==</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SimulationType</span><span class="o">.</span><span class="n">SINGLE_BEAD</span></a><span class="p">),</span>
+    <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">ID</span></a><span class="p">,</span>
+<span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">study</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ids</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SimulationStatus</span><span class="o">.</span><span class="n">SKIP</span></a><span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">show_table</span><span class="p">(</span><span class="n">study</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_11_advanced_parametric_study_002.png" srcset="../../_images/sphx_glr_11_advanced_parametric_study_002.png" alt="11 advanced parametric study" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>show_table
+</pre></div>
+</div>
+</section>
+<section id="run-single-bead-simulations">
+<h2>Run single bead simulations<a class="headerlink" href="#run-single-bead-simulations" title="Link to this heading">#</a></h2>
+<p>Run the simulations using <code class="docutils literal notranslate"><span class="pre">run_simulations()</span></code>. All simulations with status
+<code class="docutils literal notranslate"><span class="pre">SimulationStatus.PENDING</span></code> will be executed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">study</span><span class="o">.</span><span class="n">run_simulations</span><span class="p">(</span><span class="n">additive</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2023-10-09 16:46:43 Completed 0 of 31 simulations
+2023-10-09 16:47:12 Completed 1 of 31 simulations
+2023-10-09 16:47:12 Completed 2 of 31 simulations
+2023-10-09 16:47:16 Completed 3 of 31 simulations
+2023-10-09 16:47:39 Completed 4 of 31 simulations
+2023-10-09 16:47:45 Completed 5 of 31 simulations
+2023-10-09 16:47:47 Completed 6 of 31 simulations
+2023-10-09 16:47:48 Completed 7 of 31 simulations
+2023-10-09 16:48:04 Completed 8 of 31 simulations
+2023-10-09 16:48:15 Completed 9 of 31 simulations
+2023-10-09 16:48:20 Completed 10 of 31 simulations
+2023-10-09 16:48:29 Completed 11 of 31 simulations
+2023-10-09 16:48:32 Completed 12 of 31 simulations
+2023-10-09 16:48:43 Completed 13 of 31 simulations
+2023-10-09 16:48:54 Completed 14 of 31 simulations
+2023-10-09 16:48:57 Completed 15 of 31 simulations
+2023-10-09 16:49:03 Completed 16 of 31 simulations
+2023-10-09 16:49:21 Completed 17 of 31 simulations
+2023-10-09 16:49:24 Completed 18 of 31 simulations
+2023-10-09 16:49:25 Completed 19 of 31 simulations
+2023-10-09 16:49:34 Completed 20 of 31 simulations
+2023-10-09 16:49:52 Completed 21 of 31 simulations
+2023-10-09 16:50:04 Completed 22 of 31 simulations
+2023-10-09 16:50:06 Completed 23 of 31 simulations
+2023-10-09 16:50:39 Completed 24 of 31 simulations
+2023-10-09 16:50:40 Completed 25 of 31 simulations
+2023-10-09 16:50:48 Completed 26 of 31 simulations
+2023-10-09 16:50:52 Completed 27 of 31 simulations
+2023-10-09 16:51:18 Completed 28 of 31 simulations
+2023-10-09 16:51:23 Completed 29 of 31 simulations
+2023-10-09 16:51:26 Completed 30 of 31 simulations
+2023-10-09 16:51:30 Completed 31 of 31 simulations
+</pre></div>
+</div>
+</section>
+<section id="save-the-study-to-a-csv-file">
+<h2>Save the study to a CSV file<a class="headerlink" href="#save-the-study-to-a-csv-file" title="Link to this heading">#</a></h2>
+<p>The parametric study is saved with each update in a binary format.
+For other formats, use the <code class="docutils literal notranslate"><span class="pre">to_*</span></code> methods provided by
+<code class="docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">DataFrame</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">study</span><span class="o">.</span><span class="n">data_frame</span><span class="p">()</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;demo-study.csv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="load-a-previously-saved-study">
+<h2>Load a previously saved study<a class="headerlink" href="#load-a-previously-saved-study" title="Link to this heading">#</a></h2>
+<p>Load a previously saved study using the static method <code class="docutils literal notranslate"><span class="pre">ParameticStudy.load()</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">study2</span> <span class="o">=</span> <span class="n">ParametricStudy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;demo-study.ps&quot;</span><span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">show_table</span><span class="p">(</span><span class="n">study2</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_11_advanced_parametric_study_003.png" srcset="../../_images/sphx_glr_11_advanced_parametric_study_003.png" alt="11 advanced parametric study" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>show_table
+</pre></div>
+</div>
+</section>
+<section id="plot-single-bead-results">
+<h2>Plot single bead results<a class="headerlink" href="#plot-single-bead-results" title="Link to this heading">#</a></h2>
+<p>Plot the single bead results.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="o">.</span><span class="n">single_bead_eval_plot</span><span class="p">(</span><span class="n">study</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_11_advanced_parametric_study_004.png" srcset="../../_images/sphx_glr_11_advanced_parametric_study_004.png" alt="11 advanced parametric study" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>single_bead_eval_plot
+</pre></div>
+</div>
+</section>
+<section id="create-a-porosity-evaluation">
+<h2>Create a porosity evaluation<a class="headerlink" href="#create-a-porosity-evaluation" title="Link to this heading">#</a></h2>
+<p>You can use the insights gained from the single bead evaluation to
+generate parameters for a porosity evaluation. Alternatively, you can
+perform a porosity evaluation without a previous single bead evaluation.
+Here, the laser power and scan speeds are determined by filtering the
+single bead results where the ratio of the melt pool reference depth
+to reference width is within a specified range. Additionally, the simulations
+are restricted to a minimum build rate, which is calculated as
+scan speed * layer thickness * hatch spacing.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">data_frame</span><span class="p">()</span>
+<a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span>
+    <span class="p">(</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH</span></a><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">0.3</span><span class="p">)</span>
+    <span class="o">&amp;</span> <span class="p">(</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH</span></a><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.65</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">study</span><span class="o">.</span><span class="n">generate_porosity_permutations</span><span class="p">(</span>
+    <span class="n">material_name</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">material</span></a><span class="p">,</span>
+    <span class="n">laser_powers</span><span class="o">=</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">LASER_POWER</span></a><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+    <span class="n">scan_speeds</span><span class="o">=</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">SCAN_SPEED</span></a><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+    <span class="n">size_x</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+    <span class="n">size_y</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+    <span class="n">size_z</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+    <span class="n">layer_thicknesses</span><span class="o">=</span><span class="p">[</span><span class="mf">40e-6</span><span class="p">],</span>
+    <span class="n">heater_temperatures</span><span class="o">=</span><span class="p">[</span><span class="mi">80</span><span class="p">],</span>
+    <span class="n">beam_diameters</span><span class="o">=</span><span class="p">[</span><span class="mf">80e-6</span><span class="p">],</span>
+    <span class="n">start_angles</span><span class="o">=</span><span class="p">[</span><span class="mi">45</span><span class="p">],</span>
+    <span class="n">rotation_angles</span><span class="o">=</span><span class="p">[</span><span class="mf">67.5</span><span class="p">],</span>
+    <span class="n">hatch_spacings</span><span class="o">=</span><span class="p">[</span><span class="mf">100e-6</span><span class="p">],</span>
+    <span class="n">min_build_rate</span><span class="o">=</span><span class="mf">5e-9</span><span class="p">,</span>
+    <span class="n">iteration</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="run-porosity-simulations">
+<h2>Run porosity simulations<a class="headerlink" href="#run-porosity-simulations" title="Link to this heading">#</a></h2>
+<p>Run the simulations using <code class="docutils literal notranslate"><span class="pre">run_simulations()</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">study</span><span class="o">.</span><span class="n">run_simulations</span><span class="p">(</span><span class="n">additive</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2023-10-09 16:51:33 Completed 0 of 15 simulations
+2023-10-09 16:53:30 Completed 1 of 15 simulations
+2023-10-09 16:53:46 Completed 2 of 15 simulations
+2023-10-09 16:54:43 Completed 3 of 15 simulations
+2023-10-09 16:55:33 Completed 4 of 15 simulations
+2023-10-09 16:55:34 Completed 5 of 15 simulations
+2023-10-09 16:55:49 Completed 6 of 15 simulations
+2023-10-09 16:57:59 Completed 7 of 15 simulations
+2023-10-09 16:58:27 Completed 8 of 15 simulations
+2023-10-09 17:00:58 Completed 9 of 15 simulations
+2023-10-09 17:01:04 Completed 10 of 15 simulations
+2023-10-09 17:01:57 Completed 11 of 15 simulations
+2023-10-09 17:05:01 Completed 12 of 15 simulations
+2023-10-09 17:06:57 Completed 13 of 15 simulations
+2023-10-09 17:07:00 Completed 14 of 15 simulations
+2023-10-09 17:08:34 Completed 15 of 15 simulations
+</pre></div>
+</div>
+</section>
+<section id="plot-porosity-results">
+<h2>Plot porosity results<a class="headerlink" href="#plot-porosity-results" title="Link to this heading">#</a></h2>
+<p>Plot the porosity simulation results.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="o">.</span><span class="n">porosity_contour_plot</span><span class="p">(</span><span class="n">study</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_11_advanced_parametric_study_005.png" srcset="../../_images/sphx_glr_11_advanced_parametric_study_005.png" alt="11 advanced parametric study" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>porosity_contour_plot
+</pre></div>
+</div>
+</section>
+<section id="create-a-microstructure-evaluation">
+<h2>Create a microstructure evaluation<a class="headerlink" href="#create-a-microstructure-evaluation" title="Link to this heading">#</a></h2>
+<p>Here a set of microstructure simulations is generated using many of the same
+parameters used for the porosity simulations. The parameters <code class="docutils literal notranslate"><span class="pre">cooling_rate</span></code>,
+<code class="docutils literal notranslate"><span class="pre">thermal_gradient</span></code>, <code class="docutils literal notranslate"><span class="pre">melt_pool_width</span></code>, and <code class="docutils literal notranslate"><span class="pre">melt_pool_depth</span></code> are not
+specified so they will be calculated.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">data_frame</span><span class="p">()</span>
+<a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[(</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">TYPE</span></a><span class="p">]</span> <span class="o">==</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SimulationType</span><span class="o">.</span><span class="n">POROSITY</span></a><span class="p">)]</span>
+
+<span class="n">study</span><span class="o">.</span><span class="n">generate_microstructure_permutations</span><span class="p">(</span>
+    <span class="n">material_name</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">material</span></a><span class="p">,</span>
+    <span class="n">laser_powers</span><span class="o">=</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">LASER_POWER</span></a><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+    <span class="n">scan_speeds</span><span class="o">=</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">SCAN_SPEED</span></a><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+    <span class="n">size_x</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+    <span class="n">size_y</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+    <span class="n">size_z</span><span class="o">=</span><span class="mf">1.1e-3</span><span class="p">,</span>
+    <span class="n">sensor_dimension</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
+    <span class="n">layer_thicknesses</span><span class="o">=</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">LAYER_THICKNESS</span></a><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+    <span class="n">heater_temperatures</span><span class="o">=</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">HEATER_TEMPERATURE</span></a><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+    <span class="n">beam_diameters</span><span class="o">=</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">BEAM_DIAMETER</span></a><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+    <span class="n">start_angles</span><span class="o">=</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">START_ANGLE</span></a><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+    <span class="n">rotation_angles</span><span class="o">=</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">ROTATION_ANGLE</span></a><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+    <span class="n">hatch_spacings</span><span class="o">=</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.core.frame.DataFrame" class="sphx-glr-backref-module-pandas-core-frame sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">df</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnNames</span><span class="o">.</span><span class="n">HATCH_SPACING</span></a><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+    <span class="n">iteration</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="run-microstructure-simulations">
+<h2>Run microstructure simulations<a class="headerlink" href="#run-microstructure-simulations" title="Link to this heading">#</a></h2>
+<p>Run the simulations.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">study</span><span class="o">.</span><span class="n">run_simulations</span><span class="p">(</span><span class="n">additive</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2023-10-09 17:08:36 Completed 0 of 15 simulations
+2023-10-09 17:13:11 Completed 1 of 15 simulations
+2023-10-09 17:13:58 Completed 2 of 15 simulations
+2023-10-09 17:15:50 Completed 3 of 15 simulations
+2023-10-09 17:16:30 Completed 4 of 15 simulations
+2023-10-09 17:18:33 Completed 5 of 15 simulations
+2023-10-09 17:18:44 Completed 6 of 15 simulations
+2023-10-09 17:23:33 Completed 7 of 15 simulations
+2023-10-09 17:23:41 Completed 8 of 15 simulations
+2023-10-09 17:24:14 Completed 9 of 15 simulations
+2023-10-09 17:28:16 Completed 10 of 15 simulations
+2023-10-09 17:28:54 Completed 11 of 15 simulations
+2023-10-09 17:30:19 Completed 12 of 15 simulations
+2023-10-09 17:32:48 Completed 13 of 15 simulations
+2023-10-09 17:32:51 Completed 14 of 15 simulations
+2023-10-09 17:32:56 Completed 15 of 15 simulations
+</pre></div>
+</div>
+</section>
+<section id="plot-microstructure-results">
+<h2>Plot microstructure results<a class="headerlink" href="#plot-microstructure-results" title="Link to this heading">#</a></h2>
+<p>Plot the average grain size from the microstructure simulation results.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="o">.</span><span class="n">ave_grain_size_plot</span><span class="p">(</span><span class="n">study</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_11_advanced_parametric_study_006.png" srcset="../../_images/sphx_glr_11_advanced_parametric_study_006.png" alt="11 advanced parametric study" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>ave_grain_size_plot
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (46 minutes 47.096 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-examples-gallery-examples-11-advanced-parametric-study-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/3d170267f4d720f80d8c9b3ae8ca8077/11_advanced_parametric_study.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">11_advanced_parametric_study.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/64eb8bfe5bb4b1cfdc56f40e18b85994/11_advanced_parametric_study.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">11_advanced_parametric_study.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#perform-required-imports-and-create-a-study">Perform required imports and create a study</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#get-the-study-file-name">Get the study file name</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#select-a-material-for-the-study">Select a material for the study</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-single-bead-evaluation">Create a single bead evaluation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#show-the-simulations-as-a-table">Show the simulations as a table</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#skip-some-simulations">Skip some simulations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-single-bead-simulations">Run single bead simulations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#save-the-study-to-a-csv-file">Save the study to a CSV file</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-a-previously-saved-study">Load a previously saved study</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-single-bead-results">Plot single bead results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-porosity-evaluation">Create a porosity evaluation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-porosity-simulations">Run porosity simulations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-porosity-results">Plot porosity results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-microstructure-evaluation">Create a microstructure evaluation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-microstructure-simulations">Run microstructure simulations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-microstructure-results">Plot microstructure results</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item"> 
+<div class="tocsection editthispage">
+  <a href="https://github.com/ansys/pyadditive/edit/main/doc/source/examples/gallery_examples/11_advanced_parametric_study.rst">
+    <i class="fa-solid fa-pencil"></i>
+       Edit
+    on GitHub  
+  </a>
+</div>
+
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright (c) 2023 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the
+  <a href="https://sphinxdocs.ansys.com/version/stable/index.html"
+    >Ansys Sphinx Theme</a
+  >
+  0.11.2. <br />Last updated on
+  <span id="date"></span>
+</p>
+<script>
+  var options = { day: "numeric", month: "long", year: "numeric" };
+  var lastModifiedDate = new Date(document.lastModified);
+  var date = lastModifiedDate.toLocaleDateString("en-US", options);
+  document.getElementById("date").innerHTML = date;
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

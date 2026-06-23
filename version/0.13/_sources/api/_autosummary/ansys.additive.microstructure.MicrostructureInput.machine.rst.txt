@@ -1,0 +1,6 @@
+machine
+=======
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoproperty:: MicrostructureInput.machine

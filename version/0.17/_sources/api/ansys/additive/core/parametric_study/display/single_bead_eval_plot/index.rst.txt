@@ -1,0 +1,105 @@
+
+
+
+
+
+The ``single_bead_eval_plot.py`` module
+=======================================
+
+.. py:module:: ansys.additive.core.parametric_study.display.single_bead_eval_plot
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: single_bead_eval_plot
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~single_bead_eval_plot`
+            - Generate a heatmap to identify optimal melt pool statistics.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides an interactive heatmap to evaluate single bead results.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: single_bead_eval_plot(ps: ansys.additive.core.parametric_study.ParametricStudy)
+
+   
+   Generate a heatmap to identify optimal melt pool statistics.
+
+
+   :Parameters:
+
+       **ps** : :obj:`ParametricStudy`
+           Parametric study to plot.
+
+   :Returns:
+
+       :obj:`panel.Row`
+           Interactive plot.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

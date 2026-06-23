@@ -1,0 +1,6 @@
+solid\_thermal\_conductivity\_at\_room\_temperature
+===================================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.solid_thermal_conductivity_at_room_temperature

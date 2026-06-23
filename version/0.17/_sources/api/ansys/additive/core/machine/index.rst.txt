@@ -1,0 +1,86 @@
+
+
+
+
+
+The ``machine.py`` module
+=========================
+
+.. py:module:: ansys.additive.core.machine
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: machine
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~MachineConstants`
+            - Provides constants for additive manufacturing machine settings.
+
+
+          * - :py:attr:`~AdditiveMachine`
+            - Provides the additive manufacturing machine settings used during simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 MachineConstants<MachineConstants>
+    🝆 AdditiveMachine<AdditiveMachine>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides a container for machine parameters.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

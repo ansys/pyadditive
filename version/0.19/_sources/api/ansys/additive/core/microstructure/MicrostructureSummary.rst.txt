@@ -1,0 +1,365 @@
+
+
+
+
+
+
+:class:`MicrostructureSummary`
+==============================
+
+.. py:class:: ansys.additive.core.microstructure.MicrostructureSummary(input: MicrostructureInput, result: ansys.api.additive.v0.additive_domain_pb2.MicrostructureResult, user_data_path: str)
+
+   
+   Provides the summary of a microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: MicrostructureSummary
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Simulation input.
+          * - :py:attr:`~xy_vtk`
+            - Path to the VTK file containing the 2D grain structure data in the XY plane.
+          * - :py:attr:`~xz_vtk`
+            - Path to the VTK file containing the 2D grain structure data in the XZ plane.
+          * - :py:attr:`~yz_vtk`
+            - Path to the VTK file containing the 2D grain structure data in the YZ plane.
+          * - :py:attr:`~xy_circle_equivalence`
+            - Circle equivalence data for the XY plane.
+          * - :py:attr:`~xz_circle_equivalence`
+            - Circle equivalence data for the XZ plane.
+          * - :py:attr:`~yz_circle_equivalence`
+            - Circle equivalence data for the YZ plane.
+          * - :py:attr:`~xy_average_grain_size`
+            - Average grain size (µm) for the XY plane.
+          * - :py:attr:`~xz_average_grain_size`
+            - Average grain size (µm) for the XZ plane.
+          * - :py:attr:`~yz_average_grain_size`
+            - Average grain size (µm) for the YZ plane.
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.microstructure import MicrostructureSummary
+
+Property detail
+---------------
+
+.. py:property:: input
+
+   
+   Simulation input.
+
+   For more information, see the :class:`MicrostructureInput` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xy_vtk
+   :type: str
+
+
+   
+   Path to the VTK file containing the 2D grain structure data in the XY plane.
+
+   The VTK file contains these scalar data sets: ``GrainBoundaries``, ``Orientation_(deg)``, and
+   ``GrainNumber``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xz_vtk
+   :type: str
+
+
+   
+   Path to the VTK file containing the 2D grain structure data in the XZ plane.
+
+   The VTK file contains these scalar data sets: ``GrainBoundaries``,
+   ``Orientation_(deg)``, and ``GrainNumber``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: yz_vtk
+   :type: str
+
+
+   
+   Path to the VTK file containing the 2D grain structure data in the YZ plane.
+
+   The VTK file contains these scalar data sets: ``GrainBoundaries``,
+   ``Orientation_(deg)``, and ``GrainNumber``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xy_circle_equivalence
+   :type: pandas.DataFrame
+
+
+   
+   Circle equivalence data for the XY plane.
+
+   For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xz_circle_equivalence
+   :type: pandas.DataFrame
+
+
+   
+   Circle equivalence data for the XZ plane.
+
+   For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: yz_circle_equivalence
+   :type: pandas.DataFrame
+
+
+   
+   Circle equivalence data for the YZ plane.
+
+   For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xy_average_grain_size
+   :type: float
+
+
+   
+   Average grain size (µm) for the XY plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xz_average_grain_size
+   :type: float
+
+
+   
+   Average grain size (µm) for the XZ plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: yz_average_grain_size
+   :type: float
+
+
+   
+   Average grain size (µm) for the YZ plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+
+
+

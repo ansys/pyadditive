@@ -1,0 +1,6 @@
+tune\_material
+==============
+
+.. currentmodule:: ansys.additive.additive
+
+.. automethod:: Additive.tune_material

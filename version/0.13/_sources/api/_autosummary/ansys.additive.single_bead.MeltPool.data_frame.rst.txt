@@ -1,0 +1,6 @@
+data\_frame
+===========
+
+.. currentmodule:: ansys.additive.single_bead
+
+.. autoproperty:: MeltPool.data_frame
