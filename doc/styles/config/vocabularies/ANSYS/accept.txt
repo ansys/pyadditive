@@ -25,3 +25,5 @@ subpackages
 single sign-on
 sign-on
 pre-commmit
+Synopsys
+synopsys
