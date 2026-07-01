@@ -1,0 +1,6 @@
+coax\_ave\_output\_folder
+=========================
+
+.. currentmodule:: ansys.additive.thermal_history
+
+.. autoproperty:: ThermalHistorySummary.coax_ave_output_folder

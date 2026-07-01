@@ -1,0 +1,189 @@
+
+
+
+
+SingleBeadInput
+===============
+
+.. py:class:: SingleBeadInput(id='', bead_length=DEFAULT_BEAD_LENGTH, machine=AdditiveMachine(), material=AdditiveMaterial())
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput
+
+
+
+
+Provides input parameters for single bead simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: SingleBeadInput
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~id`
+            - User-provided ID for the simulation.
+          * - :py:attr:`~machine`
+            - Machine-related parameters.
+          * - :py:attr:`~material`
+            - Material used during simulation.
+          * - :py:attr:`~bead_length`
+            - Length (m) of bead to simulate.
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_BEAD_LENGTH`
+            - 
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.single_bead import SingleBeadInput
+
+
+Property detail
+---------------
+.. py:property:: id
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput.id
+   :type: None
+
+
+   
+   User-provided ID for the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: machine
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput.machine
+   :type: None
+
+
+   
+   Machine-related parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput.material
+   :type: None
+
+
+   
+   Material used during simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: bead_length
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput.bead_length
+   :type: None
+
+
+   
+   Length (m) of bead to simulate.
+
+   Valid values are from 1e-3 to 1e-2 m (1 to 10 mm).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: DEFAULT_BEAD_LENGTH
+   :value: 0.003
+
+   
+
+
+

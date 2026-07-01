@@ -1,0 +1,31 @@
+﻿ansys.additive.material.CharacteristicWidthDataPoint
+====================================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoclass:: CharacteristicWidthDataPoint
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      CharacteristicWidthDataPoint.characteristic_width
+      CharacteristicWidthDataPoint.laser_power
+      CharacteristicWidthDataPoint.scan_speed
+   
+   

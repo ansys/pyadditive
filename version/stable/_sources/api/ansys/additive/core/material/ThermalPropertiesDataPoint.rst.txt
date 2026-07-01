@@ -1,0 +1,287 @@
+
+
+
+
+
+
+:class:`ThermalPropertiesDataPoint`
+===================================
+
+
+.. py:class:: ansys.additive.core.material.ThermalPropertiesDataPoint(*, density: float = 0, density_ratio: float = 0, specific_heat: float = 0, specific_heat_ratio: float = 0, temperature: float = 0, thermal_conductivity: float = 0, thermal_conductivity_ratio: float = 0)
+
+   
+   Provides the container for temperature-dependent properties.
+
+   Additive material definitions include a file containing a lookup table describing
+   the material's thermal properties at different temperatures. This class represents a
+   single row in the lookup table.
+
+   Units are SI (m, kg, s, K) unless otherwise noted.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. py:currentmodule:: ThermalPropertiesDataPoint
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~density`
+            - Density (kg/m^3).
+          * - :py:attr:`~density_ratio`
+            - Density ratio.
+          * - :py:attr:`~specific_heat`
+            - Specific heat (J/kg/K).
+          * - :py:attr:`~specific_heat_ratio`
+            - Specific heat ratio.
+          * - :py:attr:`~temperature`
+            - Temperature (K).
+          * - :py:attr:`~thermal_conductivity`
+            - Thermal conductivity (W/m/K).
+          * - :py:attr:`~thermal_conductivity_ratio`
+            - Thermal conductivity ratio.
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+          * - :py:attr:`~__eq__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.material import ThermalPropertiesDataPoint
+
+Property detail
+---------------
+
+.. py:property:: density
+   :type: float
+
+
+   
+   Density (kg/m^3).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: density_ratio
+   :type: float
+
+
+   
+   Density ratio.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: specific_heat
+   :type: float
+
+
+   
+   Specific heat (J/kg/K).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: specific_heat_ratio
+   :type: float
+
+
+   
+   Specific heat ratio.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: temperature
+   :type: float
+
+
+   
+   Temperature (K).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: thermal_conductivity
+   :type: float
+
+
+   
+   Thermal conductivity (W/m/K).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: thermal_conductivity_ratio
+   :type: float
+
+
+   
+   Thermal conductivity ratio.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+.. py:method:: __eq__(other: object) -> bool
+
+
+
+

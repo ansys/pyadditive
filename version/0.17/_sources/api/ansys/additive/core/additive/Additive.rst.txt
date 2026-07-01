@@ -1,0 +1,425 @@
+
+
+
+
+Additive
+========
+
+.. py:class:: Additive(server_connections: list[str | grpc.Channel] = None, host: str | None = None, port: int = DEFAULT_ADDITIVE_SERVICE_PORT, nsims_per_server: int = 1, nservers: int = 1, product_version: str = DEFAULT_PRODUCT_VERSION, log_level: str = 'INFO', log_file: str = '')
+   :canonical: ansys.additive.core.additive.Additive
+
+
+
+
+
+   Provides the client interface to one or more Additive services.
+
+   In a typical cloud environment, a single Additive service with load balancing and
+   auto-scaling is used. The ``Additive`` client connects to the service via a
+   single connection. However, for atypical environments or when running on localhost,
+   the ``Additive`` client can perform crude load balancing by connecting to multiple
+   servers and distributing simulations across them. You can use the ``server_connections``,
+   ``nservers``, and ``nsims_per_server`` parameters to control the
+   number of servers to connect to and the number of simulations to run on each
+   server.
+
+   :Parameters:
+
+       **server_connections: list[str, grpc.Channel], None**
+           List of connection definitions for servers. The list may be a combination of strings and
+           connected :class:`grpc.Channel <grpc.Channel>` objects. Strings use the format
+           ``host:port`` to specify the server IPv4 address.
+
+       **host: str, default: None**
+           Host name or IPv4 address of the server. This parameter is ignored if the
+           ``server_channels`` or ``channel`` parameters is other than ``None``.
+
+       **port: int, default: 50052**
+           Port number to use when connecting to the server.
+
+       **nsims_per_server: int, default: 1**
+           Number of simultaneous simulations to run on each server. Each simulation
+           requires a license checkout. If a license is not available, the simulation
+           fails.
+
+       **nservers: int, default: 1**
+           Number of Additive servers to start and connect to. This parameter is only
+           applicable in `PyPIM`_-enabled cloud environments and on localhost. For
+           this to work on localhost, the Additive portion of the Ansys Structures
+           package must be installed. This parameter is ignored if the ``server_connections``
+           parameter or ``host`` parameter is other than ``None``.
+
+       **product_version: str**
+           Version of the Ansys product installation in the form ``"YYR"``, where ``YY``
+           is the two-digit year and ``R`` is the release number. For example, the release
+           2024 R1 would be specified as ``241``. This parameter is only applicable in
+           `PyPIM`_-enabled cloud environments and on localhost. Using an empty string
+           or ``None`` uses the default product version.
+
+       **log_level: str, default: "INFO"**
+           Minimum severity level of messages to log.
+
+       **log_file: str, default: ""**
+           File name to write log messages to.
+
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   Connect to a list of servers. Multiple connections to the same host are permitted.
+
+   >>> additive = Additive(server_connections=["localhost:50052", "localhost:50052", "myserver:50052"])
+
+   Connect to a single server using the host name and port number.
+
+   >>> additive = Additive(host="additive.ansys.com", port=12345)
+
+   Start and connect to two servers on localhost or in a
+   `PyPIM`_-enabled cloud environment. Allow each server to run two
+   simultaneous simulations.
+
+   >>> additive = Additive(nsims_per_server=2, nservers=2)
+
+   Start a single server on localhost or in a `PyPIM`_-enabled cloud environment.
+   Use version 2024 R1 of the Ansys product installation.
+
+   >>> additive = Additive(product_version="241")
+
+   .. _PyPIM: https://pypim.docs.pyansys.com/version/stable/index.html
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: Additive
+.. tab-set::
+
+
+
+    .. tab-item:: Methods
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~about`
+            - Print information about the client and server.
+          * - :py:attr:`~simulate`
+            - Execute additive simulations.
+          * - :py:attr:`~materials_list`
+            - Get a list of material names used in additive simulations.
+          * - :py:attr:`~material`
+            - Get a material for use in an additive simulation.
+          * - :py:attr:`~tune_material`
+            - Tune a custom material for use with additive simulations.
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~nsims_per_server`
+            - Number of simultaneous simulations to run on each server.
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_ADDITIVE_SERVICE_PORT`
+            - 
+      
+
+    .. tab-item:: Static methods
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~load_material`
+            - Load a user-provided material definition.
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.additive import Additive
+
+
+Property detail
+---------------
+.. py:property:: nsims_per_server
+   :canonical: ansys.additive.core.additive.Additive.nsims_per_server
+   :type: int
+
+
+   
+   Number of simultaneous simulations to run on each server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: DEFAULT_ADDITIVE_SERVICE_PORT
+   :value: 50052
+
+   
+
+
+Method detail
+-------------
+.. py:method:: about() -> None
+
+   
+   Print information about the client and server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: simulate(inputs: ansys.additive.core.single_bead.SingleBeadInput | ansys.additive.core.porosity.PorosityInput | ansys.additive.core.microstructure.MicrostructureInput | ansys.additive.core.thermal_history.ThermalHistoryInput | list) -> ansys.additive.core.single_bead.SingleBeadSummary | ansys.additive.core.porosity.PorositySummary | ansys.additive.core.microstructure.MicrostructureSummary | ansys.additive.core.thermal_history.ThermalHistorySummary | ansys.additive.core.simulation.SimulationError | list
+
+   
+   Execute additive simulations.
+
+
+   :Parameters:
+
+       **inputs: SingleBeadInput, PorosityInput, MicrostructureInput, ThermalHistoryInput, list**
+           Parameters to use for simulations. A list of inputs may be provided to execute multiple
+           simulations.
+
+   :Returns:
+
+       :obj:`SingleBeadSummary`, :obj:`PorositySummary`, :obj:`MicrostructureSummary`, :obj:`ThermalHistorySummary`, SimulationError,
+           ..
+
+       :class:`python:list`
+           One or more summaries of simulation results. If a list of inputs is provided, a
+           list is returned.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: materials_list() -> list[str]
+
+   
+   Get a list of material names used in additive simulations.
+
+
+
+   :Returns:
+
+       :class:`python:list`\[:class:`python:str`]
+           Names of available additive materials.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: material(name: str) -> ansys.additive.core.material.AdditiveMaterial
+
+   
+   Get a material for use in an additive simulation.
+
+
+   :Parameters:
+
+       **name: str**
+           Name of material.
+
+   :Returns:
+
+       :obj:`AdditiveMaterial`
+           ..
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: load_material(parameters_file: str, thermal_lookup_file: str, characteristic_width_lookup_file: str) -> ansys.additive.core.material.AdditiveMaterial
+   :staticmethod:
+
+   
+   Load a user-provided material definition.
+
+
+   :Parameters:
+
+       **parameters_file: str**
+           Name of the JSON file containing material parameters. For more information, see
+           `Create Material Configuration File (.json)
+           <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_create_tables.html>`_
+           in the *Additive Manufacturing Beta Features* documentation.
+
+       **thermal_lookup_file: str**
+           Name of the CSV file containing the lookup table for thermal dependent properties.
+           For more information, see `Create Material Lookup File (.csv)
+           <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_create_mat_lookup.html>`_
+           in the *Additive Manufacturing Beta Features* documentation.
+
+       **characteristic_width_lookup_file: str**
+           Name of the CSV file containing the lookup table for characteristic melt pool width. For
+           more information, see
+           `Find Characteristic Width Values and Generate Characteristic Width File (.csv)
+           <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_find_cw.html>`_
+           in the *Additive Manufacturing Beta Features* documentation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: tune_material(input: ansys.additive.core.material_tuning.MaterialTuningInput, out_dir: str = USER_DATA_PATH) -> ansys.additive.core.material_tuning.MaterialTuningSummary
+
+   
+   Tune a custom material for use with additive simulations.
+
+   This method performs the same function as the Material Tuning Tool
+   described in
+   `Find Simulation Parameters to Match Simulation to Experiments
+   <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_match_sim_to_exp.html>`_.
+   It is used for one step in the material tuning process. The other steps
+   are described in
+   `Chapter 2: Material Tuning Tool (Beta) to Create User Defined Materials
+   <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_science_BETA_material_tuning_tool.html>`_.
+
+   :Parameters:
+
+       **input: MaterialTuningInput**
+           Input parameters for material tuning.
+
+   :Returns:
+
+       :obj:`MaterialTuningSummary`
+           Summary of material tuning.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+

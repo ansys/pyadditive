@@ -1,0 +1,101 @@
+
+
+
+
+
+
+The ``single_bead.py`` module
+=============================
+
+.. py:module:: ansys.additive.core.single_bead
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: single_bead
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.single_bead.SingleBeadInput`
+            - Provides input parameters for a single bead simulation.
+
+
+          * - :py:obj:`~ansys.additive.core.single_bead.MeltPoolColumnNames`
+            - Provides column names for the melt pool data frame.
+
+
+          * - :py:obj:`~ansys.additive.core.single_bead.MeltPool`
+            - Contains the melt pool size dimensions for each time step during a single bead simulation.
+
+
+          * - :py:obj:`~ansys.additive.core.single_bead.SingleBeadSummary`
+            - Provides a summary of a single bead simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> SingleBeadInput</api/ansys/additive/core/single_bead/SingleBeadInput>
+    <span class="nf nf-cod-symbol_class"></span> MeltPoolColumnNames</api/ansys/additive/core/single_bead/MeltPoolColumnNames>
+    <span class="nf nf-cod-symbol_class"></span> MeltPool</api/ansys/additive/core/single_bead/MeltPool>
+    <span class="nf nf-cod-symbol_class"></span> SingleBeadSummary</api/ansys/additive/core/single_bead/SingleBeadSummary>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides input and result summary containers for single bead simulations.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

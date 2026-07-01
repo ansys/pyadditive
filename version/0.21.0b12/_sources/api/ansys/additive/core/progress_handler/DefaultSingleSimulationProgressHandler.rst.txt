@@ -1,0 +1,120 @@
+
+
+
+
+
+
+:class:`DefaultSingleSimulationProgressHandler`
+===============================================
+
+
+.. py:class:: ansys.additive.core.progress_handler.DefaultSingleSimulationProgressHandler
+
+   Bases: :py:obj:`IProgressHandler`
+
+
+   
+   Creates a progress bar for a single simulation.
+
+
+   :Parameters:
+
+       **sim_id** : :class:`python:str`
+           Simulation ID.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: DefaultSingleSimulationProgressHandler
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~update`
+            - Update the progress bar.
+
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__del__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.progress_handler import DefaultSingleSimulationProgressHandler
+
+
+
+Method detail
+-------------
+
+.. py:method:: update(progress: Progress)
+
+   
+   Update the progress bar.
+
+
+   :Parameters:
+
+       **progress: Progress**
+           Latest progress.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: __del__()
+
+
+
+

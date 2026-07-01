@@ -1,0 +1,363 @@
+
+
+
+
+MicrostructureSummary
+=====================
+
+.. py:class:: MicrostructureSummary(input: MicrostructureInput, result: ansys.api.additive.v0.additive_domain_pb2.MicrostructureResult, user_data_path: str)
+   :canonical: ansys.additive.core.microstructure.MicrostructureSummary
+
+
+
+
+
+   Provides the summary of a microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: MicrostructureSummary
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Simulation input.
+          * - :py:attr:`~xy_vtk`
+            - Path to the VTK file containing the 2-D grain structure data in the XY plane.
+          * - :py:attr:`~xz_vtk`
+            - Path to the VTK file containing the 2-D grain structure data in the XZ plane.
+          * - :py:attr:`~yz_vtk`
+            - Path to the VTK file containing the 2-D grain structure data in the YZ plane.
+          * - :py:attr:`~xy_circle_equivalence`
+            - Circle equivalence data for the XY plane.
+          * - :py:attr:`~xz_circle_equivalence`
+            - Circle equivalence data for the XZ plane.
+          * - :py:attr:`~yz_circle_equivalence`
+            - Circle equivalence data for the YZ plane.
+          * - :py:attr:`~xy_average_grain_size`
+            - Average grain size (µm) for the XY plane.
+          * - :py:attr:`~xz_average_grain_size`
+            - Average grain size (µm) for the XZ plane.
+          * - :py:attr:`~yz_average_grain_size`
+            - Average grain size (µm) for the YZ plane.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.microstructure import MicrostructureSummary
+
+
+Property detail
+---------------
+.. py:property:: input
+   :canonical: ansys.additive.core.microstructure.MicrostructureSummary.input
+   :type: None
+
+
+   
+   Simulation input.
+
+   For more information, see the :class:`MicrostructureInput` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xy_vtk
+   :canonical: ansys.additive.core.microstructure.MicrostructureSummary.xy_vtk
+   :type: str
+
+
+   
+   Path to the VTK file containing the 2-D grain structure data in the XY plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xz_vtk
+   :canonical: ansys.additive.core.microstructure.MicrostructureSummary.xz_vtk
+   :type: str
+
+
+   
+   Path to the VTK file containing the 2-D grain structure data in the XZ plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: yz_vtk
+   :canonical: ansys.additive.core.microstructure.MicrostructureSummary.yz_vtk
+   :type: str
+
+
+   
+   Path to the VTK file containing the 2-D grain structure data in the YZ plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xy_circle_equivalence
+   :canonical: ansys.additive.core.microstructure.MicrostructureSummary.xy_circle_equivalence
+   :type: pandas.DataFrame
+
+
+   
+   Circle equivalence data for the XY plane.
+
+   For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xz_circle_equivalence
+   :canonical: ansys.additive.core.microstructure.MicrostructureSummary.xz_circle_equivalence
+   :type: pandas.DataFrame
+
+
+   
+   Circle equivalence data for the XZ plane.
+
+   For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: yz_circle_equivalence
+   :canonical: ansys.additive.core.microstructure.MicrostructureSummary.yz_circle_equivalence
+   :type: pandas.DataFrame
+
+
+   
+   Circle equivalence data for the YZ plane.
+
+   For data frame column names, see the :class:`CircleEquivalenceColumnNames` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xy_average_grain_size
+   :canonical: ansys.additive.core.microstructure.MicrostructureSummary.xy_average_grain_size
+   :type: float
+
+
+   
+   Average grain size (µm) for the XY plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xz_average_grain_size
+   :canonical: ansys.additive.core.microstructure.MicrostructureSummary.xz_average_grain_size
+   :type: float
+
+
+   
+   Average grain size (µm) for the XZ plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: yz_average_grain_size
+   :canonical: ansys.additive.core.microstructure.MicrostructureSummary.yz_average_grain_size
+   :type: float
+
+
+   
+   Average grain size (µm) for the YZ plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
