@@ -1,0 +1,79 @@
+
+
+
+
+
+The ``parametric_runner.py`` module
+===================================
+
+.. py:module:: ansys.additive.core.parametric_study.parametric_runner
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: parametric_runner
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ParametricRunner`
+            - Provides methods to run parametric study simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 ParametricRunner<ParametricRunner>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides a class to run parametric study simulations.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

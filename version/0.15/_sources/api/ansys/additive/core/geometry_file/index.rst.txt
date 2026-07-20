@@ -1,0 +1,99 @@
+
+
+
+
+
+The ``geometry_file.py`` module
+===============================
+
+.. py:module:: ansys.additive.core.geometry_file
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: geometry_file
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~BuildFile`
+            - Provides the build file description.
+
+
+          * - :py:attr:`~StlFile`
+            - Container for the STL file definition.
+
+
+
+    .. tab-item:: Enums
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~MachineType`
+            - Machine type values.
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 BuildFile<BuildFile>
+    🝆 StlFile<StlFile>
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    ≔ MachineType<MachineType>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

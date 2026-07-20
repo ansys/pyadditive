@@ -1,0 +1,154 @@
+
+
+
+
+BuildFile
+=========
+
+.. py:class:: BuildFile(type: MachineType, path: os.PathLike)
+   :canonical: ansys.additive.core.geometry_file.BuildFile
+
+
+
+
+
+   Provides the build file description.
+
+   In the context of PyAdditive, a build file is a ZIP archive
+   containing:
+
+   - A part geometry file in STL format.
+   - Zero or more support geometry files in STL format. Support file
+     names must end in ``*_vless.stl`` for volumeless supports and
+     ``*_solid.stl`` for solid supports.
+   - One or more machine instruction files. The number and type of
+     files depend upon the machine type.
+
+   These files must be placed in the root of the archive and not
+   under a folder.
+
+   :Parameters:
+
+       **type: MachineType**
+           Type of additive machine the build file is for.
+
+       **path: os.PathLike**
+           Path to the build file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: BuildFile
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~type`
+            - Additive manufacturing machine type this file is for.
+          * - :py:attr:`~path`
+            - Path of the ZIP file.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.geometry_file import BuildFile
+
+
+Property detail
+---------------
+.. py:property:: type
+   :canonical: ansys.additive.core.geometry_file.BuildFile.type
+   :type: MachineType
+
+
+   
+   Additive manufacturing machine type this file is for.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: path
+   :canonical: ansys.additive.core.geometry_file.BuildFile.path
+   :type: str
+
+
+   
+   Path of the ZIP file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

@@ -1,0 +1,6 @@
+machine
+=======
+
+.. currentmodule:: ansys.additive.single_bead
+
+.. autoproperty:: SingleBeadInput.machine

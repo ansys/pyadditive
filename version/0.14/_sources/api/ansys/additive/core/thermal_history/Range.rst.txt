@@ -1,0 +1,37 @@
+
+
+
+
+Range
+=====
+
+.. py:class:: Range(**kwargs)
+   :canonical: ansys.additive.core.thermal_history.Range
+
+
+
+
+Defines a parameter that spans a range of values.
+
+
+
+
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.thermal_history import Range
+
+
+
+
+
