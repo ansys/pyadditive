@@ -77,7 +77,7 @@ doc = [
   "trame==3.13.2",
   "trame-vtk==2.11.13",
   "trame-plotly==3.1.2",
-  "trame-vuetify==3.2.2",
+  "trame-vuetify==3.2.5",
   "imageio==2.37.4",
   "sphinx==8.2.3",
   "sphinx-autodoc-typehints==3.1.0",
