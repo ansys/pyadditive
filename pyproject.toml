@@ -75,7 +75,7 @@ doc = [
   "pyvista==0.48.4",
   "ipywidgets==8.1.8",
   "trame==3.13.2",
-  "trame-vtk==2.11.14",
+  "trame-vtk==2.11.15",
   "trame-plotly==3.1.2",
   "trame-vuetify==3.2.5",
   "imageio==2.37.4",
