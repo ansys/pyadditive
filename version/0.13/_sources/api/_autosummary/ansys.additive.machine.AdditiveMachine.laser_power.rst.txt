@@ -1,0 +1,6 @@
+laser\_power
+============
+
+.. currentmodule:: ansys.additive.machine
+
+.. autoproperty:: AdditiveMachine.laser_power

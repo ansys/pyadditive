@@ -1,0 +1,6 @@
+sample\_min\_z
+==============
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoproperty:: MicrostructureInput.sample_min_z

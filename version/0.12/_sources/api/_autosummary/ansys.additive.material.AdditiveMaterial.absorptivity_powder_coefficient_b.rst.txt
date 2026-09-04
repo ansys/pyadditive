@@ -1,0 +1,6 @@
+absorptivity\_powder\_coefficient\_b
+====================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.absorptivity_powder_coefficient_b

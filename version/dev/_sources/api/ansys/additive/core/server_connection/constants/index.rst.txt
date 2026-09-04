@@ -1,0 +1,263 @@
+
+
+
+
+
+
+The ``constants.py`` module
+===========================
+
+.. py:module:: ansys.additive.core.server_connection.constants
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: constants
+.. tab-set::
+
+
+
+
+
+    .. tab-item:: Enums
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.server_connection.constants.TransportMode`
+            - Enum containing the different modes of connection.
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~LOCALHOST`
+            - IP address for localhost.
+
+
+          * - :py:obj:`~PYPIM_PRODUCT_NAME`
+            - Product name for the Additive server in a PyPIM environment.
+
+
+          * - :py:obj:`~DEFAULT_PRODUCT_VERSION`
+            - Default Ansys product version to use for the Additive server.
+
+
+          * - :py:obj:`~ADDITIVE_SERVER_EXE_NAME`
+            - Name of the Additive server executable.
+
+
+          * - :py:obj:`~ADDITIVE_SERVER_SUBDIR`
+            - Subdirectory for the Additive server in the Ansys installation directory.
+
+
+          * - :py:obj:`~UNIX_DOMAIN_SOCKET_SERVICE_NAME`
+            - Name of the Unix Domain Socket service.
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_enum"></span> TransportMode</api/ansys/additive/core/server_connection/constants/TransportMode>
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Constants used for server connections.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: LOCALHOST
+   :value: '127.0.0.1'
+
+
+   
+   IP address for localhost.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: PYPIM_PRODUCT_NAME
+   :value: 'additive'
+
+
+   
+   Product name for the Additive server in a PyPIM environment.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: DEFAULT_PRODUCT_VERSION
+   :value: '261'
+
+
+   
+   Default Ansys product version to use for the Additive server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: ADDITIVE_SERVER_EXE_NAME
+   :value: 'additiveserver'
+
+
+   
+   Name of the Additive server executable.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: ADDITIVE_SERVER_SUBDIR
+
+   
+   Subdirectory for the Additive server in the Ansys installation directory.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: UNIX_DOMAIN_SOCKET_SERVICE_NAME
+   :value: 'additive'
+
+
+   
+   Name of the Unix Domain Socket service.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

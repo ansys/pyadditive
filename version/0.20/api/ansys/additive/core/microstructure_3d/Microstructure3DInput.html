@@ -1,0 +1,1034 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:site_name" content="PyAnsys" />
+    <title>Microstructure3DInput &#8212; PyAdditive 0.20.0 documentation</title>
+  
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/ansys-sphinx-theme.css?v=0bf55e46" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/ansys-sphinx-theme.css?v=0bf55e46" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://www.nerdfonts.com/assets/css/webfont.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=f23d505c" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+
+  <!-- Include desired assets -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  
+
+  
+    <link href="../../../../../_static/css/breadcrumbs.css" rel="stylesheet" />
+  
+    <script src="../../../../../_static/documentation_options.js?v=ec2b1084"></script>
+    <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/thebelab-helper.js"></script>
+    <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../../_static/copybutton.js?v=49e1bf35"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/ansys/additive/core/microstructure_3d/Microstructure3DInput';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://additive.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.20';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="icon" href="../../../../../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="Microstructure3DSummary" href="Microstructure3DSummary.html" />
+    <link rel="prev" title="The microstructure_3d.py module" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.20.0" />
+  <link rel="canonical" href="https://additive.docs.pyansys.com/version/stable/api/ansys/additive/core/microstructure_3d/Microstructure3DInput.html" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="https://docs.pyansys.com/">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/pyansys_logo_transparent_black.png" class="logo__image only-light" alt="PyAdditive 0.20.0 documentation - Home"/>
+    <img src="../../../../../_static/pyansys_logo_transparent_white.png" class="logo__image only-dark pst-js-only" alt="PyAdditive 0.20.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../getting-started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../examples/gallery_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../contributing.html">
+    Contribute
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../../../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+</div></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+  
+    <div id="announcement_msg"></div>
+<script>
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(
+      (text) => (document.getElementById("announcement_msg").innerHTML = text),
+    )
+    .catch((error) => console.error(`Fetch problem: ${error.message}`));
+</script>
+  
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../getting-started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../examples/gallery_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../contributing.html">
+    Contribute
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../../../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+</div></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html"><span class="nf nf-md-package"></span> ansys.additive.core</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../examples/index.html"> <span class="nf nf-md-package"></span> examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parametric_study/index.html"> <span class="nf nf-md-package"></span> parametric_study</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../server_connection/index.html"> <span class="nf nf-md-package"></span> server_connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../additive/index.html"> <span class="nf nf-fa-file"></span> additive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conversions/index.html"> <span class="nf nf-fa-file"></span> conversions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../download/index.html"> <span class="nf nf-fa-file"></span> download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exceptions/index.html"> <span class="nf nf-fa-file"></span> exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geometry_file/index.html"> <span class="nf nf-fa-file"></span> geometry_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logger/index.html"> <span class="nf nf-fa-file"></span> logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../machine/index.html"> <span class="nf nf-fa-file"></span> machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../material/index.html"> <span class="nf nf-fa-file"></span> material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../material_tuning/index.html"> <span class="nf nf-fa-file"></span> material_tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../microstructure/index.html"> <span class="nf nf-fa-file"></span> microstructure</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html"> <span class="nf nf-fa-file"></span> microstructure_3d</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active"><a class="current reference internal" href="#"> <span class="nf nf-cod-symbol_class"></span> Microstructure3DInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Microstructure3DSummary.html"> <span class="nf nf-cod-symbol_class"></span> Microstructure3DSummary</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../misc/index.html"> <span class="nf nf-fa-file"></span> misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../porosity/index.html"> <span class="nf nf-fa-file"></span> porosity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../progress_handler/index.html"> <span class="nf nf-fa-file"></span> progress_handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation/index.html"> <span class="nf nf-fa-file"></span> simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation_error/index.html"> <span class="nf nf-fa-file"></span> simulation_error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation_requests/index.html"> <span class="nf nf-fa-file"></span> simulation_requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation_task/index.html"> <span class="nf nf-fa-file"></span> simulation_task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation_task_manager/index.html"> <span class="nf nf-fa-file"></span> simulation_task_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../single_bead/index.html"> <span class="nf nf-fa-file"></span> single_bead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../thermal_history/index.html"> <span class="nf nf-fa-file"></span> thermal_history</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+         
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="https://docs.pyansys.com/" class="nav-link">PyAnsys</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a
+        href="../../../../../index.html"
+        class="nav-link"
+        aria-label="Home"
+      >
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="../../../../index.html" class="nav-link">API reference</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="../index.html" class="nav-link">The <code class="docutils literal notranslate"><span class="pre">ansys.additive.core</span></code> library</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="index.html" class="nav-link">The <code class="docutils literal notranslate"><span class="pre">microstructure_3d.py</span></code> module</a>
+    </li>
+      
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="xref py py-class docutils literal notranslate"><span class="pre">Microstructure3DInput</span></code></span></li>
+    
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="microstructure3dinput">
+<h1><code class="xref py py-class docutils literal notranslate"><span class="pre">Microstructure3DInput</span></code><a class="headerlink" href="#microstructure3dinput" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ansys.additive.core.microstructure_3d.Microstructure3DInput">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ansys.additive.core.microstructure_3d.</span></span><span class="sig-name descname"><span class="pre">Microstructure3DInput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_min_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_POSITION_COORDINATE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_min_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_POSITION_COORDINATE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_min_z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_POSITION_COORDINATE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_SAMPLE_SIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_SAMPLE_SIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size_z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_SAMPLE_SIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_initial_microstructure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_RUN_INITIAL_MICROSTRUCTURE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transient_bulk_nucleation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_USE_TRANSIENT_BULK_NUCLEATION</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_bulk_nucleation_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_MAX_NUCLEATION_DENSITY_BULK</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_initial_random_nuclei</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_NUMBER_OF_RANDOM_NUCLEI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">machine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../machine/AdditiveMachine.html#ansys.additive.core.machine.AdditiveMachine" title="ansys.additive.core.machine.AdditiveMachine"><span class="pre">ansys.additive.core.machine.AdditiveMachine</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">material</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../material/AdditiveMaterial.html#ansys.additive.core.material.AdditiveMaterial" title="ansys.additive.core.material.AdditiveMaterial"><span class="pre">ansys.additive.core.material.AdditiveMaterial</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ansys.additive.core.microstructure_3d.Microstructure3DInput" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../simulation/SimulationInputBase.html#ansys.additive.core.simulation.SimulationInputBase" title="ansys.additive.core.simulation.SimulationInputBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ansys.additive.core.simulation.SimulationInputBase</span></code></a></p>
+<p>Provides input parameters for 3D microstructure simulation.</p>
+<p>Units are SI (m, kg, s, K) unless otherwise noted.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Beta Features Disclaimer</p>
+<ul class="simple">
+<li><p>3D microstructure simulation is a beta feature and requires <code class="docutils literal notranslate"><span class="pre">enable_beta_features=True</span></code>
+when creating the <code class="xref py py-class docutils literal notranslate"><span class="pre">Additive</span></code> client.</p></li>
+<li><p>Beta features are considered unreleased and have not been fully tested nor
+fully validated. The results are not guaranteed by Ansys, Inc. (Ansys) to be
+correct. You assume the risk of using beta features.</p></li>
+<li><p>At its discretion, Ansys may release, change, or withdraw beta features
+in future revisions.</p></li>
+<li><p>Beta features are not subject to the Ansys Class 3 error reporting system.
+Ansys makes no commitment to resolve defects reported against beta features;
+however, your feedback will help us improve the quality of the product.</p></li>
+<li><p>Ansys does not guarantee that database and/or input files used with beta
+features will run successfully from version to version of the software, nor
+with the final released version of the features. You may need to modify the
+database and/or input files before running them on other versions.</p></li>
+<li><p>Documentation for beta features is called beta documentation, and it may
+not be written to the same standard as documentation for released features.
+Beta documentation may not be complete at the time of product release.
+At its discretion, Ansys may add, change, or delete beta documentation
+at any time.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+Properties</label><div class="sd-tab-content docutils">
+<div class="pst-scrollable-table-container"><table class="table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Microstructure3DInput.sample_min_x" title="Microstructure3DInput.sample_min_x"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sample_min_x</span></code></a></p></td>
+<td><p>Minimum x coordinate of the geometry sample (m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Microstructure3DInput.sample_min_y" title="Microstructure3DInput.sample_min_y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sample_min_y</span></code></a></p></td>
+<td><p>Minimum y coordinate of the geometry sample (m).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Microstructure3DInput.sample_min_z" title="Microstructure3DInput.sample_min_z"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sample_min_z</span></code></a></p></td>
+<td><p>Minimum z coordinate of the geometry sample (m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Microstructure3DInput.sample_size_x" title="Microstructure3DInput.sample_size_x"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sample_size_x</span></code></a></p></td>
+<td><p>Size of the geometry sample in the x direction (m).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Microstructure3DInput.sample_size_y" title="Microstructure3DInput.sample_size_y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sample_size_y</span></code></a></p></td>
+<td><p>Size of the geometry sample in the y direction (m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Microstructure3DInput.sample_size_z" title="Microstructure3DInput.sample_size_z"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sample_size_z</span></code></a></p></td>
+<td><p>Size of the geometry sample in the z direction (m).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Microstructure3DInput.calculate_initial_microstructure" title="Microstructure3DInput.calculate_initial_microstructure"><code class="xref py py-attr docutils literal notranslate"><span class="pre">calculate_initial_microstructure</span></code></a></p></td>
+<td><p>Flag indicating if the initial microstructure conditions solver is to run.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Microstructure3DInput.use_transient_bulk_nucleation" title="Microstructure3DInput.use_transient_bulk_nucleation"><code class="xref py py-attr docutils literal notranslate"><span class="pre">use_transient_bulk_nucleation</span></code></a></p></td>
+<td><p>Flag indicating if nucleation is allowed in the bulk region of the meltpool.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Microstructure3DInput.max_bulk_nucleation_density" title="Microstructure3DInput.max_bulk_nucleation_density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">max_bulk_nucleation_density</span></code></a></p></td>
+<td><p>Maximum nucleation density in the bulk (grains/m^3).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Microstructure3DInput.num_initial_random_nuclei" title="Microstructure3DInput.num_initial_random_nuclei"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_initial_random_nuclei</span></code></a></p></td>
+<td><p>Number of random nuclei to use for the microstructure initial conditions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Microstructure3DInput.machine" title="Microstructure3DInput.machine"><code class="xref py py-attr docutils literal notranslate"><span class="pre">machine</span></code></a></p></td>
+<td><p>Machine-related parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Microstructure3DInput.material" title="Microstructure3DInput.material"><code class="xref py py-attr docutils literal notranslate"><span class="pre">material</span></code></a></p></td>
+<td><p>Material used during simulation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Attributes</label><div class="sd-tab-content docutils">
+<div class="pst-scrollable-table-container"><table class="table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Microstructure3DInput.DEFAULT_POSITION_COORDINATE" title="Microstructure3DInput.DEFAULT_POSITION_COORDINATE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_POSITION_COORDINATE</span></code></a></p></td>
+<td><p>Default X, Y, Z, position coordinate (m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Microstructure3DInput.MIN_POSITION_COORDINATE" title="Microstructure3DInput.MIN_POSITION_COORDINATE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_POSITION_COORDINATE</span></code></a></p></td>
+<td><p>Minimum X, Y, Z, position coordinate (m).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Microstructure3DInput.MAX_POSITION_COORDINATE" title="Microstructure3DInput.MAX_POSITION_COORDINATE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_POSITION_COORDINATE</span></code></a></p></td>
+<td><p>Maximum X, Y, Z, position coordinate (m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Microstructure3DInput.DEFAULT_SAMPLE_SIZE" title="Microstructure3DInput.DEFAULT_SAMPLE_SIZE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SAMPLE_SIZE</span></code></a></p></td>
+<td><p>Default sample size in each dimension (m).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Microstructure3DInput.MIN_SAMPLE_SIZE" title="Microstructure3DInput.MIN_SAMPLE_SIZE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_SAMPLE_SIZE</span></code></a></p></td>
+<td><p>Minimum sample size in each dimension (m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Microstructure3DInput.MAX_SAMPLE_SIZE" title="Microstructure3DInput.MAX_SAMPLE_SIZE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_SAMPLE_SIZE</span></code></a></p></td>
+<td><p>Maximum sample size in each dimension (m).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Microstructure3DInput.DEFAULT_RUN_INITIAL_MICROSTRUCTURE" title="Microstructure3DInput.DEFAULT_RUN_INITIAL_MICROSTRUCTURE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_RUN_INITIAL_MICROSTRUCTURE</span></code></a></p></td>
+<td><p>Default flag value indicating whether to run the initial microstructure conditions solver.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Microstructure3DInput.DEFAULT_USE_TRANSIENT_BULK_NUCLEATION" title="Microstructure3DInput.DEFAULT_USE_TRANSIENT_BULK_NUCLEATION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_USE_TRANSIENT_BULK_NUCLEATION</span></code></a></p></td>
+<td><p>Default flag value indicating whether to use transient bulk nucleation rather than initial microstructure conditions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Microstructure3DInput.DEFAULT_NUMBER_OF_RANDOM_NUCLEI" title="Microstructure3DInput.DEFAULT_NUMBER_OF_RANDOM_NUCLEI"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_NUMBER_OF_RANDOM_NUCLEI</span></code></a></p></td>
+<td><p>Default number of random nuclei to use in the initial microstructure conditions solver.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Microstructure3DInput.DEFAULT_MAX_NUCLEATION_DENSITY_BULK" title="Microstructure3DInput.DEFAULT_MAX_NUCLEATION_DENSITY_BULK"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_MAX_NUCLEATION_DENSITY_BULK</span></code></a></p></td>
+<td><p>Default maximum nucleation density in the bulk (grains/m^3).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-2">
+Special methods</label><div class="sd-tab-content docutils">
+<div class="pst-scrollable-table-container"><table class="table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Microstructure3DInput.__repr__" title="Microstructure3DInput.__repr__"><code class="xref py py-attr docutils literal notranslate"><span class="pre">__repr__</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Microstructure3DInput.__eq__" title="Microstructure3DInput.__eq__"><code class="xref py py-attr docutils literal notranslate"><span class="pre">__eq__</span></code></a></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="import-detail">
+<h2>Import detail<a class="headerlink" href="#import-detail" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.additive.core.microstructure_3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">Microstructure3DInput</span>
+</pre></div>
+</div>
+</section>
+<section id="property-detail">
+<h2>Property detail<a class="headerlink" href="#property-detail" title="Link to this heading">#</a></h2>
+<dl class="py property">
+<dt class="sig sig-object py" id="Microstructure3DInput.sample_min_x">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">sample_min_x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#Microstructure3DInput.sample_min_x" title="Link to this definition">#</a></dt>
+<dd><p>Minimum x coordinate of the geometry sample (m).</p>
+<p>Valid values are from the <a class="reference internal" href="#Microstructure3DInput.MIN_POSITION_COORDINATE" title="Microstructure3DInput.MIN_POSITION_COORDINATE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MIN_POSITION_COORDINATE</span></code></a> value to
+the <a class="reference internal" href="#Microstructure3DInput.MAX_POSITION_COORDINATE" title="Microstructure3DInput.MAX_POSITION_COORDINATE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAX_POSITION_COORDINATE</span></code></a> value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="Microstructure3DInput.sample_min_y">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">sample_min_y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#Microstructure3DInput.sample_min_y" title="Link to this definition">#</a></dt>
+<dd><p>Minimum y coordinate of the geometry sample (m).</p>
+<p>Valid values are from the <a class="reference internal" href="#Microstructure3DInput.MIN_POSITION_COORDINATE" title="Microstructure3DInput.MIN_POSITION_COORDINATE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MIN_POSITION_COORDINATE</span></code></a> value to the
+<a class="reference internal" href="#Microstructure3DInput.MAX_POSITION_COORDINATE" title="Microstructure3DInput.MAX_POSITION_COORDINATE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAX_POSITION_COORDINATE</span></code></a> value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="Microstructure3DInput.sample_min_z">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">sample_min_z</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#Microstructure3DInput.sample_min_z" title="Link to this definition">#</a></dt>
+<dd><p>Minimum z coordinate of the geometry sample (m).</p>
+<p>Valid values are from the <a class="reference internal" href="#Microstructure3DInput.MIN_POSITION_COORDINATE" title="Microstructure3DInput.MIN_POSITION_COORDINATE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MIN_POSITION_COORDINATE</span></code></a> value to the
+<a class="reference internal" href="#Microstructure3DInput.MAX_POSITION_COORDINATE" title="Microstructure3DInput.MAX_POSITION_COORDINATE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAX_POSITION_COORDINATE</span></code></a> value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="Microstructure3DInput.sample_size_x">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">sample_size_x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#Microstructure3DInput.sample_size_x" title="Link to this definition">#</a></dt>
+<dd><p>Size of the geometry sample in the x direction (m).</p>
+<p>Valid values are from the <a class="reference internal" href="#Microstructure3DInput.MIN_SAMPLE_SIZE" title="Microstructure3DInput.MIN_SAMPLE_SIZE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MIN_SAMPLE_SIZE</span></code></a> value to the
+<a class="reference internal" href="#Microstructure3DInput.MAX_SAMPLE_SIZE" title="Microstructure3DInput.MAX_SAMPLE_SIZE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAX_SAMPLE_SIZE</span></code></a> value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="Microstructure3DInput.sample_size_y">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">sample_size_y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#Microstructure3DInput.sample_size_y" title="Link to this definition">#</a></dt>
+<dd><p>Size of the geometry sample in the y direction (m).</p>
+<p>Valid values are from the <a class="reference internal" href="#Microstructure3DInput.MIN_SAMPLE_SIZE" title="Microstructure3DInput.MIN_SAMPLE_SIZE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MIN_SAMPLE_SIZE</span></code></a> value to the
+<a class="reference internal" href="#Microstructure3DInput.MAX_SAMPLE_SIZE" title="Microstructure3DInput.MAX_SAMPLE_SIZE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAX_SAMPLE_SIZE</span></code></a> value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="Microstructure3DInput.sample_size_z">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">sample_size_z</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#Microstructure3DInput.sample_size_z" title="Link to this definition">#</a></dt>
+<dd><p>Size of the geometry sample in the z direction (m).</p>
+<p>Valid values are from the <a class="reference internal" href="#Microstructure3DInput.MIN_SAMPLE_SIZE" title="Microstructure3DInput.MIN_SAMPLE_SIZE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MIN_SAMPLE_SIZE</span></code></a> value to the
+<a class="reference internal" href="#Microstructure3DInput.MAX_SAMPLE_SIZE" title="Microstructure3DInput.MAX_SAMPLE_SIZE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAX_SAMPLE_SIZE</span></code></a> value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="Microstructure3DInput.calculate_initial_microstructure">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">calculate_initial_microstructure</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#Microstructure3DInput.calculate_initial_microstructure" title="Link to this definition">#</a></dt>
+<dd><p>Flag indicating if the initial microstructure conditions solver is to run.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, initial condition grain identifiers and Euler angles are calculated.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the initial microstructure conditions solver is not be run.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="Microstructure3DInput.use_transient_bulk_nucleation">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">use_transient_bulk_nucleation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#Microstructure3DInput.use_transient_bulk_nucleation" title="Link to this definition">#</a></dt>
+<dd><p>Flag indicating if nucleation is allowed in the bulk region of the meltpool.</p>
+<p>Nucleation rate is controlled by bulk nucleation density.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, bulk nucleation is enabled. if <code class="docutils literal notranslate"><span class="pre">False</span></code>, bulk
+nucleation is disabled.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="Microstructure3DInput.max_bulk_nucleation_density">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">max_bulk_nucleation_density</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#Microstructure3DInput.max_bulk_nucleation_density" title="Link to this definition">#</a></dt>
+<dd><p>Maximum nucleation density in the bulk (grains/m^3).</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">use_transient_bulk_nucleation=False</span></code>, this value is ignored.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="Microstructure3DInput.num_initial_random_nuclei">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">num_initial_random_nuclei</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#Microstructure3DInput.num_initial_random_nuclei" title="Link to this definition">#</a></dt>
+<dd><p>Number of random nuclei to use for the microstructure initial conditions.</p>
+<p>This value is used by the initial microstructure conditions solver.
+If <code class="docutils literal notranslate"><span class="pre">use_transient_bulk_nucleation=True</span></code>, this value is ignored.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="Microstructure3DInput.machine">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">machine</span></span><a class="headerlink" href="#Microstructure3DInput.machine" title="Link to this definition">#</a></dt>
+<dd><p>Machine-related parameters.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="Microstructure3DInput.material">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">material</span></span><a class="headerlink" href="#Microstructure3DInput.material" title="Link to this definition">#</a></dt>
+<dd><p>Material used during simulation.</p>
+</dd></dl>
+
+</section>
+<section id="attribute-detail">
+<h2>Attribute detail<a class="headerlink" href="#attribute-detail" title="Link to this heading">#</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Microstructure3DInput.DEFAULT_POSITION_COORDINATE">
+<span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_POSITION_COORDINATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#Microstructure3DInput.DEFAULT_POSITION_COORDINATE" title="Link to this definition">#</a></dt>
+<dd><p>Default X, Y, Z, position coordinate (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Microstructure3DInput.MIN_POSITION_COORDINATE">
+<span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">MIN_POSITION_COORDINATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#Microstructure3DInput.MIN_POSITION_COORDINATE" title="Link to this definition">#</a></dt>
+<dd><p>Minimum X, Y, Z, position coordinate (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Microstructure3DInput.MAX_POSITION_COORDINATE">
+<span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">MAX_POSITION_COORDINATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#Microstructure3DInput.MAX_POSITION_COORDINATE" title="Link to this definition">#</a></dt>
+<dd><p>Maximum X, Y, Z, position coordinate (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Microstructure3DInput.DEFAULT_SAMPLE_SIZE">
+<span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_SAMPLE_SIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0001</span></em><a class="headerlink" href="#Microstructure3DInput.DEFAULT_SAMPLE_SIZE" title="Link to this definition">#</a></dt>
+<dd><p>Default sample size in each dimension (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Microstructure3DInput.MIN_SAMPLE_SIZE">
+<span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">MIN_SAMPLE_SIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.5e-05</span></em><a class="headerlink" href="#Microstructure3DInput.MIN_SAMPLE_SIZE" title="Link to this definition">#</a></dt>
+<dd><p>Minimum sample size in each dimension (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Microstructure3DInput.MAX_SAMPLE_SIZE">
+<span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">MAX_SAMPLE_SIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0005</span></em><a class="headerlink" href="#Microstructure3DInput.MAX_SAMPLE_SIZE" title="Link to this definition">#</a></dt>
+<dd><p>Maximum sample size in each dimension (m).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Microstructure3DInput.DEFAULT_RUN_INITIAL_MICROSTRUCTURE">
+<span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_RUN_INITIAL_MICROSTRUCTURE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#Microstructure3DInput.DEFAULT_RUN_INITIAL_MICROSTRUCTURE" title="Link to this definition">#</a></dt>
+<dd><p>Default flag value indicating whether to run the initial microstructure conditions solver.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Microstructure3DInput.DEFAULT_USE_TRANSIENT_BULK_NUCLEATION">
+<span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_USE_TRANSIENT_BULK_NUCLEATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#Microstructure3DInput.DEFAULT_USE_TRANSIENT_BULK_NUCLEATION" title="Link to this definition">#</a></dt>
+<dd><p>Default flag value indicating whether to use transient bulk nucleation rather than initial microstructure conditions.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Microstructure3DInput.DEFAULT_NUMBER_OF_RANDOM_NUCLEI">
+<span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_NUMBER_OF_RANDOM_NUCLEI</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8000</span></em><a class="headerlink" href="#Microstructure3DInput.DEFAULT_NUMBER_OF_RANDOM_NUCLEI" title="Link to this definition">#</a></dt>
+<dd><p>Default number of random nuclei to use in the initial microstructure conditions solver.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Microstructure3DInput.DEFAULT_MAX_NUCLEATION_DENSITY_BULK">
+<span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_MAX_NUCLEATION_DENSITY_BULK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#Microstructure3DInput.DEFAULT_MAX_NUCLEATION_DENSITY_BULK" title="Link to this definition">#</a></dt>
+<dd><p>Default maximum nucleation density in the bulk (grains/m^3).</p>
+</dd></dl>
+
+</section>
+<section id="method-detail">
+<h2>Method detail<a class="headerlink" href="#method-detail" title="Link to this heading">#</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="Microstructure3DInput.__repr__">
+<span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Microstructure3DInput.__repr__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Microstructure3DInput.__eq__">
+<span class="sig-prename descclassname"><span class="pre">Microstructure3DInput.</span></span><span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">__o</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#Microstructure3DInput.__eq__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ansys.additive.core.microstructure_3d.Microstructure3DInput"><code class="docutils literal notranslate"><span class="pre">ansys.additive.core.microstructure_3d.Microstructure3DInput</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-detail">Import detail</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#property-detail">Property detail</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.sample_min_x"><code class="docutils literal notranslate"><span class="pre">sample_min_x</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.sample_min_y"><code class="docutils literal notranslate"><span class="pre">sample_min_y</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.sample_min_z"><code class="docutils literal notranslate"><span class="pre">sample_min_z</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.sample_size_x"><code class="docutils literal notranslate"><span class="pre">sample_size_x</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.sample_size_y"><code class="docutils literal notranslate"><span class="pre">sample_size_y</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.sample_size_z"><code class="docutils literal notranslate"><span class="pre">sample_size_z</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.calculate_initial_microstructure"><code class="docutils literal notranslate"><span class="pre">calculate_initial_microstructure</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.use_transient_bulk_nucleation"><code class="docutils literal notranslate"><span class="pre">use_transient_bulk_nucleation</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.max_bulk_nucleation_density"><code class="docutils literal notranslate"><span class="pre">max_bulk_nucleation_density</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.num_initial_random_nuclei"><code class="docutils literal notranslate"><span class="pre">num_initial_random_nuclei</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.machine"><code class="docutils literal notranslate"><span class="pre">machine</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.material"><code class="docutils literal notranslate"><span class="pre">material</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attribute-detail">Attribute detail</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.DEFAULT_POSITION_COORDINATE"><code class="docutils literal notranslate"><span class="pre">DEFAULT_POSITION_COORDINATE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.MIN_POSITION_COORDINATE"><code class="docutils literal notranslate"><span class="pre">MIN_POSITION_COORDINATE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.MAX_POSITION_COORDINATE"><code class="docutils literal notranslate"><span class="pre">MAX_POSITION_COORDINATE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.DEFAULT_SAMPLE_SIZE"><code class="docutils literal notranslate"><span class="pre">DEFAULT_SAMPLE_SIZE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.MIN_SAMPLE_SIZE"><code class="docutils literal notranslate"><span class="pre">MIN_SAMPLE_SIZE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.MAX_SAMPLE_SIZE"><code class="docutils literal notranslate"><span class="pre">MAX_SAMPLE_SIZE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.DEFAULT_RUN_INITIAL_MICROSTRUCTURE"><code class="docutils literal notranslate"><span class="pre">DEFAULT_RUN_INITIAL_MICROSTRUCTURE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.DEFAULT_USE_TRANSIENT_BULK_NUCLEATION"><code class="docutils literal notranslate"><span class="pre">DEFAULT_USE_TRANSIENT_BULK_NUCLEATION</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.DEFAULT_NUMBER_OF_RANDOM_NUCLEI"><code class="docutils literal notranslate"><span class="pre">DEFAULT_NUMBER_OF_RANDOM_NUCLEI</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.DEFAULT_MAX_NUCLEATION_DENSITY_BULK"><code class="docutils literal notranslate"><span class="pre">DEFAULT_MAX_NUCLEATION_DENSITY_BULK</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#method-detail">Method detail</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.__repr__"><code class="docutils literal notranslate"><span class="pre">__repr__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Microstructure3DInput.__eq__"><code class="docutils literal notranslate"><span class="pre">__eq__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item"> 
+<div class="tocsection editthispage">
+  <a href="http://github.com/ansys/pyadditive/edit/main/ansys/additive/core/microstructure_3d/Microstructure3DInput.py">
+    <i class="fa-solid fa-pencil"></i>
+       Edit
+    on GitHub  
+  </a>
+</div>
+
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+
+  <!-- Include desired assets -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.7/require.min.js"></script>
+
+<script>
+// Passing the search options to the search.js file
+const SEARCH_OPTIONS = JSON.parse('{"keys": ["title", "text", "objectID"], "limit": 10, "threshold": 0.2}');
+const SEARCH_FILE = "../../../../../_static/search.json";
+const ADVANCE_SEARCH_PATH = "../../../../../search.html";
+const EXTRA_SOURCES = JSON.parse('""');
+</script>
+
+
+<script src="../../../../../_static/js/search.js"></script>
+
+  
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright (c) 2025 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the
+  <a href="https://sphinxdocs.ansys.com/version/stable/index.html"
+    >Ansys Sphinx Theme</a
+  >
+  1.5.0. <br />Last updated on
+  <span id="ast_build_date"></span>
+</p>
+<script>
+  var options = { day: "numeric", month: "long", year: "numeric" };
+  var ast_lastModifiedDate = new Date(document.lastModified);
+  var ast_build_date = ast_lastModifiedDate.toLocaleDateString("en-US", options);
+  document.getElementById("ast_build_date").innerHTML = ast_build_date;
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

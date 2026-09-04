@@ -1,0 +1,306 @@
+
+
+
+
+
+
+:class:`SimulationTaskManager`
+==============================
+
+
+.. py:class:: ansys.additive.core.simulation_task_manager.SimulationTaskManager
+
+   
+   Provides a manager for simulation tasks.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: SimulationTaskManager
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~add_task`
+            - Add a task to this manager.
+          * - :py:attr:`~status`
+            - Get status of each operation stored in this manager.
+          * - :py:attr:`~wait_all`
+            - Wait for all simulations to finish. A simple loop that waits for each task will wait for the
+          * - :py:attr:`~cancel_all`
+            - Cancel all simulations belonging to this simulation task manager.
+          * - :py:attr:`~summaries`
+            - Get a list of the summaries of completed simulations only.
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~tasks`
+            - Get the list of tasks managed by this manager.
+          * - :py:attr:`~simulation_ids`
+            - Get the list of the simulation ids managed by this manager.
+          * - :py:attr:`~done`
+            - Check if all tasks are done.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.simulation_task_manager import SimulationTaskManager
+
+Property detail
+---------------
+
+.. py:property:: tasks
+   :type: list[ansys.additive.core.simulation_task.SimulationTask]
+
+
+   
+   Get the list of tasks managed by this manager.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: simulation_ids
+   :type: list[str]
+
+
+   
+   Get the list of the simulation ids managed by this manager.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: done
+   :type: bool
+
+
+   
+   Check if all tasks are done.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: add_task(task: ansys.additive.core.simulation_task.SimulationTask)
+
+   
+   Add a task to this manager.
+
+
+   :Parameters:
+
+       **task: SimulationTask**
+           The simulation task holding the long-running operation and corresponding server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: status(progress_handler: ansys.additive.core.progress_handler.IProgressHandler | None = None) -> list[tuple[str, ansys.additive.core.progress_handler.Progress]]
+
+   
+   Get status of each operation stored in this manager.
+
+
+   :Parameters:
+
+       **progress_handler: IProgressHandler, None, default: None**
+           Handler for progress updates. If ``None``, no progress updates are provided.
+
+
+
+   :Returns:
+
+       :obj:`List` :obj:`of` :obj:`tuples` :obj:`with` :obj:`each` :class:`python:tuple` :obj:`containing` :obj:`the` :obj:`operation` :obj:`name` :obj:`and` :obj:`an` :obj:`instance` :obj:`of` :obj:`Progress`
+           ..
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: wait_all(progress_handler: ansys.additive.core.progress_handler.IProgressHandler | None = None) -> None
+
+   
+   Wait for all simulations to finish. A simple loop that waits for each task will wait for the
+   simulation that takes the longest. This works because wait returns immediately if operation is done.
+
+
+   :Parameters:
+
+       **progress_handler: IProgressHandler, None, default: None**
+           Handler for progress updates. If ``None``, no progress updates are provided.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: cancel_all() -> None
+
+   
+   Cancel all simulations belonging to this simulation task manager.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: summaries()
+
+   
+   Get a list of the summaries of completed simulations only.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

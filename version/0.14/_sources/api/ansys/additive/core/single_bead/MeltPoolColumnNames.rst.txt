@@ -1,0 +1,94 @@
+
+
+
+
+MeltPoolColumnNames
+===================
+
+.. py:class:: MeltPoolColumnNames
+   :canonical: ansys.additive.core.single_bead.MeltPoolColumnNames
+
+
+
+
+Provides column names for the melt pool data frame.
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: MeltPoolColumnNames
+.. tab-set::
+
+
+
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~WIDTH`
+            - 
+          * - :py:attr:`~DEPTH`
+            - 
+          * - :py:attr:`~LENGTH`
+            - 
+          * - :py:attr:`~REFERENCE_WIDTH`
+            - 
+          * - :py:attr:`~REFERENCE_DEPTH`
+            - 
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.single_bead import MeltPoolColumnNames
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: WIDTH
+   :value: 'width'
+
+   
+
+.. py:attribute:: DEPTH
+   :value: 'depth'
+
+   
+
+.. py:attribute:: LENGTH
+   :value: 'length'
+
+   
+
+.. py:attribute:: REFERENCE_WIDTH
+   :value: 'reference_width'
+
+   
+
+.. py:attribute:: REFERENCE_DEPTH
+   :value: 'reference_depth'
+
+   
+
+
+

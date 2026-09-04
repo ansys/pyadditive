@@ -1,0 +1,280 @@
+
+
+
+
+SingleBeadInput
+===============
+
+.. py:class:: SingleBeadInput(id: str = '', bead_length: float = DEFAULT_BEAD_LENGTH, machine: ansys.additive.core.machine.AdditiveMachine = AdditiveMachine(), material: ansys.additive.core.material.AdditiveMaterial = AdditiveMaterial())
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput
+
+
+
+
+
+   Provides input parameters for a single bead simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: SingleBeadInput
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~id`
+            - User-provided ID for the simulation.
+          * - :py:attr:`~machine`
+            - Machine parameters.
+          * - :py:attr:`~material`
+            - Material parameters.
+          * - :py:attr:`~bead_length`
+            - Length (m) of bead to simulate.
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_BEAD_LENGTH`
+            - Default bead length (m).
+          * - :py:attr:`~MIN_BEAD_LENGTH`
+            - Minimum bead length (m).
+          * - :py:attr:`~MAX_BEAD_LENGTH`
+            - Maximum bead length (m).
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.single_bead import SingleBeadInput
+
+
+Property detail
+---------------
+.. py:property:: id
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput.id
+   :type: str
+
+
+   
+   User-provided ID for the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: machine
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput.machine
+   :type: AdditiveMachine
+
+
+   
+   Machine parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput.material
+   :type: AdditiveMaterial
+
+
+   
+   Material parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: bead_length
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput.bead_length
+   :type: float
+
+
+   
+   Length (m) of bead to simulate.
+
+   Valid values are from the :obj:`MIN_BEAD_LENGTH` value to the
+   :obj:`MAX_BEAD_LENGTH` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: DEFAULT_BEAD_LENGTH
+   :value: 0.003
+
+   
+   Default bead length (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_BEAD_LENGTH
+   :value: 0.001
+
+   
+   Minimum bead length (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_BEAD_LENGTH
+   :value: 0.01
+
+   
+   Maximum bead length (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

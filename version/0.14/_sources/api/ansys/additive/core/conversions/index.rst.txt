@@ -1,0 +1,106 @@
+
+
+
+
+
+The ``conversions.py`` module
+=============================
+
+.. py:module:: ansys.additive.core.conversions
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: conversions
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~celsius_to_kelvin`
+            - 
+
+
+          * - :py:attr:`~kelvin_to_celsius`
+            - 
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~MM_TO_METER`
+            - 
+
+
+          * - :py:attr:`~METER_TO_MM`
+            - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+.. py:function:: celsius_to_kelvin(celsius)
+
+
+
+
+.. py:function:: kelvin_to_celsius(kelvin)
+
+
+.. py:data:: MM_TO_METER
+   :value: 0.001
+
+   
+
+.. py:data:: METER_TO_MM
+   :value: 1000
+
+   
+
+
+

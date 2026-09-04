@@ -1,0 +1,6 @@
+hatch\_spacing
+==============
+
+.. currentmodule:: ansys.additive.machine
+
+.. autoproperty:: AdditiveMachine.hatch_spacing

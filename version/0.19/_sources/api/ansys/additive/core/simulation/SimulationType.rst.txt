@@ -1,0 +1,155 @@
+
+
+
+
+
+
+:class:`SimulationType`
+=======================
+
+.. py:class:: ansys.additive.core.simulation.SimulationType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   
+   Provides simulation types.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: SimulationType
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~SINGLE_BEAD`
+            - Single bead simulation.
+          * - :py:attr:`~POROSITY`
+            - Porosity simulation.
+          * - :py:attr:`~MICROSTRUCTURE`
+            - Microstructure simulation.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.simulation import SimulationType
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: SINGLE_BEAD
+   :value: 'SingleBead'
+
+
+   
+   Single bead simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: POROSITY
+   :value: 'Porosity'
+
+
+   
+   Porosity simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MICROSTRUCTURE
+   :value: 'Microstructure'
+
+
+   
+   Microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

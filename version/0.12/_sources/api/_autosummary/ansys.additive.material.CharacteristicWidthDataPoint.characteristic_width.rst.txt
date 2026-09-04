@@ -1,0 +1,6 @@
+characteristic\_width
+=====================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: CharacteristicWidthDataPoint.characteristic_width

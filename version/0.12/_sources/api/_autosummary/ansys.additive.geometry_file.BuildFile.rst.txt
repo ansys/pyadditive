@@ -1,0 +1,30 @@
+﻿ansys.additive.geometry\_file.BuildFile
+=======================================
+
+.. currentmodule:: ansys.additive.geometry_file
+
+.. autoclass:: BuildFile
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      BuildFile.path
+      BuildFile.type
+   
+   

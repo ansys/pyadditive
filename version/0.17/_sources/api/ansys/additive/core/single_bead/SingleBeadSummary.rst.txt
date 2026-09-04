@@ -1,0 +1,135 @@
+
+
+
+
+SingleBeadSummary
+=================
+
+.. py:class:: SingleBeadSummary(input: SingleBeadInput, msg: ansys.api.additive.v0.additive_domain_pb2.MeltPool)
+   :canonical: ansys.additive.core.single_bead.SingleBeadSummary
+
+
+
+
+
+   Provides a summary of a single bead simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: SingleBeadSummary
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Simulation input.
+          * - :py:attr:`~melt_pool`
+            - Resulting melt pool.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.single_bead import SingleBeadSummary
+
+
+Property detail
+---------------
+.. py:property:: input
+   :canonical: ansys.additive.core.single_bead.SingleBeadSummary.input
+   :type: SingleBeadInput
+
+
+   
+   Simulation input.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: melt_pool
+   :canonical: ansys.additive.core.single_bead.SingleBeadSummary.melt_pool
+   :type: MeltPool
+
+
+   
+   Resulting melt pool.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

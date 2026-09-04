@@ -1,0 +1,6 @@
+heater\_temperature
+===================
+
+.. currentmodule:: ansys.additive.machine
+
+.. autoproperty:: AdditiveMachine.heater_temperature

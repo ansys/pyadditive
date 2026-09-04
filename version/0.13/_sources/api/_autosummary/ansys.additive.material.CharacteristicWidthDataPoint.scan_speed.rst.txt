@@ -1,0 +1,6 @@
+scan\_speed
+===========
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: CharacteristicWidthDataPoint.scan_speed

@@ -1,0 +1,80 @@
+
+
+
+
+
+The ``simulation.py`` module
+============================
+
+.. py:module:: ansys.additive.core.simulation
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: simulation
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~SimulationType`
+            - Provides simulation types.
+
+
+          * - :py:attr:`~SimulationStatus`
+            - Simulation status values.
+
+
+          * - :py:attr:`~SimulationError`
+            - Provides simulation errors.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 SimulationType<SimulationType>
+    🝆 SimulationStatus<SimulationStatus>
+    🝆 SimulationError<SimulationError>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

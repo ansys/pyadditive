@@ -1,0 +1,6 @@
+melt\_pool\_width
+=================
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoproperty:: MicrostructureInput.melt_pool_width

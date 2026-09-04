@@ -1,0 +1,101 @@
+
+
+
+
+
+
+The ``thermal_history.py`` module
+=================================
+
+.. py:module:: ansys.additive.core.thermal_history
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: thermal_history
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.thermal_history.Range`
+            - Defines a range of values.
+
+
+          * - :py:obj:`~ansys.additive.core.thermal_history.CoaxialAverageSensorInputs`
+            - Provides descriptions for coaxial average sensors.
+
+
+          * - :py:obj:`~ansys.additive.core.thermal_history.ThermalHistoryInput`
+            - Provides input parameters for microstructure simulation.
+
+
+          * - :py:obj:`~ansys.additive.core.thermal_history.ThermalHistorySummary`
+            - Summary of a thermal history simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> Range</api/ansys/additive/core/thermal_history/Range>
+    <span class="nf nf-cod-symbol_class"></span> CoaxialAverageSensorInputs</api/ansys/additive/core/thermal_history/CoaxialAverageSensorInputs>
+    <span class="nf nf-cod-symbol_class"></span> ThermalHistoryInput</api/ansys/additive/core/thermal_history/ThermalHistoryInput>
+    <span class="nf nf-cod-symbol_class"></span> ThermalHistorySummary</api/ansys/additive/core/thermal_history/ThermalHistorySummary>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides input and result summary containers for thermal history simulations.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

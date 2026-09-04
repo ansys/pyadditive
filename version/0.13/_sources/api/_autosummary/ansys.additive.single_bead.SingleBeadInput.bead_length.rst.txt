@@ -1,0 +1,6 @@
+bead\_length
+============
+
+.. currentmodule:: ansys.additive.single_bead
+
+.. autoproperty:: SingleBeadInput.bead_length

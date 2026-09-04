@@ -1,0 +1,6 @@
+id
+==
+
+.. currentmodule:: ansys.additive.single_bead
+
+.. autoproperty:: SingleBeadInput.id

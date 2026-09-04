@@ -1,0 +1,168 @@
+
+
+
+
+CharacteristicWidthDataPoint
+============================
+
+.. py:class:: CharacteristicWidthDataPoint(*, laser_power: float = 0, scan_speed: float = 0, characteristic_width: float = 0)
+   :canonical: ansys.additive.core.material.CharacteristicWidthDataPoint
+
+
+
+
+
+   Provides the container for a characteristic width data point.
+
+   Additive material definitions include a file containing a
+   characteristic width lookup table, allowing a given laser speed and
+   power to be correlated to a characteristic melt pool width. This
+   class represents a single row in the lookup table.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: CharacteristicWidthDataPoint
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~characteristic_width`
+            - Characteristic melt pool width for a given laser power and scan
+          * - :py:attr:`~laser_power`
+            - Laser power (W).
+          * - :py:attr:`~scan_speed`
+            - Laser scan speed (m/s).
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.material import CharacteristicWidthDataPoint
+
+
+Property detail
+---------------
+.. py:property:: characteristic_width
+   :canonical: ansys.additive.core.material.CharacteristicWidthDataPoint.characteristic_width
+   :type: float
+
+
+   
+   Characteristic melt pool width for a given laser power and scan
+   speed (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: laser_power
+   :canonical: ansys.additive.core.material.CharacteristicWidthDataPoint.laser_power
+   :type: float
+
+
+   
+   Laser power (W).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: scan_speed
+   :canonical: ansys.additive.core.material.CharacteristicWidthDataPoint.scan_speed
+   :type: float
+
+
+   
+   Laser scan speed (m/s).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

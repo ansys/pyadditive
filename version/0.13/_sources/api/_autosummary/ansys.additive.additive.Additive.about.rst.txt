@@ -1,0 +1,6 @@
+about
+=====
+
+.. currentmodule:: ansys.additive.additive
+
+.. automethod:: Additive.about

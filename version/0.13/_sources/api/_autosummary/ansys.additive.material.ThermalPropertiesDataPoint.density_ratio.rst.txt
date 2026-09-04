@@ -1,0 +1,6 @@
+density\_ratio
+==============
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: ThermalPropertiesDataPoint.density_ratio

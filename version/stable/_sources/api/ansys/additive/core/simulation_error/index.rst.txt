@@ -1,0 +1,80 @@
+
+
+
+
+
+
+The ``simulation_error.py`` module
+==================================
+
+.. py:module:: ansys.additive.core.simulation_error
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: simulation_error
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.simulation_error.SimulationError`
+            - Provides simulation error information.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> SimulationError</api/ansys/additive/core/simulation_error/SimulationError>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides simulation error information.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

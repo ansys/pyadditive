@@ -1,0 +1,116 @@
+
+
+
+
+
+The ``additive.py`` module
+==========================
+
+.. py:module:: ansys.additive.core.additive
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: additive
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~Additive`
+            - Provides the client interface to the Additive service.
+
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~MAX_MESSAGE_LENGTH`
+            - 
+
+
+          * - :py:attr:`~DEFAULT_ADDITIVE_SERVICE_PORT`
+            - 
+
+
+          * - :py:attr:`~LOCALHOST`
+            - 
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 Additive<Additive>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides for interacting with the Additive service.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: MAX_MESSAGE_LENGTH
+
+   
+
+.. py:data:: DEFAULT_ADDITIVE_SERVICE_PORT
+   :value: 50052
+
+   
+
+.. py:data:: LOCALHOST
+   :value: '127.0.0.1'
+
+   
+
+
+

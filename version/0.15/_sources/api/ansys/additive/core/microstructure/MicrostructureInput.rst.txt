@@ -1,0 +1,603 @@
+
+
+
+
+MicrostructureInput
+===================
+
+.. py:class:: MicrostructureInput(id: str = '', *, sample_min_x: float = DEFAULT_POSITION_COORDINATE, sample_min_y: float = DEFAULT_POSITION_COORDINATE, sample_min_z: float = DEFAULT_POSITION_COORDINATE, sample_size_x: float = DEFAULT_SAMPLE_SIZE, sample_size_y: float = DEFAULT_SAMPLE_SIZE, sample_size_z: float = DEFAULT_SAMPLE_SIZE, sensor_dimension: float = DEFAULT_SENSOR_DIMENSION, use_provided_thermal_parameters: bool = DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS, cooling_rate: float = DEFAULT_COOLING_RATE, thermal_gradient: float = DEFAULT_THERMAL_GRADIENT, melt_pool_width: float = DEFAULT_MELT_POOL_WIDTH, melt_pool_depth: float = DEFAULT_MELT_POOL_DEPTH, random_seed: int = DEFAULT_RANDOM_SEED, machine: ansys.additive.core.machine.AdditiveMachine = AdditiveMachine(), material: ansys.additive.core.material.AdditiveMaterial = AdditiveMaterial())
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput
+
+
+
+
+Provides input parameters for microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: MicrostructureInput
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~id`
+            - User-provided ID for this simulation.
+          * - :py:attr:`~machine`
+            - Machine-related parameters.
+          * - :py:attr:`~material`
+            - Material used during simulation.
+          * - :py:attr:`~sample_min_x`
+            - Minimum x coordinate (m) of the geometry sample.
+          * - :py:attr:`~sample_min_y`
+            - Minimum y coordinate (m) of the geometry sample.
+          * - :py:attr:`~sample_min_z`
+            - Minimum z coordinate (m) of the geometry sample.
+          * - :py:attr:`~sample_size_x`
+            - Size of the geometry sample in the x direction (m).
+          * - :py:attr:`~sample_size_y`
+            - Size of the geometry sample in the y direction (m).
+          * - :py:attr:`~sample_size_z`
+            - Size of the geometry sample in the z direction (m).
+          * - :py:attr:`~sensor_dimension`
+            - Dimension of the sensor (m).
+          * - :py:attr:`~use_provided_thermal_parameters`
+            - Flag indicating if the ``cooling_rate``, ``thermal_gradient``,
+          * - :py:attr:`~cooling_rate`
+            - Material cooling rate (K/s).
+          * - :py:attr:`~thermal_gradient`
+            - Material thermal gradient (K/m).
+          * - :py:attr:`~melt_pool_width`
+            - Melt pool width (m).
+          * - :py:attr:`~melt_pool_depth`
+            - Melt pool depth (m).
+          * - :py:attr:`~random_seed`
+            - Random seed for the simulation.
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_POSITION_COORDINATE`
+            - 
+          * - :py:attr:`~DEFAULT_SAMPLE_SIZE`
+            - 
+          * - :py:attr:`~DEFAULT_SENSOR_DIMENSION`
+            - 
+          * - :py:attr:`~DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS`
+            - 
+          * - :py:attr:`~DEFAULT_COOLING_RATE`
+            - 
+          * - :py:attr:`~DEFAULT_THERMAL_GRADIENT`
+            - 
+          * - :py:attr:`~DEFAULT_MELT_POOL_WIDTH`
+            - 
+          * - :py:attr:`~DEFAULT_MELT_POOL_DEPTH`
+            - 
+          * - :py:attr:`~DEFAULT_RANDOM_SEED`
+            - 
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.microstructure import MicrostructureInput
+
+
+Property detail
+---------------
+.. py:property:: id
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.id
+   :type: str
+
+
+   
+   User-provided ID for this simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: machine
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.machine
+   :type: None
+
+
+   
+   Machine-related parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.material
+   :type: None
+
+
+   
+   Material used during simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_min_x
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.sample_min_x
+   :type: float
+
+
+   
+   Minimum x coordinate (m) of the geometry sample.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_min_y
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.sample_min_y
+   :type: float
+
+
+   
+   Minimum y coordinate (m) of the geometry sample.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_min_z
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.sample_min_z
+   :type: float
+
+
+   
+   Minimum z coordinate (m) of the geometry sample.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_size_x
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.sample_size_x
+   :type: float
+
+
+   
+   Size of the geometry sample in the x direction (m).
+
+   Valid values are from 0.001 to 0.01.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_size_y
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.sample_size_y
+   :type: float
+
+
+   
+   Size of the geometry sample in the y direction (m).
+
+   Valid values are from 0.001 to 0.01.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_size_z
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.sample_size_z
+   :type: float
+
+
+   
+   Size of the geometry sample in the z direction (m).
+
+   Valid values are from 0.001 to 0.01.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sensor_dimension
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.sensor_dimension
+   :type: float
+
+
+   
+   Dimension of the sensor (m).
+
+   Valid values are from 0.0001 to 0.001.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: use_provided_thermal_parameters
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.use_provided_thermal_parameters
+   :type: bool
+
+
+   
+   Flag indicating if the ``cooling_rate``, ``thermal_gradient``,
+   ``melt_pool_depth``, and ``melt_pool_width`` parameters have been
+   provided by the user.
+
+   If the value is ``False``, these values
+   will be calculated. Default is ``False``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: cooling_rate
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.cooling_rate
+   :type: float
+
+
+   
+   Material cooling rate (K/s).
+
+   Valid values are from 1e5 to 1e7.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: thermal_gradient
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.thermal_gradient
+   :type: float
+
+
+   
+   Material thermal gradient (K/m).
+
+   Valid values are from 1e5 to 1e8.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: melt_pool_width
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.melt_pool_width
+   :type: float
+
+
+   
+   Melt pool width (m).
+
+   This is the width of the melt pool measured at the top of the powder layer,
+   which corresponds to the ``WIDTH`` value in
+   :class:`MeltPoolColumnNames <ansys.additive.core.single_bead.MeltPoolColumnNames>`
+   class.
+
+   Valid values are from 7.5e-5 to 8e-4.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: melt_pool_depth
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.melt_pool_depth
+   :type: float
+
+
+   
+   Melt pool depth (m).
+
+   This is the depth of the melt pool as measured from the top of the powder layer,
+   which corresponds to the ``DEPTH`` value in the
+   :class:`MeltPoolColumnNames <ansys.additive.core.single_bead.MeltPoolColumnNames>`
+   class.
+
+   Valid values are from 1.5e-5 to 8e-4.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: random_seed
+   :canonical: ansys.additive.core.microstructure.MicrostructureInput.random_seed
+   :type: int
+
+
+   
+   Random seed for the simulation.
+
+   Valid values are from 1 to 4294967295.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: DEFAULT_POSITION_COORDINATE
+   :value: 0
+
+   
+
+.. py:attribute:: DEFAULT_SAMPLE_SIZE
+   :value: 0.0015
+
+   
+
+.. py:attribute:: DEFAULT_SENSOR_DIMENSION
+   :value: 0.0005
+
+   
+
+.. py:attribute:: DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS
+   :value: False
+
+   
+
+.. py:attribute:: DEFAULT_COOLING_RATE
+   :value: 1000000.0
+
+   
+
+.. py:attribute:: DEFAULT_THERMAL_GRADIENT
+   :value: 10000000.0
+
+   
+
+.. py:attribute:: DEFAULT_MELT_POOL_WIDTH
+   :value: 0.00015
+
+   
+
+.. py:attribute:: DEFAULT_MELT_POOL_DEPTH
+   :value: 0.0001
+
+   
+
+.. py:attribute:: DEFAULT_RANDOM_SEED
+   :value: 0
+
+   
+
+
+

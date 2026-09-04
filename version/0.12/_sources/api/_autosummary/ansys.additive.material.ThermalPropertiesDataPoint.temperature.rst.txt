@@ -1,0 +1,6 @@
+temperature
+===========
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: ThermalPropertiesDataPoint.temperature

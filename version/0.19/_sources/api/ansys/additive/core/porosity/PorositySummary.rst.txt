@@ -1,0 +1,141 @@
+
+
+
+
+
+
+:class:`PorositySummary`
+========================
+
+.. py:class:: ansys.additive.core.porosity.PorositySummary(input: PorosityInput, result: ansys.api.additive.v0.additive_domain_pb2.PorosityResult)
+
+   
+   Provides a summary of a porosity simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: PorositySummary
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Simulation input.
+          * - :py:attr:`~relative_density`
+            - Ratio of the density of the simulated sample to a completely solid sample.
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.porosity import PorositySummary
+
+Property detail
+---------------
+
+.. py:property:: input
+   :type: PorosityInput
+
+
+   
+   Simulation input.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: relative_density
+   :type: float
+
+
+   
+   Ratio of the density of the simulated sample to a completely solid sample.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+
+
+

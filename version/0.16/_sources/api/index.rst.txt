@@ -1,0 +1,11 @@
+API reference
+=============
+
+This section describes PyAdditive endpoints, their capabilities, and how
+to interact with them programmatically.
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   🖿 ansys.additive.core</api/ansys/additive/core/index>

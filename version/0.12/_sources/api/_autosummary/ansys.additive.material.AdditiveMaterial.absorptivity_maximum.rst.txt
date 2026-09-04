@@ -1,0 +1,6 @@
+absorptivity\_maximum
+=====================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.absorptivity_maximum

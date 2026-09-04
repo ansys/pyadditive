@@ -1,0 +1,22 @@
+﻿Range
+=====
+
+.. currentmodule:: ansys.additive.thermal_history
+
+.. autoclass:: Range
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   

@@ -1,0 +1,1072 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>The machine.py module &#8212; PyAdditive 0.16.0 documentation</title>
+
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../../../../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+
+  
+  <link href="../../../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/jupyter-sphinx.css?v=572af1d6" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/css/ansys_sphinx_theme.css?v=18fd1f76" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=f23d505c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="../../../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+ 
+<link href="../../../../../_static/css/breadcrumbs.css" rel="stylesheet" />
+
+    <script src="../../../../../_static/documentation_options.js?v=ff8529b6"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/thebelab-helper.js"></script>
+    <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../../_static/copybutton.js?v=49e1bf35"></script>
+    <script src="../../../../../_static/js/table.js?v=b64f5182"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../../../../../_static/design-tabs.js?v=36754332"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/ansys/additive/core/machine/index';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.14.3';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://additive.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.16';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="icon" href="../../../../../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="The material.py module" href="../material/index.html" />
+    <link rel="prev" title="The geometry_file.py module" href="../geometry_file/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <link rel="canonical" href="https://additive.docs.pyansys.com/version/stable/api/ansys/additive/core/machine/index.html" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container"><!-- Debugging: html_theme_options =  -->
+
+<!-- If there is no MiliSearch enabled, use the PyData search -->
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+   
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/pyansys-logo-black-cropped.png" class="logo__image only-light" alt="PyAdditive 0.16.0 documentation - Home"/>
+    <script>document.write(`<img src="../../../../../_static/pyansys-logo-black-cropped.png" class="logo__image only-dark" alt="PyAdditive 0.16.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../../getting_started/index.html">
+                        Getting started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../../../../index.html">
+                        API reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../../examples/gallery_examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+    <div id="announcement_msg"></div>
+<script>
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(
+      (text) => (document.getElementById("announcement_msg").innerHTML = text),
+    )
+    .catch((error) => console.error(`Fetch problem: ${error.message}`));
+</script>  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../../getting_started/index.html">
+                        Getting started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../../../../index.html">
+                        API reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../../examples/gallery_examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pyadditive/discussions" title="Support" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">🖿 ansys.additive.core</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../examples/index.html"> 🖿 examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parametric_study/index.html"> 🖿 parametric_study</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../server_connection/index.html"> 🖿 server_connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../additive/index.html"> 🗎 additive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conversions/index.html"> 🗎 conversions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../download/index.html"> 🗎 download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geometry_file/index.html"> 🗎 geometry_file</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#"> 🗎 machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../material/index.html"> 🗎 material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../material_tuning/index.html"> 🗎 material_tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../microstructure/index.html"> 🗎 microstructure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../misc/index.html"> 🗎 misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../porosity/index.html"> 🗎 porosity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../progress_logger/index.html"> 🗎 progress_logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation/index.html"> 🗎 simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../single_bead/index.html"> 🗎 single_bead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../thermal_history/index.html"> 🗎 thermal_history</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+      
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="https://docs.pyansys.com/" class="nav-link">PyAnsys</a>
+    </li>
+      
+    <li class="breadcrumb-item">
+      <a
+        href="../../../../../index.html"
+        class="nav-link"
+        aria-label="Home"
+      >
+        <i class="fa-solid fa-home"></i
+      ></a>
+    </li> 
+    <li class="breadcrumb-item">
+      <a href="../../../../index.html" class="nav-link">API reference</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="../index.html" class="nav-link">The <code class="docutils literal notranslate"><span class="pre">ansys.additive.core</span></code> library</a>
+    </li>
+      
+    <li class="breadcrumb-item active" aria-current="page">The <code class="docutils literal notranslate"><span class="pre">machine.py</span></code> module</li>
+    
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="module-ansys.additive.core.machine">
+<span id="the-machine-py-module"></span><h1>The <code class="docutils literal notranslate"><span class="pre">machine.py</span></code> module<a class="headerlink" href="#module-ansys.additive.core.machine" title="Link to this heading">#</a></h1>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-0">
+Classes</label><div class="sd-tab-content docutils">
+<table class="table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.MachineConstants" title="machine.MachineConstants"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MachineConstants</span></code></a></p></td>
+<td><p>Provides constants for additive manufacturing machine settings.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.AdditiveMachine" title="machine.AdditiveMachine"><code class="xref py py-attr docutils literal notranslate"><span class="pre">AdditiveMachine</span></code></a></p></td>
+<td><p>Provides the additive manufacturing machine settings used during</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="module-detail">
+<h2>Module detail<a class="headerlink" href="#module-detail" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="machine.MachineConstants">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MachineConstants</span></span><a class="headerlink" href="#machine.MachineConstants" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<p>Provides constants for additive manufacturing machine settings.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-1" name="sd-tab-set-1" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-1">
+Attributes</label><div class="sd-tab-content docutils">
+<table class="table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.DEFAULT_LASER_POWER" title="machine.DEFAULT_LASER_POWER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_LASER_POWER</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.MIN_LASER_POWER" title="machine.MIN_LASER_POWER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_LASER_POWER</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.MAX_LASER_POWER" title="machine.MAX_LASER_POWER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_LASER_POWER</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.DEFAULT_SCAN_SPEED" title="machine.DEFAULT_SCAN_SPEED"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SCAN_SPEED</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.MIN_SCAN_SPEED" title="machine.MIN_SCAN_SPEED"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_SCAN_SPEED</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.MAX_SCAN_SPEED" title="machine.MAX_SCAN_SPEED"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_SCAN_SPEED</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.DEFAULT_HEATER_TEMP" title="machine.DEFAULT_HEATER_TEMP"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_HEATER_TEMP</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.MIN_HEATER_TEMP" title="machine.MIN_HEATER_TEMP"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_HEATER_TEMP</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.MAX_HEATER_TEMP" title="machine.MAX_HEATER_TEMP"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_HEATER_TEMP</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.DEFAULT_LAYER_THICKNESS" title="machine.DEFAULT_LAYER_THICKNESS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_LAYER_THICKNESS</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.MIN_LAYER_THICKNESS" title="machine.MIN_LAYER_THICKNESS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_LAYER_THICKNESS</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.MAX_LAYER_THICKNESS" title="machine.MAX_LAYER_THICKNESS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_LAYER_THICKNESS</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.DEFAULT_BEAM_DIAMETER" title="machine.DEFAULT_BEAM_DIAMETER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_BEAM_DIAMETER</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.MIN_BEAM_DIAMETER" title="machine.MIN_BEAM_DIAMETER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_BEAM_DIAMETER</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.MAX_BEAM_DIAMETER" title="machine.MAX_BEAM_DIAMETER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_BEAM_DIAMETER</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.DEFAULT_STARTING_LAYER_ANGLE" title="machine.DEFAULT_STARTING_LAYER_ANGLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_STARTING_LAYER_ANGLE</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.MIN_STARTING_LAYER_ANGLE" title="machine.MIN_STARTING_LAYER_ANGLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_STARTING_LAYER_ANGLE</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.MAX_STARTING_LAYER_ANGLE" title="machine.MAX_STARTING_LAYER_ANGLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_STARTING_LAYER_ANGLE</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.DEFAULT_LAYER_ROTATION_ANGLE" title="machine.DEFAULT_LAYER_ROTATION_ANGLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_LAYER_ROTATION_ANGLE</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.MIN_LAYER_ROTATION_ANGLE" title="machine.MIN_LAYER_ROTATION_ANGLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_LAYER_ROTATION_ANGLE</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.MAX_LAYER_ROTATION_ANGLE" title="machine.MAX_LAYER_ROTATION_ANGLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_LAYER_ROTATION_ANGLE</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.DEFAULT_HATCH_SPACING" title="machine.DEFAULT_HATCH_SPACING"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_HATCH_SPACING</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.MIN_HATCH_SPACING" title="machine.MIN_HATCH_SPACING"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_HATCH_SPACING</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.MAX_HATCH_SPACING" title="machine.MAX_HATCH_SPACING"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_HATCH_SPACING</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.DEFAULT_SLICING_STRIPE_WIDTH" title="machine.DEFAULT_SLICING_STRIPE_WIDTH"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SLICING_STRIPE_WIDTH</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.MIN_SLICING_STRIPE_WIDTH" title="machine.MIN_SLICING_STRIPE_WIDTH"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MIN_SLICING_STRIPE_WIDTH</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.MAX_SLICING_STRIPE_WIDTH" title="machine.MAX_SLICING_STRIPE_WIDTH"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MAX_SLICING_STRIPE_WIDTH</span></code></a></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="import-detail">
+<h2>Import detail<a class="headerlink" href="#import-detail" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ansys.additive.core.machine</span> <span class="kn">import</span> <span class="n">MachineConstants</span>
+</pre></div>
+</div>
+</section>
+<section id="attribute-detail">
+<h2>Attribute detail<a class="headerlink" href="#attribute-detail" title="Link to this heading">#</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.DEFAULT_LASER_POWER">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_LASER_POWER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">195</span></em><a class="headerlink" href="#machine.DEFAULT_LASER_POWER" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MIN_LASER_POWER">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MIN_LASER_POWER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">50</span></em><a class="headerlink" href="#machine.MIN_LASER_POWER" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MAX_LASER_POWER">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MAX_LASER_POWER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">700</span></em><a class="headerlink" href="#machine.MAX_LASER_POWER" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.DEFAULT_SCAN_SPEED">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_SCAN_SPEED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0</span></em><a class="headerlink" href="#machine.DEFAULT_SCAN_SPEED" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MIN_SCAN_SPEED">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MIN_SCAN_SPEED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.35</span></em><a class="headerlink" href="#machine.MIN_SCAN_SPEED" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MAX_SCAN_SPEED">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MAX_SCAN_SPEED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2.5</span></em><a class="headerlink" href="#machine.MAX_SCAN_SPEED" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.DEFAULT_HEATER_TEMP">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_HEATER_TEMP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">80</span></em><a class="headerlink" href="#machine.DEFAULT_HEATER_TEMP" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MIN_HEATER_TEMP">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MIN_HEATER_TEMP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">20</span></em><a class="headerlink" href="#machine.MIN_HEATER_TEMP" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MAX_HEATER_TEMP">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MAX_HEATER_TEMP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">500</span></em><a class="headerlink" href="#machine.MAX_HEATER_TEMP" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.DEFAULT_LAYER_THICKNESS">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_LAYER_THICKNESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5e-05</span></em><a class="headerlink" href="#machine.DEFAULT_LAYER_THICKNESS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MIN_LAYER_THICKNESS">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MIN_LAYER_THICKNESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1e-05</span></em><a class="headerlink" href="#machine.MIN_LAYER_THICKNESS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MAX_LAYER_THICKNESS">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MAX_LAYER_THICKNESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0001</span></em><a class="headerlink" href="#machine.MAX_LAYER_THICKNESS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.DEFAULT_BEAM_DIAMETER">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_BEAM_DIAMETER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0001</span></em><a class="headerlink" href="#machine.DEFAULT_BEAM_DIAMETER" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MIN_BEAM_DIAMETER">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MIN_BEAM_DIAMETER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2e-05</span></em><a class="headerlink" href="#machine.MIN_BEAM_DIAMETER" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MAX_BEAM_DIAMETER">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MAX_BEAM_DIAMETER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.00014</span></em><a class="headerlink" href="#machine.MAX_BEAM_DIAMETER" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.DEFAULT_STARTING_LAYER_ANGLE">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_STARTING_LAYER_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">57</span></em><a class="headerlink" href="#machine.DEFAULT_STARTING_LAYER_ANGLE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MIN_STARTING_LAYER_ANGLE">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MIN_STARTING_LAYER_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#machine.MIN_STARTING_LAYER_ANGLE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MAX_STARTING_LAYER_ANGLE">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MAX_STARTING_LAYER_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">180</span></em><a class="headerlink" href="#machine.MAX_STARTING_LAYER_ANGLE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.DEFAULT_LAYER_ROTATION_ANGLE">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_LAYER_ROTATION_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">67</span></em><a class="headerlink" href="#machine.DEFAULT_LAYER_ROTATION_ANGLE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MIN_LAYER_ROTATION_ANGLE">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MIN_LAYER_ROTATION_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#machine.MIN_LAYER_ROTATION_ANGLE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MAX_LAYER_ROTATION_ANGLE">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MAX_LAYER_ROTATION_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">180</span></em><a class="headerlink" href="#machine.MAX_LAYER_ROTATION_ANGLE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.DEFAULT_HATCH_SPACING">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_HATCH_SPACING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0001</span></em><a class="headerlink" href="#machine.DEFAULT_HATCH_SPACING" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MIN_HATCH_SPACING">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MIN_HATCH_SPACING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6e-05</span></em><a class="headerlink" href="#machine.MIN_HATCH_SPACING" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MAX_HATCH_SPACING">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MAX_HATCH_SPACING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0002</span></em><a class="headerlink" href="#machine.MAX_HATCH_SPACING" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.DEFAULT_SLICING_STRIPE_WIDTH">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_SLICING_STRIPE_WIDTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.01</span></em><a class="headerlink" href="#machine.DEFAULT_SLICING_STRIPE_WIDTH" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MIN_SLICING_STRIPE_WIDTH">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MIN_SLICING_STRIPE_WIDTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.001</span></em><a class="headerlink" href="#machine.MIN_SLICING_STRIPE_WIDTH" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="machine.MAX_SLICING_STRIPE_WIDTH">
+<span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">MAX_SLICING_STRIPE_WIDTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#machine.MAX_SLICING_STRIPE_WIDTH" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="machine.AdditiveMachine">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">AdditiveMachine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laser_power</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MachineConstants.DEFAULT_LASER_POWER</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan_speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MachineConstants.DEFAULT_SCAN_SPEED</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heater_temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MachineConstants.DEFAULT_HEATER_TEMP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_thickness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MachineConstants.DEFAULT_LAYER_THICKNESS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beam_diameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MachineConstants.DEFAULT_BEAM_DIAMETER</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_layer_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MachineConstants.DEFAULT_STARTING_LAYER_ANGLE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_rotation_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hatch_spacing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MachineConstants.DEFAULT_HATCH_SPACING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slicing_stripe_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#machine.AdditiveMachine" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<p>Provides the additive manufacturing machine settings used during</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-2" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-2">
+Properties</label><div class="sd-tab-content docutils">
+<table class="table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.laser_power" title="machine.laser_power"><code class="xref py py-attr docutils literal notranslate"><span class="pre">laser_power</span></code></a></p></td>
+<td><p>Scanning laser power (W).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.scan_speed" title="machine.scan_speed"><code class="xref py py-attr docutils literal notranslate"><span class="pre">scan_speed</span></code></a></p></td>
+<td><p>Laser scanning speed (m/s).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.heater_temperature" title="machine.heater_temperature"><code class="xref py py-attr docutils literal notranslate"><span class="pre">heater_temperature</span></code></a></p></td>
+<td><p>Temperature (°C) of the machine build chamber heater.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.layer_thickness" title="machine.layer_thickness"><code class="xref py py-attr docutils literal notranslate"><span class="pre">layer_thickness</span></code></a></p></td>
+<td><p>Thickness (m) of the powder layer deposited with each pass of the</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.beam_diameter" title="machine.beam_diameter"><code class="xref py py-attr docutils literal notranslate"><span class="pre">beam_diameter</span></code></a></p></td>
+<td><p>Width (m) of the laser on the powder or substrate surface defined</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.starting_layer_angle" title="machine.starting_layer_angle"><code class="xref py py-attr docutils literal notranslate"><span class="pre">starting_layer_angle</span></code></a></p></td>
+<td><p>Angle (°) to scan the first layer at.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.layer_rotation_angle" title="machine.layer_rotation_angle"><code class="xref py py-attr docutils literal notranslate"><span class="pre">layer_rotation_angle</span></code></a></p></td>
+<td><p>Angle (°) to change the scan vector orientation from layer to layer.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#machine.hatch_spacing" title="machine.hatch_spacing"><code class="xref py py-attr docutils literal notranslate"><span class="pre">hatch_spacing</span></code></a></p></td>
+<td><p>Distance (m) between adjacent scan vectors, or hatches, when</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#machine.slicing_stripe_width" title="machine.slicing_stripe_width"><code class="xref py py-attr docutils literal notranslate"><span class="pre">slicing_stripe_width</span></code></a></p></td>
+<td><p>Width (m) of a stripe, which is a section of scan lines within a</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="id1">
+<h2>Import detail<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ansys.additive.core.machine</span> <span class="kn">import</span> <span class="n">AdditiveMachine</span>
+</pre></div>
+</div>
+</section>
+<section id="property-detail">
+<h2>Property detail<a class="headerlink" href="#property-detail" title="Link to this heading">#</a></h2>
+<dl class="py property">
+<dt class="sig sig-object py" id="machine.laser_power">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">laser_power</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#machine.laser_power" title="Link to this definition">#</a></dt>
+<dd><p>Scanning laser power (W).</p>
+<p>Valid values are from 50 to 700 Watts.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="machine.scan_speed">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">scan_speed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#machine.scan_speed" title="Link to this definition">#</a></dt>
+<dd><p>Laser scanning speed (m/s).</p>
+<p>Valid values are from 0.35 to 2.5 m/s.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="machine.heater_temperature">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">heater_temperature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#machine.heater_temperature" title="Link to this definition">#</a></dt>
+<dd><p>Temperature (°C) of the machine build chamber heater.</p>
+<p>Valid values are from 20 to 500 °C.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="machine.layer_thickness">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">layer_thickness</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#machine.layer_thickness" title="Link to this definition">#</a></dt>
+<dd><p>Thickness (m) of the powder layer deposited with each pass of the
+recoater blade.</p>
+<p>Valid values are from 1e-5 to 1e-4 m (10 to 100 µm).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="machine.beam_diameter">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">beam_diameter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#machine.beam_diameter" title="Link to this definition">#</a></dt>
+<dd><p>Width (m) of the laser on the powder or substrate surface defined
+using the D4σ beam diameter definition.</p>
+<p>Usually this value is provided by the machine manufacturer. It
+is sometimes called the laser spot diameter.</p>
+<p>Valid values are from 2e-5 to 1.4e-4 m (20 and 140 µm).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="machine.starting_layer_angle">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">starting_layer_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#machine.starting_layer_angle" title="Link to this definition">#</a></dt>
+<dd><p>Angle (°) to scan the first layer at.</p>
+<p>The angle is measured counterclockwise from the X axis, such
+that a value of 90° results in scan lines parallel to the Y
+axis.</p>
+<p>Valid values are from 0 to 180°.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="machine.layer_rotation_angle">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">layer_rotation_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#machine.layer_rotation_angle" title="Link to this definition">#</a></dt>
+<dd><p>Angle (°) to change the scan vector orientation from layer to layer.</p>
+<p>Valid values are from 0 to 180°.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="machine.hatch_spacing">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">hatch_spacing</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#machine.hatch_spacing" title="Link to this definition">#</a></dt>
+<dd><p>Distance (m) between adjacent scan vectors, or hatches, when
+rastering back and forth with the laser.</p>
+<p>Hatch spacing should allow for a slight overlap of scan vector
+tracks such that some of the material re-melts to ensure full
+coverage of solid material.</p>
+<p>Valid values are from 6e-5 to 2e-4 m (0.06 and 0.2 mm).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="machine.slicing_stripe_width">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">machine.</span></span><span class="sig-name descname"><span class="pre">slicing_stripe_width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#machine.slicing_stripe_width" title="Link to this definition">#</a></dt>
+<dd><p>Width (m) of a stripe, which is a section of scan lines within a
+layer.</p>
+<p>Valid values are from 0.001 to 0.1 m (1 and 100 mm).</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-detail">Module detail</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MachineConstants"><code class="docutils literal notranslate"><span class="pre">MachineConstants</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-detail">Import detail</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attribute-detail">Attribute detail</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.DEFAULT_LASER_POWER"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LASER_POWER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MIN_LASER_POWER"><code class="docutils literal notranslate"><span class="pre">MIN_LASER_POWER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MAX_LASER_POWER"><code class="docutils literal notranslate"><span class="pre">MAX_LASER_POWER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.DEFAULT_SCAN_SPEED"><code class="docutils literal notranslate"><span class="pre">DEFAULT_SCAN_SPEED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MIN_SCAN_SPEED"><code class="docutils literal notranslate"><span class="pre">MIN_SCAN_SPEED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MAX_SCAN_SPEED"><code class="docutils literal notranslate"><span class="pre">MAX_SCAN_SPEED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.DEFAULT_HEATER_TEMP"><code class="docutils literal notranslate"><span class="pre">DEFAULT_HEATER_TEMP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MIN_HEATER_TEMP"><code class="docutils literal notranslate"><span class="pre">MIN_HEATER_TEMP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MAX_HEATER_TEMP"><code class="docutils literal notranslate"><span class="pre">MAX_HEATER_TEMP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.DEFAULT_LAYER_THICKNESS"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LAYER_THICKNESS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MIN_LAYER_THICKNESS"><code class="docutils literal notranslate"><span class="pre">MIN_LAYER_THICKNESS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MAX_LAYER_THICKNESS"><code class="docutils literal notranslate"><span class="pre">MAX_LAYER_THICKNESS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.DEFAULT_BEAM_DIAMETER"><code class="docutils literal notranslate"><span class="pre">DEFAULT_BEAM_DIAMETER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MIN_BEAM_DIAMETER"><code class="docutils literal notranslate"><span class="pre">MIN_BEAM_DIAMETER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MAX_BEAM_DIAMETER"><code class="docutils literal notranslate"><span class="pre">MAX_BEAM_DIAMETER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.DEFAULT_STARTING_LAYER_ANGLE"><code class="docutils literal notranslate"><span class="pre">DEFAULT_STARTING_LAYER_ANGLE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MIN_STARTING_LAYER_ANGLE"><code class="docutils literal notranslate"><span class="pre">MIN_STARTING_LAYER_ANGLE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MAX_STARTING_LAYER_ANGLE"><code class="docutils literal notranslate"><span class="pre">MAX_STARTING_LAYER_ANGLE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.DEFAULT_LAYER_ROTATION_ANGLE"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LAYER_ROTATION_ANGLE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MIN_LAYER_ROTATION_ANGLE"><code class="docutils literal notranslate"><span class="pre">MIN_LAYER_ROTATION_ANGLE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MAX_LAYER_ROTATION_ANGLE"><code class="docutils literal notranslate"><span class="pre">MAX_LAYER_ROTATION_ANGLE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.DEFAULT_HATCH_SPACING"><code class="docutils literal notranslate"><span class="pre">DEFAULT_HATCH_SPACING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MIN_HATCH_SPACING"><code class="docutils literal notranslate"><span class="pre">MIN_HATCH_SPACING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MAX_HATCH_SPACING"><code class="docutils literal notranslate"><span class="pre">MAX_HATCH_SPACING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.DEFAULT_SLICING_STRIPE_WIDTH"><code class="docutils literal notranslate"><span class="pre">DEFAULT_SLICING_STRIPE_WIDTH</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MIN_SLICING_STRIPE_WIDTH"><code class="docutils literal notranslate"><span class="pre">MIN_SLICING_STRIPE_WIDTH</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.MAX_SLICING_STRIPE_WIDTH"><code class="docutils literal notranslate"><span class="pre">MAX_SLICING_STRIPE_WIDTH</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.AdditiveMachine"><code class="docutils literal notranslate"><span class="pre">AdditiveMachine</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Import detail</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#property-detail">Property detail</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.laser_power"><code class="docutils literal notranslate"><span class="pre">laser_power</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.scan_speed"><code class="docutils literal notranslate"><span class="pre">scan_speed</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.heater_temperature"><code class="docutils literal notranslate"><span class="pre">heater_temperature</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.layer_thickness"><code class="docutils literal notranslate"><span class="pre">layer_thickness</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.beam_diameter"><code class="docutils literal notranslate"><span class="pre">beam_diameter</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.starting_layer_angle"><code class="docutils literal notranslate"><span class="pre">starting_layer_angle</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.layer_rotation_angle"><code class="docutils literal notranslate"><span class="pre">layer_rotation_angle</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.hatch_spacing"><code class="docutils literal notranslate"><span class="pre">hatch_spacing</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine.slicing_stripe_width"><code class="docutils literal notranslate"><span class="pre">slicing_stripe_width</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item"> 
+<div class="tocsection editthispage">
+  <a href="https://github.com/ansys/pyadditive/edit/main/doc/source/api/ansys/additive/core/machine/index.rst">
+    <i class="fa-solid fa-pencil"></i>
+       Edit
+    on GitHub  
+  </a>
+</div>
+
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright (c) 2023 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the
+  <a href="https://sphinxdocs.ansys.com/version/stable/index.html"
+    >Ansys Sphinx Theme</a
+  >
+  0.12.4. <br />Last updated on
+  <span id="date"></span>
+</p>
+<script>
+  var options = { day: "numeric", month: "long", year: "numeric" };
+  var lastModifiedDate = new Date(document.lastModified);
+  var date = lastModifiedDate.toLocaleDateString("en-US", options);
+  document.getElementById("date").innerHTML = date;
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

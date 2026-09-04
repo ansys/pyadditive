@@ -1,0 +1,557 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Custom Material Tuning &#8212; PyAdditive 0.12.1 documentation</title>
+    
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/ansys_sphinx_theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    
+        <link href="../_static/css/breadcrumbs.css" rel="stylesheet">
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/thebelab-helper.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    <link rel="shortcut icon" href="../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Using A Custom Material" href="07_using_a_custom_material.html" />
+    <link rel="prev" title="Optimization Workflow Analysis" href="05_optimization_workflow.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  <link rel="canonical" href="https://additive.docs.pyansys.com/version/stable/examples/06_additive_custom_material_tuning.html" />
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+    <img src="../_static/pyansys-logo-black-cropped.png" class="logo__image only-light" alt="Logo image">
+    <img src="../_static/pyansys-logo-black-cropped.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../getting_started/index.html">
+  Getting started
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../api/index.html">
+  API reference
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="index.html">
+  Examples
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../contributing.html">
+  Contributing
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <div class="dropdown" id="version_switcher">
+    <button type="button" class="btn btn-sm navbar-btn dropdown-toggle" id="version_switcher_button" data-toggle="dropdown">
+        0.12  <!-- this text may get changed later by javascript -->
+        <span class="caret"></span>
+    </button>
+    <div id="version_switcher_menu" class="dropdown-menu list-group-flush py-0" aria-labelledby="version_switcher_button">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
+</div>
+
+<!-- NOTE: this JS must live here (not in our global JS file) because it relies
+     on being processed by Jinja before it is run (specifically for replacing
+     variables examples/06_additive_custom_material_tuning and {'json_url': 'https://additive.docs.pyansys.com/versions.json', 'version_match': '0.12'}.
+-->
+
+<script type="text/javascript">
+// Check if corresponding page path exists in other version of docs
+// and, if so, go there instead of the homepage of the other docs version
+function checkPageExistsAndRedirect(event) {
+    const currentFilePath = "examples/06_additive_custom_material_tuning.html",
+          tryUrl = event.target.getAttribute("href");
+    let otherDocsHomepage = tryUrl.replace(currentFilePath, "");
+    $.ajax({
+        type: 'HEAD',
+        url: tryUrl,
+        // if the page exists, go there
+        success: function() {
+            location.href = tryUrl;
+        }
+    }).fail(function() {
+        location.href = otherDocsHomepage;
+    });
+    // this prevents the browser from following the href of the clicked node
+    // (which is fine because this function takes care of redirecting)
+    return false;
+}
+
+// Populate the version switcher from the JSON config file
+(function () {
+    $.getJSON("https://additive.docs.pyansys.com/versions.json", function(data, textStatus, jqXHR) {
+        const currentFilePath = "examples/06_additive_custom_material_tuning.html";
+        let btn = document.getElementById("version_switcher_button");
+        // Set empty strings by default so that these attributes exist and can be used in CSS selectors
+        btn.dataset["activeVersionName"] = "";
+        btn.dataset["activeVersion"] = "";
+        // create links to the corresponding page in the other docs versions
+        $.each(data, function(index, entry) {
+            // if no custom name specified (e.g., "latest"), use version string
+            if (!("name" in entry)) {
+                entry.name = entry.version;
+            }
+            // create the node
+            const node = document.createElement("a");
+            node.setAttribute("class", "list-group-item list-group-item-action py-1");
+            node.textContent = `${entry.name}`;
+            node.setAttribute("href", `${entry.url}${currentFilePath}`);
+            // on click, AJAX calls will check if the linked page exists before
+            // trying to redirect, and if not, will redirect to the homepage
+            // for that version of the docs.
+            node.onclick = checkPageExistsAndRedirect;
+            // Add dataset values for the version and name in case people want
+            // to apply CSS styling based on this information.
+            node.dataset["versionName"] = entry.name;
+            node.dataset["version"] = entry.version;
+
+            $("#version_switcher_menu").append(node);
+            // replace dropdown button text with the preferred display name of
+            // this version, rather than using sphinx's 0.12.1 variable.
+            // also highlight the dropdown entry for the currently-viewed
+            // version's entry
+            if (entry.version == "0.12") {
+                node.classList.add("active");
+                btn.innerText = btn.dataset["activeVersionName"] = entry.name;
+                btn.dataset["activeVersion"] = entry.version;
+            }
+        });
+    });
+})();
+</script>
+      </div>
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/ansys-internal/pyadditive" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+     
+<div id="announcement_msg"></div>
+<script>
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(text => document.getElementById("announcement_msg").innerHTML = text)
+    .catch((error) => console.error(`Fetch problem: ${error.message}`));
+</script>
+
+    
+        <div class="container-xl">
+    <div class="row">
+        <div class="col-12 col-md-3" id="breadcrumbs-spacer"></div>
+        <div class="col-12 col-md-11 col-xl-9" id="breadcrumbs">
+          
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+    
+    
+        <li class="nav-item nav-item-0"><a href="../index.html">PyAdditive 0.12.1 documentation</a> » </li>
+    
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> » </li>
+        <li class="nav-item nav-item-this"><a href="">Custom Material Tuning</a></li> 
+      </ul>
+    </div>
+        </div>
+  </div>
+</div>
+    
+
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+    <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="00_additive_single_bead.html">
+   Single Bead Analysis
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="01_additive_porosity.html">
+   Porosity Analysis
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="02_additive_microstructure.html">
+   Microstructure Analysis
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="03_additive_thermal_history.html">
+   Thermal History Analysis
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="04_additive_doe.html">
+   Design Of Experiments
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="05_optimization_workflow.html">
+   Optimization Workflow Analysis
+  </a>
+ </li>
+</ul>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Custom Material Tuning
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="07_using_a_custom_material.html">
+   Using A Custom Material
+  </a>
+ </li>
+</ul>
+
+    
+    
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#specify-the-tuning-inputs">
+   Specify the Tuning Inputs
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#perform-the-material-tuning">
+   Perform the Material Tuning
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#review-the-results">
+   Review the Results
+  </a>
+ </li>
+</ul>
+
+</nav>
+    </div>
+    
+    <div class="toc-item">
+      
+    </div>
+    
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-examples-06-additive-custom-material-tuning-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="custom-material-tuning">
+<span id="sphx-glr-examples-06-additive-custom-material-tuning-py"></span><h1>Custom Material Tuning<a class="headerlink" href="#custom-material-tuning" title="Permalink to this heading">#</a></h1>
+<p>This tutorial shows how you can tune a custom material for use with PyAdditive.
+Background information and file formats can be found in <a class="reference external" href="https://ansysproducthelpqa.win.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_science_BETA_material_tuning_tool.html">the Additive documentation</a>.
+To prevent wasted time, the steps described in the Additive documentation should be
+reviewed carefully before executing the tuning process below.</p>
+<p>Units are SI (m, kg, s, K) unless otherwise noted.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ansys.additive</span> <span class="k">as</span> <span class="nn">pyadditive</span>
+
+<span class="n">additive</span> <span class="o">=</span> <span class="n">pyadditive</span><span class="o">.</span><span class="n">Additive</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>user data path: /home/runner/.local/share/ansys-pyadditive
+</pre></div>
+</div>
+<section id="specify-the-tuning-inputs">
+<h2>Specify the Tuning Inputs<a class="headerlink" href="#specify-the-tuning-inputs" title="Permalink to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">MaterialTuningInput</span></code> object contains the paths to the files needed to
+tune a material. The <code class="docutils literal notranslate"><span class="pre">experiment_data_file</span></code> is a CSV file containing the
+results of single bead experiments. The <code class="docutils literal notranslate"><span class="pre">material_parameters_file</span></code> is a JSON
+file containing the material parameters. The <code class="docutils literal notranslate"><span class="pre">thermal_properties_lookup_file</span></code>
+is a CSV file containing the temperature dependent properties of the material.
+The <code class="docutils literal notranslate"><span class="pre">characteristic_width_lookup_file</span></code> is an optional CSV file containing
+the melt pool characteristic width at various laser powers and scan speeds.
+If the characteristic width lookup file is not specified, it will be generated
+during the tuning process.</p>
+<p>Example input files can be downloaded as shown below.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ansys.additive.examples</span> <span class="k">as</span> <span class="nn">examples</span>
+
+<span class="n">input_files</span> <span class="o">=</span> <span class="n">examples</span><span class="o">.</span><span class="n">download_material_tuning_input</span><span class="p">()</span>
+
+<span class="c1"># Below we include the characteristic width lookup file in order to reduce</span>
+<span class="c1"># processing time. If a characteristic width lookup file is not available,</span>
+<span class="c1"># the field can be omitted when creating the ``MaterialTuningInput`` object.</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">pyadditive</span><span class="o">.</span><span class="n">MaterialTuningInput</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;custom-material-tuning&quot;</span><span class="p">,</span>
+    <span class="n">experiment_data_file</span><span class="o">=</span><span class="n">input_files</span><span class="o">.</span><span class="n">experiment_data_file</span><span class="p">,</span>
+    <span class="n">material_parameters_file</span><span class="o">=</span><span class="n">input_files</span><span class="o">.</span><span class="n">material_parameters_file</span><span class="p">,</span>
+    <span class="n">thermal_properties_lookup_file</span><span class="o">=</span><span class="n">input_files</span><span class="o">.</span><span class="n">thermal_properties_lookup_file</span><span class="p">,</span>
+    <span class="n">characteristic_width_lookup_file</span><span class="o">=</span><span class="n">input_files</span><span class="o">.</span><span class="n">characteristic_width_lookup_file</span><span class="p">,</span>
+    <span class="n">allowable_error</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>  <span class="c1"># allowable difference, as a ratio, between experimental and simulated results</span>
+    <span class="n">max_iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>  <span class="c1"># maximum number of simulation iterations to perform</span>
+    <span class="n">base_plate_temperature</span><span class="o">=</span><span class="mf">353.15</span><span class="p">,</span>  <span class="c1"># only used when calculating the characteristic width</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="perform-the-material-tuning">
+<h2>Perform the Material Tuning<a class="headerlink" href="#perform-the-material-tuning" title="Permalink to this heading">#</a></h2>
+<p>Material tuning is performed using the <code class="docutils literal notranslate"><span class="pre">tune_material</span></code> method.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="n">additive</span><span class="o">.</span><span class="n">tune_material</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Tuning started
+Reading existing Characteristic Width file: /tmp/additive/3f8ae923b5a86/input/cw_lookup.csv
+Optimizing parameters
+Initializing tuned parameter file: /tmp/additive/3f8ae923b5a86/output/Optimized_Parameters.csv
+Optimizing parameters for (Power: 270 W, Velocity: 1.035 m/s, LayerThickness: 3E-05 m, BeamDiameter: 8E-05 m, BaseplateTemperature: 150 C)
+Running thermal solver with Extinction Coefficient: 30128.205128205125, Absorptivity: 0.5
+Thermal Solver run completed
+Simulation (reference width: 0.000284725 m, reference depth: 0.00011703700000000001 m), Experimental (width: 0.0003155 m, depth: 0.000125 m)
+Running thermal solver with Extinction Coefficient: 30128.205128205125, Absorptivity: 0.5387584163232964
+Thermal Solver run completed
+Simulation (reference width: 0.00029615200000000005 m, reference depth: 0.000122122 m), Experimental (width: 0.0003155 m, depth: 0.000125 m)
+Running thermal solver with Extinction Coefficient: 30128.205128205125, Absorptivity: 0.5610999027606274
+Thermal Solver run completed
+Simulation (reference width: 0.000302633 m, reference depth: 0.00012490800000000002 m), Experimental (width: 0.0003155 m, depth: 0.000125 m)
+Writing results to results file: /tmp/additive/3f8ae923b5a86/output/Optimized_Parameters.csv
+Tuning completed
+</pre></div>
+</div>
+</section>
+<section id="review-the-results">
+<h2>Review the Results<a class="headerlink" href="#review-the-results" title="Permalink to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">MaterialTuningSummary</span></code> object contains the results of the material
+tuning process. These results are used in follow-on steps to calculate the
+material parameters needed by PyAdditive. See the Additive documentation
+referred to above for details.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>MaterialTuningSummary
+input: MaterialTuningInput
+id: custom-material-tuning
+allowable_error: 0.05
+max_iterations: 10
+experiment_data_file: /home/runner/.local/share/ansys-pyadditive/examples/material_tuning_input/experiment_data.csv
+material_parameters_file: /home/runner/.local/share/ansys-pyadditive/examples/material_tuning_input/material_parameters.json
+thermal_properties_lookup_file: /home/runner/.local/share/ansys-pyadditive/examples/material_tuning_input/thermal_lookup.csv
+characteristic_width_lookup_file: /home/runner/.local/share/ansys-pyadditive/examples/material_tuning_input/characteristic_width_lookup.csv
+base_plate_temperature: 353.15
+
+optimized_parameters_file: /home/runner/.local/share/ansys-pyadditive/custom-material-tuning/optimized_parameters.csv
+characteristic_width_file: /home/runner/.local/share/ansys-pyadditive/examples/material_tuning_input/characteristic_width_lookup.csv
+log_file: /home/runner/.local/share/ansys-pyadditive/custom-material-tuning/log.txt
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 5 minutes  37.637 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-examples-06-additive-custom-material-tuning-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/a221b3e7ae1a2c4a918d87c3e03e4083/06_additive_custom_material_tuning.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">06_additive_custom_material_tuning.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/27aa39a6f38b536d08672082de5beacd/06_additive_custom_material_tuning.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">06_additive_custom_material_tuning.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+              </article>
+              
+
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright (c) 2023 ANSYS, Inc. All rights reserved.<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>

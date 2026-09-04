@@ -1,0 +1,179 @@
+
+
+
+
+
+
+:class:`Progress`
+=================
+
+
+.. py:class:: ansys.additive.core.progress_handler.Progress(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   
+   Progress information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+.. py:currentmodule:: Progress
+
+Overview
+--------
+
+.. tab-set::
+
+
+   .. tab-item:: Constructors
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~from_proto_msg`
+            - Create a ``Progress`` object from a progress protobuf message.
+          * - :py:attr:`~from_operation_metadata`
+            - Create a ``Progress`` object from an operation metadata (long-running operations) protobuf message.
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~sim_id`
+            - 
+          * - :py:attr:`~state`
+            - 
+          * - :py:attr:`~percent_complete`
+            - 
+          * - :py:attr:`~message`
+            - 
+          * - :py:attr:`~context`
+            - 
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__str__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.progress_handler import Progress
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: sim_id
+   :type:  str
+
+.. py:attribute:: state
+   :type:  ProgressState
+
+.. py:attribute:: percent_complete
+   :type:  int
+
+.. py:attribute:: message
+   :type:  str
+
+.. py:attribute:: context
+   :type:  str
+
+
+
+Method detail
+-------------
+
+.. py:method:: from_proto_msg(sim_id: str, progress: ansys.api.additive.v0.additive_domain_pb2.Progress)
+   :classmethod:
+
+
+   
+   Create a ``Progress`` object from a progress protobuf message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: from_operation_metadata(metadata: ansys.api.additive.v0.additive_operations_pb2.OperationMetadata)
+   :classmethod:
+
+
+   
+   Create a ``Progress`` object from an operation metadata (long-running operations) protobuf message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: __str__()
+
+
+
+

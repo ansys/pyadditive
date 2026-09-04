@@ -1,0 +1,35 @@
+﻿MicrostructureSummary
+=====================
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoclass:: MicrostructureSummary
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      MicrostructureSummary.input
+      MicrostructureSummary.xy_circle_equivalence
+      MicrostructureSummary.xy_vtk
+      MicrostructureSummary.xz_circle_equivalence
+      MicrostructureSummary.xz_vtk
+      MicrostructureSummary.yz_circle_equivalence
+      MicrostructureSummary.yz_vtk
+   
+   
