@@ -12,7 +12,7 @@ on:
 permissions:
   contents: write # zizmor: ignore[excessive-permissions]
   id-token: write # zizmor: ignore[excessive-permissions]
-  packages: read
+  packages: read # needed to pull container images
 
 env:
   MAIN_PYTHON_VERSION: "3.12"
@@ -31,7 +31,7 @@ jobs:
     name: "Check actions security"
     runs-on: ubuntu-latest
     steps:
-      - uses: ansys/actions/check-actions-security@v10.0
+      - uses: ansys/actions/check-actions-security@v11
         with:
           generate-summary: true
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -43,14 +43,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Run PyAnsys code style checks"
-        uses: ansys/actions/code-style@v10
+        uses: ansys/actions/code-style@v11
 
   doc-style:
     name: "Running documentation style checks"
     runs-on: ubuntu-latest
     steps:
       - name: "Running documentation style checks"
-        uses: ansys/actions/doc-style@v10
+        uses: ansys/actions/doc-style@v11
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -58,7 +58,7 @@ jobs:
     name: "Check library vulnerabilities"
     runs-on: ubuntu-latest
     steps:
-      - uses: ansys/actions/check-vulnerabilities@v10.0
+      - uses: ansys/actions/check-vulnerabilities@v11
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
@@ -81,7 +81,7 @@ jobs:
             os: macos-latest
     steps:
       - name: "Build a wheelhouse of the Python library"
-        uses: ansys/actions/build-wheelhouse@v10
+        uses: ansys/actions/build-wheelhouse@v11
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           operating-system: ${{ matrix.os }}
@@ -98,20 +98,20 @@ jobs:
       fail-fast: false
     steps:
       - name: "Run pytest"
-        uses: ansys/actions/tests-pytest@v10
+        uses: ansys/actions/tests-pytest@v11
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Upload Coverage Results
         if: (matrix.python-version == env.MAIN_PYTHON_VERSION) && (runner.os == 'Linux')
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-html
           path: .cov/html
           retention-days: 7
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         if: (matrix.python-version == env.MAIN_PYTHON_VERSION) && (runner.os == 'Linux')
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -131,7 +131,7 @@ jobs:
     timeout-minutes: 90
     steps:
       - name: "Login into the GitHub registry container"
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -154,16 +154,16 @@ jobs:
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
 
       - name: "Setup headless display"
-        uses: pyvista/setup-headless-display-action@7d84ae825e6d9297a8e99bdbbae20d1b919a0b19
+        uses: pyvista/setup-headless-display-action@b0bf9f57d62d2b3fee9f1c0e0c7e390f05e97a4e # v5.0.0
 
       - name: "Checkout code"
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: "Build documentation with short examples"
         if: github.event_name != 'push'
-        uses: ansys/actions/doc-build@v10
+        uses: ansys/actions/doc-build@v11
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           checkout: false
@@ -177,7 +177,7 @@ jobs:
 
       - name: "Build documentation with long examples"
         if: github.event_name == 'push'
-        uses: ansys/actions/doc-build@v10
+        uses: ansys/actions/doc-build@v11
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           checkout: false
@@ -202,7 +202,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Build library source and wheel artifacts"
-        uses: ansys/actions/build-library@v10
+        uses: ansys/actions/build-library@v11
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
@@ -216,16 +216,16 @@ jobs:
     permissions:
       contents: write # zizmor: ignore[excessive-permissions]
       id-token: write # zizmor: ignore[excessive-permissions]
-      packages: read
+      packages: read # needed to publish package to registry
     steps:
       - name: "Download the library artifacts from build-library step"
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ${{ env.LIBRARY_NAME }}-artifacts
           path: ${{ env.LIBRARY_NAME }}-artifacts
 
       - name: "Upload artifacts to PyPI using trusted publisher"
-        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
         with:
           repository-url: "https://upload.pypi.org/legacy/"
           print-hash: true
@@ -233,7 +233,7 @@ jobs:
           skip-existing: false
 
       - name: "Release to GitHub"
-        uses: ansys/actions/release-github@v10
+        uses: ansys/actions/release-github@v11
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -245,7 +245,7 @@ jobs:
     if: github.event_name == 'push'
     steps:
       - name: "Deploy the latest documentation"
-        uses: ansys/actions/doc-deploy-dev@v10
+        uses: ansys/actions/doc-deploy-dev@v11
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -259,7 +259,7 @@ jobs:
     needs: [release]
     steps:
       - name: "Deploy the stable documentation"
-        uses: ansys/actions/doc-deploy-stable@v10
+        uses: ansys/actions/doc-deploy-stable@v11
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -272,11 +272,11 @@ jobs:
     needs: [build-library]
     if: github.event_name == 'pull_request'
     permissions:
-      contents: write
-      pull-requests: write
+      contents: write # needed to merge pull requests
+      pull-requests: write # needed to merge pull requests
     steps:
       - name: Automerge PRs
-        uses: ansys/actions/hk-automerge-prs@v10
+        uses: ansys/actions/hk-automerge-prs@v11
         with:
           approver: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
           approver-token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}

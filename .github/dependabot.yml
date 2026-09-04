@@ -1,6 +1,14 @@
 version: 2
 updates:
   - package-ecosystem: "pip"
+    cooldown:
+      default-days: 10 # Fallback cooldown if no specific rule applies
+      include:
+        - "*"  # Include all dependencies in cooldown
+      exclude:
+        - "ansys-sphinx-theme"
+        - "ansys-platform-instancemanagement"
+        - "ansys-tools-common"
     directory: "/"
     schedule:
       interval: "daily"
@@ -31,6 +39,12 @@ updates:
           - "panel"
 
   - package-ecosystem: "github-actions"
+    cooldown:
+      default-days: 10 # Fallback cooldown if no specific rule applies
+      include:
+        - "*"  # Include all dependencies in cooldown
+      exclude:
+        - "ansys/actions"
     directory: "/"
     schedule:
       interval: "daily"

@@ -1,6 +1,6 @@
 [build-system]
 build-backend = "flit_core.buildapi"
-requires = ["flit_core >=3.2,<4"]
+requires = ["flit_core >=3.2,<5"]
 
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
@@ -9,15 +9,15 @@ classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Manufacturing",
   "Topic :: Scientific/Engineering",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.13"
 ]
 description = "A Python client for the Ansys Additive service"
-license = {file = "LICENSE"}
+license = "MIT"
+license-files = ["LICENSE"]
 maintainers = [{name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"}]
 name = "ansys-additive-core"
 readme = "README.rst"
@@ -41,12 +41,12 @@ dependencies = [
   "six>=1.16.0",
   "tqdm>=4.45.0",
   "pydantic>=2.6.3",
-  "ipython>=7.0.0",
+  "ipython>=7.0.0"
 ]
 
 [project.optional-dependencies]
 tests = [
-  "ansys-platform-instancemanagement==1.1.2",
+  "ansys-platform-instancemanagement==1.2.0",
   "dill==0.4.1",
   "google-api-python-client==2.190.0",
   "googleapis-common-protos==1.72.0",
@@ -54,41 +54,41 @@ tests = [
   "grpcio-health-checking==1.73.1",
   "numpy==2.2.6",
   "pandas==2.3.3",
-  "platformdirs==4.9.4",
+  "platformdirs==4.11.4",
   "protobuf==6.33.5",
   "six==1.17.0",
-  "tqdm==4.67.3",
-  "pydantic==2.12.5",
-  "pytest==8.4.2",
-  "pytest-cov==7.0.0",
+  "tqdm==4.70.0",
+  "pydantic==2.13.4",
+  "pytest==9.1.1",
+  "pytest-cov==7.1.0"
 ]
 
 doc = [
-  "ansys-sphinx-theme[autoapi]==1.7.2",
+  "ansys-sphinx-theme[autoapi]==1.9.0",
   "enum-tools==0.13.0",
   "joblib==1.5.3",
   "jupyter_sphinx==0.5.3",
-  "matplotlib==3.10.8",
+  "matplotlib==3.10.9",
   "numpydoc==1.10.0",
   "phantomjs==1.4.1",
   "pypandoc==1.17",
-  "pyvista==0.47.0",
-  "ipywidgets==8.1.8",
-  "trame==3.12.0",
-  "trame-vtk==2.11.6",
-  "trame-plotly==3.1.0",
-  "trame-vuetify==3.2.1",
-  "imageio==2.37.2",
+  "pyvista==0.48.4",
+  "ipywidgets==8.1.9",
+  "trame==3.13.2",
+  "trame-vtk==2.11.16",
+  "trame-plotly==3.1.2",
+  "trame-vuetify==3.2.5",
+  "imageio==2.37.4",
   "sphinx==8.2.3",
   "sphinx-autodoc-typehints==3.1.0",
   "sphinx-copybutton==0.5.2",
   "sphinx-design==0.6.1",
-  "sphinx-gallery==0.20.0",
+  "sphinx-gallery==0.21.0",
   "sphinx-jinja==2.0.2",
   "sphinx-notfound-page==1.1.0",
-  "sphinx-toolbox==4.1.2",
+  "sphinx-toolbox==4.3.0",
   "sphinxemoji==0.3.2",
-  "ipython>=7.0.0",
+  "ipython>=7.0.0"
 ]
 
 [project.urls]
