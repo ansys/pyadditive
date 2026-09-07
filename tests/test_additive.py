@@ -140,7 +140,7 @@ def test_Additive_init_calls_connect_to_server_correctly(
 
     # assert
     mock_connect.assert_called_with(
-        mock_channel, host, port, expected_prod_version, ANY, None, TransportMode.UDS, None, None, None, False
+        mock_channel, host, port, expected_prod_version, ANY, None, None, None, None, None, False
     )
     assert additive._server == mock_server_connection
     assert additive._user_data_path == USER_DATA_PATH
@@ -256,8 +256,11 @@ def test_connect_to_server_with_channel_creates_server_connection(
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
-def test_connect_to_server_with_host_creates_server_connection(mock_connection):
+def test_connect_to_server_with_host_creates_server_connection(
+    mock_connection, monkeypatch: pytest.MonkeyPatch
+):
     # arrange
+    monkeypatch.delenv("ANSYS_ADDITIVE_TRANSPORT_MODE", raising=False)
     mock_connection.return_value = Mock(ServerConnection)
     host = "127.0.0.1"
     port = 9999
@@ -268,7 +271,7 @@ def test_connect_to_server_with_host_creates_server_connection(mock_connection):
 
     # assert
     assert server is not None
-    mock_connection.assert_called_once_with(addr=f"{host}:{port}", log=log, transport_mode=None, certs_dir=None, uds_dir=None, uds_id=None, allow_remote_host=False)
+    mock_connection.assert_called_once_with(addr=f"{host}:{port}", log=log, transport_mode=TransportMode.UDS, certs_dir=None, uds_dir=None, uds_id=None, allow_remote_host=False)
 
 
 @patch("ansys.additive.core.additive.ServerConnection")
@@ -278,6 +281,7 @@ def test_connect_to_server_with_env_var_creates_server_connection(
     # arrange
     addr = "localhost:1234"
     monkeypatch.setenv("ANSYS_ADDITIVE_ADDRESS", addr)
+    monkeypatch.delenv("ANSYS_ADDITIVE_TRANSPORT_MODE", raising=False)
     mock_connection.return_value = Mock(ServerConnection)
     log = logging.Logger("testlogger")
 
@@ -286,7 +290,123 @@ def test_connect_to_server_with_env_var_creates_server_connection(
 
     # assert
     assert server is not None
-    mock_connection.assert_called_once_with(addr=addr, log=log, transport_mode=None, certs_dir=None, uds_dir=None, uds_id=None, allow_remote_host=False)
+    mock_connection.assert_called_once_with(addr=addr, log=log, transport_mode=TransportMode.UDS, certs_dir=None, uds_dir=None, uds_id=None, allow_remote_host=False)
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_connect_to_server_without_address_uses_uds_transport_mode(
+    mock_connection, monkeypatch: pytest.MonkeyPatch
+):
+    # arrange
+    monkeypatch.delenv("ANSYS_ADDITIVE_ADDRESS", raising=False)
+    monkeypatch.delenv("ANSYS_ADDITIVE_TRANSPORT_MODE", raising=False)
+    mock_connection.return_value = Mock(ServerConnection)
+    log = logging.Logger("testlogger")
+
+    # act
+    server = Additive._connect_to_server(log=log)
+
+    # assert
+    assert server is not None
+    mock_connection.assert_called_once_with(
+        product_version=DEFAULT_PRODUCT_VERSION,
+        log=log,
+        linux_install_path=None,
+        transport_mode=TransportMode.UDS,
+        certs_dir=None,
+        uds_dir=None,
+        uds_id=None,
+        allow_remote_host=False,
+    )
+
+
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_connect_to_server_with_remote_host_uses_mtls_transport_mode(
+    mock_connection, monkeypatch: pytest.MonkeyPatch
+):
+    # arrange
+    monkeypatch.delenv("ANSYS_ADDITIVE_TRANSPORT_MODE", raising=False)
+    mock_connection.return_value = Mock(ServerConnection)
+    host = "10.11.12.13"
+    port = 9999
+    log = logging.Logger("testlogger")
+
+    # act
+    server = Additive._connect_to_server(channel=None, host=host, port=port, log=log)
+
+    # assert
+    assert server is not None
+    mock_connection.assert_called_once_with(
+        addr=f"{host}:{port}",
+        log=log,
+        transport_mode=TransportMode.MTLS,
+        certs_dir=None,
+        uds_dir=None,
+        uds_id=None,
+        allow_remote_host=False,
+    )
+
+
+@pytest.mark.parametrize(
+    "env_value, expected_transport_mode",
+    [
+        ("insecure", TransportMode.INSECURE),
+        ("MTLS", TransportMode.MTLS),
+        ("uds", TransportMode.UDS),
+    ],
+)
+@patch("ansys.additive.core.additive.ServerConnection")
+def test_connect_to_server_honors_transport_mode_env_var(
+    mock_connection,
+    monkeypatch: pytest.MonkeyPatch,
+    env_value,
+    expected_transport_mode,
+):
+    # arrange
+    addr = "10.11.12.13:1234"
+    monkeypatch.setenv("ANSYS_ADDITIVE_ADDRESS", addr)
+    monkeypatch.setenv("ANSYS_ADDITIVE_TRANSPORT_MODE", env_value)
+    mock_connection.return_value = Mock(ServerConnection)
+    log = logging.Logger("testlogger")
+
+    # act
+    server = Additive._connect_to_server(log=log)
+
+    # assert
+    assert server is not None
+    mock_connection.assert_called_once_with(
+        addr=addr,
+        log=log,
+        transport_mode=expected_transport_mode,
+        certs_dir=None,
+        uds_dir=None,
+        uds_id=None,
+        allow_remote_host=False,
+    )
+
+
+def test_connect_to_server_with_invalid_transport_mode_env_var_raises_error(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    # arrange
+    monkeypatch.setenv("ANSYS_ADDITIVE_TRANSPORT_MODE", "bogus")
+
+    # act, assert
+    with pytest.raises(ValueError, match="Invalid ANSYS_ADDITIVE_TRANSPORT_MODE value: bogus"):
+        Additive._connect_to_server(host="localhost")
+
+
+def test_connect_to_server_with_explicit_transport_mode_ignores_env_var(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    # arrange
+    monkeypatch.setenv("ANSYS_ADDITIVE_TRANSPORT_MODE", "insecure")
+
+    # act, assert
+    assert (
+        Additive._resolve_transport_mode(TransportMode.MTLS, "localhost:1234")
+        == TransportMode.MTLS
+    )
 
 
 def test_about_prints_not_connected_message():

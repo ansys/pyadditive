@@ -146,7 +146,7 @@ intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable", None),
     "numpy": ("https://numpy.org/doc/stable", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
-    "pyvista": ("https://docs.pyvista.org/version/stable", None),
+    "pyvista": ("https://docs.pyvista.org/", None),
     "pypim": ("https://pypim.docs.pyansys.com/version/stable", None),
     "panel": ("https://panel.holoviz.org/", None),
 }
@@ -239,6 +239,13 @@ BUILD_EXAMPLES = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else
 BUILD_EXAMPLES_LONG = (
     True if os.environ.get("BUILD_EXAMPLES_LONG", "true") == "true" else False
 )
+# The 3D microstructure simulation is a beta feature that is currently rejected by the
+# Additive server with "INVALID INPUT: MSS3DMinTemperature must be greater than or equal
+# to 353.150000. Given: 0.000000". Set BUILD_EXAMPLES_BETA to "true" to include it again
+# once the server accepts the input built by Microstructure3DInput.
+BUILD_EXAMPLES_BETA = (
+    True if os.environ.get("BUILD_EXAMPLES_BETA", "false") == "true" else False
+)
 PLOT_GALLERY = True if os.environ.get("PLOT_GALLERY", "true") == "true" else False
 if BUILD_EXAMPLES is True:
     # Necessary to build examples using PyVista
@@ -253,6 +260,13 @@ if BUILD_EXAMPLES is True:
         ignore_patterns.extend(
             [
                 ".*advanced.*",
+            ]
+        )
+
+    if not BUILD_EXAMPLES_BETA:
+        ignore_patterns.extend(
+            [
+                ".*3d_microstructure.*",
             ]
         )
 
