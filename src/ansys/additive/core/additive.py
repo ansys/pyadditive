@@ -23,6 +23,7 @@
 
 import logging
 import os
+import socket
 import time
 from pathlib import Path
 
@@ -63,6 +64,7 @@ from ansys.additive.core.server_connection import (
     ServerConnection,
 )
 from ansys.additive.core.server_connection.constants import TransportMode
+from ansys.additive.core.server_connection.network_utils import is_loopback
 from ansys.additive.core.simulation import (
     SimulationStatus,
     SimulationType,
@@ -84,6 +86,11 @@ from ansys.api.additive.v0.additive_materials_pb2 import (
 )
 from ansys.api.additive.v0.additive_operations_pb2 import OperationMetadata
 from ansys.api.additive.v0.additive_settings_pb2 import SettingsRequest
+
+ADDRESS_ENV_VAR = "ANSYS_ADDITIVE_ADDRESS"
+"""Environment variable defining the address of the server to connect to."""
+TRANSPORT_MODE_ENV_VAR = "ANSYS_ADDITIVE_TRANSPORT_MODE"
+"""Environment variable defining the transport mode to use for server connections."""
 
 
 class Additive:
@@ -122,9 +129,14 @@ class Additive:
         required when Ansys has not been installed in the default location. Example:
         ``/usr/shared/ansys_inc``. Note that the path should not include the product
         version.
-    transport_mode : TransportMode | str, default: TransportMode.UDS
+    transport_mode : TransportMode | str | None, default: None
         The transport mode to use for the connection. Can be a member of the :class:`TransportMode <.constants.TransportMode>` enum or a string
-        ('insecure', 'mtls', or 'uds').
+        ('insecure', 'mtls', or 'uds'). When ``None``, the transport mode is taken from the
+        ``ANSYS_ADDITIVE_TRANSPORT_MODE`` environment variable if it is set. Otherwise,
+        ``TransportMode.UDS`` is used for servers running on the local machine, either started
+        by the client or reachable at a loopback address, and ``TransportMode.MTLS`` is used
+        for servers running on a remote host. Use ``TransportMode.INSECURE`` to connect without
+        encryption.
     certs_dir : Path | str | None
         Directory to use for TLS certificates. Applicable if `transport_mode` is 'mtls'.
         By default `None` and will search for the "ANSYS_GRPC_CERTIFICATES" environment variable.
@@ -178,7 +190,7 @@ class Additive:
         log_file: str = "",
         enable_beta_features: bool = False,
         linux_install_path: os.PathLike | None = None,
-        transport_mode: TransportMode | str = TransportMode.UDS,
+        transport_mode: TransportMode | str | None = None,
         certs_dir: Path | str | None = None,
         uds_dir: Path | str | None = None,
         uds_id: str | None = None,
@@ -260,9 +272,10 @@ class Additive:
             required when Ansys has not been installed in the default location. Example:
             ``/usr/shared/ansys_inc``. Note that the path should not include the product
             version.
-        transport_mode : TransportMode | str
+        transport_mode : TransportMode | str | None
             The transport mode to use for the connection. Can be a member of the :class:`TransportMode <.constants.TransportMode>` enum or a string
-            ('insecure', 'mtls', or 'uds').
+            ('insecure', 'mtls', or 'uds'). When ``None``, the transport mode is resolved by
+            the :meth:`_resolve_transport_mode` method.
         certs_dir : Path | str | None
             Directory containing certificates for mTLS connections. Required if `transport_mode` is 'mtls'.
         uds_dir : Path | str | None
@@ -287,37 +300,83 @@ class Additive:
             if not isinstance(channel, grpc.Channel):
                 raise ValueError("channel must be a grpc.Channel object")
             return ServerConnection(channel=channel, log=log, allow_remote_host=allow_remote_host)
-        elif host:
+
+        addr = f"{host}:{port}" if host else os.getenv(ADDRESS_ENV_VAR)
+        mode = Additive._resolve_transport_mode(transport_mode, addr)
+        if addr:
             return ServerConnection(
-                addr=f"{host}:{port}",
+                addr=addr,
                 log=log,
-                transport_mode=transport_mode,
+                transport_mode=mode,
                 certs_dir=certs_dir,
                 uds_dir=uds_dir,
                 uds_id=uds_id,
                 allow_remote_host=allow_remote_host,
             )
-        elif os.getenv("ANSYS_ADDITIVE_ADDRESS"):
-            return ServerConnection(
-                addr=os.getenv("ANSYS_ADDITIVE_ADDRESS"),
-                log=log,
-                transport_mode=transport_mode,
-                certs_dir=certs_dir,
-                uds_dir=uds_dir,
-                uds_id=uds_id,
-                allow_remote_host=allow_remote_host,
-            )
-        else:
-            return ServerConnection(
-                product_version=product_version,
-                log=log,
-                linux_install_path=linux_install_path,
-                transport_mode=transport_mode,
-                certs_dir=certs_dir,
-                uds_dir=uds_dir,
-                uds_id=uds_id,
-                allow_remote_host=allow_remote_host,
-            )
+        return ServerConnection(
+            product_version=product_version,
+            log=log,
+            linux_install_path=linux_install_path,
+            transport_mode=mode,
+            certs_dir=certs_dir,
+            uds_dir=uds_dir,
+            uds_id=uds_id,
+            allow_remote_host=allow_remote_host,
+        )
+
+    @staticmethod
+    def _resolve_transport_mode(
+        transport_mode: TransportMode | str | None, addr: str | None
+    ) -> TransportMode | str:
+        """Determine the transport mode to use for a server connection.
+
+        Parameters
+        ----------
+        transport_mode : TransportMode | str | None
+            Transport mode requested by the caller. If it is other than ``None``, it is used
+            as is.
+        addr : str | None
+            Address of the server, of the form ``host:port``. ``None`` means that the server
+            is started by the client or provided by PyPIM.
+
+        Returns
+        -------
+        TransportMode | str
+            Transport mode requested by the caller, if any. Otherwise, the transport mode
+            defined by the ``ANSYS_ADDITIVE_TRANSPORT_MODE`` environment variable, if it is
+            set. Otherwise, ``TransportMode.UDS`` for servers running on the local machine
+            and ``TransportMode.MTLS`` for servers running on a remote host.
+
+        Raises
+        ------
+        ValueError
+            If the ``ANSYS_ADDITIVE_TRANSPORT_MODE`` environment variable value is not a
+            valid transport mode.
+
+        """
+        if transport_mode is not None:
+            return transport_mode
+
+        env_transport_mode = os.getenv(TRANSPORT_MODE_ENV_VAR)
+        if env_transport_mode:
+            try:
+                return TransportMode[env_transport_mode.upper()]
+            except KeyError as exc:
+                raise ValueError(
+                    f"Invalid {TRANSPORT_MODE_ENV_VAR} value: {env_transport_mode}. "
+                    f"Valid values are {[m.value for m in TransportMode]}."
+                ) from exc
+
+        if not addr:
+            # The client starts the server on the local machine or it is provided by PyPIM.
+            return TransportMode.UDS
+
+        host = addr.rsplit(":", 1)[0]
+        try:
+            ip = socket.gethostbyname(host)
+        except OSError:
+            ip = host
+        return TransportMode.UDS if is_loopback(ip) else TransportMode.MTLS
 
     @property
     def enable_beta_features(self) -> bool:

@@ -64,6 +64,26 @@ You can start a remote session by specifying the host name and port of the serve
    import ansys.additive.core as pyadditive
    additive = pyadditive.Additive(host="additiveserver.mydomain.com", port=12345)
 
+Connection security
+-------------------
+
+By default, the client selects the most secure transport available for the server it
+connects to. A server running on the local machine is reached through a Unix Domain
+Socket (``uds``), while a server running on a remote host is reached through mutual TLS
+(``mtls``). To connect without encryption, request the ``insecure`` transport mode
+explicitly.
+
+.. code:: pycon
+
+   import ansys.additive.core as pyadditive
+   additive = pyadditive.Additive(host="localhost", port=50052, transport_mode="insecure")
+
+The transport mode can also be set with the ``ANSYS_ADDITIVE_TRANSPORT_MODE`` environment
+variable, whose value is ``insecure``, ``mtls``, or ``uds``. Similarly, the server address
+can be set with the ``ANSYS_ADDITIVE_ADDRESS`` environment variable, whose value is of the
+form ``host:port``. A transport mode passed to the ``Additive`` object takes precedence
+over the environment variable.
+
 Alternative startup methods
 ---------------------------
 
@@ -74,8 +94,15 @@ For additional session startup methods, see the documentation for the
 Run simulations
 ===============
 
-For examples of the types of simulations possible with PyAdditive, see
-`Examples <https://additive.docs.pyansys.com/version/stable/examples/gallery_examples/index.html>`_.
+.. jinja:: main_toctree
+
+    {% if build_examples %}
+    For examples of the types of simulations possible with PyAdditive, see
+    :doc:`Examples </examples/gallery_examples/index>`.
+    {% else %}
+    For examples of the types of simulations possible with PyAdditive, see
+    `Examples <https://additive.docs.pyansys.com/version/stable/examples/gallery_examples/index.html>`_.
+    {% endif %}
 
 
 
