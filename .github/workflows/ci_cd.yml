@@ -172,7 +172,7 @@ jobs:
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
-          BUILD_EXAMPLES: false
+          BUILD_EXAMPLES: true
           BUILD_EXAMPLES_LONG: false
 
       - name: "Build documentation with long examples"
@@ -186,8 +186,8 @@ jobs:
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
-          BUILD_EXAMPLES: false
-          BUILD_EXAMPLES_LONG: false
+          BUILD_EXAMPLES: true
+          BUILD_EXAMPLES_LONG: true
 
       - name: "Collect logs and shutdown server"
         if: ${{ always() }}

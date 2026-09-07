@@ -74,8 +74,15 @@ For additional session startup methods, see the documentation for the
 Run simulations
 ===============
 
-For examples of the types of simulations possible with PyAdditive, see
-`Examples <https://additive.docs.pyansys.com/version/stable/examples/gallery_examples/index.html>`_.
+.. jinja:: main_toctree
+
+    {% if build_examples %}
+    For examples of the types of simulations possible with PyAdditive, see
+    :doc:`Examples </examples/gallery_examples/index>`.
+    {% else %}
+    For examples of the types of simulations possible with PyAdditive, see
+    `Examples <https://additive.docs.pyansys.com/version/stable/examples/gallery_examples/index.html>`_.
+    {% endif %}
 
 
 
