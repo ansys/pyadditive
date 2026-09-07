@@ -146,7 +146,7 @@ intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable", None),
     "numpy": ("https://numpy.org/doc/stable", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
-    "pyvista": ("https://docs.pyvista.org/version/stable", None),
+    "pyvista": ("https://docs.pyvista.org/", None),
     "pypim": ("https://pypim.docs.pyansys.com/version/stable", None),
     "panel": ("https://panel.holoviz.org/", None),
 }
