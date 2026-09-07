@@ -172,6 +172,9 @@ jobs:
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
+          # The server runs in a container and is reached over TCP, so the examples
+          # cannot use the default Unix Domain Socket transport.
+          ANSYS_ADDITIVE_TRANSPORT_MODE: "insecure"
           BUILD_EXAMPLES: true
           BUILD_EXAMPLES_LONG: false
 
@@ -186,6 +189,9 @@ jobs:
         env:
           GENERATING_DOCS: 1
           ANSYS_ADDITIVE_ADDRESS: "localhost:50052"
+          # The server runs in a container and is reached over TCP, so the examples
+          # cannot use the default Unix Domain Socket transport.
+          ANSYS_ADDITIVE_TRANSPORT_MODE: "insecure"
           BUILD_EXAMPLES: true
           BUILD_EXAMPLES_LONG: true
 
