@@ -1,0 +1,6 @@
+sample\_size\_y
+===============
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoproperty:: MicrostructureInput.sample_size_y

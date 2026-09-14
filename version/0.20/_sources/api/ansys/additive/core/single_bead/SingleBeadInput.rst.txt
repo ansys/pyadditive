@@ -1,0 +1,435 @@
+
+
+
+
+
+
+:class:`SingleBeadInput`
+========================
+
+
+.. py:class:: ansys.additive.core.single_bead.SingleBeadInput(*, bead_length: float = DEFAULT_BEAD_LENGTH, machine: ansys.additive.core.machine.AdditiveMachine = None, material: ansys.additive.core.material.AdditiveMaterial = None, output_thermal_history: bool = DEFAULT_OUTPUT_THERMAL_HISTORY, thermal_history_interval: int = DEFAULT_THERMAL_HISTORY_INTERVAL)
+
+   Bases: :py:obj:`ansys.additive.core.simulation.SimulationInputBase`
+
+
+   
+   Provides input parameters for a single bead simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. py:currentmodule:: SingleBeadInput
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~bead_length`
+            - Length (m) of bead to simulate.
+          * - :py:attr:`~machine`
+            - Machine parameters.
+          * - :py:attr:`~material`
+            - Material parameters.
+          * - :py:attr:`~output_thermal_history`
+            - Flag indicating whether to output the thermal history of the simulation.
+          * - :py:attr:`~thermal_history_interval`
+            - Interval, in simulation steps, between thermal history results.
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_BEAD_LENGTH`
+            - Default bead length (m).
+          * - :py:attr:`~MIN_BEAD_LENGTH`
+            - Minimum bead length (m).
+          * - :py:attr:`~MAX_BEAD_LENGTH`
+            - Maximum bead length (m).
+          * - :py:attr:`~DEFAULT_OUTPUT_THERMAL_HISTORY`
+            - Default output thermal history flag.
+          * - :py:attr:`~DEFAULT_THERMAL_HISTORY_INTERVAL`
+            - Default thermal history interval.
+          * - :py:attr:`~MIN_THERMAL_HISTORY_INTERVAL`
+            - Minimum thermal history interval.
+          * - :py:attr:`~MAX_THERMAL_HISTORY_INTERVAL`
+            - Maximum thermal history interval.
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+          * - :py:attr:`~__eq__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.single_bead import SingleBeadInput
+
+Property detail
+---------------
+
+.. py:property:: bead_length
+   :type: float
+
+
+   
+   Length (m) of bead to simulate.
+
+   Valid values are from the :obj:`MIN_BEAD_LENGTH` value to the
+   :obj:`MAX_BEAD_LENGTH` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: machine
+   :type: ansys.additive.core.machine.AdditiveMachine
+
+
+   
+   Machine parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material
+   :type: ansys.additive.core.material.AdditiveMaterial
+
+
+   
+   Material parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: output_thermal_history
+   :type: bool
+
+
+   
+   Flag indicating whether to output the thermal history of the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: thermal_history_interval
+   :type: int
+
+
+   
+   Interval, in simulation steps, between thermal history results.
+
+   Use ``1`` to create thermal history results for every simulation step,
+   ``2`` for every other step, and so on.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: DEFAULT_BEAD_LENGTH
+   :value: 0.003
+
+
+   
+   Default bead length (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_BEAD_LENGTH
+   :value: 0.001
+
+
+   
+   Minimum bead length (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_BEAD_LENGTH
+   :value: 0.01
+
+
+   
+   Maximum bead length (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_OUTPUT_THERMAL_HISTORY
+   :value: False
+
+
+   
+   Default output thermal history flag.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_THERMAL_HISTORY_INTERVAL
+   :value: 1
+
+
+   
+   Default thermal history interval.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_THERMAL_HISTORY_INTERVAL
+   :value: 1
+
+
+   
+   Minimum thermal history interval.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_THERMAL_HISTORY_INTERVAL
+   :value: 10000
+
+
+   
+   Maximum thermal history interval.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+.. py:method:: __eq__(__o: object) -> bool
+
+
+
+

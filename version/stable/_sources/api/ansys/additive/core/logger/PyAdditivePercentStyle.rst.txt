@@ -1,0 +1,49 @@
+
+
+
+
+
+
+:class:`PyAdditivePercentStyle`
+===============================
+
+
+.. py:class:: ansys.additive.core.logger.PyAdditivePercentStyle(fmt, *, defaults=None)
+
+   Bases: :py:obj:`logging.PercentStyle`
+
+
+   
+   Provides a common messaging style for the ``PyAdditiveFormatter`` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.logger import PyAdditivePercentStyle
+
+
+
+
+

@@ -1,0 +1,6 @@
+penetration\_depth\_minimum
+===========================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.penetration_depth_minimum

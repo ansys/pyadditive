@@ -1,0 +1,320 @@
+
+
+
+
+
+
+The ``material_tuning.py`` module
+=================================
+
+.. py:module:: ansys.additive.core.material_tuning
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: material_tuning
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~MaterialTuningInput`
+            - Provides input parameters for tuning a custom material.
+
+
+          * - :py:obj:`~MaterialTuningSummary`
+            - Provides a summary of material tuning simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides input and result summary containers for material tuning.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+.. py:class:: MaterialTuningInput(*, id: str, experiment_data_file: str, material_configuration_file: str, thermal_properties_lookup_file: str, characteristic_width_lookup_file: str = None, allowable_error: float = 0.05, max_iterations: int = 15, base_plate_temperature: float = 353.15)
+
+   
+   Provides input parameters for tuning a custom material.
+
+
+   :Parameters:
+
+       **id: str**
+           ID for this set of tuning simulations.
+
+       **experiment_data_file: str**
+           Name of the CSV file containing the experimental results data.
+
+       **material_configuration_file: str**
+           Name of the JSON file containing the material parameters.
+
+       **thermal_properties_lookup_file: str**
+           Name of the CSV file containing a lookup table for thermal-dependent properties.
+
+       **characteristic_width_lookup_file: str, None**
+           Name of the CSV file containing a lookup table for the characteristic melt pool
+           width at a given temperature. The default is ``None``, in which case the characteristic
+           width is calculated. However, a value must be provided for the ``base_plate_temperature``
+           parameter.
+
+       **allowable_error: float, 0.05**
+           Maximum allowable error between experimental and simulated results.
+           The default is ``0.05``, which is 5 percent.
+
+       **max_iterations: int, 15**
+           Maximum number of iterations to perform when trying to match
+           simulation results to an experiment if the allowable error is not met.
+
+       **base_plate_temperature: float, 353.15**
+           Temperature of the base plate in Kelvin. This is only required if the
+           value for the ``characteristic_width_lookup_file`` parameter is ``None``.
+           This value is ignored otherwise. The default is ``353.15`` K, which is 80 C.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.material_tuning import MaterialTuningInput
+
+
+
+    
+
+
+
+
+
+.. py:class:: MaterialTuningSummary(input: MaterialTuningInput, msg: ansys.api.additive.v0.additive_domain_pb2.MaterialTuningResult, out_dir: str)
+
+   
+   Provides a summary of material tuning simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: MaterialTuningSummary
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Material tuning input.
+          * - :py:attr:`~optimized_parameters_file`
+            - Path to the optimization parameters file.
+          * - :py:attr:`~characteristic_width_file`
+            - Path to the characteristic width file or ``None``.
+          * - :py:attr:`~log_file`
+            - Path to the tuning log file or ``None``.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.material_tuning import MaterialTuningSummary
+
+Property detail
+---------------
+.. py:property:: input
+   :type: MaterialTuningInput
+
+   
+   Material tuning input.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: optimized_parameters_file
+   :type: str
+
+   
+   Path to the optimization parameters file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: characteristic_width_file
+   :type: str
+
+   
+   Path to the characteristic width file or ``None``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: log_file
+   :type: str
+
+   
+   Path to the tuning log file or ``None``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+    
+
+
+
+
+

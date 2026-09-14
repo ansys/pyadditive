@@ -1,0 +1,6 @@
+absorptivity\_solid\_coefficient\_b
+===================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.absorptivity_solid_coefficient_b
