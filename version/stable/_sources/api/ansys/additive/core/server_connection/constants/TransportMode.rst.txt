@@ -1,0 +1,49 @@
+
+
+
+
+
+
+:class:`TransportMode`
+======================
+
+
+.. py:class:: ansys.additive.core.server_connection.constants.TransportMode
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   
+   Enum containing the different modes of connection.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.server_connection.constants import TransportMode
+
+
+
+
+

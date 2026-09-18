@@ -1,0 +1,80 @@
+
+
+
+
+
+The ``microstructure.py`` module
+================================
+
+.. py:module:: ansys.additive.core.microstructure
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: microstructure
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~MicrostructureInput`
+            - Provides input parameters for microstructure simulation.
+
+
+          * - :py:attr:`~CircleEquivalenceColumnNames`
+            - Provides column names for the circle equivalence data frame.
+
+
+          * - :py:attr:`~MicrostructureSummary`
+            - Provides the summary of a microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 MicrostructureInput<MicrostructureInput>
+    🝆 CircleEquivalenceColumnNames<CircleEquivalenceColumnNames>
+    🝆 MicrostructureSummary<MicrostructureSummary>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

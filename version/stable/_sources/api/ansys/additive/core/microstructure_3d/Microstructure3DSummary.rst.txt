@@ -1,0 +1,227 @@
+
+
+
+
+
+
+:class:`Microstructure3DSummary`
+================================
+
+
+.. py:class:: ansys.additive.core.microstructure_3d.Microstructure3DSummary(input: Microstructure3DInput, result: ansys.api.additive.v0.additive_domain_pb2.Microstructure3DResult, logs: str, user_data_path: str, status: ansys.additive.core.simulation.SimulationStatus = SimulationStatus.COMPLETED)
+
+   Bases: :py:obj:`ansys.additive.core.simulation.SimulationSummaryBase`
+
+
+   
+   Provides the summary of a 3D microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: Microstructure3DSummary
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Simulation input.
+          * - :py:attr:`~grain_3d_vtk`
+            - Path to the VTK file containing the 3D grain structure data.
+          * - :py:attr:`~xy_average_grain_size`
+            - Average grain size (µm) for the XY plane.
+          * - :py:attr:`~xz_average_grain_size`
+            - Average grain size (µm) for the XZ plane.
+          * - :py:attr:`~yz_average_grain_size`
+            - Average grain size (µm) for the YZ plane.
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.microstructure_3d import Microstructure3DSummary
+
+Property detail
+---------------
+
+.. py:property:: input
+
+   
+   Simulation input.
+
+   For more information, see the :class:`Microstructure3DInput` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: grain_3d_vtk
+   :type: str
+
+
+   
+   Path to the VTK file containing the 3D grain structure data.
+
+   The VTK file contains these scalar data sets" ``GrainNumber``, ``Phi0_(deg)``,
+   ``Phi1_(deg)``, ``Phi2_(deg)``, and ``Temperatures``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xy_average_grain_size
+   :type: float
+
+
+   
+   Average grain size (µm) for the XY plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xz_average_grain_size
+   :type: float
+
+
+   
+   Average grain size (µm) for the XZ plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: yz_average_grain_size
+   :type: float
+
+
+   
+   Average grain size (µm) for the YZ plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+
+
+

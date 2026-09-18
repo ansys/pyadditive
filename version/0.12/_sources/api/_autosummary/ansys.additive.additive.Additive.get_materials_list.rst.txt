@@ -1,0 +1,6 @@
+get\_materials\_list
+====================
+
+.. currentmodule:: ansys.additive.additive
+
+.. automethod:: Additive.get_materials_list

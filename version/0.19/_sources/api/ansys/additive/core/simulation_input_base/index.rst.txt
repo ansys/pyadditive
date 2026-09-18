@@ -1,0 +1,80 @@
+
+
+
+
+
+
+The ``simulation_input_base.py`` module
+=======================================
+
+.. py:module:: ansys.additive.core.simulation_input_base
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: simulation_input_base
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.simulation_input_base.SimulationInputBase`
+            - Provides a base class for simulation inputs.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> SimulationInputBase</api/ansys/additive/core/simulation_input_base/SimulationInputBase>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides a base class for simulation inputs.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

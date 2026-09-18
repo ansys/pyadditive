@@ -1,0 +1,1450 @@
+
+
+
+
+
+
+The ``constants.py`` module
+===========================
+
+.. py:module:: ansys.additive.core.parametric_study.constants
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: constants
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ColumnNames`
+            - Provides column names for the parametric study data frame.
+
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~DEFAULT_ITERATION`
+            - Default iteration assigned to new simulations.
+
+
+          * - :py:obj:`~DEFAULT_PRIORITY`
+            - Default priority assigned to new simulations.
+
+
+          * - :py:obj:`~FORMAT_VERSION`
+            - Parametric study file format version.
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides constant values related to parametric studies.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+.. py:class:: ColumnNames
+
+   
+   Provides column names for the parametric study data frame.
+
+   Values are stored internally as a :class:`Pandas DataFrame <pandas.DataFrame>`.
+   Column name definitions follow.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: ColumnNames
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~ITERATION`
+            - Optional iteration number, useful for tracking the sequence of
+          * - :py:attr:`~PRIORITY`
+            - Priority value used to determine execution order.
+          * - :py:attr:`~TYPE`
+            - Type of simulation.
+          * - :py:attr:`~ID`
+            - Unique identifier for the simulation.
+          * - :py:attr:`~STATUS`
+            - Status of the simulation.
+          * - :py:attr:`~MATERIAL`
+            - Name of material used during simulation.
+          * - :py:attr:`~HEATER_TEMPERATURE`
+            - Heater temperature (C).
+          * - :py:attr:`~LAYER_THICKNESS`
+            - Powder deposition layer thickness (m).
+          * - :py:attr:`~BEAM_DIAMETER`
+            - Laser beam diameter (m).
+          * - :py:attr:`~LASER_POWER`
+            - Laser power (W).
+          * - :py:attr:`~SCAN_SPEED`
+            - Laser scan speed (m/s).
+          * - :py:attr:`~START_ANGLE`
+            - Hatch scan angle for first layer (degrees).
+          * - :py:attr:`~ROTATION_ANGLE`
+            - Hatch rotation angle for subsequent layers (degrees).
+          * - :py:attr:`~HATCH_SPACING`
+            - Hatch spacing (m).
+          * - :py:attr:`~STRIPE_WIDTH`
+            - Stripe width (m).
+          * - :py:attr:`~ENERGY_DENSITY`
+            - Laser power divided by build rate (J/m^3).
+          * - :py:attr:`~SINGLE_BEAD_LENGTH`
+            - Length of single bead to simulate (m).
+          * - :py:attr:`~BUILD_RATE`
+            - Layer thickness * scan speed * hatch spacing (m^3/s).
+          * - :py:attr:`~MELT_POOL_WIDTH`
+            - Median melt pool width measured at the top of the powder layer (m).
+          * - :py:attr:`~MELT_POOL_DEPTH`
+            - Median melt pool depth measured from the top of the powder layer (m).
+          * - :py:attr:`~MELT_POOL_LENGTH`
+            - Median melt pool length measured at the top of the powder layer (m).
+          * - :py:attr:`~MELT_POOL_LENGTH_OVER_WIDTH`
+            - Ratio of MELT_POOL_LENGTH to MELT_POOL_WIDTH.
+          * - :py:attr:`~MELT_POOL_REFERENCE_WIDTH`
+            - Median melt pool width measured at the top of the base plate (m).
+          * - :py:attr:`~MELT_POOL_REFERENCE_DEPTH`
+            - Median melt pool depth measured from the top of the base plate (m).
+          * - :py:attr:`~MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH`
+            - Ratio of MELT_POOL_REFERENCE_DEPTH to MELT_POOL_REFERENCE_WIDTH.
+          * - :py:attr:`~POROSITY_SIZE_X`
+            - X dimension size of porosity sample to simulate (m).
+          * - :py:attr:`~POROSITY_SIZE_Y`
+            - Y dimension size of Porosity sample to simulate (m).
+          * - :py:attr:`~POROSITY_SIZE_Z`
+            - Z dimension size of Porosity sample to simulate (m).
+          * - :py:attr:`~RELATIVE_DENSITY`
+            - Relative density of simulated porosity sample.
+          * - :py:attr:`~MICRO_MIN_X`
+            - Minimum X dimension position of microstructure sample (m).
+          * - :py:attr:`~MICRO_MIN_Y`
+            - Minimum Y dimension position of microstructure sample (m).
+          * - :py:attr:`~MICRO_MIN_Z`
+            - Minimum Z dimension position of microstructure sample (m).
+          * - :py:attr:`~MICRO_SIZE_X`
+            - X dimension size of microstructure sample to simulate (m).
+          * - :py:attr:`~MICRO_SIZE_Y`
+            - Y dimension size of microstructure sample to simulate (m).
+          * - :py:attr:`~MICRO_SIZE_Z`
+            - Z dimension size of microstructure sample to simulate (m).
+          * - :py:attr:`~MICRO_SENSOR_DIM`
+            - Sensor dimension used in microstructure simulations (m).
+          * - :py:attr:`~COOLING_RATE`
+            - User-provided cooling rate used in microstructure simulations (K/s).
+          * - :py:attr:`~THERMAL_GRADIENT`
+            - User-provided thermal gradient used in microstructure simulations (K/m).
+          * - :py:attr:`~MICRO_MELT_POOL_WIDTH`
+            - User-provided melt pool width used in microstructure simulation (m).
+          * - :py:attr:`~MICRO_MELT_POOL_DEPTH`
+            - User-provided melt pool depth used in microstructure simulation (m).
+          * - :py:attr:`~RANDOM_SEED`
+            - User-provided random seed used in microstructure simulation.
+          * - :py:attr:`~XY_AVERAGE_GRAIN_SIZE`
+            - Average microstructure grain size in the XY plane (microns).
+          * - :py:attr:`~XZ_AVERAGE_GRAIN_SIZE`
+            - Average microstructure grain size in the XZ plane (microns).
+          * - :py:attr:`~YZ_AVERAGE_GRAIN_SIZE`
+            - Average microstructure grain size in the YZ plane (microns).
+          * - :py:attr:`~ERROR_MESSAGE`
+            - Error message if simulation failed.
+      
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.parametric_study.constants import ColumnNames
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: ITERATION
+   :value: 'Iteration'
+
+
+   
+   Optional iteration number, useful for tracking the sequence of
+   simulation groups.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: PRIORITY
+   :value: 'Priority'
+
+
+   
+   Priority value used to determine execution order.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: TYPE
+   :value: 'Type'
+
+
+   
+   Type of simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: ID
+   :value: 'ID'
+
+
+   
+   Unique identifier for the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: STATUS
+   :value: 'Status'
+
+
+   
+   Status of the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MATERIAL
+   :value: 'Material'
+
+
+   
+   Name of material used during simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: HEATER_TEMPERATURE
+   :value: 'Heater Temp (C)'
+
+
+   
+   Heater temperature (C).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: LAYER_THICKNESS
+   :value: 'Layer Thickness (m)'
+
+
+   
+   Powder deposition layer thickness (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: BEAM_DIAMETER
+   :value: 'Beam Diameter (m)'
+
+
+   
+   Laser beam diameter (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: LASER_POWER
+   :value: 'Laser Power (W)'
+
+
+   
+   Laser power (W).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: SCAN_SPEED
+   :value: 'Scan Speed (m/s)'
+
+
+   
+   Laser scan speed (m/s).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: START_ANGLE
+   :value: 'Start Angle (degrees)'
+
+
+   
+   Hatch scan angle for first layer (degrees).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: ROTATION_ANGLE
+   :value: 'Rotation Angle (degrees)'
+
+
+   
+   Hatch rotation angle for subsequent layers (degrees).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: HATCH_SPACING
+   :value: 'Hatch Spacing (m)'
+
+
+   
+   Hatch spacing (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: STRIPE_WIDTH
+   :value: 'Stripe Width (m)'
+
+
+   
+   Stripe width (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: ENERGY_DENSITY
+   :value: 'Energy Density (J/m^3)'
+
+
+   
+   Laser power divided by build rate (J/m^3).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: SINGLE_BEAD_LENGTH
+   :value: 'Single Bead Length (m)'
+
+
+   
+   Length of single bead to simulate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: BUILD_RATE
+   :value: 'Build Rate (m^3/s)'
+
+
+   
+   Layer thickness * scan speed * hatch spacing (m^3/s).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MELT_POOL_WIDTH
+   :value: 'Melt Pool Width (m)'
+
+
+   
+   Median melt pool width measured at the top of the powder layer (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MELT_POOL_DEPTH
+   :value: 'Melt Pool Depth (m)'
+
+
+   
+   Median melt pool depth measured from the top of the powder layer (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MELT_POOL_LENGTH
+   :value: 'Melt Pool Length (m)'
+
+
+   
+   Median melt pool length measured at the top of the powder layer (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MELT_POOL_LENGTH_OVER_WIDTH
+   :value: 'Melt Pool Length/Width'
+
+
+   
+   Ratio of MELT_POOL_LENGTH to MELT_POOL_WIDTH.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MELT_POOL_REFERENCE_WIDTH
+   :value: 'Melt Pool Ref Width (m)'
+
+
+   
+   Median melt pool width measured at the top of the base plate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MELT_POOL_REFERENCE_DEPTH
+   :value: 'Melt Pool Ref Depth (m)'
+
+
+   
+   Median melt pool depth measured from the top of the base plate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH
+   :value: 'Melt Pool Ref Depth/Width'
+
+
+   
+   Ratio of MELT_POOL_REFERENCE_DEPTH to MELT_POOL_REFERENCE_WIDTH.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: POROSITY_SIZE_X
+   :value: 'Porosity Size X (m)'
+
+
+   
+   X dimension size of porosity sample to simulate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: POROSITY_SIZE_Y
+   :value: 'Porosity Size Y (m)'
+
+
+   
+   Y dimension size of Porosity sample to simulate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: POROSITY_SIZE_Z
+   :value: 'Porosity Size Z (m)'
+
+
+   
+   Z dimension size of Porosity sample to simulate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: RELATIVE_DENSITY
+   :value: 'Relative Density'
+
+
+   
+   Relative density of simulated porosity sample.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MICRO_MIN_X
+   :value: 'Micro Min X (m)'
+
+
+   
+   Minimum X dimension position of microstructure sample (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MICRO_MIN_Y
+   :value: 'Micro Min Y (m)'
+
+
+   
+   Minimum Y dimension position of microstructure sample (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MICRO_MIN_Z
+   :value: 'Micro Min Z (m)'
+
+
+   
+   Minimum Z dimension position of microstructure sample (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MICRO_SIZE_X
+   :value: 'Micro Size X (m)'
+
+
+   
+   X dimension size of microstructure sample to simulate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MICRO_SIZE_Y
+   :value: 'Micro Size Y (m)'
+
+
+   
+   Y dimension size of microstructure sample to simulate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MICRO_SIZE_Z
+   :value: 'Micro Size Z (m)'
+
+
+   
+   Z dimension size of microstructure sample to simulate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MICRO_SENSOR_DIM
+   :value: 'Micro Sensor Dim (m)'
+
+
+   
+   Sensor dimension used in microstructure simulations (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: COOLING_RATE
+   :value: 'Cooling Rate (K/s)'
+
+
+   
+   User-provided cooling rate used in microstructure simulations (K/s).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: THERMAL_GRADIENT
+   :value: 'Thermal Gradient (K/m)'
+
+
+   
+   User-provided thermal gradient used in microstructure simulations (K/m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MICRO_MELT_POOL_WIDTH
+   :value: 'Micro Melt Pool Width (m)'
+
+
+   
+   User-provided melt pool width used in microstructure simulation (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MICRO_MELT_POOL_DEPTH
+   :value: 'Micro Melt Pool Depth (m)'
+
+
+   
+   User-provided melt pool depth used in microstructure simulation (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: RANDOM_SEED
+   :value: 'Random Seed'
+
+
+   
+   User-provided random seed used in microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: XY_AVERAGE_GRAIN_SIZE
+   :value: 'XY Average Grain Size (microns)'
+
+
+   
+   Average microstructure grain size in the XY plane (microns).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: XZ_AVERAGE_GRAIN_SIZE
+   :value: 'XZ Average Grain Size (microns)'
+
+
+   
+   Average microstructure grain size in the XZ plane (microns).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: YZ_AVERAGE_GRAIN_SIZE
+   :value: 'YZ Average Grain Size (microns)'
+
+
+   
+   Average microstructure grain size in the YZ plane (microns).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: ERROR_MESSAGE
+   :value: 'Error Message'
+
+
+   
+   Error message if simulation failed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+    
+
+
+
+.. py:data:: DEFAULT_ITERATION
+   :value: 0
+
+
+   
+   Default iteration assigned to new simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: DEFAULT_PRIORITY
+   :value: 1
+
+
+   
+   Default priority assigned to new simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: FORMAT_VERSION
+   :value: 2
+
+
+   
+   Parametric study file format version.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

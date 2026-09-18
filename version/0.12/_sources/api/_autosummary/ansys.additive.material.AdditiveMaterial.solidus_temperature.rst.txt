@@ -1,0 +1,6 @@
+solidus\_temperature
+====================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.solidus_temperature

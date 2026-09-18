@@ -1,0 +1,6 @@
+sensor\_dimension
+=================
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoproperty:: MicrostructureInput.sensor_dimension

@@ -1,0 +1,6 @@
+slicing\_stripe\_width
+======================
+
+.. currentmodule:: ansys.additive.machine
+
+.. autoproperty:: AdditiveMachine.slicing_stripe_width

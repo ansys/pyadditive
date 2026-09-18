@@ -1,0 +1,161 @@
+
+
+
+
+
+
+The ``conversions.py`` module
+=============================
+
+.. py:module:: ansys.additive.core.conversions
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: conversions
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~celsius_to_kelvin`
+            - Convert celsius to kelvin.
+
+
+          * - :py:obj:`~kelvin_to_celsius`
+            - Convert degrees kelvin to celsius.
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~MM_TO_METER`
+            - 
+
+
+          * - :py:obj:`~METER_TO_MM`
+            - 
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Unit conversion constants and functions.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: celsius_to_kelvin(celsius: float) -> float
+
+   
+   Convert celsius to kelvin.
+
+
+   :Parameters:
+
+       **celsius: float**
+           Degrees celsius.
+
+   :Returns:
+
+       :class:`python:float`
+           Equivalent degrees in kelvin.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: kelvin_to_celsius(kelvin)
+
+   
+   Convert degrees kelvin to celsius.
+
+
+   :Parameters:
+
+       **kelvin: float**
+           Degrees kelvin.
+
+   :Returns:
+
+       :class:`python:float`
+           Equivalent degrees in celsius.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: MM_TO_METER
+   :value: 0.001
+
+
+.. py:data:: METER_TO_MM
+   :value: 1000
+
+
+
+

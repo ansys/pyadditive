@@ -1,0 +1,6 @@
+geometry
+========
+
+.. currentmodule:: ansys.additive.thermal_history
+
+.. autoproperty:: ThermalHistoryInput.geometry
