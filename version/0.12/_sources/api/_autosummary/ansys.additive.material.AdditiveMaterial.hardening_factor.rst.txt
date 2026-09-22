@@ -1,0 +1,6 @@
+hardening\_factor
+=================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.hardening_factor

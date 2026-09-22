@@ -1,0 +1,6 @@
+yz\_circle\_equivalence
+=======================
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoproperty:: MicrostructureSummary.yz_circle_equivalence

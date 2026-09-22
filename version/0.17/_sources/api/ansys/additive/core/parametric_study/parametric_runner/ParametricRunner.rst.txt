@@ -1,0 +1,126 @@
+
+
+
+
+ParametricRunner
+================
+
+.. py:class:: ParametricRunner
+   :canonical: ansys.additive.core.parametric_study.parametric_runner.ParametricRunner
+
+
+
+
+
+   Provides methods to run parametric study simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: ParametricRunner
+.. tab-set::
+
+
+
+
+
+
+    .. tab-item:: Static methods
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~simulate`
+            - Run the simulations in the parametric study with ``Status`` equal to ``Pending``.
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.parametric_study.parametric_runner import ParametricRunner
+
+
+
+
+Method detail
+-------------
+.. py:method:: simulate(df: pandas.DataFrame, additive: ansys.additive.core.Additive, type: list[ansys.additive.core.SimulationType] = None, priority: int = None) -> list[ansys.additive.core.SingleBeadSummary, ansys.additive.core.PorositySummary, ansys.additive.core.MicrostructureSummary]
+   :staticmethod:
+
+   
+   Run the simulations in the parametric study with ``Status`` equal to ``Pending``.
+
+   Execution order is determined by the ``Priority`` value assigned to the simulations.
+   Lower values are interpreted as having higher priority and are run first.
+
+   :Parameters:
+
+       **df** : :obj:`pd.DataFrame`
+           Parametric study data frame.
+
+       **additive** : :obj:`Additive`
+           Additive service connection to use for running simulations.
+
+       **type** : :class:`python:list`, default: :data:`python:None`
+           List of the simulation types to run. The default is ``None``, in which case all
+           simulation types are run.
+
+       **priority** : :class:`python:int`, default: :data:`python:None`
+           Priority of simulations to run. The default is ``None``, in which case
+           all priorities are run.
+
+   :Returns:
+
+       :class:`python:list`\[:obj:`SingleBeadSummary`, :obj:`PorositySummary`, :obj:`MicrostructureSummary`]
+           List of simulation summaries.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+

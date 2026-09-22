@@ -1,0 +1,101 @@
+
+
+
+
+
+The ``constants.py`` module
+===========================
+
+.. py:module:: ansys.additive.core.parametric_study.constants
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: constants
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ColumnNames`
+            - Provides column names for the parametric study data frame.
+
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~DEFAULT_ITERATION`
+            - 
+
+
+          * - :py:attr:`~DEFAULT_PRIORITY`
+            - 
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 ColumnNames<ColumnNames>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: DEFAULT_ITERATION
+   :value: 0
+
+   
+
+.. py:data:: DEFAULT_PRIORITY
+   :value: 1
+
+   
+
+
+

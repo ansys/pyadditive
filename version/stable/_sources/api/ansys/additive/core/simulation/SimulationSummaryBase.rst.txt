@@ -1,0 +1,126 @@
+
+
+
+
+
+
+:class:`SimulationSummaryBase`
+==============================
+
+
+.. py:class:: ansys.additive.core.simulation.SimulationSummaryBase(logs: str, status: SimulationStatus = SimulationStatus.COMPLETED)
+
+   
+   Provides a base class for simulation summaries.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: SimulationSummaryBase
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~logs`
+            - Simulation logs.
+          * - :py:attr:`~status`
+            - Simulation status.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.simulation import SimulationSummaryBase
+
+Property detail
+---------------
+
+.. py:property:: logs
+   :type: str
+
+
+   
+   Simulation logs.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: status
+   :type: SimulationStatus
+
+
+   
+   Simulation status.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+

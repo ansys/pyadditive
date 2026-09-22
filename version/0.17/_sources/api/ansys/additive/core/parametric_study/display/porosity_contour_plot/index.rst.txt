@@ -1,0 +1,105 @@
+
+
+
+
+
+The ``porosity_contour_plot.py`` module
+=======================================
+
+.. py:module:: ansys.additive.core.parametric_study.display.porosity_contour_plot
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: porosity_contour_plot
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~porosity_contour_plot`
+            - Generates a contour plot of build rate and relative density.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides a contour plot for relative density and build rate.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: porosity_contour_plot(ps: ansys.additive.core.parametric_study.ParametricStudy)
+
+   
+   Generates a contour plot of build rate and relative density.
+
+
+   :Parameters:
+
+       **ps** : :obj:`ParametricStudy`
+           Parametric study to plot.
+
+   :Returns:
+
+       :obj:`panel.Row`
+           Interactive plot.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

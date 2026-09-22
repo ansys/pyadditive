@@ -1,0 +1,6 @@
+elastic\_modulus
+================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.elastic_modulus

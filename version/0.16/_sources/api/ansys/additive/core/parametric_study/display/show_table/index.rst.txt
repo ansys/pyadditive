@@ -1,0 +1,99 @@
+
+
+
+
+
+The ``show_table.py`` module
+============================
+
+.. py:module:: ansys.additive.core.parametric_study.display.show_table
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: show_table
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~show_table`
+            - Generate an interactive display of the parametric study table.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+
+.. py:function:: show_table(ps: ansys.additive.core.parametric_study.ParametricStudy, page_size: int = 10)
+
+   
+   Generate an interactive display of the parametric study table.
+
+
+   :Parameters:
+
+       **ps** : :class:`ParametricStudy <ansys.additive.core.parametric_study.ParametricStudy>`
+           Parametric study to display.
+
+       **page_size** : :class:`python:int`, 10
+           Number of table rows to display per page.
+
+   :Returns:
+
+       :class:`panel.Column <panel.Column>`
+           Interactive table.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

@@ -1,0 +1,6 @@
+id
+==
+
+.. currentmodule:: ansys.additive.porosity
+
+.. autoproperty:: PorosityInput.id
