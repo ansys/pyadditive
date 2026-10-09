@@ -1,0 +1,6 @@
+thermal\_properties\_data
+=========================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.thermal_properties_data

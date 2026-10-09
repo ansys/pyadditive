@@ -1,0 +1,87 @@
+
+
+
+
+
+
+The ``microstructure_3d.py`` module
+===================================
+
+.. py:module:: ansys.additive.core.microstructure_3d
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: microstructure_3d
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.microstructure_3d.Microstructure3DInput`
+            - Provides input parameters for 3D microstructure simulation.
+
+
+          * - :py:obj:`~ansys.additive.core.microstructure_3d.Microstructure3DSummary`
+            - Provides the summary of a 3D microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> Microstructure3DInput</api/ansys/additive/core/microstructure_3d/Microstructure3DInput>
+    <span class="nf nf-cod-symbol_class"></span> Microstructure3DSummary</api/ansys/additive/core/microstructure_3d/Microstructure3DSummary>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides input and result summary containers for microstructure 3D simulations.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

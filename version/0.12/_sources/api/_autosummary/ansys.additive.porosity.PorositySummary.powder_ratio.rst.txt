@@ -1,0 +1,6 @@
+powder\_ratio
+=============
+
+.. currentmodule:: ansys.additive.porosity
+
+.. autoproperty:: PorositySummary.powder_ratio

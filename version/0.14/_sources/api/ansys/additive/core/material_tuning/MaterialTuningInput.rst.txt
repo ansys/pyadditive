@@ -1,0 +1,37 @@
+
+
+
+
+MaterialTuningInput
+===================
+
+.. py:class:: MaterialTuningInput(*, id: str, experiment_data_file: str, material_parameters_file: str, thermal_properties_lookup_file: str, characteristic_width_lookup_file: str = None, allowable_error: float = 0.05, max_iterations: int = 15, base_plate_temperature: float = 353.15)
+   :canonical: ansys.additive.core.material_tuning.MaterialTuningInput
+
+
+
+
+Provides input parameters for tuning a custom material.
+
+
+
+
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.material_tuning import MaterialTuningInput
+
+
+
+
+

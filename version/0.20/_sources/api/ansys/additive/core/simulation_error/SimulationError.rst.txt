@@ -1,0 +1,153 @@
+
+
+
+
+
+
+:class:`SimulationError`
+========================
+
+
+.. py:class:: ansys.additive.core.simulation_error.SimulationError(input: ansys.additive.core.single_bead.SingleBeadInput | ansys.additive.core.porosity.PorosityInput | ansys.additive.core.microstructure.MicrostructureInput | ansys.additive.core.microstructure_3d.Microstructure3DInput | ansys.additive.core.thermal_history.ThermalHistoryInput | ansys.additive.core.material_tuning.MaterialTuningInput, message: str, logs: str)
+
+   
+   Provides simulation error information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: SimulationError
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Simulation input.
+          * - :py:attr:`~message`
+            - Provides simulation error message.
+          * - :py:attr:`~logs`
+            - Provides simulation logs.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.simulation_error import SimulationError
+
+Property detail
+---------------
+
+.. py:property:: input
+   :type: ansys.additive.core.single_bead.SingleBeadInput | ansys.additive.core.porosity.PorosityInput | ansys.additive.core.microstructure.MicrostructureInput | ansys.additive.core.microstructure_3d.Microstructure3DInput | ansys.additive.core.thermal_history.ThermalHistoryInput | ansys.additive.core.material_tuning.MaterialTuningInput
+
+
+   
+   Simulation input.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: message
+   :type: str
+
+
+   
+   Provides simulation error message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: logs
+   :type: str
+
+
+   
+   Provides simulation logs.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+

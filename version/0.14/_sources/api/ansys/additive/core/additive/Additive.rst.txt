@@ -1,0 +1,304 @@
+
+
+
+
+Additive
+========
+
+.. py:class:: Additive(nproc: Optional[int] = 4, ip: Optional[str] = None, port: Optional[int] = None, loglevel: Optional[str] = 'INFO', log_file: Optional[str] = '', channel: Optional[grpc.Channel] = None)
+   :canonical: ansys.additive.core.additive.Additive
+
+
+
+
+Provides the client interface to the Additive service.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: Additive
+.. tab-set::
+
+
+
+    .. tab-item:: Methods
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~about`
+            - Print information about the client and server.
+          * - :py:attr:`~simulate`
+            - Execute an additive simulation.
+          * - :py:attr:`~get_materials_list`
+            - Get a list of material names used in additive simulations.
+          * - :py:attr:`~get_material`
+            - Get a material for use in an additive simulation.
+          * - :py:attr:`~tune_material`
+            - Tune a custom material for use with additive simulations.
+
+
+
+
+    .. tab-item:: Static methods
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~load_material`
+            - Load a user-provided material definition.
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.additive import Additive
+
+
+
+
+Method detail
+-------------
+
+
+.. py:method:: about() -> None
+
+   
+   Print information about the client and server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: simulate(inputs, nproc: Optional[int] = None)
+
+   
+   Execute an additive simulation.
+
+
+   :Parameters:
+
+       **inputs: :class:`SingleBeadInput`, :class:`PorosityInput`,**
+           ..
+
+       **:class:`MicrostructureInput`, :class:`ThermalHistoryInput`**
+           ..
+
+       **or a list of these input types**
+           Parameters to use for simulations.
+
+       **nproc: int, None**
+           Number of processors to use for simulation. This corresponds
+           to the maximum number of licenses to check out at one time.
+           If no value is specified, the value of the ``nproc`` parameter
+           provided in the Additive service constructor is used.
+
+   :Returns:
+
+       :class:`SingleBeadSummary`, :class:`PorositySummary`,
+           ..
+
+       :class:`MicrostructureSummary`, :class:`ThermalHistorySummary`,
+           ..
+
+       :class:`SimulationError`, :obj:`or`, :obj:`if` :obj:`a` :class:`python:list` :obj:`of` :obj:`inputs` :obj:`was` provided,
+           ..
+
+       :obj:`a` :class:`python:list` :obj:`of` :obj:`these` types.
+           ..
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: get_materials_list() -> list[str]
+
+   
+   Get a list of material names used in additive simulations.
+
+
+
+   :Returns:
+
+       :class:`python:list`\[:class:`python:str`]
+           Names of available additive materials.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: get_material(name: str) -> ansys.additive.core.material.AdditiveMaterial
+
+   
+   Get a material for use in an additive simulation.
+
+
+   :Parameters:
+
+       **name: str**
+           Name of material.
+
+   :Returns:
+
+       :obj:`AdditiveMaterial`
+           ..
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: load_material(parameters_file: str, thermal_lookup_file: str, characteristic_width_lookup_file: str) -> ansys.additive.core.material.AdditiveMaterial
+   :staticmethod:
+
+   
+   Load a user-provided material definition.
+
+
+   :Parameters:
+
+       **parameters_file: str**
+           Name of the JSON file containing material parameters. For more information, see
+           `Create Material Parameters File (.json)
+           <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_create_tables.html>`_
+           in the *Additiivate Manufacturing Beta Features* documentation.
+
+       **thermal_lookup_file: str**
+           Name of the CSV file containing the lookup table for thermal dependent properties.
+           For more information, see `Create Material Lookup File (.csv)
+           <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_create_mat_lookup.html>`_
+           in the *Additiivate Manufacturing Beta Features* documentation.
+
+       **characteristic_width_lookup_file: str**
+           Name of the CSV file containing the lookup table for characteristic melt pool width. For
+           more information, see
+           `Find Characteristic Width Values and Generate Characteristic Width File (.csv)
+           <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v232/en/add_beta/add_print_udm_tool_find_cw.html>`_
+           in the *Additiivate Manufacturing Beta Features* documentation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:method:: tune_material(input: ansys.additive.core.material_tuning.MaterialTuningInput, out_dir: str = USER_DATA_PATH) -> ansys.additive.core.material_tuning.MaterialTuningSummary
+
+   
+   Tune a custom material for use with additive simulations.
+
+
+   :Parameters:
+
+       **input: MaterialTuningInput**
+           Input parameters for material tuning.
+
+   :Returns:
+
+       :obj:`MaterialTuningSummary`
+           Summary of material tuning.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+

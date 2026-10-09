@@ -1,0 +1,6 @@
+powder\_packing\_density
+========================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.powder_packing_density

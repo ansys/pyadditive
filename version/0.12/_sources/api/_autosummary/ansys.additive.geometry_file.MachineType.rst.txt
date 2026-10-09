@@ -1,0 +1,6 @@
+﻿MachineType
+===========
+
+.. currentmodule:: ansys.additive.geometry_file
+
+.. autoenum:: MachineType

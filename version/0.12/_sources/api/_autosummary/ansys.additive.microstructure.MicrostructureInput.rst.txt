@@ -1,0 +1,44 @@
+﻿ansys.additive.microstructure.MicrostructureInput
+=================================================
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoclass:: MicrostructureInput
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      MicrostructureInput.cooling_rate
+      MicrostructureInput.id
+      MicrostructureInput.machine
+      MicrostructureInput.material
+      MicrostructureInput.melt_pool_depth
+      MicrostructureInput.melt_pool_width
+      MicrostructureInput.random_seed
+      MicrostructureInput.sample_min_x
+      MicrostructureInput.sample_min_y
+      MicrostructureInput.sample_min_z
+      MicrostructureInput.sample_size_x
+      MicrostructureInput.sample_size_y
+      MicrostructureInput.sample_size_z
+      MicrostructureInput.sensor_dimension
+      MicrostructureInput.thermal_gradient
+      MicrostructureInput.use_provided_thermal_parameters
+   
+   

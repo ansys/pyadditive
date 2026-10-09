@@ -1,0 +1,104 @@
+
+
+
+
+
+
+The ``parametric_study`` package 
+====================================
+
+.. py:module:: ansys.additive.core.parametric_study
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: parametric_study
+.. tab-set::
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.parametric_study.constants`
+            - Provides constant values related to parametric studies.
+
+
+          * - :py:obj:`~ansys.additive.core.parametric_study.parametric_runner`
+            - Provides a class to run parametric study simulations.
+
+
+          * - :py:obj:`~ansys.additive.core.parametric_study.parametric_study`
+            - Provides data storage and utilities to perform a parametric study.
+
+
+          * - :py:obj:`~ansys.additive.core.parametric_study.parametric_utils`
+            - Provides utility functions used during a parametric study.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🗎 constants</api/ansys/additive/core/parametric_study/constants/index>
+    🗎 parametric_runner</api/ansys/additive/core/parametric_study/parametric_runner/index>
+    🗎 parametric_study</api/ansys/additive/core/parametric_study/parametric_study/index>
+    🗎 parametric_utils</api/ansys/additive/core/parametric_study/parametric_utils/index>
+
+
+
+
+
+
+
+
+Description
+-----------
+
+
+Provides data storage and utility methods for a parametric study.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+

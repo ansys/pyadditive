@@ -1,0 +1,6 @@
+path
+====
+
+.. currentmodule:: ansys.additive.geometry_file
+
+.. autoproperty:: StlFile.path

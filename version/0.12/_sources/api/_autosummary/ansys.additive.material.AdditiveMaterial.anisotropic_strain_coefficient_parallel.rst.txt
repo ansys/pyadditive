@@ -1,0 +1,6 @@
+anisotropic\_strain\_coefficient\_parallel
+==========================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.anisotropic_strain_coefficient_parallel

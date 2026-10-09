@@ -1,0 +1,6 @@
+liquidus\_temperature
+=====================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.liquidus_temperature

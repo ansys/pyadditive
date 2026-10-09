@@ -1,0 +1,396 @@
+
+
+
+
+
+
+:class:`MaterialConstants`
+==========================
+
+
+.. py:class:: ansys.additive.core.material.MaterialConstants
+
+   
+   Provides constants related to additive materials.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: MaterialConstants
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_LASER_SHAPE_PARAMETER`
+            - Default laser shape parameter for dynamic defocus heat source.
+          * - :py:attr:`~MIN_LASER_SHAPE_PARAMETER`
+            - Minimum laser shape parameter for dynamic defocus heat source.
+          * - :py:attr:`~MAX_LASER_SHAPE_PARAMETER`
+            - Maximum laser shape parameter for dynamic defocus heat source.
+          * - :py:attr:`~DEFAULT_LASER_DISTRIBUTION_PARAMETER`
+            - Default laser distribution parameter for dynamic defocus heat source.
+          * - :py:attr:`~MIN_LASER_DISTRIBUTION_PARAMETER`
+            - Minimum laser distribution parameter for dynamic defocus heat source.
+          * - :py:attr:`~MAX_LASER_DISTRIBUTION_PARAMETER`
+            - Maximum laser distribution parameter for dynamic defocus heat source.
+          * - :py:attr:`~DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT`
+            - Default Fresnal absorption coefficient for dynamic defocus heat source.
+          * - :py:attr:`~MIN_FRESNAL_ABSORPTION_COEFFICIENT`
+            - Minimum Fresnal absorption coefficient for dynamic defocus heat source.
+          * - :py:attr:`~MAX_FRESNAL_ABSORPTION_COEFFICIENT`
+            - Maximum Fresnal absorption coefficient for dynamic defocus heat source.
+          * - :py:attr:`~DEFAULT_ABSORPTION_CONDUCTION_MODE`
+            - Default absorption in conduction mode for dynamic defocus heat source.
+          * - :py:attr:`~MIN_ABSORPTION_CONDUCTION_MODE`
+            - Minimum absorption in conduction mode for dynamic defocus heat source.
+          * - :py:attr:`~MAX_ABSORPTION_CONDUCTION_MODE`
+            - Maximum absorption in conduction mode for dynamic defocus heat source.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.material import MaterialConstants
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: DEFAULT_LASER_SHAPE_PARAMETER
+   :value: 2.0
+
+
+   
+   Default laser shape parameter for dynamic defocus heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_LASER_SHAPE_PARAMETER
+   :value: 1.0
+
+
+   
+   Minimum laser shape parameter for dynamic defocus heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_LASER_SHAPE_PARAMETER
+   :value: 10.0
+
+
+   
+   Maximum laser shape parameter for dynamic defocus heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_LASER_DISTRIBUTION_PARAMETER
+   :value: 2.0
+
+
+   
+   Default laser distribution parameter for dynamic defocus heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_LASER_DISTRIBUTION_PARAMETER
+   :value: 1.0
+
+
+   
+   Minimum laser distribution parameter for dynamic defocus heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_LASER_DISTRIBUTION_PARAMETER
+   :value: 10.0
+
+
+   
+   Maximum laser distribution parameter for dynamic defocus heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_FRESNAL_ABSORPTION_COEFFICIENT
+   :value: 0.28
+
+
+   
+   Default Fresnal absorption coefficient for dynamic defocus heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_FRESNAL_ABSORPTION_COEFFICIENT
+   :value: 0.0
+
+
+   
+   Minimum Fresnal absorption coefficient for dynamic defocus heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_FRESNAL_ABSORPTION_COEFFICIENT
+   :value: 1.0
+
+
+   
+   Maximum Fresnal absorption coefficient for dynamic defocus heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_ABSORPTION_CONDUCTION_MODE
+   :value: 0.35
+
+
+   
+   Default absorption in conduction mode for dynamic defocus heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_ABSORPTION_CONDUCTION_MODE
+   :value: 0.0
+
+
+   
+   Minimum absorption in conduction mode for dynamic defocus heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_ABSORPTION_CONDUCTION_MODE
+   :value: 1.0
+
+
+   
+   Maximum absorption in conduction mode for dynamic defocus heat source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

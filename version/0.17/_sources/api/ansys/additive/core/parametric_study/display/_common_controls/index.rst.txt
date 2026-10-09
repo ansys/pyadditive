@@ -1,0 +1,46 @@
+
+
+
+
+:orphan:
+
+The ``_common_controls.py`` module
+==================================
+
+.. py:module:: ansys.additive.core.parametric_study.display._common_controls
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides definitions for common controls on parametric study plots.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+

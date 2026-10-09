@@ -1,0 +1,300 @@
+
+
+
+
+
+
+The ``ansys.additive.core`` library
+===================================
+
+.. py:module:: ansys.additive.core
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: core
+.. tab-set::
+
+    .. tab-item:: Subpackages
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.examples`
+            - Provides utilities for use with PyAdditive examples.
+
+
+          * - :py:obj:`~ansys.additive.core.parametric_study`
+            - Provides data storage and utility methods for a parametric study.
+
+
+          * - :py:obj:`~ansys.additive.core.server_connection`
+            - Server connection definition and utilities.
+
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.additive`
+            - Provides a client for interacting with the Additive service.
+
+
+          * - :py:obj:`~ansys.additive.core.conversions`
+            - Unit conversion constants and functions.
+
+
+          * - :py:obj:`~ansys.additive.core.download`
+            - Provides a function for downloading files from the server to the client.
+
+
+          * - :py:obj:`~ansys.additive.core.exceptions`
+            - Provides custom exceptions for the additive client.
+
+
+          * - :py:obj:`~ansys.additive.core.geometry_file`
+            - Provides a container for part geometry files.
+
+
+          * - :py:obj:`~ansys.additive.core.logger`
+            - Provides a general framework for logging in PyAdditive.
+
+
+          * - :py:obj:`~ansys.additive.core.machine`
+            - Provides a container for machine parameters.
+
+
+          * - :py:obj:`~ansys.additive.core.material`
+            - Provides a container for material parameters.
+
+
+          * - :py:obj:`~ansys.additive.core.material_tuning`
+            - Provides input and result summary containers for material tuning.
+
+
+          * - :py:obj:`~ansys.additive.core.microstructure`
+            - Provides input and result summary containers for microstructure simulations.
+
+
+          * - :py:obj:`~ansys.additive.core.microstructure_3d`
+            - Provides input and result summary containers for microstructure 3D simulations.
+
+
+          * - :py:obj:`~ansys.additive.core.misc`
+            - Provides miscellaneous utility functions.
+
+
+          * - :py:obj:`~ansys.additive.core.porosity`
+            - Provides input and result summary containers for porosity simulations.
+
+
+          * - :py:obj:`~ansys.additive.core.progress_handler`
+            - Provides progress updates.
+
+
+          * - :py:obj:`~ansys.additive.core.simulation`
+            - Provides common definitions and classes for simulations.
+
+
+          * - :py:obj:`~ansys.additive.core.simulation_error`
+            - Provides simulation error information.
+
+
+          * - :py:obj:`~ansys.additive.core.simulation_requests`
+            - Set up methods for grpc simulation requests.
+
+
+          * - :py:obj:`~ansys.additive.core.simulation_task`
+            - Container for a simulation task.
+
+
+          * - :py:obj:`~ansys.additive.core.simulation_task_manager`
+            - Manages simulation tasks.
+
+
+          * - :py:obj:`~ansys.additive.core.single_bead`
+            - Provides input and result summary containers for single bead simulations.
+
+
+          * - :py:obj:`~ansys.additive.core.thermal_history`
+            - Provides input and result summary containers for thermal history simulations.
+
+
+
+
+
+
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~__version__`
+            - 
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~USER_DATA_PATH`
+            - Storage path for user data.
+
+
+          * - :py:obj:`~EXAMPLES_PATH`
+            - Storage path for example data.
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-md-package"></span> examples</api/ansys/additive/core/examples/index>
+    <span class="nf nf-md-package"></span> parametric_study</api/ansys/additive/core/parametric_study/index>
+    <span class="nf nf-md-package"></span> server_connection</api/ansys/additive/core/server_connection/index>
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-fa-file"></span> additive</api/ansys/additive/core/additive/index>
+    <span class="nf nf-fa-file"></span> conversions</api/ansys/additive/core/conversions/index>
+    <span class="nf nf-fa-file"></span> download</api/ansys/additive/core/download/index>
+    <span class="nf nf-fa-file"></span> exceptions</api/ansys/additive/core/exceptions/index>
+    <span class="nf nf-fa-file"></span> geometry_file</api/ansys/additive/core/geometry_file/index>
+    <span class="nf nf-fa-file"></span> logger</api/ansys/additive/core/logger/index>
+    <span class="nf nf-fa-file"></span> machine</api/ansys/additive/core/machine/index>
+    <span class="nf nf-fa-file"></span> material</api/ansys/additive/core/material/index>
+    <span class="nf nf-fa-file"></span> material_tuning</api/ansys/additive/core/material_tuning/index>
+    <span class="nf nf-fa-file"></span> microstructure</api/ansys/additive/core/microstructure/index>
+    <span class="nf nf-fa-file"></span> microstructure_3d</api/ansys/additive/core/microstructure_3d/index>
+    <span class="nf nf-fa-file"></span> misc</api/ansys/additive/core/misc/index>
+    <span class="nf nf-fa-file"></span> porosity</api/ansys/additive/core/porosity/index>
+    <span class="nf nf-fa-file"></span> progress_handler</api/ansys/additive/core/progress_handler/index>
+    <span class="nf nf-fa-file"></span> simulation</api/ansys/additive/core/simulation/index>
+    <span class="nf nf-fa-file"></span> simulation_error</api/ansys/additive/core/simulation_error/index>
+    <span class="nf nf-fa-file"></span> simulation_requests</api/ansys/additive/core/simulation_requests/index>
+    <span class="nf nf-fa-file"></span> simulation_task</api/ansys/additive/core/simulation_task/index>
+    <span class="nf nf-fa-file"></span> simulation_task_manager</api/ansys/additive/core/simulation_task_manager/index>
+    <span class="nf nf-fa-file"></span> single_bead</api/ansys/additive/core/single_bead/index>
+    <span class="nf nf-fa-file"></span> thermal_history</api/ansys/additive/core/thermal_history/index>
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+
+Python client for the Ansys Additive service.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: USER_DATA_PATH
+
+   
+   Storage path for user data.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: EXAMPLES_PATH
+
+   
+   Storage path for example data.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: __version__
+
+
+

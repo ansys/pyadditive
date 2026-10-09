@@ -1,0 +1,174 @@
+
+
+
+
+
+The ``constants.py`` module
+===========================
+
+.. py:module:: ansys.additive.core.parametric_study.constants
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: constants
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ColumnNames`
+            - Provides column names for the parametric study data frame.
+
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~DEFAULT_ITERATION`
+            - Default iteration assigned to new simulations.
+
+
+          * - :py:attr:`~DEFAULT_PRIORITY`
+            - Default priority assigned to new simulations.
+
+
+          * - :py:attr:`~FORMAT_VERSION`
+            - Parametric study file format version.
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 ColumnNames<ColumnNames>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides constant values related to parametric studies.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: DEFAULT_ITERATION
+   :value: 0
+
+   
+   Default iteration assigned to new simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: DEFAULT_PRIORITY
+   :value: 1
+
+   
+   Default priority assigned to new simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: FORMAT_VERSION
+   :value: 2
+
+   
+   Parametric study file format version.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

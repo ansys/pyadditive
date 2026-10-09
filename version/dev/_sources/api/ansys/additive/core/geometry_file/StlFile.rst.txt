@@ -1,0 +1,120 @@
+
+
+
+
+
+
+:class:`StlFile`
+================
+
+
+.. py:class:: ansys.additive.core.geometry_file.StlFile(path: str)
+
+   
+   Container for the STL file definition.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. py:currentmodule:: StlFile
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~path`
+            - Path of the STL file.
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+          * - :py:attr:`~__eq__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.geometry_file import StlFile
+
+Property detail
+---------------
+
+.. py:property:: path
+   :type: str
+
+
+   
+   Path of the STL file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+.. py:method:: __eq__(other: object) -> bool
+
+
+
+

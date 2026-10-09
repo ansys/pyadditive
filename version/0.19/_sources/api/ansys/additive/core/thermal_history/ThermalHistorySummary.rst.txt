@@ -1,0 +1,128 @@
+
+
+
+
+
+
+:class:`ThermalHistorySummary`
+==============================
+
+.. py:class:: ansys.additive.core.thermal_history.ThermalHistorySummary(input: ThermalHistoryInput, coax_ave_output_folder: str)
+
+   
+   Summary of a thermal history simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: ThermalHistorySummary
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Simulation input.
+          * - :py:attr:`~coax_ave_output_folder`
+            - Path to the folder containing the coaxial average sensor results.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.thermal_history import ThermalHistorySummary
+
+Property detail
+---------------
+
+.. py:property:: input
+   :type: ThermalHistoryInput
+
+
+   
+   Simulation input.
+
+   For more information, see the :class:`ThermalHistoryInput` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: coax_ave_output_folder
+   :type: str
+
+
+   
+   Path to the folder containing the coaxial average sensor results.
+
+   Results consist of VTK files, one per deposit layer, containing the thermal
+   history of the scan pattern.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+

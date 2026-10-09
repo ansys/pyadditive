@@ -1,0 +1,6 @@
+laser\_x
+========
+
+.. currentmodule:: ansys.additive.single_bead
+
+.. autoproperty:: MeltPool.laser_x

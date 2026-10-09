@@ -1,0 +1,150 @@
+
+
+
+
+
+The ``misc.py`` module
+======================
+
+.. py:module:: ansys.additive.core.misc
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: misc
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~check_valid_ip`
+            - Check for valid IP address.
+
+
+          * - :py:attr:`~check_valid_port`
+            - Check for valid port number.
+
+
+          * - :py:attr:`~short_uuid`
+            - Generate a short UUID.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+.. py:function:: check_valid_ip(ip)
+
+   
+   Check for valid IP address.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:function:: check_valid_port(port, lower_bound=1000, high_bound=60000)
+
+   
+   Check for valid port number.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:function:: short_uuid() -> str
+
+   
+   Generate a short UUID.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

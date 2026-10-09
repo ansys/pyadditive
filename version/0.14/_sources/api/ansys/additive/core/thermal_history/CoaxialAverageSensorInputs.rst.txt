@@ -1,0 +1,37 @@
+
+
+
+
+CoaxialAverageSensorInputs
+==========================
+
+.. py:class:: CoaxialAverageSensorInputs(**kwargs)
+   :canonical: ansys.additive.core.thermal_history.CoaxialAverageSensorInputs
+
+
+
+
+Provides descriptions for coaxial average sensors.
+
+
+
+
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.thermal_history import CoaxialAverageSensorInputs
+
+
+
+
+

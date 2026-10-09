@@ -1,0 +1,6 @@
+name
+====
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.name

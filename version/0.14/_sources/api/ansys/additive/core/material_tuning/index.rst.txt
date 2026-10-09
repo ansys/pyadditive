@@ -1,0 +1,75 @@
+
+
+
+
+
+The ``material_tuning.py`` module
+=================================
+
+.. py:module:: ansys.additive.core.material_tuning
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: material_tuning
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~MaterialTuningInput`
+            - Provides input parameters for tuning a custom material.
+
+
+          * - :py:attr:`~MaterialTuningSummary`
+            - Provides a summary of material tuning simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 MaterialTuningInput<MaterialTuningInput>
+    🝆 MaterialTuningSummary<MaterialTuningSummary>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

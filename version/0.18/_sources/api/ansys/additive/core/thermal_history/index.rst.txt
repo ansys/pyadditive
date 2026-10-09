@@ -1,0 +1,704 @@
+
+
+
+
+
+
+The ``thermal_history.py`` module
+=================================
+
+.. py:module:: ansys.additive.core.thermal_history
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: thermal_history
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~Range`
+            - Defines a range of values.
+
+
+          * - :py:obj:`~CoaxialAverageSensorInputs`
+            - Provides descriptions for coaxial average sensors.
+
+
+          * - :py:obj:`~ThermalHistoryInput`
+            - Provides input parameters for microstructure simulation.
+
+
+          * - :py:obj:`~ThermalHistorySummary`
+            - Summary of a thermal history simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides input and result summary containers for thermal history simulations.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+.. py:class:: Range(min: float, max: float)
+
+   
+   Defines a range of values.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: Range
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~min`
+            - Minimum value of range.
+          * - :py:attr:`~max`
+            - Maximum value of range.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.thermal_history import Range
+
+Property detail
+---------------
+.. py:property:: min
+   :type: float
+
+   
+   Minimum value of range.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: max
+   :type: float
+
+   
+   Maximum value of range.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+    
+
+
+
+
+
+.. py:class:: CoaxialAverageSensorInputs(radius: float = MIN_SENSOR_RADIUS, z_heights: list[Range] = None)
+
+   
+   Provides descriptions for coaxial average sensors.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: CoaxialAverageSensorInputs
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~radius`
+            - Radius of the circular field of the view of the sensor (m).
+          * - :py:attr:`~z_heights`
+            - Array of ranges along the z axis of the geometry (m).
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~MIN_SENSOR_RADIUS`
+            - Minimum radius for the circular field of view of the sensor (m).
+          * - :py:attr:`~MAX_SENSOR_RADIUS`
+            - Maximum radius for the circular field of view of the sensor (m).
+      
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.thermal_history import CoaxialAverageSensorInputs
+
+Property detail
+---------------
+.. py:property:: radius
+   :type: float
+
+   
+   Radius of the circular field of the view of the sensor (m).
+
+   Valid values are from the :obj:`MIN_SENSOR_RADIUS` value to the
+   :obj:`MAX_SENSOR_RADIUS` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: z_heights
+   :type: list[Range]
+
+   
+   Array of ranges along the z axis of the geometry (m).
+
+   The simulated sensor follows the scan path for each deposit layer within each
+   range.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: MIN_SENSOR_RADIUS
+   :value: 5e-05
+
+
+   
+   Minimum radius for the circular field of view of the sensor (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_SENSOR_RADIUS
+   :value: 0.015
+
+
+   
+   Maximum radius for the circular field of view of the sensor (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+    
+
+
+
+
+
+.. py:class:: ThermalHistoryInput(id: str = '', machine: ansys.additive.core.machine.AdditiveMachine = AdditiveMachine(), material: ansys.additive.core.material.AdditiveMaterial = AdditiveMaterial(), geometry: ansys.additive.core.geometry_file.StlFile | ansys.additive.core.geometry_file.BuildFile = None, coax_ave_sensor_inputs: CoaxialAverageSensorInputs = CoaxialAverageSensorInputs())
+
+   
+   Provides input parameters for microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: ThermalHistoryInput
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~id`
+            - User-provided ID for the simulation.
+          * - :py:attr:`~machine`
+            - Machine parameters.
+          * - :py:attr:`~material`
+            - Material parameters.
+          * - :py:attr:`~geometry`
+            - Part geometry.
+          * - :py:attr:`~coax_ave_sensor_inputs`
+            - Coaxial average sensor inputs.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.thermal_history import ThermalHistoryInput
+
+Property detail
+---------------
+.. py:property:: id
+   :type: str
+
+   
+   User-provided ID for the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: machine
+   :type: ansys.additive.core.machine.AdditiveMachine
+
+   
+   Machine parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material
+   :type: ansys.additive.core.material.AdditiveMaterial
+
+   
+   Material parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: geometry
+   :type: ansys.additive.core.geometry_file.StlFile | ansys.additive.core.geometry_file.BuildFile
+
+   
+   Part geometry.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: coax_ave_sensor_inputs
+   :type: CoaxialAverageSensorInputs
+
+   
+   Coaxial average sensor inputs.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+    
+
+
+
+
+
+.. py:class:: ThermalHistorySummary(input: ThermalHistoryInput, coax_ave_output_folder: str)
+
+   
+   Summary of a thermal history simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: ThermalHistorySummary
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Simulation input.
+          * - :py:attr:`~coax_ave_output_folder`
+            - Path to the folder containing the coaxial average sensor results.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.thermal_history import ThermalHistorySummary
+
+Property detail
+---------------
+.. py:property:: input
+   :type: ThermalHistoryInput
+
+   
+   Simulation input.
+
+   For more information, see the :class:`ThermalHistoryInput` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: coax_ave_output_folder
+   :type: str
+
+   
+   Path to the folder containing the coaxial average sensor results.
+
+   Results consist of VTK files, one per deposit layer, containing the thermal
+   history of the scan pattern.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+    
+
+
+
+
+

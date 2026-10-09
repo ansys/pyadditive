@@ -1,0 +1,29 @@
+﻿MeltPool
+========
+
+.. currentmodule:: ansys.additive.single_bead
+
+.. autoclass:: MeltPool
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      MeltPool.data_frame
+   
+   

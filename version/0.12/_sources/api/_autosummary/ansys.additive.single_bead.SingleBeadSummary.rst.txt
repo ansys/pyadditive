@@ -1,0 +1,30 @@
+﻿ansys.additive.single\_bead.SingleBeadSummary
+=============================================
+
+.. currentmodule:: ansys.additive.single_bead
+
+.. autoclass:: SingleBeadSummary
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      SingleBeadSummary.input
+      SingleBeadSummary.melt_pool
+   
+   

@@ -1,0 +1,6 @@
+xy\_vtk
+=======
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoproperty:: MicrostructureSummary.xy_vtk

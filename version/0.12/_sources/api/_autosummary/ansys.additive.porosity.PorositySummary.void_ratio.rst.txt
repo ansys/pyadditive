@@ -1,0 +1,6 @@
+void\_ratio
+===========
+
+.. currentmodule:: ansys.additive.porosity
+
+.. autoproperty:: PorositySummary.void_ratio
