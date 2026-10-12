@@ -1,0 +1,168 @@
+
+
+
+
+
+
+:class:`Microstructure2DResult`
+===============================
+
+.. py:class:: ansys.additive.core.microstructure.Microstructure2DResult(msg: ansys.api.additive.v0.additive_domain_pb2.MicrostructureResult, output_data_path: str)
+
+   
+   Provides the results of a 2D microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: Microstructure2DResult
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~xy_average_grain_size`
+            - Average grain size (µm) for the XY plane.
+          * - :py:attr:`~xz_average_grain_size`
+            - Average grain size (µm) for the XZ plane.
+          * - :py:attr:`~yz_average_grain_size`
+            - Average grain size (µm) for the YZ plane.
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.microstructure import Microstructure2DResult
+
+Property detail
+---------------
+
+.. py:property:: xy_average_grain_size
+   :type: float
+
+
+   
+   Average grain size (µm) for the XY plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: xz_average_grain_size
+   :type: float
+
+
+   
+   Average grain size (µm) for the XZ plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: yz_average_grain_size
+   :type: float
+
+
+   
+   Average grain size (µm) for the YZ plane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+
+
+

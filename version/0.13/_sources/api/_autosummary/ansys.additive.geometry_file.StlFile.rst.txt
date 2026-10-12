@@ -1,0 +1,29 @@
+﻿StlFile
+=======
+
+.. currentmodule:: ansys.additive.geometry_file
+
+.. autoclass:: StlFile
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      StlFile.path
+   
+   

@@ -1,0 +1,359 @@
+
+
+
+
+
+
+:class:`AdditiveMachine`
+========================
+
+.. py:class:: ansys.additive.core.machine.AdditiveMachine(*, laser_power: float = MachineConstants.DEFAULT_LASER_POWER, scan_speed: float = MachineConstants.DEFAULT_SCAN_SPEED, heater_temperature: float = MachineConstants.DEFAULT_HEATER_TEMP, layer_thickness: float = MachineConstants.DEFAULT_LAYER_THICKNESS, beam_diameter: float = MachineConstants.DEFAULT_BEAM_DIAMETER, starting_layer_angle: float = MachineConstants.DEFAULT_STARTING_LAYER_ANGLE, layer_rotation_angle: float = MachineConstants.DEFAULT_LAYER_ROTATION_ANGLE, hatch_spacing: float = MachineConstants.DEFAULT_HATCH_SPACING, slicing_stripe_width: float = MachineConstants.DEFAULT_SLICING_STRIPE_WIDTH)
+
+   
+   Provides the additive manufacturing machine settings used during simulations.
+
+   Units are SI (m, kg, s, or K) unless otherwise noted. Exceptions include angles,
+   which are (degrees), and the heater temperature, which is (degrees) Celsius.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. py:currentmodule:: AdditiveMachine
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~laser_power`
+            - Scanning laser power (W).
+          * - :py:attr:`~scan_speed`
+            - Laser scanning speed (m/s).
+          * - :py:attr:`~heater_temperature`
+            - Temperature (°C) of the machine build chamber heater.
+          * - :py:attr:`~layer_thickness`
+            - Thickness (m) of the powder layer deposited with each pass of the
+          * - :py:attr:`~beam_diameter`
+            - Width (m) of the laser on the powder or substrate surface defined
+          * - :py:attr:`~starting_layer_angle`
+            - Angle (°) to scan the first layer at.
+          * - :py:attr:`~layer_rotation_angle`
+            - Angle (°) to change the scan vector orientation from layer to layer.
+          * - :py:attr:`~hatch_spacing`
+            - Distance (m) between adjacent scan vectors, or hatches, when
+          * - :py:attr:`~slicing_stripe_width`
+            - Width (m) of a stripe, which is a section of scan lines within a
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+          * - :py:attr:`~__eq__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.machine import AdditiveMachine
+
+Property detail
+---------------
+
+.. py:property:: laser_power
+   :type: float
+
+
+   
+   Scanning laser power (W).
+
+   Valid values are from 50 to 700 Watts.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: scan_speed
+   :type: float
+
+
+   
+   Laser scanning speed (m/s).
+
+   Valid values are from 0.35 to 2.5 m/s.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: heater_temperature
+   :type: float
+
+
+   
+   Temperature (°C) of the machine build chamber heater.
+
+   Valid values are from 20 to 500 °C.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: layer_thickness
+   :type: float
+
+
+   
+   Thickness (m) of the powder layer deposited with each pass of the
+   recoater blade.
+
+   Valid values are from 1e-5 to 1e-4 m (10 to 100 µm).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: beam_diameter
+   :type: float
+
+
+   
+   Width (m) of the laser on the powder or substrate surface defined
+   using the D4σ beam diameter definition.
+
+   Usually this value is provided by the machine manufacturer. It is sometimes
+   called the laser spot diameter.
+
+   Valid values are from 2e-5 to 1.4e-4 m (20 and 140 µm).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: starting_layer_angle
+   :type: float
+
+
+   
+   Angle (°) to scan the first layer at.
+
+   The angle is measured counterclockwise from the X axis, such that a value of 90°
+   results in scan lines parallel to the Y axis.
+
+   Valid values are from 0 to 180°.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: layer_rotation_angle
+   :type: float
+
+
+   
+   Angle (°) to change the scan vector orientation from layer to layer.
+
+   Valid values are from 0 to 180°.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: hatch_spacing
+   :type: float
+
+
+   
+   Distance (m) between adjacent scan vectors, or hatches, when
+   rastering back and forth with the laser.
+
+   Hatch spacing should allow for a slight overlap of scan vector tracks such that
+   some of the material re-melts to ensure full coverage of solid material.
+
+   Valid values are from 6e-5 to 2e-4 m (0.06 and 0.2 mm).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: slicing_stripe_width
+   :type: float
+
+
+   
+   Width (m) of a stripe, which is a section of scan lines within a
+   layer.
+
+   Valid values are from 0.001 to 0.1 m (1 and 100 mm).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+.. py:method:: __eq__(__o: object) -> bool
+
+
+
+

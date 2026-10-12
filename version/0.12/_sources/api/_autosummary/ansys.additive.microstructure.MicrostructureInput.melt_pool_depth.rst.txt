@@ -1,0 +1,6 @@
+melt\_pool\_depth
+=================
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoproperty:: MicrostructureInput.melt_pool_depth

@@ -1,0 +1,35 @@
+﻿ansys.additive.single\_bead.MeltPool
+====================================
+
+.. currentmodule:: ansys.additive.single_bead
+
+.. autoclass:: MeltPool
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      MeltPool.depth
+      MeltPool.laser_x
+      MeltPool.laser_y
+      MeltPool.length
+      MeltPool.reference_depth
+      MeltPool.reference_width
+      MeltPool.width
+   
+   

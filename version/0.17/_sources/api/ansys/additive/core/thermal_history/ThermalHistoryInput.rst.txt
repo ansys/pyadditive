@@ -1,0 +1,219 @@
+
+
+
+
+ThermalHistoryInput
+===================
+
+.. py:class:: ThermalHistoryInput(id: str = '', machine: ansys.additive.core.machine.AdditiveMachine = AdditiveMachine(), material: ansys.additive.core.material.AdditiveMaterial = AdditiveMaterial(), geometry: ansys.additive.core.geometry_file.StlFile | ansys.additive.core.geometry_file.BuildFile = None, coax_ave_sensor_inputs: CoaxialAverageSensorInputs = CoaxialAverageSensorInputs())
+   :canonical: ansys.additive.core.thermal_history.ThermalHistoryInput
+
+
+
+
+
+   Provides input parameters for microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: ThermalHistoryInput
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~id`
+            - User-provided ID for the simulation.
+          * - :py:attr:`~machine`
+            - Machine parameters.
+          * - :py:attr:`~material`
+            - Material parameters.
+          * - :py:attr:`~geometry`
+            - Part geometry.
+          * - :py:attr:`~coax_ave_sensor_inputs`
+            - Coaxial average sensor inputs.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.thermal_history import ThermalHistoryInput
+
+
+Property detail
+---------------
+.. py:property:: id
+   :canonical: ansys.additive.core.thermal_history.ThermalHistoryInput.id
+   :type: str
+
+
+   
+   User-provided ID for the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: machine
+   :canonical: ansys.additive.core.thermal_history.ThermalHistoryInput.machine
+   :type: AdditiveMachine
+
+
+   
+   Machine parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material
+   :canonical: ansys.additive.core.thermal_history.ThermalHistoryInput.material
+   :type: AdditiveMaterial
+
+
+   
+   Material parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: geometry
+   :canonical: ansys.additive.core.thermal_history.ThermalHistoryInput.geometry
+   :type: BuildFile
+
+
+   
+   Part geometry.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: coax_ave_sensor_inputs
+   :canonical: ansys.additive.core.thermal_history.ThermalHistoryInput.coax_ave_sensor_inputs
+   :type: CoaxialAverageSensorInputs
+
+
+   
+   Coaxial average sensor inputs.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

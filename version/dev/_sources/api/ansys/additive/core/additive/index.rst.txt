@@ -1,0 +1,149 @@
+
+
+
+
+
+
+The ``additive.py`` module
+==========================
+
+.. py:module:: ansys.additive.core.additive
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: additive
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.additive.Additive`
+            - Provides the client interface to one or more Additive services.
+
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ADDRESS_ENV_VAR`
+            - Environment variable defining the address of the server to connect to.
+
+
+          * - :py:obj:`~TRANSPORT_MODE_ENV_VAR`
+            - Environment variable defining the transport mode to use for server connections.
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> Additive</api/ansys/additive/core/additive/Additive>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides a client for interacting with the Additive service.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: ADDRESS_ENV_VAR
+   :value: 'ANSYS_ADDITIVE_ADDRESS'
+
+
+   
+   Environment variable defining the address of the server to connect to.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: TRANSPORT_MODE_ENV_VAR
+   :value: 'ANSYS_ADDITIVE_TRANSPORT_MODE'
+
+
+   
+   Environment variable defining the transport mode to use for server connections.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

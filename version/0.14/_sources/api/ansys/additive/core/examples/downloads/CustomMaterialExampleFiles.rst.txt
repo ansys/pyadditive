@@ -1,0 +1,144 @@
+
+
+
+
+CustomMaterialExampleFiles
+==========================
+
+.. py:class:: CustomMaterialExampleFiles(material_parameters_file: str, thermal_properties_lookup_file: str, characteristic_width_lookup_file: str)
+   :canonical: ansys.additive.core.examples.downloads.CustomMaterialExampleFiles
+
+
+
+
+Holds the files associated with a custom material definition.
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: CustomMaterialExampleFiles
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~material_parameters_file`
+            - Path to the material parameters file.
+          * - :py:attr:`~thermal_properties_lookup_file`
+            - Path to the thermal properties lookup file.
+          * - :py:attr:`~characteristic_width_lookup_file`
+            - Path to the characteristic width lookup file.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.examples.downloads import CustomMaterialExampleFiles
+
+
+Property detail
+---------------
+.. py:property:: material_parameters_file
+   :canonical: ansys.additive.core.examples.downloads.CustomMaterialExampleFiles.material_parameters_file
+   :type: None
+
+
+   
+   Path to the material parameters file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: thermal_properties_lookup_file
+   :canonical: ansys.additive.core.examples.downloads.CustomMaterialExampleFiles.thermal_properties_lookup_file
+   :type: None
+
+
+   
+   Path to the thermal properties lookup file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: characteristic_width_lookup_file
+   :canonical: ansys.additive.core.examples.downloads.CustomMaterialExampleFiles.characteristic_width_lookup_file
+   :type: None
+
+
+   
+   Path to the characteristic width lookup file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

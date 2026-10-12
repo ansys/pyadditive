@@ -1,0 +1,338 @@
+
+
+
+
+
+
+:class:`MeltPool`
+=================
+
+
+.. py:class:: ansys.additive.core.single_bead.MeltPool(msg: ansys.api.additive.v0.additive_domain_pb2.MeltPool, thermal_history_output: str | None = None)
+
+   
+   Contains the melt pool size dimensions for each time step during a single bead simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. py:currentmodule:: MeltPool
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~data_frame`
+            - Get the data frame containing the melt pool data.
+          * - :py:attr:`~depth_over_width`
+            - Return the median reference depth over reference width.
+          * - :py:attr:`~length_over_width`
+            - Return the median length over width.
+          * - :py:attr:`~median_width`
+            - Return the median width.
+          * - :py:attr:`~median_depth`
+            - Return the median depth.
+          * - :py:attr:`~median_length`
+            - Return the median length.
+          * - :py:attr:`~median_reference_width`
+            - Return the median reference width.
+          * - :py:attr:`~median_reference_depth`
+            - Return the median reference depth.
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~thermal_history_output`
+            - Path to the thermal history output file.
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__eq__`
+            - 
+          * - :py:attr:`~__repr__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.single_bead import MeltPool
+
+Property detail
+---------------
+
+.. py:property:: thermal_history_output
+   :type: str | None
+
+
+   
+   Path to the thermal history output file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: data_frame() -> pandas.DataFrame
+
+   
+   Get the data frame containing the melt pool data.
+
+   Values are in meters.
+
+   Indices:
+       - ``bead_length``: Length of the bead at each time step.
+
+   Columns:
+       - :obj:`MeltPoolColumnNames.LENGTH`.
+       - :obj:`MeltPoolColumnNames.WIDTH`.
+       - :obj:`MeltPoolColumnNames.DEPTH`.
+       - :obj:`MeltPoolColumnNames.REFERENCE_WIDTH`.
+       - :obj:`MeltPoolColumnNames.REFERENCE_DEPTH`.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: depth_over_width() -> float
+
+   
+   Return the median reference depth over reference width.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: length_over_width() -> float
+
+   
+   Return the median length over width.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: median_width() -> float
+
+   
+   Return the median width.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: median_depth() -> float
+
+   
+   Return the median depth.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: median_length() -> float
+
+   
+   Return the median length.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: median_reference_width() -> float
+
+   
+   Return the median reference width.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: median_reference_depth() -> float
+
+   
+   Return the median reference depth.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: __eq__(__o: object) -> bool
+
+.. py:method:: __repr__()
+
+
+
+

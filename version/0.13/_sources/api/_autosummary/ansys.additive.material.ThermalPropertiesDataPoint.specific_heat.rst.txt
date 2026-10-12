@@ -1,0 +1,6 @@
+specific\_heat
+==============
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: ThermalPropertiesDataPoint.specific_heat

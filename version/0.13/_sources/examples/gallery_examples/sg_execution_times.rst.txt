@@ -1,0 +1,26 @@
+
+:orphan:
+
+.. _sphx_glr_examples_gallery_examples_sg_execution_times:
+
+Computation times
+=================
+**13:55.638** total execution time for **examples_gallery_examples** files:
+
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_03_additive_thermal_history.py` (``03_additive_thermal_history.py``)               | 05:46.284 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_06_advanced_custom_material_tuning.py` (``06_advanced_custom_material_tuning.py``) | 03:33.988 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_01_additive_porosity.py` (``01_additive_porosity.py``)                             | 03:03.879 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_02_additive_microstructure.py` (``02_additive_microstructure.py``)                 | 00:46.859 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_00_additive_single_bead.py` (``00_additive_single_bead.py``)                       | 00:44.374 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_07_using_a_custom_material.py` (``07_using_a_custom_material.py``)                 | 00:00.252 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_04_additive_doe.py` (``04_additive_doe.py``)                                       | 00:00.001 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_examples_gallery_examples_05_advanced_optimization_workflow.py` (``05_advanced_optimization_workflow.py``)   | 00:00.001 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------------------------------+-----------+--------+
