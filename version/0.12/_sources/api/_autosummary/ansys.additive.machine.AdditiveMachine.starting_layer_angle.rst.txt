@@ -1,0 +1,6 @@
+starting\_layer\_angle
+======================
+
+.. currentmodule:: ansys.additive.machine
+
+.. autoproperty:: AdditiveMachine.starting_layer_angle

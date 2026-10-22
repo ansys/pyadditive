@@ -1,0 +1,87 @@
+
+
+
+
+CircleEquivalenceColumnNames
+============================
+
+.. py:class:: CircleEquivalenceColumnNames
+   :canonical: ansys.additive.core.microstructure.CircleEquivalenceColumnNames
+
+
+
+
+Provides column names for the circle equivalence data frame.
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: CircleEquivalenceColumnNames
+.. tab-set::
+
+
+
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~GRAIN_NUMBER`
+            - 
+          * - :py:attr:`~AREA_FRACTION`
+            - 
+          * - :py:attr:`~DIAMETER`
+            - 
+          * - :py:attr:`~ORIENTATION_ANGLE`
+            - 
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.microstructure import CircleEquivalenceColumnNames
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: GRAIN_NUMBER
+   :value: 'grain_number'
+
+   
+
+.. py:attribute:: AREA_FRACTION
+   :value: 'area_fraction'
+
+   
+
+.. py:attribute:: DIAMETER
+   :value: 'diameter_um'
+
+   
+
+.. py:attribute:: ORIENTATION_ANGLE
+   :value: 'orientation_angle'
+
+   
+
+
+

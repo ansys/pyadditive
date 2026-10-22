@@ -1,0 +1,171 @@
+
+
+
+
+
+The ``network_utils.py`` module
+===============================
+
+.. py:module:: ansys.additive.core.server_connection.network_utils
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: network_utils
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~check_valid_ip`
+            - Check for valid IP address.
+
+
+          * - :py:attr:`~check_valid_port`
+            - Check for valid port number.
+
+
+          * - :py:attr:`~create_channel`
+            - Create an insecure gRPC channel.
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~MAX_RCV_MSG_LEN`
+            - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+
+.. py:function:: check_valid_ip(ip)
+
+   
+   Check for valid IP address.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:function:: check_valid_port(port, lower_bound=1024, high_bound=65535)
+
+   
+   Check for valid port number.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:function:: create_channel(target: str, max_rcv_msg_len: int = MAX_RCV_MSG_LEN)
+
+   
+   Create an insecure gRPC channel.
+
+
+   :Parameters:
+
+       **target: str**
+           IP address of the host to connect to, of the form ``host:port``.
+
+       **max_rcv_msg_len: int**
+           Size, in bytes, of the buffer used to receive messages. Default is
+           :obj:`MAX_RCV_MSG_LEN`.
+
+   :Returns:
+
+       channel: :obj:`grpc.Channel`
+           Insecure gRPC channel.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: MAX_RCV_MSG_LEN
+
+   
+
+
+

@@ -1,0 +1,108 @@
+
+
+
+
+
+
+:class:`ParametricStudyProgressHandler`
+=======================================
+
+
+.. py:class:: ansys.additive.core.parametric_study.parametric_study_progress_handler.ParametricStudyProgressHandler(study: ansys.additive.core.parametric_study.ParametricStudy)
+
+   Bases: :py:obj:`ansys.additive.core.progress_handler.IProgressHandler`
+
+
+   
+   Provides methods to update parametric study simulation status.
+
+
+   :Parameters:
+
+       **study** : :obj:`ParametricStudy`
+           Parametric study to update.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: ParametricStudyProgressHandler
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~update`
+            - Update the progress of a simulation.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.parametric_study.parametric_study_progress_handler import ParametricStudyProgressHandler
+
+
+
+Method detail
+-------------
+
+.. py:method:: update(progress: ansys.additive.core.progress_handler.Progress) -> None
+
+   
+   Update the progress of a simulation.
+
+
+   :Parameters:
+
+       **progress** : :obj:`Progress`
+           Progress information for the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

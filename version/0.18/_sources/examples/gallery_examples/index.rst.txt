@@ -1,0 +1,205 @@
+:orphan:
+
+.. Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+.. SPDX-License-Identifier: MIT
+..
+..
+.. Permission is hereby granted, free of charge, to any person obtaining a copy of
+.. this software and associated documentation files (the "Software"), to deal in
+.. the Software without restriction, including without limitation the rights to
+.. use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+.. of the Software, and to permit persons to whom the Software is furnished to do
+.. so, subject to the following conditions:
+..
+.. The above copyright notice and this permission notice shall be included in all
+.. copies or substantial portions of the Software.
+..
+.. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+.. IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+.. FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+.. AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+.. LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+.. OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+.. SOFTWARE.
+
+.. _ref_example_gallery:
+
+========
+Examples
+========
+End-to-end examples show how you can use PyAdditve. You can download
+these examples as Python files or Jupyter notebooks and run them locally.
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbnails">
+
+.. thumbnail-parent-div-open
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use PyAdditive to determine melt pool characteristics for a given mat...">
+
+.. only:: html
+
+  .. image:: /examples/gallery_examples/images/thumb/sphx_glr_00_additive_single_bead_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_examples_gallery_examples_00_additive_single_bead.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Single bead analysis</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use PyAdditive to determine porosity for a given material and machine...">
+
+.. only:: html
+
+  .. image:: /examples/gallery_examples/images/thumb/sphx_glr_01_additive_porosity_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_examples_gallery_examples_01_additive_porosity.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Porosity analysis</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use PyAdditive to determine the two-dimensional microstructure in the...">
+
+.. only:: html
+
+  .. image:: /examples/gallery_examples/images/thumb/sphx_glr_02_additive_2d_microstructure_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_examples_gallery_examples_02_additive_2d_microstructure.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">2D Microstructure analysis</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use PyAdditive to determine thermal history during a build using a si...">
+
+.. only:: html
+
+  .. image:: /examples/gallery_examples/images/thumb/sphx_glr_03_additive_thermal_history_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_examples_gallery_examples_03_additive_thermal_history.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Thermal history analysis</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use a custom material in PyAdditive simulations. For background infor...">
+
+.. only:: html
+
+  .. image:: /examples/gallery_examples/images/thumb/sphx_glr_04_using_a_custom_material_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_examples_gallery_examples_04_using_a_custom_material.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Using a custom material</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to tune a custom material for use with PyAdditive. For background inform...">
+
+.. only:: html
+
+  .. image:: /examples/gallery_examples/images/thumb/sphx_glr_10_advanced_custom_material_tuning_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_examples_gallery_examples_10_advanced_custom_material_tuning.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Custom material tuning</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use PyAdditive to perform a parametric study. You perform a parametri...">
+
+.. only:: html
+
+  .. image:: /examples/gallery_examples/images/thumb/sphx_glr_11_advanced_parametric_study_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_examples_gallery_examples_11_advanced_parametric_study.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Parametric study</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="     This is beta documentation for one or more beta software features.      Beta features are ...">
+
+.. only:: html
+
+  .. image:: /examples/gallery_examples/images/thumb/sphx_glr_12_additive_3d_microstructure_beta_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_examples_gallery_examples_12_additive_3d_microstructure_beta.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">3D Microstructure analysis (BETA)</div>
+    </div>
+
+
+.. thumbnail-parent-div-close
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /examples/gallery_examples/00_additive_single_bead
+   /examples/gallery_examples/01_additive_porosity
+   /examples/gallery_examples/02_additive_2d_microstructure
+   /examples/gallery_examples/03_additive_thermal_history
+   /examples/gallery_examples/04_using_a_custom_material
+   /examples/gallery_examples/10_advanced_custom_material_tuning
+   /examples/gallery_examples/11_advanced_parametric_study
+   /examples/gallery_examples/12_additive_3d_microstructure_beta
+
+
+
+.. only:: html
+
+ .. rst-class:: sphx-glr-signature
+
+    `Gallery generated by Sphinx-Gallery <https://sphinx-gallery.github.io>`_

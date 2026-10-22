@@ -1,0 +1,156 @@
+
+
+
+
+
+
+:class:`CustomMaterialExampleFiles`
+===================================
+
+.. py:class:: ansys.additive.core.examples.downloads.CustomMaterialExampleFiles(material_configuration_file: str, thermal_properties_lookup_file: str, characteristic_width_lookup_file: str)
+
+   
+   Holds the files associated with a custom material definition.
+
+
+   :Parameters:
+
+       **material_configuration_file** : :class:`python:str`
+           Path to the material configuration file.
+
+       **thermal_properties_lookup_file** : :class:`python:str`
+           Path to the thermal properties lookup file.
+
+       **characteristic_width_lookup_file** : :class:`python:str`
+           Path to the characteristic width lookup file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: CustomMaterialExampleFiles
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~material_configuration_file`
+            - Path to the material configuration file.
+          * - :py:attr:`~thermal_properties_lookup_file`
+            - Path to the thermal properties lookup file.
+          * - :py:attr:`~characteristic_width_lookup_file`
+            - Path to the characteristic width lookup file.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.examples.downloads import CustomMaterialExampleFiles
+
+Property detail
+---------------
+
+.. py:property:: material_configuration_file
+
+   
+   Path to the material configuration file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: thermal_properties_lookup_file
+
+   
+   Path to the thermal properties lookup file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: characteristic_width_lookup_file
+
+   
+   Path to the characteristic width lookup file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+

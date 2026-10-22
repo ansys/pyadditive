@@ -1,0 +1,79 @@
+
+
+
+
+
+The ``additive.py`` module
+==========================
+
+.. py:module:: ansys.additive.core.additive
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: additive
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~Additive`
+            - Provides the client interface to one or more Additive services.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 Additive<Additive>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides a client for interacting with the Additive service.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+
