@@ -1,0 +1,6 @@
+vaporization\_temperature
+=========================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.vaporization_temperature

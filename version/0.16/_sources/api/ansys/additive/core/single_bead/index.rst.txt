@@ -1,0 +1,580 @@
+
+
+
+
+
+The ``single_bead.py`` module
+=============================
+
+.. py:module:: ansys.additive.core.single_bead
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: single_bead
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~SingleBeadInput`
+            - Provides input parameters for single bead simulation.
+
+
+          * - :py:attr:`~MeltPoolColumnNames`
+            - Provides column names for the melt pool data frame.
+
+
+          * - :py:attr:`~MeltPool`
+            - Contains the melt pool size dimensions for each time step during a
+
+
+          * - :py:attr:`~SingleBeadSummary`
+            - Provides a summary of a single bead simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+
+
+
+.. py:class:: SingleBeadInput(id: str = '', bead_length: float = DEFAULT_BEAD_LENGTH, machine: ansys.additive.core.machine.AdditiveMachine = AdditiveMachine(), material: ansys.additive.core.material.AdditiveMaterial = AdditiveMaterial())
+
+
+
+
+Provides input parameters for single bead simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~id`
+            - User-provided ID for the simulation.
+          * - :py:attr:`~machine`
+            - Machine parameters.
+          * - :py:attr:`~material`
+            - Material parameters.
+          * - :py:attr:`~bead_length`
+            - Length (m) of bead to simulate.
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_BEAD_LENGTH`
+            - 
+          * - :py:attr:`~MIN_BEAD_LENGTH`
+            - 
+          * - :py:attr:`~MAX_BEAD_LENGTH`
+            - 
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.single_bead import SingleBeadInput
+
+
+Property detail
+---------------
+.. py:property:: id
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput.id
+   :type: str
+
+
+   
+   User-provided ID for the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: machine
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput.machine
+   :type: AdditiveMachine
+
+
+   
+   Machine parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput.material
+   :type: AdditiveMaterial
+
+
+   
+   Material parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: bead_length
+   :canonical: ansys.additive.core.single_bead.SingleBeadInput.bead_length
+   :type: float
+
+
+   
+   Length (m) of bead to simulate.
+
+   Valid values are from :obj:`MIN_BEAD_LENGTH` to :obj:`MAX_BEAD_LENGTH` m.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: DEFAULT_BEAD_LENGTH
+   :value: 0.003
+
+   
+
+.. py:attribute:: MIN_BEAD_LENGTH
+   :value: 0.001
+
+   
+
+.. py:attribute:: MAX_BEAD_LENGTH
+   :value: 0.01
+
+   
+
+
+
+
+
+
+
+
+
+.. py:class:: MeltPoolColumnNames
+
+
+
+
+Provides column names for the melt pool data frame.
+
+
+
+
+
+
+
+
+
+
+
+
+.. tab-set::
+
+
+
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~WIDTH`
+            - 
+          * - :py:attr:`~DEPTH`
+            - 
+          * - :py:attr:`~LENGTH`
+            - 
+          * - :py:attr:`~REFERENCE_WIDTH`
+            - 
+          * - :py:attr:`~REFERENCE_DEPTH`
+            - 
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.single_bead import MeltPoolColumnNames
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: WIDTH
+   :value: 'width'
+
+   
+
+.. py:attribute:: DEPTH
+   :value: 'depth'
+
+   
+
+.. py:attribute:: LENGTH
+   :value: 'length'
+
+   
+
+.. py:attribute:: REFERENCE_WIDTH
+   :value: 'reference_width'
+
+   
+
+.. py:attribute:: REFERENCE_DEPTH
+   :value: 'reference_depth'
+
+   
+
+
+
+
+
+
+
+
+
+.. py:class:: MeltPool(msg: ansys.api.additive.v0.additive_domain_pb2.MeltPool)
+
+
+
+
+Contains the melt pool size dimensions for each time step during a
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. tab-set::
+
+
+
+    .. tab-item:: Methods
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~data_frame`
+            - Get the data frame containing the melt pool data.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.single_bead import MeltPool
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: data_frame() -> pandas.DataFrame
+
+   
+   Get the data frame containing the melt pool data.
+
+   Values are in meters.
+
+   Indices:
+       - ``bead_length``: Length of the bead at each time step.
+
+   Columns:
+       - ``MeltPoolColumnNames.LENGTH``: Length of the melt pool.
+       - ``MeltPoolColumnNames.WIDTH``: Width of the melt pool.
+       - ``MeltPoolColumnNames.DEPTH``: Depth of the melt pool.
+       - ``MeltPoolColumnNames.REFERENCE_WIDTH``: Reference width of the melt pool.
+         Reference width is the melt pool width at the bottom of the powder layer
+         or the width at the top of the substrate.
+       - ``MeltPoolColumnNames.REFERENCE_DEPTH``: Reference depth of the melt pool.
+         Reference depth is the depth of the entire melt pool minus the powder
+         layer thickness or the depth of penetration into the substrate.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+
+.. py:class:: SingleBeadSummary(input: SingleBeadInput, msg: ansys.api.additive.v0.additive_domain_pb2.MeltPool)
+
+
+
+
+Provides a summary of a single bead simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Simulation input.
+          * - :py:attr:`~melt_pool`
+            - Resulting melt pool.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.single_bead import SingleBeadSummary
+
+
+Property detail
+---------------
+.. py:property:: input
+   :canonical: ansys.additive.core.single_bead.SingleBeadSummary.input
+   :type: SingleBeadInput
+
+
+   
+   Simulation input.
+
+   For more information, see the :class:`SingleBeadInput` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: melt_pool
+   :canonical: ansys.additive.core.single_bead.SingleBeadSummary.melt_pool
+   :type: MeltPool
+
+
+   
+   Resulting melt pool.
+
+   For more information, see the :class:`MeltPool` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+

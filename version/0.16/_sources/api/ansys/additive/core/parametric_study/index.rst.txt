@@ -1,0 +1,98 @@
+
+
+
+
+
+The ``parametric_study`` package 
+====================================
+
+.. py:module:: ansys.additive.core.parametric_study
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: parametric_study
+.. tab-set::
+
+    .. tab-item:: Subpackages
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.display`
+            - 
+
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.constants`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.parametric_runner`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.parametric_study`
+            - 
+
+
+          * - :py:attr:`~ansys.additive.core.parametric_study.parametric_utils`
+            - 
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🖿 display<display/index.rst>
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🗎 constants<constants/index.rst>
+    🗎 parametric_runner<parametric_runner/index.rst>
+    🗎 parametric_study<parametric_study/index.rst>
+    🗎 parametric_utils<parametric_utils/index.rst>
+
+
+
+
+
+
+
+
+
+
+
+
+

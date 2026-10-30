@@ -1,0 +1,6 @@
+material
+========
+
+.. currentmodule:: ansys.additive.porosity
+
+.. autoproperty:: PorosityInput.material

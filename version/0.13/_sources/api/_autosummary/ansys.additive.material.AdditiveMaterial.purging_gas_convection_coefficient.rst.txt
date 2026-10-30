@@ -1,0 +1,6 @@
+purging\_gas\_convection\_coefficient
+=====================================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.purging_gas_convection_coefficient

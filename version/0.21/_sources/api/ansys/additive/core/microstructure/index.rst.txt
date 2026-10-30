@@ -1,0 +1,101 @@
+
+
+
+
+
+
+The ``microstructure.py`` module
+================================
+
+.. py:module:: ansys.additive.core.microstructure
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: microstructure
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.microstructure.MicrostructureInput`
+            - Provides input parameters for microstructure simulation.
+
+
+          * - :py:obj:`~ansys.additive.core.microstructure.CircleEquivalenceColumnNames`
+            - Provides column names for the circle equivalence data frame.
+
+
+          * - :py:obj:`~ansys.additive.core.microstructure.MicrostructureSummary`
+            - Provides the summary of a microstructure simulation.
+
+
+          * - :py:obj:`~ansys.additive.core.microstructure.Microstructure2DResult`
+            - Provides the results of a 2D microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> MicrostructureInput</api/ansys/additive/core/microstructure/MicrostructureInput>
+    <span class="nf nf-cod-symbol_class"></span> CircleEquivalenceColumnNames</api/ansys/additive/core/microstructure/CircleEquivalenceColumnNames>
+    <span class="nf nf-cod-symbol_class"></span> MicrostructureSummary</api/ansys/additive/core/microstructure/MicrostructureSummary>
+    <span class="nf nf-cod-symbol_class"></span> Microstructure2DResult</api/ansys/additive/core/microstructure/Microstructure2DResult>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides input and result summary containers for microstructure simulations.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

@@ -1,0 +1,111 @@
+
+
+
+
+
+The ``constants.py`` module
+===========================
+
+.. py:module:: ansys.additive.core.server_connection.constants
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: constants
+.. tab-set::
+
+
+
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~LOCALHOST`
+            - 
+
+
+          * - :py:attr:`~PIM_PRODUCT_NAME`
+            - 
+
+
+          * - :py:attr:`~DEFAULT_ANSYS_VERSION`
+            - 
+
+
+          * - :py:attr:`~ADDITIVE_SERVER_EXE_NAME`
+            - 
+
+
+          * - :py:attr:`~ADDITIVE_SERVER_SUBDIR`
+            - 
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Constants used for server connections.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: LOCALHOST
+   :value: '127.0.0.1'
+
+   
+
+.. py:data:: PIM_PRODUCT_NAME
+   :value: 'additive'
+
+   
+
+.. py:data:: DEFAULT_ANSYS_VERSION
+   :value: '241'
+
+   
+
+.. py:data:: ADDITIVE_SERVER_EXE_NAME
+   :value: 'additiveserver'
+
+   
+
+.. py:data:: ADDITIVE_SERVER_SUBDIR
+
+   
+
+
+

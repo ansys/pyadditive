@@ -1,0 +1,6 @@
+layer\_thickness
+================
+
+.. currentmodule:: ansys.additive.machine
+
+.. autoproperty:: AdditiveMachine.layer_thickness

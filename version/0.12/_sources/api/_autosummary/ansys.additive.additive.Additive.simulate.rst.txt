@@ -1,0 +1,6 @@
+simulate
+========
+
+.. currentmodule:: ansys.additive.additive
+
+.. automethod:: Additive.simulate

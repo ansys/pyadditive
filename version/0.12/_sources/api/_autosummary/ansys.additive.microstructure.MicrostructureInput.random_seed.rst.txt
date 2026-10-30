@@ -1,0 +1,6 @@
+random\_seed
+============
+
+.. currentmodule:: ansys.additive.microstructure
+
+.. autoproperty:: MicrostructureInput.random_seed

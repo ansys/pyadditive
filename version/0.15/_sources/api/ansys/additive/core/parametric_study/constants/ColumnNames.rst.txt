@@ -1,0 +1,374 @@
+
+
+
+
+ColumnNames
+===========
+
+.. py:class:: ColumnNames
+   :canonical: ansys.additive.core.parametric_study.constants.ColumnNames
+
+
+
+
+Provides column names for the parametric study data frame.
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: ColumnNames
+.. tab-set::
+
+
+
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~ITERATION`
+            - 
+          * - :py:attr:`~PRIORITY`
+            - 
+          * - :py:attr:`~TYPE`
+            - 
+          * - :py:attr:`~ID`
+            - 
+          * - :py:attr:`~STATUS`
+            - 
+          * - :py:attr:`~MATERIAL`
+            - 
+          * - :py:attr:`~HEATER_TEMPERATURE`
+            - 
+          * - :py:attr:`~LAYER_THICKNESS`
+            - 
+          * - :py:attr:`~BEAM_DIAMETER`
+            - 
+          * - :py:attr:`~LASER_POWER`
+            - 
+          * - :py:attr:`~SCAN_SPEED`
+            - 
+          * - :py:attr:`~START_ANGLE`
+            - 
+          * - :py:attr:`~ROTATION_ANGLE`
+            - 
+          * - :py:attr:`~HATCH_SPACING`
+            - 
+          * - :py:attr:`~STRIPE_WIDTH`
+            - 
+          * - :py:attr:`~ENERGY_DENSITY`
+            - 
+          * - :py:attr:`~BUILD_RATE`
+            - 
+          * - :py:attr:`~SINGLE_BEAD_LENGTH`
+            - 
+          * - :py:attr:`~MELT_POOL_WIDTH`
+            - 
+          * - :py:attr:`~MELT_POOL_DEPTH`
+            - 
+          * - :py:attr:`~MELT_POOL_LENGTH`
+            - 
+          * - :py:attr:`~MELT_POOL_LENGTH_OVER_WIDTH`
+            - 
+          * - :py:attr:`~MELT_POOL_REFERENCE_WIDTH`
+            - 
+          * - :py:attr:`~MELT_POOL_REFERENCE_DEPTH`
+            - 
+          * - :py:attr:`~MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH`
+            - 
+          * - :py:attr:`~POROSITY_SIZE_X`
+            - 
+          * - :py:attr:`~POROSITY_SIZE_Y`
+            - 
+          * - :py:attr:`~POROSITY_SIZE_Z`
+            - 
+          * - :py:attr:`~RELATIVE_DENSITY`
+            - 
+          * - :py:attr:`~MICRO_MIN_X`
+            - 
+          * - :py:attr:`~MICRO_MIN_Y`
+            - 
+          * - :py:attr:`~MICRO_MIN_Z`
+            - 
+          * - :py:attr:`~MICRO_SIZE_X`
+            - 
+          * - :py:attr:`~MICRO_SIZE_Y`
+            - 
+          * - :py:attr:`~MICRO_SIZE_Z`
+            - 
+          * - :py:attr:`~MICRO_SENSOR_DIM`
+            - 
+          * - :py:attr:`~COOLING_RATE`
+            - 
+          * - :py:attr:`~THERMAL_GRADIENT`
+            - 
+          * - :py:attr:`~MICRO_MELT_POOL_WIDTH`
+            - 
+          * - :py:attr:`~MICRO_MELT_POOL_DEPTH`
+            - 
+          * - :py:attr:`~RANDOM_SEED`
+            - 
+          * - :py:attr:`~XY_AVERAGE_GRAIN_SIZE`
+            - 
+          * - :py:attr:`~XZ_AVERAGE_GRAIN_SIZE`
+            - 
+          * - :py:attr:`~YZ_AVERAGE_GRAIN_SIZE`
+            - 
+          * - :py:attr:`~ERROR_MESSAGE`
+            - 
+      
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.parametric_study.constants import ColumnNames
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: ITERATION
+   :value: 'Iteration'
+
+   
+
+.. py:attribute:: PRIORITY
+   :value: 'Priority'
+
+   
+
+.. py:attribute:: TYPE
+   :value: 'Type'
+
+   
+
+.. py:attribute:: ID
+   :value: 'ID'
+
+   
+
+.. py:attribute:: STATUS
+   :value: 'Status'
+
+   
+
+.. py:attribute:: MATERIAL
+   :value: 'Material'
+
+   
+
+.. py:attribute:: HEATER_TEMPERATURE
+   :value: 'Heater Temp (°C)'
+
+   
+
+.. py:attribute:: LAYER_THICKNESS
+   :value: 'Layer Thickness (m)'
+
+   
+
+.. py:attribute:: BEAM_DIAMETER
+   :value: 'Beam Diameter (m)'
+
+   
+
+.. py:attribute:: LASER_POWER
+   :value: 'Laser Power (W)'
+
+   
+
+.. py:attribute:: SCAN_SPEED
+   :value: 'Scan Speed (m/s)'
+
+   
+
+.. py:attribute:: START_ANGLE
+   :value: 'Start Angle (°)'
+
+   
+
+.. py:attribute:: ROTATION_ANGLE
+   :value: 'Rotation Angle (°)'
+
+   
+
+.. py:attribute:: HATCH_SPACING
+   :value: 'Hatch Spacing (m)'
+
+   
+
+.. py:attribute:: STRIPE_WIDTH
+   :value: 'Stripe Width (m)'
+
+   
+
+.. py:attribute:: ENERGY_DENSITY
+   :value: 'Energy Density (J/m^3)'
+
+   
+
+.. py:attribute:: BUILD_RATE
+   :value: 'Build Rate (m^3/s)'
+
+   
+
+.. py:attribute:: SINGLE_BEAD_LENGTH
+   :value: 'Single Bead Length (m)'
+
+   
+
+.. py:attribute:: MELT_POOL_WIDTH
+   :value: 'Melt Pool Width (m)'
+
+   
+
+.. py:attribute:: MELT_POOL_DEPTH
+   :value: 'Melt Pool Depth (m)'
+
+   
+
+.. py:attribute:: MELT_POOL_LENGTH
+   :value: 'Melt Pool Length (m)'
+
+   
+
+.. py:attribute:: MELT_POOL_LENGTH_OVER_WIDTH
+   :value: 'Melt Pool Length/Width (m)'
+
+   
+
+.. py:attribute:: MELT_POOL_REFERENCE_WIDTH
+   :value: 'Melt Pool Ref Width (m)'
+
+   
+
+.. py:attribute:: MELT_POOL_REFERENCE_DEPTH
+   :value: 'Melt Pool Ref Depth (m)'
+
+   
+
+.. py:attribute:: MELT_POOL_REFERENCE_DEPTH_OVER_WIDTH
+   :value: 'Melt Pool Ref Depth/Width (m)'
+
+   
+
+.. py:attribute:: POROSITY_SIZE_X
+   :value: 'Porosity Size X (m)'
+
+   
+
+.. py:attribute:: POROSITY_SIZE_Y
+   :value: 'Porosity Size Y (m)'
+
+   
+
+.. py:attribute:: POROSITY_SIZE_Z
+   :value: 'Porosity Size Z (m)'
+
+   
+
+.. py:attribute:: RELATIVE_DENSITY
+   :value: 'Relative Density'
+
+   
+
+.. py:attribute:: MICRO_MIN_X
+   :value: 'Micro Min X (m)'
+
+   
+
+.. py:attribute:: MICRO_MIN_Y
+   :value: 'Micro Min Y (m)'
+
+   
+
+.. py:attribute:: MICRO_MIN_Z
+   :value: 'Micro Min Z (m)'
+
+   
+
+.. py:attribute:: MICRO_SIZE_X
+   :value: 'Micro Size X (m)'
+
+   
+
+.. py:attribute:: MICRO_SIZE_Y
+   :value: 'Micro Size Y (m)'
+
+   
+
+.. py:attribute:: MICRO_SIZE_Z
+   :value: 'Micro Size Z (m)'
+
+   
+
+.. py:attribute:: MICRO_SENSOR_DIM
+   :value: 'Micro Sensor Dim (m)'
+
+   
+
+.. py:attribute:: COOLING_RATE
+   :value: 'Cooling Rate (°K/s)'
+
+   
+
+.. py:attribute:: THERMAL_GRADIENT
+   :value: 'Thermal Gradient (°K/m)'
+
+   
+
+.. py:attribute:: MICRO_MELT_POOL_WIDTH
+   :value: 'Micro Melt Pool Width (m)'
+
+   
+
+.. py:attribute:: MICRO_MELT_POOL_DEPTH
+   :value: 'Micro Melt Pool Depth (m)'
+
+   
+
+.. py:attribute:: RANDOM_SEED
+   :value: 'Random Seed'
+
+   
+
+.. py:attribute:: XY_AVERAGE_GRAIN_SIZE
+   :value: 'XY Average Grain Size (µm)'
+
+   
+
+.. py:attribute:: XZ_AVERAGE_GRAIN_SIZE
+   :value: 'XZ Average Grain Size (µm)'
+
+   
+
+.. py:attribute:: YZ_AVERAGE_GRAIN_SIZE
+   :value: 'YZ Average Grain Size (µm)'
+
+   
+
+.. py:attribute:: ERROR_MESSAGE
+   :value: 'Error Message'
+
+   
+
+
+

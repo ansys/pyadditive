@@ -1,0 +1,6 @@
+nucleation\_constant\_interface
+===============================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.nucleation_constant_interface
