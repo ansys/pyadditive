@@ -1,0 +1,85 @@
+
+
+
+
+
+The ``single_bead.py`` module
+=============================
+
+.. py:module:: ansys.additive.core.single_bead
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: single_bead
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~SingleBeadInput`
+            - Provides input parameters for single bead simulation.
+
+
+          * - :py:attr:`~MeltPoolColumnNames`
+            - Provides column names for the melt pool data frame.
+
+
+          * - :py:attr:`~MeltPool`
+            - Contains the melt pool size dimensions for each time step during a
+
+
+          * - :py:attr:`~SingleBeadSummary`
+            - Provides a summary of a single bead simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 SingleBeadInput<SingleBeadInput>
+    🝆 MeltPoolColumnNames<MeltPoolColumnNames>
+    🝆 MeltPool<MeltPool>
+    🝆 SingleBeadSummary<SingleBeadSummary>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

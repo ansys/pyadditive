@@ -1,0 +1,6 @@
+load\_material
+==============
+
+.. currentmodule:: ansys.additive.additive
+
+.. automethod:: Additive.load_material

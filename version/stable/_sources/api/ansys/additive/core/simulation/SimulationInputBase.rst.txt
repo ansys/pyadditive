@@ -1,0 +1,99 @@
+
+
+
+
+
+
+:class:`SimulationInputBase`
+============================
+
+
+.. py:class:: ansys.additive.core.simulation.SimulationInputBase
+
+   
+   Provides a base class for simulation inputs.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: SimulationInputBase
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~id`
+            - Return a unique identifier for this simulation.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.simulation import SimulationInputBase
+
+Property detail
+---------------
+
+.. py:property:: id
+   :type: str
+
+
+   
+   Return a unique identifier for this simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+

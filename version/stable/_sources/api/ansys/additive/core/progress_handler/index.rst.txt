@@ -1,0 +1,127 @@
+
+
+
+
+
+
+The ``progress_handler.py`` module
+==================================
+
+.. py:module:: ansys.additive.core.progress_handler
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: progress_handler
+.. tab-set::
+
+
+
+    .. tab-item:: Interfaces
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.progress_handler.IProgressHandler`
+            - Interface for simulation progress updates.
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.progress_handler.Progress`
+            - Progress information.
+
+
+          * - :py:obj:`~ansys.additive.core.progress_handler.DefaultSingleSimulationProgressHandler`
+            - Creates a progress bar for a single simulation.
+
+
+
+    .. tab-item:: Enums
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.progress_handler.ProgressState`
+            - Simulation progress status.
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_interface"></span> IProgressHandler</api/ansys/additive/core/progress_handler/IProgressHandler>
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> Progress</api/ansys/additive/core/progress_handler/Progress>
+    <span class="nf nf-cod-symbol_class"></span> DefaultSingleSimulationProgressHandler</api/ansys/additive/core/progress_handler/DefaultSingleSimulationProgressHandler>
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_enum"></span> ProgressState</api/ansys/additive/core/progress_handler/ProgressState>
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides progress updates.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

@@ -1,0 +1,6 @@
+nucleation\_constant\_bulk
+==========================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.nucleation_constant_bulk

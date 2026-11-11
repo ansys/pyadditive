@@ -1,0 +1,1063 @@
+
+
+
+
+AdditiveMaterial
+================
+
+.. py:class:: AdditiveMaterial(*, absorptivity_maximum: float = 0, absorptivity_minimum: float = 0, absorptivity_powder_coefficient_a: float = 0, absorptivity_powder_coefficient_b: float = 0, absorptivity_solid_coefficient_a: float = 0, absorptivity_solid_coefficient_b: float = 0, anisotropic_strain_coefficient_parallel: float = 0, anisotropic_strain_coefficient_perpendicular: float = 0, anisotropic_strain_coefficient_z: float = 0, elastic_modulus: float = 0, hardening_factor: float = 0, liquidus_temperature: float = 0, material_yield_strength: float = 0, name: str = '', nucleation_constant_bulk: float = 0, nucleation_constant_interface: float = 0, penetration_depth_maximum: float = 0, penetration_depth_minimum: float = 0, penetration_depth_powder_coefficient_a: float = 0, penetration_depth_powder_coefficient_b: float = 0, penetration_depth_solid_coefficient_a: float = 0, penetration_depth_solid_coefficient_b: float = 0, poisson_ratio: float = 0, powder_packing_density: float = 0, purging_gas_convection_coefficient: float = 0, solid_density_at_room_temperature: float = 0, solid_specific_heat_at_room_temperature: float = 0, solid_thermal_conductivity_at_room_temperature: float = 0, solidus_temperature: float = 0, strain_scaling_factor: float = 0, support_yield_strength_ratio: float = 0, thermal_expansion_coefficient: float = 0, vaporization_temperature: float = 0, characteristic_width_data: list[CharacteristicWidthDataPoint] = None, thermal_properties_data: list[ThermalPropertiesDataPoint] = None)
+   :canonical: ansys.additive.core.material.AdditiveMaterial
+
+
+
+
+
+   Provides the container for material properties used during additive manufacturing simulations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: AdditiveMaterial
+.. tab-set::
+
+
+
+
+    .. tab-item:: Properties
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~absorptivity_maximum`
+            - Absorptivity maximum.
+          * - :py:attr:`~absorptivity_minimum`
+            - Absorptivity minimum.
+          * - :py:attr:`~absorptivity_powder_coefficient_a`
+            - Absorptivity powder coefficient a.
+          * - :py:attr:`~absorptivity_powder_coefficient_b`
+            - Absorptivity powder coefficient b.
+          * - :py:attr:`~absorptivity_solid_coefficient_a`
+            - Absorptivity solid coefficient a.
+          * - :py:attr:`~absorptivity_solid_coefficient_b`
+            - Absorptivity solid coefficient b.
+          * - :py:attr:`~anisotropic_strain_coefficient_parallel`
+            - Multiplier on the predicted strain in the direction that the laser is scanning for the major fill rasters.
+          * - :py:attr:`~anisotropic_strain_coefficient_perpendicular`
+            - Multiplier on the predicted strain orthogonal to the direction that the laser is scanning for the major fill rasters and in the plane of the surface of the build plate.
+          * - :py:attr:`~anisotropic_strain_coefficient_z`
+            - Multiplier on the predicted strain in the Z direction.
+          * - :py:attr:`~elastic_modulus`
+            - Elastic modulus (Pa).
+          * - :py:attr:`~hardening_factor`
+            - Factor relating the elastic modulus to the tangent modulus for plasticity simulations (tangent modulus = elastic modulus * hardening factor).
+          * - :py:attr:`~liquidus_temperature`
+            - Minimum temperature (K) at which the material is completely liquid.
+          * - :py:attr:`~material_yield_strength`
+            - Material yield strength (Pa).
+          * - :py:attr:`~name`
+            - Name of the material.
+          * - :py:attr:`~nucleation_constant_bulk`
+            - Controls the homogeneous nucleation rate (in bulk of the microstructure simulation domain) during solidification (1/m^2/K^2).
+          * - :py:attr:`~nucleation_constant_interface`
+            - Heterogeneous nucleation rate (on existing solid interfaces) during solidification (1/m/K^2).
+          * - :py:attr:`~penetration_depth_maximum`
+            - Penetration depth maximum.
+          * - :py:attr:`~penetration_depth_minimum`
+            - Penetration depth minimum.
+          * - :py:attr:`~penetration_depth_powder_coefficient_a`
+            - Penetration depth powder coefficient a.
+          * - :py:attr:`~penetration_depth_powder_coefficient_b`
+            - Penetration depth powder coefficient b.
+          * - :py:attr:`~penetration_depth_solid_coefficient_a`
+            - Penetration depth solid coefficient a.
+          * - :py:attr:`~penetration_depth_solid_coefficient_b`
+            - Penetration depth solid coefficient b.
+          * - :py:attr:`~poisson_ratio`
+            - Poisson ratio.
+          * - :py:attr:`~powder_packing_density`
+            - Density of powder material relative to the solid.
+          * - :py:attr:`~purging_gas_convection_coefficient`
+            - Convection coefficient between the solid and gas during build.
+          * - :py:attr:`~solid_density_at_room_temperature`
+            - Density of bulk material at room temperature, 298 K (kg/m^3).
+          * - :py:attr:`~solid_specific_heat_at_room_temperature`
+            - Specific heat of bulk material at room temperature, 298 K (J/kg/K).
+          * - :py:attr:`~solid_thermal_conductivity_at_room_temperature`
+            - Thermal conductivity of bulk material at room temperature, 298 K (W/m/K).
+          * - :py:attr:`~solidus_temperature`
+            - Maximum temperature (K) at which the material is completely solid.
+          * - :py:attr:`~strain_scaling_factor`
+            - Strain scaling factor.
+          * - :py:attr:`~support_yield_strength_ratio`
+            - Knockdown factor that is used to adjust the strength of the support material in comparison to the solid material.
+          * - :py:attr:`~thermal_expansion_coefficient`
+            - Coefficient of thermal expansion (1/K).
+          * - :py:attr:`~vaporization_temperature`
+            - Temperature (K) at which the material has completely changed from liquid to vapor.
+          * - :py:attr:`~characteristic_width_data`
+            - List of characteristic width data points.
+          * - :py:attr:`~thermal_properties_data`
+            - List of thermal properties data points.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.material import AdditiveMaterial
+
+
+Property detail
+---------------
+.. py:property:: absorptivity_maximum
+   :canonical: ansys.additive.core.material.AdditiveMaterial.absorptivity_maximum
+   :type: float
+
+
+   
+   Absorptivity maximum.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: absorptivity_minimum
+   :canonical: ansys.additive.core.material.AdditiveMaterial.absorptivity_minimum
+   :type: float
+
+
+   
+   Absorptivity minimum.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: absorptivity_powder_coefficient_a
+   :canonical: ansys.additive.core.material.AdditiveMaterial.absorptivity_powder_coefficient_a
+   :type: float
+
+
+   
+   Absorptivity powder coefficient a.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: absorptivity_powder_coefficient_b
+   :canonical: ansys.additive.core.material.AdditiveMaterial.absorptivity_powder_coefficient_b
+   :type: float
+
+
+   
+   Absorptivity powder coefficient b.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: absorptivity_solid_coefficient_a
+   :canonical: ansys.additive.core.material.AdditiveMaterial.absorptivity_solid_coefficient_a
+   :type: float
+
+
+   
+   Absorptivity solid coefficient a.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: absorptivity_solid_coefficient_b
+   :canonical: ansys.additive.core.material.AdditiveMaterial.absorptivity_solid_coefficient_b
+   :type: float
+
+
+   
+   Absorptivity solid coefficient b.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: anisotropic_strain_coefficient_parallel
+   :canonical: ansys.additive.core.material.AdditiveMaterial.anisotropic_strain_coefficient_parallel
+   :type: float
+
+
+   
+   Multiplier on the predicted strain in the direction that the laser is scanning for the major fill rasters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: anisotropic_strain_coefficient_perpendicular
+   :canonical: ansys.additive.core.material.AdditiveMaterial.anisotropic_strain_coefficient_perpendicular
+   :type: float
+
+
+   
+   Multiplier on the predicted strain orthogonal to the direction that the laser is scanning for the major fill rasters and in the plane of the surface of the build plate.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: anisotropic_strain_coefficient_z
+   :canonical: ansys.additive.core.material.AdditiveMaterial.anisotropic_strain_coefficient_z
+   :type: float
+
+
+   
+   Multiplier on the predicted strain in the Z direction.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: elastic_modulus
+   :canonical: ansys.additive.core.material.AdditiveMaterial.elastic_modulus
+   :type: float
+
+
+   
+   Elastic modulus (Pa).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: hardening_factor
+   :canonical: ansys.additive.core.material.AdditiveMaterial.hardening_factor
+   :type: float
+
+
+   
+   Factor relating the elastic modulus to the tangent modulus for plasticity simulations (tangent modulus = elastic modulus * hardening factor).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: liquidus_temperature
+   :canonical: ansys.additive.core.material.AdditiveMaterial.liquidus_temperature
+   :type: float
+
+
+   
+   Minimum temperature (K) at which the material is completely liquid.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material_yield_strength
+   :canonical: ansys.additive.core.material.AdditiveMaterial.material_yield_strength
+   :type: float
+
+
+   
+   Material yield strength (Pa).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: name
+   :canonical: ansys.additive.core.material.AdditiveMaterial.name
+   :type: str
+
+
+   
+   Name of the material.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: nucleation_constant_bulk
+   :canonical: ansys.additive.core.material.AdditiveMaterial.nucleation_constant_bulk
+   :type: float
+
+
+   
+   Controls the homogeneous nucleation rate (in bulk of the microstructure simulation domain) during solidification (1/m^2/K^2).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: nucleation_constant_interface
+   :canonical: ansys.additive.core.material.AdditiveMaterial.nucleation_constant_interface
+   :type: float
+
+
+   
+   Heterogeneous nucleation rate (on existing solid interfaces) during solidification (1/m/K^2).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: penetration_depth_maximum
+   :canonical: ansys.additive.core.material.AdditiveMaterial.penetration_depth_maximum
+   :type: float
+
+
+   
+   Penetration depth maximum.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: penetration_depth_minimum
+   :canonical: ansys.additive.core.material.AdditiveMaterial.penetration_depth_minimum
+   :type: float
+
+
+   
+   Penetration depth minimum.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: penetration_depth_powder_coefficient_a
+   :canonical: ansys.additive.core.material.AdditiveMaterial.penetration_depth_powder_coefficient_a
+   :type: float
+
+
+   
+   Penetration depth powder coefficient a.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: penetration_depth_powder_coefficient_b
+   :canonical: ansys.additive.core.material.AdditiveMaterial.penetration_depth_powder_coefficient_b
+   :type: float
+
+
+   
+   Penetration depth powder coefficient b.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: penetration_depth_solid_coefficient_a
+   :canonical: ansys.additive.core.material.AdditiveMaterial.penetration_depth_solid_coefficient_a
+   :type: float
+
+
+   
+   Penetration depth solid coefficient a.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: penetration_depth_solid_coefficient_b
+   :canonical: ansys.additive.core.material.AdditiveMaterial.penetration_depth_solid_coefficient_b
+   :type: float
+
+
+   
+   Penetration depth solid coefficient b.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: poisson_ratio
+   :canonical: ansys.additive.core.material.AdditiveMaterial.poisson_ratio
+   :type: float
+
+
+   
+   Poisson ratio.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: powder_packing_density
+   :canonical: ansys.additive.core.material.AdditiveMaterial.powder_packing_density
+   :type: float
+
+
+   
+   Density of powder material relative to the solid.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: purging_gas_convection_coefficient
+   :canonical: ansys.additive.core.material.AdditiveMaterial.purging_gas_convection_coefficient
+   :type: float
+
+
+   
+   Convection coefficient between the solid and gas during build.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: solid_density_at_room_temperature
+   :canonical: ansys.additive.core.material.AdditiveMaterial.solid_density_at_room_temperature
+   :type: float
+
+
+   
+   Density of bulk material at room temperature, 298 K (kg/m^3).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: solid_specific_heat_at_room_temperature
+   :canonical: ansys.additive.core.material.AdditiveMaterial.solid_specific_heat_at_room_temperature
+   :type: float
+
+
+   
+   Specific heat of bulk material at room temperature, 298 K (J/kg/K).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: solid_thermal_conductivity_at_room_temperature
+   :canonical: ansys.additive.core.material.AdditiveMaterial.solid_thermal_conductivity_at_room_temperature
+   :type: float
+
+
+   
+   Thermal conductivity of bulk material at room temperature, 298 K (W/m/K).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: solidus_temperature
+   :canonical: ansys.additive.core.material.AdditiveMaterial.solidus_temperature
+   :type: float
+
+
+   
+   Maximum temperature (K) at which the material is completely solid.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: strain_scaling_factor
+   :canonical: ansys.additive.core.material.AdditiveMaterial.strain_scaling_factor
+   :type: float
+
+
+   
+   Strain scaling factor.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: support_yield_strength_ratio
+   :canonical: ansys.additive.core.material.AdditiveMaterial.support_yield_strength_ratio
+   :type: float
+
+
+   
+   Knockdown factor that is used to adjust the strength of the support material in comparison to the solid material.
+
+   The factor is multiplied by the support material's yield
+   strength and elastic modulus. A value of 1.0, for example,
+   results in support strength equal to the solid material, whereas
+   0.5 is half the strength of the solid material.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: thermal_expansion_coefficient
+   :canonical: ansys.additive.core.material.AdditiveMaterial.thermal_expansion_coefficient
+   :type: float
+
+
+   
+   Coefficient of thermal expansion (1/K).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: vaporization_temperature
+   :canonical: ansys.additive.core.material.AdditiveMaterial.vaporization_temperature
+   :type: float
+
+
+   
+   Temperature (K) at which the material has completely changed from liquid to vapor.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: characteristic_width_data
+   :canonical: ansys.additive.core.material.AdditiveMaterial.characteristic_width_data
+   :type: list[CharacteristicWidthDataPoint]
+
+
+   
+   List of characteristic width data points.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: thermal_properties_data
+   :canonical: ansys.additive.core.material.AdditiveMaterial.thermal_properties_data
+   :type: list[ThermalPropertiesDataPoint]
+
+
+   
+   List of thermal properties data points.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

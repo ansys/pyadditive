@@ -1,0 +1,291 @@
+
+
+
+
+
+
+:class:`SimulationStatus`
+=========================
+
+
+.. py:class:: ansys.additive.core.simulation.SimulationStatus
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   
+   Provides simulation status values.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: SimulationStatus
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~COMPLETED`
+            - Simulation completed successfully.
+          * - :py:attr:`~WARNING`
+            - Simulation completed with warnings.
+          * - :py:attr:`~ERROR`
+            - Simulation errored before completion.
+          * - :py:attr:`~CANCELLED`
+            - Simulation was cancelled.
+          * - :py:attr:`~RUNNING`
+            - Simulation is running.
+          * - :py:attr:`~PENDING`
+            - Simulation is queued and waiting to run.
+          * - :py:attr:`~NEW`
+            - Simulation is created but not yet queued to run.
+          * - :py:attr:`~SKIP`
+            - Do not run this simulation, only applies to parametric studies.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.simulation import SimulationStatus
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: COMPLETED
+   :value: 'Completed'
+
+
+   
+   Simulation completed successfully.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: WARNING
+   :value: 'Warning'
+
+
+   
+   Simulation completed with warnings.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: ERROR
+   :value: 'Error'
+
+
+   
+   Simulation errored before completion.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: CANCELLED
+   :value: 'Cancelled'
+
+
+   
+   Simulation was cancelled.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: RUNNING
+   :value: 'Running'
+
+
+   
+   Simulation is running.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: PENDING
+   :value: 'Pending'
+
+
+   
+   Simulation is queued and waiting to run.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: NEW
+   :value: 'New'
+
+
+   
+   Simulation is created but not yet queued to run.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: SKIP
+   :value: 'Skip'
+
+
+   
+   Do not run this simulation, only applies to parametric studies.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

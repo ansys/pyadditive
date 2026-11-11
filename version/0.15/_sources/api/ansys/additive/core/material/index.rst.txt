@@ -1,0 +1,86 @@
+
+
+
+
+
+The ``material.py`` module
+==========================
+
+.. py:module:: ansys.additive.core.material
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: material
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~CharacteristicWidthDataPoint`
+            - Provides the container for a characteristic width data point.
+
+
+          * - :py:attr:`~ThermalPropertiesDataPoint`
+            - Provides the container for temperature-dependent properties.
+
+
+          * - :py:attr:`~AdditiveMaterial`
+            - Provides the container for material properties used during additive
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 CharacteristicWidthDataPoint<CharacteristicWidthDataPoint>
+    🝆 ThermalPropertiesDataPoint<ThermalPropertiesDataPoint>
+    🝆 AdditiveMaterial<AdditiveMaterial>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

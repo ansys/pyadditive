@@ -1,0 +1,741 @@
+
+
+
+
+
+
+:class:`Microstructure3DInput`
+==============================
+
+
+.. py:class:: ansys.additive.core.microstructure_3d.Microstructure3DInput(*, sample_min_x: float = DEFAULT_POSITION_COORDINATE, sample_min_y: float = DEFAULT_POSITION_COORDINATE, sample_min_z: float = DEFAULT_POSITION_COORDINATE, sample_size_x: float = DEFAULT_SAMPLE_SIZE, sample_size_y: float = DEFAULT_SAMPLE_SIZE, sample_size_z: float = DEFAULT_SAMPLE_SIZE, calculate_initial_microstructure: bool = DEFAULT_RUN_INITIAL_MICROSTRUCTURE, use_transient_bulk_nucleation: bool = DEFAULT_USE_TRANSIENT_BULK_NUCLEATION, max_bulk_nucleation_density: int = DEFAULT_MAX_NUCLEATION_DENSITY_BULK, num_initial_random_nuclei: int = DEFAULT_NUMBER_OF_RANDOM_NUCLEI, machine: ansys.additive.core.machine.AdditiveMachine = None, material: ansys.additive.core.material.AdditiveMaterial = None)
+
+   Bases: :py:obj:`ansys.additive.core.simulation.SimulationInputBase`
+
+
+   
+   Provides input parameters for 3D microstructure simulation.
+
+   Units are SI (m, kg, s, K) unless otherwise noted.
+
+   .. warning::
+       Beta Features Disclaimer
+
+       * 3D microstructure simulation is a beta feature and requires ``enable_beta_features=True``
+         when creating the :class:`Additive` client.
+       * Beta features are considered unreleased and have not been fully tested nor
+         fully validated. The results are not guaranteed by Ansys, Inc. (Ansys) to be
+         correct. You assume the risk of using beta features.
+       * At its discretion, Ansys may release, change, or withdraw beta features
+         in future revisions.
+       * Beta features are not subject to the Ansys Class 3 error reporting system.
+         Ansys makes no commitment to resolve defects reported against beta features;
+         however, your feedback will help us improve the quality of the product.
+       * Ansys does not guarantee that database and/or input files used with beta
+         features will run successfully from version to version of the software, nor
+         with the final released version of the features. You may need to modify the
+         database and/or input files before running them on other versions.
+       * Documentation for beta features is called beta documentation, and it may
+         not be written to the same standard as documentation for released features.
+         Beta documentation may not be complete at the time of product release.
+         At its discretion, Ansys may add, change, or delete beta documentation
+         at any time.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. py:currentmodule:: Microstructure3DInput
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~sample_min_x`
+            - Minimum x coordinate of the geometry sample (m).
+          * - :py:attr:`~sample_min_y`
+            - Minimum y coordinate of the geometry sample (m).
+          * - :py:attr:`~sample_min_z`
+            - Minimum z coordinate of the geometry sample (m).
+          * - :py:attr:`~sample_size_x`
+            - Size of the geometry sample in the x direction (m).
+          * - :py:attr:`~sample_size_y`
+            - Size of the geometry sample in the y direction (m).
+          * - :py:attr:`~sample_size_z`
+            - Size of the geometry sample in the z direction (m).
+          * - :py:attr:`~calculate_initial_microstructure`
+            - Flag indicating if the initial microstructure conditions solver is to run.
+          * - :py:attr:`~use_transient_bulk_nucleation`
+            - Flag indicating if nucleation is allowed in the bulk region of the meltpool.
+          * - :py:attr:`~max_bulk_nucleation_density`
+            - Maximum nucleation density in the bulk (grains/m^3).
+          * - :py:attr:`~num_initial_random_nuclei`
+            - Number of random nuclei to use for the microstructure initial conditions.
+          * - :py:attr:`~machine`
+            - Machine-related parameters.
+          * - :py:attr:`~material`
+            - Material used during simulation.
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_POSITION_COORDINATE`
+            - Default X, Y, Z, position coordinate (m).
+          * - :py:attr:`~MIN_POSITION_COORDINATE`
+            - Minimum X, Y, Z, position coordinate (m).
+          * - :py:attr:`~MAX_POSITION_COORDINATE`
+            - Maximum X, Y, Z, position coordinate (m).
+          * - :py:attr:`~DEFAULT_SAMPLE_SIZE`
+            - Default sample size in each dimension (m).
+          * - :py:attr:`~MIN_SAMPLE_SIZE`
+            - Minimum sample size in each dimension (m).
+          * - :py:attr:`~MAX_SAMPLE_SIZE`
+            - Maximum sample size in each dimension (m).
+          * - :py:attr:`~DEFAULT_RUN_INITIAL_MICROSTRUCTURE`
+            - Default flag value indicating whether to run the initial microstructure conditions solver.
+          * - :py:attr:`~DEFAULT_USE_TRANSIENT_BULK_NUCLEATION`
+            - Default flag value indicating whether to use transient bulk nucleation rather than initial microstructure conditions.
+          * - :py:attr:`~DEFAULT_NUMBER_OF_RANDOM_NUCLEI`
+            - Default number of random nuclei to use in the initial microstructure conditions solver.
+          * - :py:attr:`~DEFAULT_MAX_NUCLEATION_DENSITY_BULK`
+            - Default maximum nucleation density in the bulk (grains/m^3).
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+          * - :py:attr:`~__eq__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.microstructure_3d import Microstructure3DInput
+
+Property detail
+---------------
+
+.. py:property:: sample_min_x
+   :type: float
+
+
+   
+   Minimum x coordinate of the geometry sample (m).
+
+   Valid values are from the :obj:`MIN_POSITION_COORDINATE` value to
+   the :obj:`MAX_POSITION_COORDINATE` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_min_y
+   :type: float
+
+
+   
+   Minimum y coordinate of the geometry sample (m).
+
+   Valid values are from the :obj:`MIN_POSITION_COORDINATE` value to the
+   :obj:`MAX_POSITION_COORDINATE` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_min_z
+   :type: float
+
+
+   
+   Minimum z coordinate of the geometry sample (m).
+
+   Valid values are from the :obj:`MIN_POSITION_COORDINATE` value to the
+   :obj:`MAX_POSITION_COORDINATE` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_size_x
+   :type: float
+
+
+   
+   Size of the geometry sample in the x direction (m).
+
+   Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+   :obj:`MAX_SAMPLE_SIZE` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_size_y
+   :type: float
+
+
+   
+   Size of the geometry sample in the y direction (m).
+
+   Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+   :obj:`MAX_SAMPLE_SIZE` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_size_z
+   :type: float
+
+
+   
+   Size of the geometry sample in the z direction (m).
+
+   Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+   :obj:`MAX_SAMPLE_SIZE` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: calculate_initial_microstructure
+   :type: bool
+
+
+   
+   Flag indicating if the initial microstructure conditions solver is to run.
+
+   If ``True``, initial condition grain identifiers and Euler angles are calculated.
+   If ``False``, the initial microstructure conditions solver is not be run.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: use_transient_bulk_nucleation
+   :type: bool
+
+
+   
+   Flag indicating if nucleation is allowed in the bulk region of the meltpool.
+
+   Nucleation rate is controlled by bulk nucleation density.
+   If ``True``, bulk nucleation is enabled. if ``False``, bulk
+   nucleation is disabled.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: max_bulk_nucleation_density
+   :type: int
+
+
+   
+   Maximum nucleation density in the bulk (grains/m^3).
+
+   If ``use_transient_bulk_nucleation=False``, this value is ignored.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: num_initial_random_nuclei
+   :type: int
+
+
+   
+   Number of random nuclei to use for the microstructure initial conditions.
+
+   This value is used by the initial microstructure conditions solver.
+   If ``use_transient_bulk_nucleation=True``, this value is ignored.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: machine
+
+   
+   Machine-related parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material
+
+   
+   Material used during simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: DEFAULT_POSITION_COORDINATE
+   :value: 0
+
+
+   
+   Default X, Y, Z, position coordinate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_POSITION_COORDINATE
+   :value: 0
+
+
+   
+   Minimum X, Y, Z, position coordinate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_POSITION_COORDINATE
+   :value: 10
+
+
+   
+   Maximum X, Y, Z, position coordinate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_SAMPLE_SIZE
+   :value: 0.0001
+
+
+   
+   Default sample size in each dimension (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_SAMPLE_SIZE
+   :value: 1.5e-05
+
+
+   
+   Minimum sample size in each dimension (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_SAMPLE_SIZE
+   :value: 0.0005
+
+
+   
+   Maximum sample size in each dimension (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_RUN_INITIAL_MICROSTRUCTURE
+   :value: True
+
+
+   
+   Default flag value indicating whether to run the initial microstructure conditions solver.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_USE_TRANSIENT_BULK_NUCLEATION
+   :value: True
+
+
+   
+   Default flag value indicating whether to use transient bulk nucleation rather than initial microstructure conditions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_NUMBER_OF_RANDOM_NUCLEI
+   :value: 8000
+
+
+   
+   Default number of random nuclei to use in the initial microstructure conditions solver.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_MAX_NUCLEATION_DENSITY_BULK
+   :value: 0
+
+
+   
+   Default maximum nucleation density in the bulk (grains/m^3).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+.. py:method:: __eq__(__o: object) -> bool
+
+
+
+

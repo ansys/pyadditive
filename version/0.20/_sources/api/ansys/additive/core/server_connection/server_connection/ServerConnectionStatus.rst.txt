@@ -1,0 +1,180 @@
+
+
+
+
+
+
+:class:`ServerConnectionStatus`
+===============================
+
+
+.. py:class:: ansys.additive.core.server_connection.server_connection.ServerConnectionStatus
+
+   
+   Provides status information about a server.
+
+
+   :Parameters:
+
+       **connected: bool**
+           True if server is connected.
+
+       **channel_str: string, None**
+           Hostname and port of server connection in the form ``host:port``.
+
+       **metadata: dict, None**
+           Server metadata.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: ServerConnectionStatus
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~connected`
+            - True if server is connected.
+          * - :py:attr:`~channel_str`
+            - Hostname and port of server connection in the form ``host:port``.
+          * - :py:attr:`~metadata`
+            - Server metadata.
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__str__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.server_connection.server_connection import ServerConnectionStatus
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: connected
+   :type:  bool
+
+   
+   True if server is connected.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: channel_str
+   :type:  str
+   :value: None
+
+
+   
+   Hostname and port of server connection in the form ``host:port``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: metadata
+   :type:  dict
+   :value: None
+
+
+   
+   Server metadata.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Method detail
+-------------
+
+.. py:method:: __str__() -> ServerConnectionStatus.__str__.str
+
+
+
+

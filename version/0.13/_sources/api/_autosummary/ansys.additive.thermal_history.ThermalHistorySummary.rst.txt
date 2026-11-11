@@ -1,0 +1,30 @@
+﻿ThermalHistorySummary
+=====================
+
+.. currentmodule:: ansys.additive.thermal_history
+
+.. autoclass:: ThermalHistorySummary
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      ThermalHistorySummary.coax_ave_output_folder
+      ThermalHistorySummary.input
+   
+   

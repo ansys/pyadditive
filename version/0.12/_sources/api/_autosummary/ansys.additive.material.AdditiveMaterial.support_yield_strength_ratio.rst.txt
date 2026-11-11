@@ -1,0 +1,6 @@
+support\_yield\_strength\_ratio
+===============================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.support_yield_strength_ratio

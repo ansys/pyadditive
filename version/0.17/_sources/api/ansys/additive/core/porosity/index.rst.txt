@@ -1,0 +1,86 @@
+
+
+
+
+
+The ``porosity.py`` module
+==========================
+
+.. py:module:: ansys.additive.core.porosity
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: porosity
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:attr:`~PorosityInput`
+            - Provides input parameters for porosity simulation.
+
+
+          * - :py:attr:`~PorositySummary`
+            - Provides a summary of a porosity simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    🝆 PorosityInput<PorosityInput>
+    🝆 PorositySummary<PorositySummary>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides input and result summary containers for porosity simulations.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

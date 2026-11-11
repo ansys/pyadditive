@@ -1,0 +1,519 @@
+
+
+
+
+
+
+The ``simulation.py`` module
+============================
+
+.. py:module:: ansys.additive.core.simulation
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: simulation
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~SimulationType`
+            - Provides simulation types.
+
+
+          * - :py:obj:`~SimulationStatus`
+            - Provides simulation status values.
+
+
+          * - :py:obj:`~SimulationError`
+            - Provides simulation errors.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides common definitions and classes for simulations.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+.. py:class:: SimulationType
+
+   
+   Provides simulation types.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: SimulationType
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~SINGLE_BEAD`
+            - Single bead simulation.
+          * - :py:attr:`~POROSITY`
+            - Porosity simulation.
+          * - :py:attr:`~MICROSTRUCTURE`
+            - Microstructure simulation.
+      
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.simulation import SimulationType
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: SINGLE_BEAD
+   :value: 'SingleBead'
+
+
+   
+   Single bead simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: POROSITY
+   :value: 'Porosity'
+
+
+   
+   Porosity simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MICROSTRUCTURE
+   :value: 'Microstructure'
+
+
+   
+   Microstructure simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+    
+
+
+
+
+
+.. py:class:: SimulationStatus
+
+   
+   Provides simulation status values.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: SimulationStatus
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~PENDING`
+            - Simulation is waiting to run.
+          * - :py:attr:`~COMPLETED`
+            - Simulation was run.
+          * - :py:attr:`~ERROR`
+            - Simulation errored.
+          * - :py:attr:`~SKIP`
+            - Do not run this simulation, only applies to parametric studies.
+      
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.simulation import SimulationStatus
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: PENDING
+   :value: 'Pending'
+
+
+   
+   Simulation is waiting to run.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: COMPLETED
+   :value: 'Completed'
+
+
+   
+   Simulation was run.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: ERROR
+   :value: 'Error'
+
+
+   
+   Simulation errored.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: SKIP
+   :value: 'Skip'
+
+
+   
+   Do not run this simulation, only applies to parametric studies.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+    
+
+
+
+
+
+.. py:class:: SimulationError(input: Union[ansys.additive.core.single_bead.SingleBeadInput, ansys.additive.core.porosity.PorosityInput, ansys.additive.core.microstructure.MicrostructureInput, ansys.additive.core.thermal_history.ThermalHistoryInput], message: str)
+
+   
+   Provides simulation errors.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: SimulationError
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~input`
+            - Simulation input.
+          * - :py:attr:`~message`
+            - Provides simulation error message.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.simulation import SimulationError
+
+Property detail
+---------------
+.. py:property:: input
+   :type: Union[ansys.additive.core.single_bead.SingleBeadInput, ansys.additive.core.porosity.PorosityInput, ansys.additive.core.microstructure.MicrostructureInput, ansys.additive.core.thermal_history.ThermalHistoryInput]
+
+   
+   Simulation input.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: message
+   :type: str
+
+   
+   Provides simulation error message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+    
+
+
+
+
+

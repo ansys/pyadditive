@@ -1,0 +1,48 @@
+
+
+
+
+
+
+:class:`BetaFeatureNotEnabledError`
+===================================
+
+.. py:exception:: ansys.additive.core.exceptions.BetaFeatureNotEnabledError
+
+   Bases: :py:obj:`Exception`
+
+
+   
+   Raised when a beta feature is not enabled.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.exceptions import BetaFeatureNotEnabledError
+
+
+
+
+

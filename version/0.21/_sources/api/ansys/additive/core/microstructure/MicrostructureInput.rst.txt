@@ -1,0 +1,1274 @@
+
+
+
+
+
+
+:class:`MicrostructureInput`
+============================
+
+
+.. py:class:: ansys.additive.core.microstructure.MicrostructureInput(*, sample_min_x: float = DEFAULT_POSITION_COORDINATE, sample_min_y: float = DEFAULT_POSITION_COORDINATE, sample_min_z: float = DEFAULT_POSITION_COORDINATE, sample_size_x: float = DEFAULT_SAMPLE_SIZE, sample_size_y: float = DEFAULT_SAMPLE_SIZE, sample_size_z: float = DEFAULT_SAMPLE_SIZE, sensor_dimension: float = DEFAULT_SENSOR_DIMENSION, use_provided_thermal_parameters: bool = DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS, cooling_rate: float = DEFAULT_COOLING_RATE, thermal_gradient: float = DEFAULT_THERMAL_GRADIENT, melt_pool_width: float = DEFAULT_MELT_POOL_WIDTH, melt_pool_depth: float = DEFAULT_MELT_POOL_DEPTH, random_seed: int = DEFAULT_RANDOM_SEED, machine: ansys.additive.core.machine.AdditiveMachine = None, material: ansys.additive.core.material.AdditiveMaterial = None)
+
+   Bases: :py:obj:`ansys.additive.core.simulation.SimulationInputBase`
+
+
+   
+   Provides input parameters for microstructure simulation.
+
+   Units are SI (m, kg, s, K) unless otherwise noted.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. py:currentmodule:: MicrostructureInput
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~sample_min_x`
+            - Minimum x coordinate of the geometry sample (m).
+          * - :py:attr:`~sample_min_y`
+            - Minimum y coordinate of the geometry sample (m).
+          * - :py:attr:`~sample_min_z`
+            - Minimum z coordinate of the geometry sample (m).
+          * - :py:attr:`~use_provided_thermal_parameters`
+            - Flag indicating if the ``cooling_rate``, ``thermal_gradient``, ``melt_pool_depth``, and ``melt_pool_width`` parameters have been provided by the user.
+          * - :py:attr:`~cooling_rate`
+            - Material cooling rate (K/s).
+          * - :py:attr:`~thermal_gradient`
+            - Material thermal gradient (K/m).
+          * - :py:attr:`~melt_pool_width`
+            - Melt pool width (m).
+          * - :py:attr:`~melt_pool_depth`
+            - Melt pool depth (m).
+          * - :py:attr:`~machine`
+            - Machine-related parameters.
+          * - :py:attr:`~material`
+            - Material used during simulation.
+          * - :py:attr:`~sample_size_x`
+            - Size of the geometry sample in the x direction (m).
+          * - :py:attr:`~sample_size_y`
+            - Size of the geometry sample in the y direction (m).
+          * - :py:attr:`~sample_size_z`
+            - Size of the geometry sample in the z direction (m).
+          * - :py:attr:`~sensor_dimension`
+            - Dimension of the sensor (m).
+          * - :py:attr:`~random_seed`
+            - Random seed for the simulation.
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~DEFAULT_POSITION_COORDINATE`
+            - Default X, Y, Z, position coordinate (m).
+          * - :py:attr:`~MIN_POSITION_COORDINATE`
+            - Minimum X, Y, Z, position coordinate (m).
+          * - :py:attr:`~MAX_POSITION_COORDINATE`
+            - Maximum X, Y, Z, position coordinate (m).
+          * - :py:attr:`~DEFAULT_SAMPLE_SIZE`
+            - Default sample size in each dimension (m).
+          * - :py:attr:`~MIN_SAMPLE_SIZE`
+            - Minimum sample size in each dimension (m).
+          * - :py:attr:`~MAX_SAMPLE_SIZE`
+            - Maximum sample size in each dimension (m).
+          * - :py:attr:`~DEFAULT_SENSOR_DIMENSION`
+            - Default sensor dimension (m).
+          * - :py:attr:`~MIN_SENSOR_DIMENSION`
+            - Minimum sensor dimension (m).
+          * - :py:attr:`~MAX_SENSOR_DIMENSION`
+            - Maximum sensor dimension (m).
+          * - :py:attr:`~MIN_XY_SIZE_CUSHION`
+            - Minimum cushion between sensor dimension and sample size in the X and Y dimensions (m).
+          * - :py:attr:`~MIN_Z_SIZE_CUSHION`
+            - Minimum cushion between sensor dimension and sample size in the Z dimension (m).
+          * - :py:attr:`~DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS`
+            - Default flag value indicating whether to use user-provided thermal parameters.
+          * - :py:attr:`~DEFAULT_COOLING_RATE`
+            - Default cooling rate (K/s).
+          * - :py:attr:`~MIN_COOLING_RATE`
+            - Minimum cooling rate (K/s).
+          * - :py:attr:`~MAX_COOLING_RATE`
+            - Maximum cooling rate (K/s).
+          * - :py:attr:`~DEFAULT_THERMAL_GRADIENT`
+            - Default thermal gradient (K/m).
+          * - :py:attr:`~MIN_THERMAL_GRADIENT`
+            - Minimum thermal gradient (K/m).
+          * - :py:attr:`~MAX_THERMAL_GRADIENT`
+            - Maximum thermal gradient (K/m).
+          * - :py:attr:`~DEFAULT_MELT_POOL_WIDTH`
+            - Default melt pool width (m).
+          * - :py:attr:`~MIN_MELT_POOL_WIDTH`
+            - Minimum melt pool width (m).
+          * - :py:attr:`~MAX_MELT_POOL_WIDTH`
+            - Maximum melt pool width (m).
+          * - :py:attr:`~DEFAULT_MELT_POOL_DEPTH`
+            - Default melt pool depth (m).
+          * - :py:attr:`~MIN_MELT_POOL_DEPTH`
+            - Minimum melt pool depth (m).
+          * - :py:attr:`~MAX_MELT_POOL_DEPTH`
+            - Maximum melt pool depth (m).
+          * - :py:attr:`~DEFAULT_RANDOM_SEED`
+            - The default random seed, which indicates that a random seed was not provided.
+          * - :py:attr:`~MIN_RANDOM_SEED`
+            - Minimum random seed.
+          * - :py:attr:`~MAX_RANDOM_SEED`
+            - Maximum random seed.
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - 
+          * - :py:attr:`~__eq__`
+            - 
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.microstructure import MicrostructureInput
+
+Property detail
+---------------
+
+.. py:property:: sample_min_x
+   :type: float
+
+
+   
+   Minimum x coordinate of the geometry sample (m).
+
+   Valid values are from the :obj:`MIN_POSITION_COORDINATE` value to
+   the :obj:`MAX_POSITION_COORDINATE` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_min_y
+   :type: float
+
+
+   
+   Minimum y coordinate of the geometry sample (m).
+
+   Valid values are from the :obj:`MIN_POSITION_COORDINATE` value to the
+   :obj:`MAX_POSITION_COORDINATE` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_min_z
+   :type: float
+
+
+   
+   Minimum z coordinate of the geometry sample (m).
+
+   Valid values are from the :obj:`MIN_POSITION_COORDINATE` value to the
+   :obj:`MAX_POSITION_COORDINATE` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: use_provided_thermal_parameters
+   :type: bool
+
+
+   
+   Flag indicating if the ``cooling_rate``, ``thermal_gradient``, ``melt_pool_depth``, and ``melt_pool_width`` parameters have been provided by the user.
+
+   If the value is ``False``, these values
+   will be calculated. Default is ``False``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: cooling_rate
+   :type: float
+
+
+   
+   Material cooling rate (K/s).
+
+   Valid values are from the :obj:`MIN_COOLING_RATE` value to the
+   :obj:`MAX_COOLING_RATE` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: thermal_gradient
+   :type: float
+
+
+   
+   Material thermal gradient (K/m).
+
+   Valid values are from the :obj:`MIN_THERMAL_GRADIENT` value to the
+   :obj:`MAX_THERMAL_GRADIENT` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: melt_pool_width
+   :type: float
+
+
+   
+   Melt pool width (m).
+
+   This is the width of the melt pool measured at the top of the powder layer.
+
+   Valid values are from the :obj:`MIN_MELT_POOL_WIDTH` value to the
+   :obj:`MAX_MELT_POOL_WIDTH` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: melt_pool_depth
+   :type: float
+
+
+   
+   Melt pool depth (m).
+
+   This is the depth of the melt pool as measured from the top of the powder layer.
+
+   Valid values are from the :obj:`MIN_MELT_POOL_DEPTH` value to the
+   :obj:`MAX_MELT_POOL_DEPTH` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: machine
+
+   
+   Machine-related parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: material
+
+   
+   Material used during simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_size_x
+   :type: float
+
+
+   
+   Size of the geometry sample in the x direction (m).
+
+   Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+   :obj:`MAX_SAMPLE_SIZE` value.
+   When setting the```sample_size_x`` parameter, the value must be greater than the
+   ``sensor_dimension`` value plus the :obj:`MIN_XY_SIZE_CUSHION` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_size_y
+   :type: float
+
+
+   
+   Size of the geometry sample in the y direction (m).
+
+   Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+   :obj:`MAX_SAMPLE_SIZE` value.
+   When setting the ``sample_size_y`` parameter, the value must be greater than the
+   ``sensor_dimension`` value plus the :obj:`MIN_XY_SIZE_CUSHION` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sample_size_z
+   :type: float
+
+
+   
+   Size of the geometry sample in the z direction (m).
+
+   Valid values are from the :obj:`MIN_SAMPLE_SIZE` value to the
+   :obj:`MAX_SAMPLE_SIZE` value.
+   When setting the ``sample_size_y`` parameter, the value must be greater than the
+   ``sensor_dimension`` value plus the :obj:`MIN_XY_SIZE_CUSHION` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: sensor_dimension
+   :type: float
+
+
+   
+   Dimension of the sensor (m).
+
+   Valid values are from the :obj:`MIN_SENSOR_DIMENSION` value to the
+   :obj:`MAX_SENSOR_DIMENSION` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: random_seed
+   :type: int
+
+
+   
+   Random seed for the simulation.
+
+   Valid values are from the :obj:`MIN_RANDOM_SEED` value to the
+   :obj:`MAX_RANDOM_SEED` value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: DEFAULT_POSITION_COORDINATE
+   :value: 0
+
+
+   
+   Default X, Y, Z, position coordinate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_POSITION_COORDINATE
+   :value: 0
+
+
+   
+   Minimum X, Y, Z, position coordinate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_POSITION_COORDINATE
+   :value: 10
+
+
+   
+   Maximum X, Y, Z, position coordinate (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_SAMPLE_SIZE
+   :value: 0.0015
+
+
+   
+   Default sample size in each dimension (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_SAMPLE_SIZE
+   :value: 0.001
+
+
+   
+   Minimum sample size in each dimension (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_SAMPLE_SIZE
+   :value: 0.01
+
+
+   
+   Maximum sample size in each dimension (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_SENSOR_DIMENSION
+   :value: 0.0005
+
+
+   
+   Default sensor dimension (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_SENSOR_DIMENSION
+   :value: 0.0001
+
+
+   
+   Minimum sensor dimension (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_SENSOR_DIMENSION
+   :value: 0.001
+
+
+   
+   Maximum sensor dimension (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_XY_SIZE_CUSHION
+   :value: 0.0005
+
+
+   
+   Minimum cushion between sensor dimension and sample size in the X and Y dimensions (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_Z_SIZE_CUSHION
+   :value: 0.001
+
+
+   
+   Minimum cushion between sensor dimension and sample size in the Z dimension (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_USE_PROVIDED_THERMAL_PARAMETERS
+   :value: False
+
+
+   
+   Default flag value indicating whether to use user-provided thermal parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_COOLING_RATE
+   :value: 1000000.0
+
+
+   
+   Default cooling rate (K/s).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_COOLING_RATE
+   :value: 100000.0
+
+
+   
+   Minimum cooling rate (K/s).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_COOLING_RATE
+   :value: 10000000.0
+
+
+   
+   Maximum cooling rate (K/s).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_THERMAL_GRADIENT
+   :value: 10000000.0
+
+
+   
+   Default thermal gradient (K/m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_THERMAL_GRADIENT
+   :value: 100000.0
+
+
+   
+   Minimum thermal gradient (K/m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_THERMAL_GRADIENT
+   :value: 100000000.0
+
+
+   
+   Maximum thermal gradient (K/m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_MELT_POOL_WIDTH
+   :value: 0.00015
+
+
+   
+   Default melt pool width (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_MELT_POOL_WIDTH
+   :value: 7.5e-05
+
+
+   
+   Minimum melt pool width (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_MELT_POOL_WIDTH
+   :value: 0.0008
+
+
+   
+   Maximum melt pool width (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_MELT_POOL_DEPTH
+   :value: 0.0001
+
+
+   
+   Default melt pool depth (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_MELT_POOL_DEPTH
+   :value: 1.5e-05
+
+
+   
+   Minimum melt pool depth (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_MELT_POOL_DEPTH
+   :value: 0.0008
+
+
+   
+   Maximum melt pool depth (m).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: DEFAULT_RANDOM_SEED
+   :value: 0
+
+
+   
+   The default random seed, which indicates that a random seed was not provided.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MIN_RANDOM_SEED
+   :value: 1
+
+
+   
+   Minimum random seed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: MAX_RANDOM_SEED
+   :value: 4294967295
+
+
+   
+   Maximum random seed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+.. py:method:: __eq__(__o: object) -> bool
+
+
+
+

@@ -1,0 +1,78 @@
+
+
+
+
+
+
+The ``exceptions.py`` module
+============================
+
+.. py:module:: ansys.additive.core.exceptions
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: exceptions
+.. tab-set::
+
+
+
+
+
+
+    .. tab-item:: Exceptions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.exceptions.BetaFeatureNotEnabledError`
+            - Raised when a beta feature is not enabled.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-md-lightning_bolt"></span> BetaFeatureNotEnabledError</api/ansys/additive/core/exceptions/BetaFeatureNotEnabledError>
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides custom exceptions for the additive client.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

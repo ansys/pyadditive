@@ -1,0 +1,37 @@
+﻿ansys.additive.additive.Additive
+================================
+
+.. currentmodule:: ansys.additive.additive
+
+.. autoclass:: Additive
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      Additive.get_material
+      
+      
+      Additive.get_materials_list
+      
+      
+      Additive.load_material
+      
+      
+      Additive.simulate
+      
+      
+      Additive.tune_material
+      
+   
+   
+
+   
+   
+   

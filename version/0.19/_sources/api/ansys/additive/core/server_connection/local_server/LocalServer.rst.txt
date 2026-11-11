@@ -1,0 +1,156 @@
+
+
+
+
+
+
+:class:`LocalServer`
+====================
+
+.. py:class:: ansys.additive.core.server_connection.local_server.LocalServer
+
+   
+   Provides startup utilities for a local Additive server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. py:currentmodule:: LocalServer
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+
+   .. tab-item:: Static methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~launch`
+            - Launch a local gRPC server for the Additive service.
+          * - :py:attr:`~find_open_port`
+            - Find an open port on the local host.
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.server_connection.local_server import LocalServer
+
+
+
+Method detail
+-------------
+
+.. py:method:: launch(port: int, cwd: str = USER_DATA_PATH, product_version: str = DEFAULT_PRODUCT_VERSION, linux_install_path: os.PathLike | None = None) -> subprocess.Popen
+   :staticmethod:
+
+
+   
+   Launch a local gRPC server for the Additive service.
+
+
+   :Parameters:
+
+       **port: int**
+           Port number to use for gRPC connections.
+
+       **cwd: str**
+           Current working directory to use for the server process.
+
+       **product_version: str**
+           Version of the Ansys installation to use, of the form ``"YYR"``, where
+           ``YY`` is the two digit year and ``R`` is the release for
+           that year. For example, Ansys 2024 R1 would be ``"241"``.
+
+       **linux_install_path: os.PathLike, None default: None**
+           Path to the Ansys installation directory on Linux. This parameter is only
+           required when Ansys has not been installed in the default location. Example:
+           ``/usr/shared/ansys_inc``. Note that the path does not include the product
+           version.
+
+
+
+   :Returns:
+
+       process: :obj:`subprocess.Popen`
+           Server process. To stop the server, call the ``kill()`` method on the returned object.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: find_open_port() -> int
+   :staticmethod:
+
+
+   
+   Find an open port on the local host.
+
+
+
+
+
+   :Returns:
+
+       port: :class:`python:int`
+           Open port number.
+
+       .. note::
+           This port may be taken by the time you try to use it.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

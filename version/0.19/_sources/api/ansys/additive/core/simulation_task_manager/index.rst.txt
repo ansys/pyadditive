@@ -1,0 +1,80 @@
+
+
+
+
+
+
+The ``simulation_task_manager.py`` module
+=========================================
+
+.. py:module:: ansys.additive.core.simulation_task_manager
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: simulation_task_manager
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.simulation_task_manager.SimulationTaskManager`
+            - Provides a manager for simulation tasks.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> SimulationTaskManager</api/ansys/additive/core/simulation_task_manager/SimulationTaskManager>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Manages simulation tasks.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

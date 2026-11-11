@@ -1,0 +1,249 @@
+
+
+
+
+
+
+:class:`ProgressState`
+======================
+
+.. py:class:: ansys.additive.core.progress_handler.ProgressState
+
+   Bases: :py:obj:`enum.IntEnum`
+
+
+   
+   Simulation progress status.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: ProgressState
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~NEW`
+            - Simulation created and not yet queued to run.
+          * - :py:attr:`~WAITING`
+            - Simulation is queued and waiting to start.
+          * - :py:attr:`~RUNNING`
+            - Simulation is running.
+          * - :py:attr:`~COMPLETED`
+            - Simulation has completed.
+          * - :py:attr:`~ERROR`
+            - Simulation has errored.
+          * - :py:attr:`~CANCELLED`
+            - Simulation has been cancelled.
+          * - :py:attr:`~WARNING`
+            - Simulation completed with warnings.
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.progress_handler import ProgressState
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: NEW
+
+   
+   Simulation created and not yet queued to run.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: WAITING
+
+   
+   Simulation is queued and waiting to start.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: RUNNING
+
+   
+   Simulation is running.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: COMPLETED
+
+   
+   Simulation has completed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: ERROR
+
+   
+   Simulation has errored.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: CANCELLED
+
+   
+   Simulation has been cancelled.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:attribute:: WARNING
+
+   
+   Simulation completed with warnings.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+

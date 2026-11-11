@@ -1,0 +1,80 @@
+
+
+
+
+
+
+The ``parametric_study_progress_handler.py`` module
+===================================================
+
+.. py:module:: ansys.additive.core.parametric_study.parametric_study_progress_handler
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: parametric_study_progress_handler
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.parametric_study.parametric_study_progress_handler.ParametricStudyProgressHandler`
+            - Provides methods to update parametric study simulation status.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> ParametricStudyProgressHandler</api/ansys/additive/core/parametric_study/parametric_study_progress_handler/ParametricStudyProgressHandler>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides a class to update progress when running parametric study simulations.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

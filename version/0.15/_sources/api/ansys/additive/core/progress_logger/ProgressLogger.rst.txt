@@ -1,0 +1,91 @@
+
+
+
+
+ProgressLogger
+==============
+
+.. py:class:: ProgressLogger(name: str = None)
+   :canonical: ansys.additive.core.progress_logger.ProgressLogger
+
+
+
+
+Provides for progress logging.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+--------
+.. py:currentmodule:: ProgressLogger
+.. tab-set::
+
+
+
+    .. tab-item:: Methods
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~log_progress`
+            - Log progress.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.additive.core.progress_logger import ProgressLogger
+
+
+
+
+Method detail
+-------------
+
+
+.. py:method:: log_progress(progress: ansys.api.additive.v0.additive_domain_pb2.Progress)
+
+   
+   Log progress.
+
+
+   :Parameters:
+
+       **progress: :class:`Progress <Progress>`**
+           Latest progress.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+

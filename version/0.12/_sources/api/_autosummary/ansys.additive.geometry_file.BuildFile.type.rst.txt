@@ -1,0 +1,6 @@
+type
+====
+
+.. currentmodule:: ansys.additive.geometry_file
+
+.. autoproperty:: BuildFile.type

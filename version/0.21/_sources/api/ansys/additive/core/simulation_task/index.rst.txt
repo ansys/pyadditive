@@ -1,0 +1,80 @@
+
+
+
+
+
+
+The ``simulation_task.py`` module
+=================================
+
+.. py:module:: ansys.additive.core.simulation_task
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: simulation_task
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.additive.core.simulation_task.SimulationTask`
+            - Provides a simulation task.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> SimulationTask</api/ansys/additive/core/simulation_task/SimulationTask>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Container for a simulation task.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

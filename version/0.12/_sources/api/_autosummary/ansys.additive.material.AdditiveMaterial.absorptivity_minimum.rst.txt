@@ -1,0 +1,6 @@
+absorptivity\_minimum
+=====================
+
+.. currentmodule:: ansys.additive.material
+
+.. autoproperty:: AdditiveMaterial.absorptivity_minimum

@@ -1,0 +1,6 @@
+beam\_diameter
+==============
+
+.. currentmodule:: ansys.additive.machine
+
+.. autoproperty:: AdditiveMachine.beam_diameter
