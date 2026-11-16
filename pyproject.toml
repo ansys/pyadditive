@@ -58,7 +58,7 @@ tests = [
   "protobuf==7.36.2",
   "six==1.17.0",
   "tqdm==4.70.1",
-  "pydantic==2.14.2",
+  "pydantic==2.14.3",
   "pytest==9.2.0",
   "pytest-cov==7.1.0"
 ]
